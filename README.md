@@ -1,1 +1,0 @@
-# Amor-neuro-Divergente

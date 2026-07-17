@@ -18,7 +18,7 @@
 }
 
 /* =========================================
-   BREADCRUMB
+Nav
    ========================================= */
 .breadcrumb-nav {
     display: flex;
@@ -26,7 +26,7 @@
     gap: 6px;
     font-size: 13px;
     color: var(--explore-muted);
-    flex: 1;
+    
 }
 .breadcrumb-nav a {
     color: var(--explore-accent);
@@ -360,41 +360,6 @@
     font-size: 14px;
 }
 
-/* =========================================
-   BOTÃO VOLTAR AO TOPO
-   ========================================= */
-.scroll-top-btn {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 90;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--explore-accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    box-shadow: 0 4px 15px rgba(124,58,237,0.3);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    border: none;
-}
-.scroll-top-btn.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-.scroll-top-btn:hover {
-    background: #6d28d9;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(124,58,237,0.4);
-}
 
 /* =========================================
    CONTATO

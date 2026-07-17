@@ -1,11 +1,4 @@
-/* =========================================
-   INICIO.CSS — Amor NeuroDivergente
-   Dark Mode + Acessibilidade (Sem Carrossel)
-   ========================================= */
 
-/* =========================================
-   VARIÁVEIS GLOBAIS (Unificadas)
-   ========================================= */
 :root {
     /* Cores Base */
     --primary: #7c3aed;
@@ -231,7 +224,7 @@ ul, ol { list-style: none; }
 }
 .header-glass.scrolled { background: rgba(255,255,255,0.9); box-shadow: var(--shadow-md); }
 .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.15rem; color: var(--text-dark); text-decoration: none; }
-.logo-img { width: 36px; height: 36px; object-fit: contain; border-radius: 6px; }
+.logo-img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; top: 5px; }
 .logo-text { color: var(--primary-dark); }
 .header-links { display: flex; gap: 24px; }
 .header-links a { 
