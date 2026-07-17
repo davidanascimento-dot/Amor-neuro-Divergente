@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Converse com a AcolherIA, nossa assistente virtual especializada em neurodiversidade. Apoio, informação e acolhimento 24 horas.">
+    <title>Falar com AcolherIA — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="chat-Ia.css">
+  
+</head>
+<body>
+
+    <!-- Botão de toggle da sidebar (sempre visível) -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- =============================================
+    SIDEBAR — Começa fechada
+    ============================================= -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configuracoes/configuracoes.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/chat-Ia/chat-Ia.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-robot"></i> Falar com AcolherIA</a>
+        </nav>
+
+        <div class="sidebar-a11y" id="sidebarA11y">
+            <button class="a11y-toggle" id="a11yToggle" aria-expanded="false"><i class="fa-solid fa-universal-access"></i> Acessibilidade<i class="fa-solid fa-chevron-down"></i></button>
+            <div class="a11y-options" id="a11yOptions" hidden>
+                <button class="a11y-option" data-a11y="darkMode"><i class="fa-regular fa-moon"></i> Modo escuro<span class="a11y-status" id="darkModeStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="increaseText"><i class="fa-solid fa-text-height"></i> Aumentar texto</button>
+                <button class="a11y-option" data-a11y="decreaseText"><i class="fa-solid fa-text-slash"></i> Diminuir texto</button>
+                <button class="a11y-option" data-a11y="highlightLinks"><i class="fa-solid fa-link"></i> Destacar links<span class="a11y-status" id="linksStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="dyslexiaFont"><i class="fa-regular fa-eye"></i> Fonte para dislexia<span class="a11y-status" id="dyslexiaStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="reduceMotion"><i class="fa-solid fa-person-walking"></i> Reduzir animações<span class="a11y-status" id="motionStatus">Desligado</span></button>
+                <button class="a11y-reset" data-a11y="reset"><i class="fa-solid fa-rotate-left"></i> Voltar ao padrão</button>
+            </div>
+        </div>
+
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- =============================================
+    CONTEÚDO PRINCIPAL
+    ============================================= -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Header glass -->
+        <header class="header-glass" id="headerGlass">
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+        <!-- CHAT WORKSPACE -->
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-welcome-header">
+                <div class="ai-icon-circle"><i class="fa-solid fa-robot"></i></div>
+                <h1 class="chat-title">Como posso ajudar? 💜</h1>
+                <p class="chat-subtitle">Chat com IA para apoio, informação e acolhimento neurodivergente</p>
+            </div>
+
+            <div class="chat-history" id="chatHistory">
+                <div class="chat-bubble ai">
+                    Olá! Eu sou a <strong>AcolherIA</strong>, sua assistente virtual especializada em neurodiversidade. 💜<br><br>
+                    Posso te ajudar com dúvidas sobre <strong>TDAH</strong>, <strong>autismo</strong>, <strong>direitos</strong>, <strong>organização</strong>, <strong>crises sensoriais</strong> e muito mais. Como posso te ajudar hoje?
+                </div>
+            </div>
+
+            <div class="chat-input-wrapper">
+                <textarea class="chat-textarea" id="chatInput" placeholder="Pergunte alguma coisa..."></textarea>
+                <div class="chat-input-footer">
+                    <div class="ai-status-tag"><span><i class="fa-solid fa-robot"></i></span> AcolherIA • Especialista em neurodivergência</div>
+                    <button class="btn-send" id="btnSend" title="Enviar Mensagem"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <div class="suggestions-grid" id="suggestionsGrid">
+                <button class="suggestion-btn" data-prompt="O que é TDAH?">O que é TDAH?</button>
+                <button class="suggestion-btn" data-prompt="Quais são meus direitos na escola?">Direitos na escola?</button>
+                <button class="suggestion-btn" data-prompt="Dicas de organização">Dicas de organização</button>
+                <button class="suggestion-btn" data-prompt="Como explicar meu diagnóstico?">Explicar diagnóstico?</button>
+                <button class="suggestion-btn" data-prompt="Dicas para crise sensorial">Crise sensorial?</button>
+                <button class="suggestion-btn" data-prompt="O que é autismo?">O que é autismo?</button>
+            </div>
+
+            <div class="footer-note" id="footerNote"><i class="fa-solid fa-heart"></i> Amor Neuro Divergente • AcolherIA com inteligência artificial 💜</div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col"><h4>Navegue</h4><a href="/inicio.html">Início</a><a href="/explorar/explorar.html">Explorar</a><a href="/comunidade/comunidade.html">Comunidade</a><a href="/direitos/direitos.html">Direitos</a><a href="/chat-Ia/chat-Ia.html">AcolherIA</a></div>
+                <div class="footer-col"><h4>Sobre</h4><a href="/Quem somos/quem-somos.html">Quem somos</a><a href="/blog/blog.html">Blog</a><a href="/contato/contato.html">Contato</a></div>
+                <div class="footer-col"><h4>Apoie</h4><a href="/loja/loja.html">Loja</a><a href="/doações/doações.html">Doações</a></div>
+                <div class="footer-col"><h4>Redes</h4><div class="social-links"><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a><a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a></div></div>
+            </div>
+            <div class="footer-bottom"><a href="#">Política de Privacidade</a><a href="#">Termos de Uso</a><p>© 2026 Amor NeuroDivergente</p></div>
+        </footer>
+
+    </main>
+
+    <!-- =============================================
+    SCRIPTS
+    ============================================= -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/supabase-cliente.js"></script>
+    <script src="chat-Ia.js"></script>
+
+    
+</body>
+</html>

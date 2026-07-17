@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Biblioteca virtual com livros gratuitos para neurodivergentes — baixe PDFs e compartilhe na comunidade.">
+    <title>Biblioteca — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="biblioteca.css">
+</head>
+
+
+    <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
+        <div class="acolheria-modal">
+         
+            <div class="acolheria-modal-header">
+                <div class="acolheria-modal-title">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>AcolherIA</span>
+                    <span class="acolheria-badge">Online</span>
+                </div>
+                <button class="acolheria-modal-close" id="acolheriaClose" aria-label="Fechar AcolherIA">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+           
+            <div class="acolheria-modal-body" id="acolheriaChatBody">
+               
+            </div>
+
+           
+            <div class="acolheria-suggestions" id="acolheriaSuggestions">
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?"> TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?"> Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização"> Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?"> Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?"> Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar"> Desabafar</button>
+            </div>
+
+           
+            <div class="acolheria-modal-footer">
+                <div class="acolheria-input-wrapper">
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="acolheria-footer-note">
+                    <i class="fa-regular fa-circle-check"></i> AcolherIA • Especialista em neurodivergência
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
+<body>
+
+  
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configuracoes/configuracoes.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/biblioteca/biblioteca.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            
+          
+        </nav>
+
+       
+
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+   
+    <main class="main-content" id="mainContent">
+        
+        <!-- Header Glass -->
+        <header class="header-glass" id="headerGlass">
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/biblioteca/biblioteca.html">Biblioteca</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+       
+        <section class="biblioteca-page">
+            
+            <!-- ========================================= -->
+            <!-- HERO SECTION - FULLSCREEN                 -->
+            <!-- ========================================= -->
+            <section class="hero-section">
+                <div class="hero-conteudo">
+                    <span class="hero-badge"><i class="fa-regular fa-circle-check"></i> Gratuito</span>
+                    <h1>Biblio<span class="hero-destaque">N</span></h1>
+                    <p class="hero-subtitulo">A BIBLIOTECA DIGITAL GRATUITA<br>DO AMOR NEURODIVERGENTE</p>
+                    <div class="hero-botoes">
+                        <a href="#biblioteca-livros" class="btn-principal"> ACESSE</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================= -->
+            <!-- DESTAQUES DO MÊS (CARROSSEL)             -->
+            <!-- ========================================= -->
+            <div class="sessao-destaques" id="biblioteca-livros">
+                <div class="topo-destaques">
+                    <h2 class="titulo-destaques">⭐ Destaques do mês</h2>
+                    <a href="/destaques.html" class="botao-ver-destaques">VER DESTAQUES</a>
+                </div>
+                
+                <div class="carrossel-container">
+                    <button class="seta-carrossel seta-esquerda" id="setaEsquerda" aria-label="Anterior">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <div class="carrossel-pista" id="carrosselPista">
+                        <!-- Renderizado via JavaScript -->
+                    </div>
+
+                    <button class="seta-carrossel seta-direita" id="setaDireita" aria-label="Próximo">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- TODOS OS LIVROS                           -->
+            <!-- ========================================= -->
+            <div class="todos-livros-section">
+                <div class="todos-livros-header">
+                    <h2 class="todos"> Todos os <span class="todos-title">livros</span> </h2>
+                    <div class="biblioteca-filters">
+                        <div class="search-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="bookSearch" placeholder="Buscar livro, autor ou gênero..." aria-label="Buscar livros">
+                        </div>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="todos">Todos</button>
+                            <button class="filter-btn" data-filter="infantil"> Infantil</button>
+                            <button class="filter-btn" data-filter="jovem"> Jovem</button>
+                            <button class="filter-btn" data-filter="adulto"> Adulto</button>
+                            <button class="filter-btn" data-filter="autoajuda"> Autoajuda</button>
+                            <button class="filter-btn" data-filter="romance"> Romance</button>
+                            <button class="filter-btn" data-filter="ficcao">Ficção</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="books-grid" id="booksGrid">
+                    <!-- Renderizado via JavaScript -->
+                </div>
+                <div class="books-counter" id="booksCounter">0 livros encontrados</div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- CHAMADA PARA COMUNIDADE                   -->
+            <!-- ========================================= -->
+            <div class="biblioteca-chamada">
+                <div class="chamada-content">
+                    <div class="chamada-texto">
+                        <span class="chamada-badge"><i class="fa-regular fa-comments"></i> Compartilhe</span>
+                        <h3>Leu um livro e quer discutir?</h3>
+                        <p>Entre na nossa comunidade e compartilhe suas impressões, recomendações e reflexões sobre os livros da biblioteca.</p>
+                        <a href="/comunidade/comunidade.html" class="chamada-btn">
+                            <i class="fa-regular fa-comments"></i> Ir para Comunidade
+                        </a>
+                    </div>
+                    <div class="chamada-icone">
+                        <i class="fa-solid fa-people-group"></i>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegação</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/biblioteca/biblioteca.html">Biblioteca</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Políticas</h4>
+                    <a href="/termos.html">Termos de Uso</a>
+                    <a href="/privacidade.html">Privacidade</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes Sociais</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Amor NeuroDivergente. Todos os direitos reservados.</span>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- ========================================= -->
+    <!-- MODAL DO LIVRO                            -->
+    <!-- ========================================= -->
+    <div class="book-modal-overlay" id="bookModalOverlay" hidden>
+        <div class="book-modal-overlay-bg" id="bookModalBg"></div>
+        <div class="book-modal">
+            <button class="book-modal-close" id="bookModalClose"><i class="fa-solid fa-xmark"></i></button>
+            <div class="book-modal-content" id="bookModalContent">
+                <!-- Conteúdo dinâmico via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- HUB FLUTUANTE                             -->
+    <!-- ========================================= -->
+    <div class="floating-hub" id="floatingHub">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="floating-hub-divider"></div>
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/faq/faq.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <!-- JavaScript -->
+    <script src="/supabase-cliente.js"></script>
+    <script src="/inicio.js"></script>
+    <script src="biblioteca.js"></script>
+</body>
+</html>

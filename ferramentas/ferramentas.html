@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ferramentas práticas para organização, planejamento visual e regulação sensorial para pessoas neurodivergentes.">
+    <title>Ferramentas — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="ferramentas.css">
+</head>
+<body>
+
+    <!-- Botão de toggle da sidebar (sempre visível) -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- =============================================
+    SIDEBAR — Começa fechada
+    ============================================= -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/chat-Ia/chat-Ia.html" class="sidebar-link"><i class="fa-solid fa-robot"></i> Falar com AcolherIA</a>
+        </nav>
+
+        <div class="sidebar-a11y" id="sidebarA11y">
+            <button class="a11y-toggle" id="a11yToggle" aria-expanded="false"><i class="fa-solid fa-universal-access"></i> Acessibilidade<i class="fa-solid fa-chevron-down"></i></button>
+            <div class="a11y-options" id="a11yOptions" hidden>
+                <button class="a11y-option" data-a11y="darkMode"><i class="fa-regular fa-moon"></i> Modo escuro<span class="a11y-status" id="darkModeStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="increaseText"><i class="fa-solid fa-text-height"></i> Aumentar texto</button>
+                <button class="a11y-option" data-a11y="decreaseText"><i class="fa-solid fa-text-slash"></i> Diminuir texto</button>
+                <button class="a11y-option" data-a11y="highlightLinks"><i class="fa-solid fa-link"></i> Destacar links<span class="a11y-status" id="linksStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="dyslexiaFont"><i class="fa-regular fa-eye"></i> Fonte para dislexia<span class="a11y-status" id="dyslexiaStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="reduceMotion"><i class="fa-solid fa-person-walking"></i> Reduzir animações<span class="a11y-status" id="motionStatus">Desligado</span></button>
+                <button class="a11y-reset" data-a11y="reset"><i class="fa-solid fa-rotate-left"></i> Voltar ao padrão</button>
+            </div>
+        </div>
+
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <!-- Overlay para quando a sidebar estiver aberta -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- =============================================
+    BOTÃO VOLTAR AO TOPO
+    ============================================= -->
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- =============================================
+    CONTEÚDO PRINCIPAL
+    ============================================= -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Header glass -->
+        <header class="header-glass" id="headerGlass">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/inicio.html">Início</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="/explorar/explorar.html">Explorar</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>Ferramentas</span>
+            </nav>
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+        <!-- =============================================
+        HERO
+        ============================================= -->
+        <section class="hero-section">
+            <span class="badge-purple"><i class="fa-solid fa-wand-magic-sparkles"></i> Ferramentas de Apoio</span>
+            <h1>Central de Planejamento Visual</h1>
+            <p>Ferramentas práticas para organizar sua rotina, regular seus sentidos e cuidar de você.</p>
+        </section>
+
+        <!-- =============================================
+        CONTEÚDO PRINCIPAL DAS FERRAMENTAS
+        ============================================= -->
+        <div class="content-container">
+            <!-- Streak Card -->
+            <div class="streak-card">
+                <div class="streak-left">
+                    <span class="streak-icon"><i class="fa-solid fa-star"></i></span>
+                    <div>
+                        <strong style="display:block; font-size:14px;">Bom dia! <i class="fa-regular fa-sun"></i></strong>
+                        <span style="font-size:13px; color:var(--text-muted);">Você já garantiu seus cristais de hoje.</span>
+                    </div>
+                </div>
+                <div class="streak-right">
+                    <span class="streak-days"><i class="fa-solid fa-fire"></i> 1 dias</span>
+                    <span class="streak-pts"><i class="fa-solid fa-star"></i> 130 pts</span>
+                </div>
+            </div>
+
+            <!-- Split Grid: Timeline + Comunidade -->
+            <div class="split-grid">
+                <div class="card-box">
+                    <h2 class="card-title"><i class="fa-regular fa-calendar-days"></i> Planejamento Visual do Dia</h2>
+                    <p class="card-subtitle">Veja um plano visual claro de como será o seu dia.</p>
+                    <div class="timeline">
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">07:00</span><div class="timeline-tag tag-breakfast"><i class="fa-solid fa-mug-hot"></i> Café da manhã</div></div>
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">08:30</span><div class="timeline-tag tag-work"><i class="fa-solid fa-laptop"></i> Trabalho/Estudo</div></div>
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">10:00</span><div class="timeline-tag tag-pause"><i class="fa-solid fa-spa"></i> Pausa sensorial</div></div>
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">12:00</span><div class="timeline-tag tag-lunch"><i class="fa-solid fa-utensils"></i> Almoço</div></div>
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">14:00</span><div class="timeline-tag tag-creative"><i class="fa-solid fa-palette"></i> Atividade criativa</div></div>
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">16:00</span><div class="timeline-tag tag-exercise"><i class="fa-solid fa-person-walking"></i> Exercício</div></div>
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">18:00</span><div class="timeline-tag tag-free"><i class="fa-solid fa-gamepad"></i> Tempo livre</div></div>
+                        <div class="timeline-item"><div class="timeline-node"></div><span class="timeline-time">21:00</span><div class="timeline-tag tag-relax"><i class="fa-solid fa-moon"></i> Relaxamento</div></div>
+                    </div>
+                    <div class="timeline-footer-note"><i class="fa-regular fa-lightbulb"></i> Em breve: monte seu dia personalizado e exporte em PDF!</div>
+                </div>
+
+                <div>
+                    <h3 class="community-header"><i class="fa-regular fa-comments"></i> Inspiração da Comunidade</h3>
+                    <div class="quote-container">
+                        <div class="quote-card">"Ter um aplicativo onde encontro minhas listas de tarefas e lembretes mudou minha vida…"<span class="quote-author">— Usuário Addie</span></div>
+                        <div class="quote-card">"Facilita muito o planejamento da minha agenda..."<span class="quote-author">— Haroldo Belozy</span></div>
+                        <div class="quote-card">"Aplicativo fantástico e muito fácil de usar..."<span class="quote-author">— Zennor97</span></div>
+                        <div class="quote-card">"É quase como ter um assistente pessoal no bolso!..."<span class="quote-author">— Hayzie</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <nav class="tabs-nav">
+                <button class="tab-trigger active" data-tab="timer"><i class="fa-regular fa-clock"></i> Timer Visual</button>
+                <button class="tab-trigger" data-tab="safe"><i class="fa-solid fa-shield-heart"></i> Safe Space</button>
+                <button class="tab-trigger" data-tab="sensory"><i class="fa-solid fa-brain"></i> Diário Sensorial</button>
+            </nav>
+
+            <!-- Tabs Content -->
+            <div class="card-box" style="margin-bottom: 40px;">
+                <!-- Tab 1: Timer Visual -->
+                <div class="tab-content active" id="tab-timer">
+                    <div class="timer-presets">
+                        <button class="preset-btn" data-minutes="5">5 min</button>
+                        <button class="preset-btn" data-minutes="10">10 min</button>
+                        <button class="preset-btn" data-minutes="15">15 min</button>
+                        <button class="preset-btn active" data-minutes="25">25 min</button>
+                        <button class="preset-btn" data-minutes="45">45 min</button>
+                    </div>
+                    <div class="timer-display-container">
+                        <div class="circle-timer">
+                            <div class="time-digits" id="timerDigits">25:00</div>
+                            <div class="timer-status"><i class="fa-solid fa-circle text-green-500"></i> Foco</div>
+                        </div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn-timer-primary" id="btnTimerStart"><i class="fa-solid fa-play"></i> Iniciar</button>
+                        <button class="btn-timer-reset" id="btnTimerReset"><i class="fa-solid fa-rotate-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Safe Space -->
+                <div class="tab-content" id="tab-safe">
+                    <p class="card-subtitle" style="margin-bottom:15px;">Marque tudo que precisa antes de sair de casa.</p>
+                    <div class="progress-container">
+                        <div class="progress-meta"><span id="progressCount">0/18</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
+                    </div>
+                    <div class="checklist-container" id="checklistContainer"></div>
+                    <div class="divider-space"></div>
+                    <h4 class="section-subtitle">Adicionar item personalizado</h4>
+                    <div class="add-item-row">
+                        <input type="text" id="newItemInput" placeholder="Adicionar item...">
+                        <button id="addItemBtn" class="circle-add-btn"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Diário Sensorial -->
+                <div class="tab-content" id="tab-sensory">
+                    <p class="card-subtitle" style="margin-bottom: 20px;">Registre como você se sente hoje.</p>
+                    
+                    <h4 class="section-subtitle">Como você está?</h4>
+                    <div class="mood-row">
+                        <button class="mood-btn" data-mood="Muito mal"><span>😫</span><small>Muito mal</small></button>
+                        <button class="mood-btn" data-mood="Mal"><span>😟</span><small>Mal</small></button>
+                        <button class="mood-btn active" data-mood="Neutro"><span>😐</span><small>Neutro</small></button>
+                        <button class="mood-btn" data-mood="Bem"><span>🙂</span><small>Bem</small></button>
+                        <button class="mood-btn" data-mood="Muito bem"><span>😊</span><small>Muito bem</small></button>
+                    </div>
+
+                    <h4 class="section-subtitle">Nível de energia: <span id="energyDisplay">3/5</span></h4>
+                    <div class="energy-box">
+                        <div class="energy-slider-container">
+                            <span><i class="fa-solid fa-moon"></i></span>
+                            <input type="range" id="energySlider" min="1" max="5" value="3" step="1" class="energy-slider">
+                            <span><i class="fa-solid fa-bolt"></i></span>
+                        </div>
+                    </div>
+
+                    <h4 class="section-subtitle">Estímulos que incomodam</h4>
+                    <div class="stimuli-grid">
+                        <button class="stimuli-btn" data-stimulus="ruido"><i class="fa-solid fa-volume-high"></i> Ruído</button>
+                        <button class="stimuli-btn" data-stimulus="luz"><i class="fa-solid fa-sun"></i> Luz</button>
+                        <button class="stimuli-btn" data-stimulus="textura"><i class="fa-solid fa-fingerprint"></i> Textura</button>
+                        <button class="stimuli-btn" data-stimulus="cheiro"><i class="fa-solid fa-nose"></i> Cheiro</button>
+                        <button class="stimuli-btn" data-stimulus="temperatura"><i class="fa-solid fa-temperature-half"></i> Temperatura</button>
+                        <button class="stimuli-btn" data-stimulus="social"><i class="fa-solid fa-people-arrows"></i> Social</button>
+                    </div>
+
+                    <textarea id="sensoryNotes" class="notes-area" placeholder="Notas opcionais..."></textarea>
+                    <button id="btnSaveSensory" class="btn-timer-primary" style="width:100%;margin-top:10px;"><i class="fa-solid fa-floppy-disk"></i> Registrar entrada</button>
+                </div>
+            </div>
+
+            <!-- Info Grid -->
+            <div class="info-grid">
+                <div class="info-card border-purple">
+                    <div class="info-card-header">
+                        <span class="info-icon"><i class="fa-regular fa-calendar-check"></i></span>
+                        <h3 class="info-title">Estrutura visual que cria novos hábitos</h3>
+                    </div>
+                    <p class="info-description">Você aproveita melhor o seu dia em vez de perder tempo. Com estrutura visual, rotinas e lembretes integrados que são mais fáceis de seguir.</p>
+                </div>
+                <div class="info-card border-pink">
+                    <div class="info-card-header">
+                        <span class="info-icon"><i class="fa-solid fa-brain"></i></span>
+                        <h3 class="info-title">Registre seu humor e nível de energia</h3>
+                    </div>
+                    <p class="info-description">Monitorar o humor não é apenas para quem tem TDAH ou autismo. Integrar o monitoramento ao planejamento facilita a identificação de padrões.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- =============================================
+        FOOTER
+        ============================================= -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegue</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                    <a href="/direitos/direitos.html">Direitos</a>
+                    <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Sobre</h4>
+                    <a href="/Quem somos/quem-somos.html">Quem somos</a>
+                    <a href="/blog/blog.html">Blog</a>
+                    <a href="/contato/contato.html">Contato</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Apoie</h4>
+                    <a href="/loja/loja.html">Loja</a>
+                    <a href="/doações/doações.html">Doações</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <p>© 2026 Amor NeuroDivergente</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Toast -->
+    <div id="toastMsg" class="toast-msg-custom"></div>
+
+    <script src="ferramentas.js"></script>
+   
+
+</body>
+</html>

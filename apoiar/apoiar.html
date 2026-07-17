@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Faça uma doação e ajude crianças neurodivergentes em situação de vulnerabilidade. Sua contribuição transforma vidas.">
+    <title>Doações — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="doações.css">
+    
+    <!-- CSS do Carrossel -->
+    <link rel="stylesheet" href="/carrossel.css">
+    
+    <style>
+        /* ==========================================================================
+           ESTILOS ADICIONAIS PARA DOAÇÕES
+           ========================================================================== */
+        
+        /* Hero com imagem de fundo fofa */
+        .donation-hero {
+            background: linear-gradient(135deg, rgba(139, 61, 255, 0.85) 0%, rgba(217, 70, 239, 0.75) 100%),
+                        url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=1400&h=500&fit=crop&crop=center') center/cover no-repeat;
+            padding: 80px 40px;
+            position: relative;
+            overflow: hidden;
+            min-height: 380px;
+            display: flex;
+            align-items: center;
+        }
+        .donation-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at top left, rgba(255,255,255,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .donation-hero-content {
+            max-width: 700px;
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(8px);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .donation-hero-content h1 {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+        .donation-hero-content h1 span {
+            background: linear-gradient(135deg, #fcd34d, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .donation-hero-content p {
+            font-size: 18px;
+            opacity: 0.92;
+            max-width: 520px;
+            line-height: 1.6;
+        }
+
+        /* Seção de impacto com imagens */
+        .impact-section {
+            padding: 60px 30px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-size: 30px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+        .impact-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .impact-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+        .impact-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .impact-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .impact-card:hover .impact-image img {
+            transform: scale(1.05);
+        }
+        .impact-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.1));
+        }
+        .impact-text {
+            padding: 20px 24px 24px;
+            position: relative;
+        }
+        .impact-icon {
+            position: absolute;
+            top: -20px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(139, 61, 255, 0.3);
+        }
+        .impact-text h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin: 8px 0 8px;
+            color: var(--text-dark);
+        }
+        .impact-text p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Área PIX */
+        .donation-form-section {
+            padding: 40px 30px 60px;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .donation-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .preset-btn {
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-white);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .preset-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .custom-amount-box {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .custom-amount-box:focus-within {
+            border-color: var(--primary);
+        }
+        .currency-symbol {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+        .custom-amount-box input {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            background: transparent;
+            outline: none;
+        }
+        .btn-submit-donation {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--dark-purple));
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-submit-donation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 61, 255, 0.35);
+        }
+        .btn-submit-donation:active {
+            transform: scale(0.98);
+        }
+
+        /* Checkout PIX */
+        .checkout-box {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .checkout-icon {
+            font-size: 56px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .checkout-box h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        .checkout-box p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .qr-mock {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+        .qr-placeholder i {
+            font-size: 64px;
+            color: var(--primary);
+        }
+        .qr-placeholder span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .checkout-hint {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .btn-back {
+            padding: 10px 24px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-back:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Transparência */
+        .transparency-section {
+            padding: 40px 30px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .transparency-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .transparency-card {
+            background: var(--bg-white);
+            padding: 30px 20px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-fast);
+        }
+        .transparency-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .transp-number {
+            display: block;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+        .transp-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .donation-hero {
+                padding: 50px 20px;
+                min-height: 280px;
+            }
+            .donation-hero-content h1 {
+                font-size: 28px;
+            }
+            .donation-hero-content p {
+                font-size: 15px;
+            }
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+            .presets-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .transparency-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .donation-card {
+                padding: 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            .transparency-grid {
+                grid-template-columns: 1fr;
+            }
+            .donation-hero-content h1 {
+                font-size: 22px;
+            }
+            .donation-hero {
+                padding: 30px 16px;
+                min-height: 220px;
+            }
+        }
+    </style>
+</head>
+ <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
+        <div class="acolheria-modal">
+         
+            <div class="acolheria-modal-header">
+                <div class="acolheria-modal-title">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>AcolherIA</span>
+                    <span class="acolheria-badge">Online</span>
+                </div>
+                <button class="acolheria-modal-close" id="acolheriaClose" aria-label="Fechar AcolherIA">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+           
+            <div class="acolheria-modal-body" id="acolheriaChatBody">
+               
+            </div>
+
+           
+            <div class="acolheria-suggestions" id="acolheriaSuggestions">
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?"> TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?"> Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização"> Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?"> Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?"> Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar"> Desabafar</button>
+            </div>
+
+           
+            <div class="acolheria-modal-footer">
+                <div class="acolheria-input-wrapper">
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="acolheria-footer-note">
+                    <i class="fa-regular fa-circle-check"></i> AcolherIA • Especialista em neurodivergência
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
+<body>
+
+    <!-- =============================================
+    BOTÃO DE TOGGLE DA SIDEBAR
+    ============================================= -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- =============================================
+    SIDEBAR — Responsiva
+    ============================================= -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configuracoes/configuracoes.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+             <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
+        </nav>
+
+        <div class="sidebar-a11y" id="sidebarA11y">
+            <button class="a11y-toggle" id="a11yToggle" aria-expanded="false">
+                <i class="fa-solid fa-universal-access"></i> Acessibilidade
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="a11y-options" id="a11yOptions" hidden>
+                <button class="a11y-option" data-a11y="darkMode"><i class="fa-regular fa-moon"></i> Modo escuro<span class="a11y-status" id="darkModeStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="increaseText"><i class="fa-solid fa-text-height"></i> Aumentar texto</button>
+                <button class="a11y-option" data-a11y="decreaseText"><i class="fa-solid fa-text-slash"></i> Diminuir texto</button>
+                <button class="a11y-option" data-a11y="highlightLinks"><i class="fa-solid fa-link"></i> Destacar links<span class="a11y-status" id="linksStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="dyslexiaFont"><i class="fa-regular fa-eye"></i> Fonte para dislexia<span class="a11y-status" id="dyslexiaStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="reduceMotion"><i class="fa-solid fa-person-walking"></i> Reduzir animações<span class="a11y-status" id="motionStatus">Desligado</span></button>
+                <button class="a11y-reset" data-a11y="reset"><i class="fa-solid fa-rotate-left"></i> Voltar ao padrão</button>
+            </div>
+        </div>
+
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/doacoes/doacoes.html" class="sidebar-link small active" aria-current="page"><i class="fa-regular fa-heart"></i> Doações</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <!-- =============================================
+    OVERLAY
+    ============================================= -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- =============================================
+    CONTEÚDO PRINCIPAL
+    ============================================= -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- HEADER GLASS -->
+        <header class="header-glass" id="headerGlass">
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+        <!-- =============================================
+        HERO DA DOAÇÃO — COM IMAGEM DE FUNDO FOFA
+        ============================================= -->
+        <section class="donation-hero">
+            <div class="donation-hero-content">
+                <span class="hero-badge"><i class="fa-solid fa-heart"></i> Transforme vidas</span>
+                <h1>Juntos, podemos fazer <span>a diferença</span></h1>
+                <p>Cada doação ajuda a levar acolhimento, terapias e esperança para crianças neurodivergentes em situação de vulnerabilidade. 💜</p>
+            </div>
+        </section>
+
+        <!-- =============================================
+        IMPACTO — COM IMAGENS REAIS E FOFRAS
+        ============================================= -->
+        <section class="impact-section">
+            <h2 class="section-title">O que sua doação proporciona</h2>
+            <p class="section-subtitle">Veja como cada contribuição se transforma em amor e cuidado</p>
+            
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-image">
+                        <img src="https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=500&h=350&fit=crop" 
+                             alt="Crianças brincando com brinquedos sensoriais" loading="lazy">
+                    </div>
+                    <div class="impact-text">
+                        <span class="impact-icon"><i class="fa-solid fa-puzzle-piece"></i></span>
+                        <h3>Materiais Sensoriais</h3>
+                        <p>Kits com fidgets, brinquedos táteis e materiais pedagógicos para estimular o desenvolvimento de crianças autistas.</p>
+                    </div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-image">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=350&fit=crop" 
+                             alt="Terapeuta trabalhando com criança" loading="lazy">
+                    </div>
+                    <div class="impact-text">
+                        <span class="impact-icon"><i class="fa-solid fa-hand-holding-heart"></i></span>
+                        <h3>Terapias Gratuitas</h3>
+                        <p>Sessões de terapia ocupacional, fonoaudiologia e psicologia para crianças de famílias de baixa renda.</p>
+                    </div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-image">
+                        <img src="https://images.unsplash.com/photo-1531844251246-9a1bfaae09fc?w=500&h=350&fit=crop" 
+                             alt="Criança com fone de ouvido em ambiente acolhedor" loading="lazy">
+                    </div>
+                    <div class="impact-text">
+                        <span class="impact-icon"><i class="fa-solid fa-headphones"></i></span>
+                        <h3>Kits de Acolhimento</h3>
+                        <p>Fones antirruído, óculos escuros e mantas sensoriais para crianças com hipersensibilidade sensorial.</p>
+                    </div>
+                </div>
+
+                <div class="impact-card">
+                    <div class="impact-image">
+                        <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=500&h=350&fit=crop" 
+                             alt="Grupo de apoio com famílias" loading="lazy">
+                    </div>
+                    <div class="impact-text">
+                        <span class="impact-icon"><i class="fa-solid fa-people-group"></i></span>
+                        <h3>Apoio às Famílias</h3>
+                        <p>Grupos de acolhimento, orientação parental e materiais educativos para famílias recém-diagnosticadas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+        CARROSSEL 3D COVERFLOW (mesmo estilo do início)
+        ============================================= -->
+        <section class="carousel-triple-section">
+            <h2>Depoimentos que aquecem o coração</h2>
+            <p class="features-sub">Arraste ou clique nas setas</p>
+            
+            <div class="carousel-triple-container">
+                <button class="carousel-arrow carousel-arrow-left" id="carouselPrev" aria-label="Anterior">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                
+                <div class="carousel-triple-track" id="carouselTripleTrack">
+                    <!-- Card 1 -->
+                    <div class="carousel-triple-card">
+                        <div class="triple-card-image">
+                            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=500&fit=crop" alt="Mãe com filho autista" loading="lazy">
+                        </div>
+                        <div class="triple-card-overlay">
+                            <h3>Ana e Mateus</h3>
+                            <p>"Recebemos um kit sensorial que mudou os dias de crise do meu filho. Gratidão infinita!"</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="carousel-triple-card">
+                        <div class="triple-card-image">
+                            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=500&fit=crop" alt="Grupo de apoio" loading="lazy">
+                        </div>
+                        <div class="triple-card-overlay">
+                            <h3>Instituto Incluir</h3>
+                            <p>"A parceria com o Amor NeuroDivergente levou alegria e recursos para 50 crianças."</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="carousel-triple-card">
+                        <div class="triple-card-image">
+                            <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&h=500&fit=crop" alt="Família feliz" loading="lazy">
+                        </div>
+                        <div class="triple-card-overlay">
+                            <h3>Família Santos</h3>
+                            <p>"O grupo de apoio nos deu força para entender e acolher nossa filha com autismo."</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="carousel-arrow carousel-arrow-right" id="carouselNext" aria-label="Próximo">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="carousel-dots" id="carouselTripleDots"></div>
+        </section>
+
+        <!-- =============================================
+        ÁREA PIX — DOAÇÃO
+        ============================================= -->
+        <section class="donation-form-section">
+            <h2 class="section-title">Faça sua doação</h2>
+            <p class="section-subtitle">Escolha o valor e doe com segurança via PIX</p>
+
+            <div class="donation-card">
+                <div id="donationForm">
+                    <div class="presets-grid">
+                        <button class="preset-btn" data-value="10">R$ 10</button>
+                        <button class="preset-btn active" data-value="25">R$ 25</button>
+                        <button class="preset-btn" data-value="50">R$ 50</button>
+                        <button class="preset-btn" data-value="100">R$ 100</button>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" for="customAmount">Outro valor</label>
+                        <div class="custom-amount-box">
+                            <span class="currency-symbol">R$</span>
+                            <input type="text" id="customAmount" value="25,00" placeholder="0,00" aria-label="Valor da doação">
+                        </div>
+                    </div>
+                    <button class="btn-submit-donation" id="btnDonate">
+                        <i class="fa-solid fa-heart"></i> Doar agora
+                    </button>
+                </div>
+                
+                <div class="checkout-box" id="checkoutBox" style="display:none;">
+                    <div class="checkout-icon"><i class="fa-solid fa-heart-circle-check"></i></div>
+                    <h3>Quase lá! 💜</h3>
+                    <p id="checkoutValueText">Sua doação de <strong>R$ 25,00</strong> vai transformar vidas.</p>
+                    <div class="qr-mock">
+                        <div class="qr-placeholder">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <span>PIX — QR Code</span>
+                        </div>
+                    </div>
+                    <p class="checkout-hint">Escaneie o código no app do seu banco para concluir a doação.</p>
+                    <button class="btn-back" id="btnBack">Alterar valor</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+        TRANSPARÊNCIA
+        ============================================= -->
+        <section class="transparency-section">
+            <h2 class="section-title">Compromisso com a transparência</h2>
+            <p class="section-subtitle">Você sabe exatamente onde seu dinheiro está sendo aplicado</p>
+
+            <div class="transparency-grid">
+                <div class="transparency-card">
+                    <span class="transp-number">+200</span>
+                    <span class="transp-label">crianças atendidas</span>
+                </div>
+                <div class="transparency-card">
+                    <span class="transp-number">15</span>
+                    <span class="transp-label">instituições parceiras</span>
+                </div>
+                <div class="transparency-card">
+                    <span class="transp-number">100%</span>
+                    <span class="transp-label">das doações repassadas</span>
+                </div>
+                <div class="transparency-card">
+                    <span class="transp-number">R$ 0</span>
+                    <span class="transp-label">de taxa administrativa</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+        FOOTER
+        ============================================= -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegue</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                    <a href="/direitos/direitos.html">Direitos</a>
+                    <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Sobre</h4>
+                    <a href="/Quem somos/quem-somos.html">Quem somos</a>
+                    <a href="/blog/blog.html">Blog</a>
+                    <a href="/contato/contato.html">Contato</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Apoie</h4>
+                    <a href="/loja/loja.html">Loja</a>
+                    <a href="/doacoes/doacoes.html">Doações</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <p>© 2026 Amor NeuroDivergente</p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <!-- ========================================= -->
+    <!-- HUB FLUTUANTE - ACESSIBILIDADE + AJUDA    -->
+    <!-- ========================================= -->
+
+    <div class="floating-hub" id="floatingHub">
+        <!-- Botão principal que abre/fecha o hub -->
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+
+        <!-- Menu do hub (aparece ao clicar) -->
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <!-- Linha 1: Acessibilidade -->
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Divisória -->
+                <div class="floating-hub-divider"></div>
+
+                <!-- Linha 2: Ajuda/Atendimento -->
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para fechar o hub ao clicar fora -->
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <!-- =============================================
+    SCRIPTS
+    ============================================= -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/supabase-cliente.js"></script>
+    <script src="doações.js"></script>
+    
+    <!-- JavaScript do Carrossel -->
+    <script src="/carrossel.js"></script>
+    <script src="/Acolher-IA/Acolher-IA.js"></script>
+</body>
+</html>

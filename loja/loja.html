@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Loja ND — Produtos selecionados para neurodivergentes. Foco, conforto sensorial e bem-estar.">
+    <title>Loja — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="loja.css">
+</head>
+
+ <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
+        <div class="acolheria-modal">
+         
+            <div class="acolheria-modal-header">
+                <div class="acolheria-modal-title">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>AcolherIA</span>
+                    <span class="acolheria-badge">Online</span>
+                </div>
+                <button class="acolheria-modal-close" id="acolheriaClose" aria-label="Fechar AcolherIA">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+           
+            <div class="acolheria-modal-body" id="acolheriaChatBody">
+               
+            </div>
+
+           
+            <div class="acolheria-suggestions" id="acolheriaSuggestions">
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?"> TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?"> Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização"> Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?"> Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?"> Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar"> Desabafar</button>
+            </div>
+
+           
+            <div class="acolheria-modal-footer">
+                <div class="acolheria-input-wrapper">
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="acolheria-footer-note">
+                    <i class="fa-regular fa-circle-check"></i> AcolherIA • Especialista em neurodivergência
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
+<body>
+
+    <!-- Botão de toggle da sidebar (sempre visível) -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- =============================================
+    SIDEBAR — Responsiva
+    ============================================= -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configuracoes/configuracoes.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link">
+                <i class="fa-solid fa-house"></i> Início
+            </a>
+            <a href="/explorar/explorar.html" class="sidebar-link">
+                <i class="fa-solid fa-compass"></i> Explorar
+            </a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link">
+                <i class="fa-regular fa-comments"></i> Comunidade
+            </a>
+            <a href="/direitos/direitos.html" class="sidebar-link">
+                <i class="fa-solid fa-scale-balanced"></i> Seus Direitos
+            </a>
+             <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
+          
+        </nav>
+
+        <div class="sidebar-a11y" id="sidebarA11y">
+            <button class="a11y-toggle" id="a11yToggle" aria-expanded="false">
+                <i class="fa-solid fa-universal-access"></i> Acessibilidade
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="a11y-options" id="a11yOptions" hidden>
+                <button class="a11y-option" data-a11y="darkMode">
+                    <i class="fa-regular fa-moon"></i> Modo escuro
+                    <span class="a11y-status" id="darkModeStatus">Desligado</span>
+                </button>
+                <button class="a11y-option" data-a11y="increaseText">
+                    <i class="fa-solid fa-text-height"></i> Aumentar texto
+                </button>
+                <button class="a11y-option" data-a11y="decreaseText">
+                    <i class="fa-solid fa-text-slash"></i> Diminuir texto
+                </button>
+                <button class="a11y-option" data-a11y="highlightLinks">
+                    <i class="fa-solid fa-link"></i> Destacar links
+                    <span class="a11y-status" id="linksStatus">Desligado</span>
+                </button>
+                <button class="a11y-option" data-a11y="dyslexiaFont">
+                    <i class="fa-regular fa-eye"></i> Fonte para dislexia
+                    <span class="a11y-status" id="dyslexiaStatus">Desligado</span>
+                </button>
+                <button class="a11y-option" data-a11y="reduceMotion">
+                    <i class="fa-solid fa-person-walking"></i> Reduzir animações
+                    <span class="a11y-status" id="motionStatus">Desligado</span>
+                </button>
+                <button class="a11y-reset" data-a11y="reset">
+                    <i class="fa-solid fa-rotate-left"></i> Voltar ao padrão
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small active" aria-current="page">
+                <i class="fa-solid fa-bag-shopping"></i> Loja
+            </a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small">
+                <i class="fa-regular fa-heart"></i> Apoiar
+            </a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+            </a>
+        </div>
+    </aside>
+
+    <!-- Overlay para fechar sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- =============================================
+    CONTEÚDO PRINCIPAL
+    ============================================= -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- HEADER GLASS -->
+        <header class="header-glass" id="headerGlass">
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+        <!-- FILTROS DA LOJA -->
+        <section class="shop-filter-section" aria-labelledby="shopTitle">
+            <div class="shop-search-row">
+                <div class="shop-title-box" id="shopTitle">
+                    <div class="shop-icon-wrapper" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <span>Loja ND</span>
+                </div>
+                <div class="search-input-wrapper">
+                    <label for="productSearch" class="sr-only">Buscar produtos</label>
+                    <input type="text" id="productSearch" placeholder="Buscar produtos sobre neurodivergência..." autocomplete="off">
+                </div>
+            </div>
+
+            <div class="filter-row" role="group" aria-label="Filtros por Marketplace">
+                <button class="pill-btn active" data-filter="todos">Todos</button>
+                <button class="pill-btn" data-filter="aliexpress">AliExpress</button>
+                <button class="pill-btn" data-filter="shopee">Shopee</button>
+                <button class="pill-btn" data-filter="mercado-livre">Mercado Livre</button>
+                <button class="pill-btn" data-filter="amazon">Amazon</button>
+            </div>
+
+            <div class="filter-row" role="group" aria-label="Filtros por Categoria">
+                <button class="pill-btn active" data-filter="todos">Todos</button>
+                <button class="pill-btn" data-filter="vestuario">Vestuário</button>
+                <button class="pill-btn" data-filter="foco-tdah">Foco & TDAH</button>
+                <button class="pill-btn" data-filter="sensorial">Sensorial</button>
+                <button class="pill-btn" data-filter="livros">Livros</button>
+                <button class="pill-btn" data-filter="audio">Áudio</button>
+                <button class="pill-btn" data-filter="casa">Casa</button>
+                <button class="pill-btn" data-filter="criativo">Criativo</button>
+                <button class="pill-btn" data-filter="outros">Outros</button>
+            </div>
+        </section>
+
+        <!-- BANNER -->
+        <section class="store-hero-banner" aria-labelledby="bannerTitle">
+            <div class="banner-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Curadoria Neurodivergente</div>
+            <h2 class="banner-title" id="bannerTitle">Produtos selecionados para o seu conforto e foco</h2>
+            <p class="banner-desc">Compre direto no marketplace de sua preferência: AliExpress, Shopee, Mercado Livre ou Amazon.</p>
+            <div class="banner-features">
+                <div class="feature-item"><i class="fa-solid fa-box"></i> Entrega via marketplace</div>
+                <div class="feature-item"><i class="fa-solid fa-shield"></i> Compra segura</div>
+                <div class="feature-item"><i class="fa-solid fa-heart"></i> Curadoria ND</div>
+            </div>
+        </section>
+
+        <!-- PRODUTOS -->
+        <main class="products-section">
+            <h3 class="section-header-title">Todos os produtos</h3>
+            <div class="product-counter" id="productCounter" aria-live="polite">Carregando...</div>
+            <div class="products-grid" id="productsGrid"></div>
+            <div class="loading-spinner" id="loadingSpinner" style="display:none;"><i class="fa-solid fa-spinner fa-spin"></i><p>Carregando mais produtos...</p></div>
+            <div class="no-results" id="noResults">Nenhum produto correspondente encontrado.</div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegue</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                    <a href="/direitos/direitos.html">Direitos</a>
+                    <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Sobre</h4>
+                    <a href="/Quem somos/quem-somos.html">Quem somos</a>
+                    <a href="/blog/blog.html">Blog</a>
+                    <a href="/contato/contato.html">Contato</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Apoie</h4>
+                    <a href="/loja/loja.html">Loja</a>
+                    <a href="/doacoes/doacoes.html">Doações</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <p>© 2026 Amor NeuroDivergente</p>
+            </div>
+        </footer>
+
+    </main>
+
+     <!-- ========================================= -->
+    <!-- HUB FLUTUANTE - ACESSIBILIDADE + AJUDA    -->
+    <!-- ========================================= -->
+
+    <div class="floating-hub" id="floatingHub">
+        <!-- Botão principal que abre/fecha o hub -->
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+
+        <!-- Menu do hub (aparece ao clicar) -->
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <!-- Linha 1: Acessibilidade -->
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Divisória -->
+                <div class="floating-hub-divider"></div>
+
+                <!-- Linha 2: Ajuda/Atendimento -->
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para fechar o hub ao clicar fora -->
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <!-- =============================================
+    SCRIPTS
+    ============================================= -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/supabase-cliente.js"></script>
+    <script src="loja.js"></script>
+    <script src="/Acolher-IA/Acolher-IA.js"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+/* ==========================================================================
+   CARROSSEL 3D COVERFLOW — Estilos exclusivos
+   ========================================================================== */
+
+:root {
+    --card-width: 310px;
+    --card-height: 440px;
+}
+
+.carousel-triple-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+}
+
+.carousel-triple-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.carousel-triple-card {
+    position: absolute;
+    width: var(--card-width);
+    height: var(--card-height);
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--bg-secondary, #131a2c);
+    border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                opacity 0.6s ease,
+                filter 0.6s ease,
+                box-shadow 0.6s ease;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    transform-origin: center center;
+}
+
+.carousel-triple-card:active {
+    cursor: grabbing;
+}
+
+.carousel-triple-card.active-card {
+    transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+    z-index: 10;
+    opacity: 1;
+}
+
+.carousel-triple-card.prev-card {
+    transform: translate3d(-65%, 0, -120px) rotateY(35deg) scale(0.85);
+    z-index: 5;
+    opacity: 0.65;
+}
+
+.carousel-triple-card.next-card {
+    transform: translate3d(65%, 0, -120px) rotateY(-35deg) scale(0.85);
+    z-index: 5;
+    opacity: 0.65;
+}
+
+.carousel-triple-card.hidden-card {
+    transform: translate3d(0, 0, -250px) scale(0.6);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.triple-card-image {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.triple-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.triple-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(11,15,25,0.95) 35%, rgba(11,15,25,0.4) 70%, transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 30px;
+    text-align: left;
+}
+
+.triple-card-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    color: #c084fc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+}
+
+.carousel-triple-card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.carousel-triple-card p {
+    font-size: 0.9rem;
+    color: #d1d5db;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: 0.4s ease 0.1s;
+}
+
+.triple-card-btn {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #a78bfa;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: 0.4s ease 0.2s;
+}
+
+.carousel-triple-card.active-card p,
+.carousel-triple-card.active-card .triple-card-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.carousel-triple-card.active-card .triple-card-image img {
+    transform: scale(1.05);
+}
+
+.carousel-triple-card.shadow-neon-glow {
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.25), 0 0 30px rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--bg-glass, rgba(19,26,44,0.65));
+    border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+    color: var(--text-primary, #f3f4f6);
+    cursor: pointer;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    backdrop-filter: blur(8px);
+    transition: 0.3s;
+}
+
+.carousel-arrow:hover {
+    background: var(--accent-primary, #8b5cf6);
+    color: white;
+    border-color: transparent;
+}
+
+.carousel-arrow-left {
+    left: 40px;
+}
+
+.carousel-arrow-right {
+    right: 40px;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.carousel-dot.active {
+    background: var(--accent-primary, #8b5cf6);
+    width: 28px;
+    border-radius: 100px;
+}
+
+.carousel-triple-section {
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.carousel-triple-section h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+}
+
+.features-sub {
+    color: var(--text-secondary, #9ca3af);
+    font-size: 1rem;
+    margin-bottom: 50px;
+}
+
+@media(max-width: 768px) {
+    :root {
+        --card-width: 260px;
+        --card-height: 380px;
+    }
+    
+    .carousel-triple-container {
+        height: 420px;
+    }
+    
+    .carousel-arrow {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .carousel-arrow-left {
+        left: 10px;
+    }
+    
+    .carousel-arrow-right {
+        right: 10px;
+    }
+
+    .carousel-triple-card.prev-card {
+        transform: translate3d(-45%, 0, -100px) rotateY(25deg) scale(0.8);
+    }
+    
+    .carousel-triple-card.next-card {
+        transform: translate3d(45%, 0, -100px) rotateY(-25deg) scale(0.8);
+    }
+}
+
+@media(max-width: 480px) {
+    :root {
+        --card-width: 200px;
+        --card-height: 300px;
+    }
+    
+    .carousel-triple-container {
+        height: 360px;
+    }
+    
+    .carousel-arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+    
+    .triple-card-overlay {
+        padding: 20px;
+    }
+    
+    .carousel-triple-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .carousel-triple-card p {
+        font-size: 0.8rem;
+    }
+}

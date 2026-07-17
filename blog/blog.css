@@ -1,0 +1,673 @@
+/* =========================================
+   BLOG.CSS — Amor NeuroDivergente
+   Design consistente com o explorar
+   ========================================= */
+
+/* =========================================
+   VARIÁVEIS LOCAIS
+   ========================================= */
+:root {
+    --blog-bg: #faf9fe;
+    --blog-card: #ffffff;
+    --blog-accent: #7c3aed;
+    --blog-accent-light: #ede9fe;
+    --blog-text: #1a1a2e;
+    --blog-muted: #8a827c;
+    --blog-border: #e8e3dd;
+    --blog-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    --blog-radius: 24px;
+}
+
+/* =========================================
+   BREADCRUMB (do explorar)
+   ========================================= */
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--blog-muted);
+    flex: 1;
+}
+.breadcrumb-nav a {
+    color: var(--blog-accent);
+    font-weight: 500;
+    transition: color 0.15s;
+}
+.breadcrumb-nav a:hover {
+    color: #6d28d9;
+    text-decoration: underline;
+}
+.breadcrumb-nav i {
+    font-size: 10px;
+    color: #c4b5e8;
+}
+.breadcrumb-nav span {
+    color: var(--blog-text);
+    font-weight: 600;
+}
+
+/* =========================================
+   HERO BANNER DO ARTIGO
+   ========================================= */
+.article-hero {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #7c3aed 0%, #db2777 50%, #f59e0b 100%);
+    overflow: hidden;
+}
+
+.article-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.hero-content {
+    max-width: 800px;
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+}
+
+.hero-subtitle {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.hero-title {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.2;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* =========================================
+   CORPO DO ARTIGO
+   ========================================= */
+.article-body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 32px;
+}
+
+.article-body h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    color: var(--blog-text);
+}
+
+.article-body p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--blog-muted);
+    margin-bottom: 20px;
+}
+
+/* =========================================
+   SEÇÃO DO BLOG
+   ========================================= */
+.blog-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 32px;
+    width: 100%;
+}
+
+.blog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.blog-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--blog-text);
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--blog-card);
+    border-radius: var(--blog-radius);
+    border: 1px solid var(--blog-border);
+    transition: all 0.25s ease;
+    min-width: 260px;
+}
+
+.search-bar:focus-within {
+    border-color: var(--blog-accent);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.search-bar i {
+    color: var(--blog-muted);
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--blog-text);
+    width: 100%;
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: var(--blog-muted);
+}
+
+/* Filtros - Estilo similar ao explorar */
+.blog-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.filter-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--blog-muted);
+    background: var(--blog-card);
+    border: 1px solid var(--blog-border);
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background: var(--blog-accent-light);
+    color: var(--blog-accent);
+    border-color: var(--blog-accent);
+}
+
+.filter-btn.active {
+    background: var(--blog-accent);
+    color: #fff;
+    border-color: var(--blog-accent);
+    font-weight: 600;
+}
+
+/* Grid de Cards - Estilo similar ao explorar */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 28px;
+}
+
+/* Card de Blog - Estilo consistente com explorar */
+.blog-card {
+    background: var(--blog-card);
+    border-radius: var(--blog-radius);
+    overflow: hidden;
+    box-shadow: var(--blog-shadow);
+    transition: all 0.3s ease;
+    border: 1px solid var(--blog-border);
+    cursor: pointer;
+}
+
+.blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.card-image {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.card-badges {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.badge {
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-purple {
+    background: var(--blog-accent);
+}
+
+.card-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.card-tags span {
+    background: var(--blog-accent-light);
+    color: var(--blog-accent);
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+}
+
+.card-content h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: var(--blog-text);
+}
+
+.card-content p {
+    font-size: 14px;
+    color: var(--blog-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.btn-outline {
+    align-self: flex-start;
+    padding: 10px 20px;
+    border: 1.5px solid var(--blog-accent);
+    color: var(--blog-accent);
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.25s ease;
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: var(--blog-accent);
+    color: #fff;
+}
+
+.btn-outline i {
+    transition: transform 0.3s ease;
+}
+
+.btn-outline:hover i {
+    transform: translateX(5px);
+}
+
+/* Scroll Sentinel */
+.scroll-sentinel {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--blog-accent);
+    font-size: 14px;
+}
+
+.loading-spinner i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =========================================
+   TOAST
+   ========================================= */
+.toast-msg-custom {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 14px 28px;
+    background: #1a1a2e;
+    color: #fff;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    z-index: 9999;
+}
+
+.toast-msg-custom.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-msg-custom.success {
+    background: #10b981;
+}
+
+.toast-msg-custom.error {
+    background: #ef4444;
+}
+
+.toast-msg-custom.info {
+    background: var(--blog-accent);
+}
+
+/* =========================================
+   DARK MODE — Consistente com explorar
+   ========================================= */
+body.a11y-dark-mode {
+    --blog-bg: #0f0f1a;
+    --blog-card: #1a1a2e;
+    --blog-text: #e8e3dd;
+    --blog-muted: #94a3b8;
+    --blog-border: #2d2d44;
+    --blog-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+body.a11y-dark-mode .breadcrumb-nav span {
+    color: #e8e3dd;
+}
+
+body.a11y-dark-mode .article-body h2 {
+    color: #f1f5f9;
+}
+
+body.a11y-dark-mode .article-body p {
+    color: #b8b0a8;
+}
+
+body.a11y-dark-mode .blog-title {
+    color: #f1f5f9;
+}
+
+body.a11y-dark-mode .search-bar {
+    background: #1a1a2e;
+    border-color: #2d2d44;
+}
+
+body.a11y-dark-mode .search-bar input {
+    color: #e8e3dd;
+}
+
+body.a11y-dark-mode .search-bar input::placeholder {
+    color: #6b6368;
+}
+
+body.a11y-dark-mode .filter-btn {
+    background: #1a1a2e;
+    border-color: #2d2d44;
+    color: #b8b0a8;
+}
+
+body.a11y-dark-mode .filter-btn:hover {
+    background: rgba(124,58,237,0.15);
+    color: #c4b5e8;
+    border-color: var(--blog-accent);
+}
+
+body.a11y-dark-mode .filter-btn.active {
+    background: var(--blog-accent);
+    color: #fff;
+}
+
+body.a11y-dark-mode .blog-card {
+    background: #1a1a2e;
+    border-color: #2d2d44;
+}
+
+body.a11y-dark-mode .card-content h3 {
+    color: #f1f5f9;
+}
+
+body.a11y-dark-mode .card-content p {
+    color: #b8b0a8;
+}
+
+body.a11y-dark-mode .card-tags span {
+    background: rgba(124,58,237,0.2);
+    color: #c4b5e8;
+}
+
+body.a11y-dark-mode .btn-outline {
+    border-color: #a78bfa;
+    color: #a78bfa;
+}
+
+body.a11y-dark-mode .btn-outline:hover {
+    background: #a78bfa;
+    color: #1a1a2e;
+}
+
+/* =========================================
+   ACESSIBILIDADE
+   ========================================= */
+/* Fonte para Dislexia */
+body.a11y-dyslexia,
+body.a11y-dyslexia * {
+    font-family: 'Atkinson Hyperlegible', 'Trebuchet MS', sans-serif !important;
+    letter-spacing: 0.03em;
+}
+
+/* Links destacados */
+body.a11y-highlight-links a:not(.sidebar-link):not(.filter-btn):not(.btn-outline) {
+    text-decoration: underline !important;
+    background-color: #ffff00 !important;
+    color: #000000 !important;
+    font-weight: 800 !important;
+    padding: 2px 4px !important;
+    border-radius: 4px;
+}
+
+/* Tamanho do Texto */
+body.a11y-large-text .main-content {
+    font-size: 115% !important;
+}
+
+body.a11y-small-text .main-content {
+    font-size: 90% !important;
+}
+
+/* Redução de Movimentos */
+@media (prefers-reduced-motion: reduce),
+body.a11y-reduce-motion {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+    .loading-spinner i {
+        animation: none !important;
+    }
+}
+
+/* =========================================
+   RESPONSIVO — Consistente com explorar
+   ========================================= */
+@media (max-width: 900px) {
+    .breadcrumb-nav {
+        display: none;
+    }
+
+    .article-hero {
+        height: 300px;
+    }
+
+    .hero-title {
+        font-size: 32px;
+    }
+
+    .article-body {
+        padding: 40px 24px;
+    }
+
+    .article-body h2 {
+        font-size: 28px;
+    }
+
+    .article-body p {
+        font-size: 16px;
+    }
+
+    .blog-section {
+        padding: 40px 24px;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .blog-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-bar {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .article-hero {
+        height: 250px;
+    }
+
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .hero-subtitle {
+        font-size: 12px;
+    }
+
+    .blog-title {
+        font-size: 28px;
+    }
+
+    .blog-filters {
+        gap: 8px;
+    }
+
+    .filter-btn {
+        font-size: 12px;
+        padding: 6px 14px;
+    }
+
+    .toast-msg-custom {
+        bottom: 20px;
+        padding: 12px 20px;
+        font-size: 13px;
+        max-width: 90vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .article-hero {
+        height: 200px;
+    }
+
+    .hero-title {
+        font-size: 22px;
+    }
+
+    .hero-content {
+        padding: 12px;
+    }
+
+    .article-body {
+        padding: 32px 16px;
+    }
+
+    .article-body h2 {
+        font-size: 24px;
+    }
+
+    .article-body p {
+        font-size: 15px;
+    }
+
+    .blog-section {
+        padding: 32px 16px;
+    }
+
+    .blog-title {
+        font-size: 24px;
+    }
+
+    .blog-grid {
+        gap: 20px;
+    }
+
+    .card-image {
+        height: 160px;
+    }
+
+    .card-content {
+        padding: 18px;
+    }
+
+    .card-content h3 {
+        font-size: 16px;
+    }
+
+    .filter-btn {
+        font-size: 11px;
+        padding: 5px 12px;
+    }
+
+    .btn-outline {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+}
