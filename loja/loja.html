@@ -203,17 +203,110 @@
             </div>
         </section>
 
-        <!-- BANNER -->
-        <section class="store-hero-banner" aria-labelledby="bannerTitle">
-            <div class="banner-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Curadoria Neurodivergente</div>
-            <h2 class="banner-title" id="bannerTitle">Produtos selecionados para o seu conforto e foco</h2>
-            <p class="banner-desc">Compre direto no marketplace de sua preferência: AliExpress, Shopee, Mercado Livre ou Amazon.</p>
-            <div class="banner-features">
-                <div class="feature-item"><i class="fa-solid fa-box"></i> Entrega via marketplace</div>
-                <div class="feature-item"><i class="fa-solid fa-shield"></i> Compra segura</div>
-                <div class="feature-item"><i class="fa-solid fa-heart"></i> Curadoria ND</div>
+       <!-- =============================================
+     BANNER CARROSSEL AUTOMÁTICO - ESTILO ALIEXPRESS
+     ============================================= -->
+<!-- =============================================
+     BANNER CARROSSEL AUTOMÁTICO - IMAGEM FULL
+     ============================================= -->
+<section class="banner-carousel-container" aria-label="Banner de ofertas em destaque">
+    
+    <div class="banner-carousel-wrapper">
+        <div class="banner-scroll" id="bannerScroll">
+            
+            <!-- SLIDE 1 - Calcinha -->
+            <!-- Usando Unsplash como placeholder -->
+<div class="banner-slide" style="background-image: url('https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&h=400&fit=crop');">
+                <div class="banner-overlay"></div>
+                <div class="banner-content">
+                    <span class="banner-tag"><i class="fa-solid fa-fire"></i> Ofertas do Dia</span>
+                    <h2>Calcinha de Algodão 100%</h2>
+                    <p>Conforto e qualidade com os melhores preços</p>
+                    <div class="banner-prices">
+                        <span class="price-current">R$ 12,90</span>
+                        <span class="price-old">R$ 29,90</span>
+                        <span class="price-discount">-57%</span>
+                    </div>
+                    <a href="#" class="banner-btn">Compre agora <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
             </div>
-        </section>
+
+            <!-- SLIDE 2 - Combos -->
+           <!-- Usando Unsplash como placeholder -->
+<div class="banner-slide" style="background-image: url('https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&h=400&fit=crop');">
+                <div class="banner-overlay"></div>
+                <div class="banner-content">
+                    <span class="banner-tag"><i class="fa-solid fa-star"></i> Choice</span>
+                    <h2>Combos de Ofertas</h2>
+                    <p>A partir de R$ 5,99 com frete grátis</p>
+                    <div class="banner-prices">
+                        <span class="price-current">A partir de R$ 5,99</span>
+                    </div>
+                    <a href="#" class="banner-btn">Ver combos <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- SLIDE 3 - SuperOfertas -->
+            <!-- Usando Unsplash como placeholder -->
+<div class="banner-slide" style="background-image: url('https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&h=400&fit=crop');">
+                <div class="banner-overlay"></div>
+                <div class="banner-content">
+                    <span class="banner-tag"><i class="fa-solid fa-bolt"></i> SuperOfertas</span>
+                    <h2>Termina em: <span id="countdownBanner">10:55:52</span></h2>
+                    <p>Corra! As melhores ofertas estão acabando</p>
+                    <div class="banner-prices">
+                        <span class="price-current">Descontos de até 70%</span>
+                    </div>
+                    <a href="#" class="banner-btn">Ver ofertas <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- SLIDE 4 - Produtos Nacionais -->
+            <!-- Usando Unsplash como placeholder -->
+<div class="banner-slide" style="background-image: url('https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&h=400&fit=crop');">
+                <div class="banner-overlay"></div>
+                <div class="banner-content">
+                    <span class="banner-tag"><i class="fa-solid fa-flag"></i> Do Brasil</span>
+                    <h2>Produtos Nacionais</h2>
+                    <p>Entrega rápida e frete grátis para todo Brasil</p>
+                    <div class="banner-prices">
+                        <span class="price-current">Frete Grátis</span>
+                    </div>
+                    <a href="#" class="banner-btn">Explorar <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- SLIDE 5 - Neurodivergente -->
+           <!-- Usando Unsplash como placeholder -->
+<div class="banner-slide" style="background-image: url('https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&h=400&fit=crop');">
+                <div class="banner-overlay"></div>
+                <div class="banner-content">
+                    <span class="banner-tag"><i class="fa-solid fa-heart"></i> Neurodivergente</span>
+                    <h2>Produtos com curadoria</h2>
+                    <p>Selecionados para seu conforto e bem-estar</p>
+                    <div class="banner-prices">
+                        <span class="price-current">Até 50% OFF</span>
+                    </div>
+                    <a href="#" class="banner-btn">Ver produtos <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- INDICADORES (bolinhas) -->
+    <div class="banner-dots" id="bannerDots"></div>
+
+    <!-- SETAS DE NAVEGAÇÃO -->
+    <button class="banner-arrow banner-arrow-prev" id="bannerPrev" aria-label="Anterior">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="banner-arrow banner-arrow-next" id="bannerNext" aria-label="Próximo">
+        <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+</section>
+    
 
         <!-- PRODUTOS -->
         <main class="products-section">

@@ -1,6 +1,6 @@
 // =========================================================================
 // LOJA.JS — Amor NeuroDivergente
-// Sidebar + Acessibilidade + Hub Flutuante + Scroll Top + Loja
+// Sidebar + Acessibilidade + Hub Flutuante + Scroll Top + Loja + Banner
 // =========================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -648,9 +648,170 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
     // =========================================================================
-    // 14. INICIALIZAÇÃO
+    // 14. BANNER CARROSSEL AUTOMÁTICO
+    // =========================================================================
+    function initBannerCarousel() {
+        const scroll = document.getElementById('bannerScroll');
+        const dots = document.getElementById('bannerDots');
+        const prevBtn = document.getElementById('bannerPrev');
+        const nextBtn = document.getElementById('bannerNext');
+
+        if (!scroll || !dots) {
+            console.warn('⚠️ Banner elements not found, skipping carousel init.');
+            return;
+        }
+
+        const slides = scroll.querySelectorAll('.banner-slide');
+        const total = slides.length;
+
+        if (total === 0) {
+            console.warn('⚠️ No slides found in banner.');
+            return;
+        }
+
+        let currentIndex = 0;
+        let autoInterval = null;
+        const AUTO_TIME = 4000; // 4 segundos
+
+        // ===== CRIA AS BOLINHAS =====
+        dots.innerHTML = '';
+        for (let i = 0; i < total; i++) {
+            const dot = document.createElement('span');
+            dot.dataset.index = i;
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', function() {
+                goTo(parseInt(this.dataset.index));
+                resetAuto();
+            });
+            dots.appendChild(dot);
+        }
+
+        const dotElements = dots.querySelectorAll('span');
+
+        // ===== FUNÇÃO PARA IR PARA UM SLIDE =====
+        function goTo(index) {
+            if (index < 0) index = total - 1;
+            if (index >= total) index = 0;
+            currentIndex = index;
+            scroll.style.transform = `translateX(-${index * 100}%)`;
+
+            // Atualiza bolinhas
+            dotElements.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        // ===== PRÓXIMO / ANTERIOR =====
+        function next() {
+            goTo(currentIndex + 1);
+        }
+
+        function prev() {
+            goTo(currentIndex - 1);
+        }
+
+        // ===== SCROLL AUTOMÁTICO =====
+        function startAuto() {
+            if (autoInterval) clearInterval(autoInterval);
+            autoInterval = setInterval(next, AUTO_TIME);
+        }
+
+        function stopAuto() {
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+            }
+        }
+
+        function resetAuto() {
+            stopAuto();
+            startAuto();
+        }
+
+        // ===== EVENTOS DAS SETAS =====
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                next();
+                resetAuto();
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                prev();
+                resetAuto();
+            });
+        }
+
+        // ===== PAUSA NO HOVER =====
+        const container = document.querySelector('.banner-carousel-container');
+        if (container) {
+            container.addEventListener('mouseenter', stopAuto);
+            container.addEventListener('mouseleave', startAuto);
+        }
+
+        // ===== TOQUE (mobile) =====
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const wrapper = document.querySelector('.banner-carousel-wrapper');
+
+        if (wrapper) {
+            wrapper.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            wrapper.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 40) {
+                    if (diff > 0) {
+                        next();
+                    } else {
+                        prev();
+                    }
+                    resetAuto();
+                }
+            }, { passive: true });
+        }
+
+        // ===== CONTADOR REGRESSIVO =====
+        let totalSeconds = 10 * 3600 + 55 * 60 + 52;
+
+        function updateCountdown() {
+            if (totalSeconds <= 0) {
+                const el = document.getElementById('countdownBanner');
+                if (el) el.textContent = '00:00:00';
+                return;
+            }
+            totalSeconds--;
+            const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            const s = String(totalSeconds % 60).padStart(2, '0');
+            const el = document.getElementById('countdownBanner');
+            if (el) el.textContent = `${h}:${m}:${s}`;
+        }
+
+        // Inicia o contador imediatamente e depois a cada 1 segundo
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // ===== INICIA O AUTOMÁTICO =====
+        startAuto();
+
+        console.log('🎯 Banner carrossel automático iniciado!');
+        console.log(`📦 Total de banners: ${total}`);
+    }
+
+    // =========================================================================
+    // 15. INICIALIZAÇÃO
     // =========================================================================
     updateAll('');
+    
+    // Inicializa o banner carrossel
+    initBannerCarousel();
+    
     console.log('🛍️ Loja ND pronta!');
     console.log('👤 Perfil:', localStorage.getItem('userName') || 'Visitante');
 });

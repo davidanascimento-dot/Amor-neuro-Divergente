@@ -211,29 +211,83 @@ ul, ol { list-style: none; }
    ========================================= */
 .main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
+
 /* =========================================
-   HEADER GLASS
+   HEADER GLASS - LOGO E TEXTO CENTRALIZADOS
    ========================================= */
 .header-glass { 
     position: fixed; top: 0; right: 0; left: 0; height: 75px;
-    display: flex; align-items: center; justify-content: space-between; 
-    padding: 0 40px 0 90px; 
+    display: flex; align-items: center; 
+    padding: 0 40px 0 90px; /* Mantém o espaço para o botão do sidebar */
     background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); 
     border-bottom: 1px solid rgba(255,255,255,0.3); 
     z-index: 40; transition: all var(--transition); 
 }
-.header-glass.scrolled { background: rgba(255,255,255,0.9); box-shadow: var(--shadow-md); }
-.logo { display: flex; align-items: center; font-weight: 700; font-size: 1.15rem; color: var(--text-dark); text-decoration: none;  display: flex;
-    align-items: center;
-    gap: 6px;}
-.logo-img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; top: 5px; }
-.logo-text { color: var(--primary-dark);}
-.header-links { display: flex; gap: 24px; }
-.header-links a { 
-    padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 500; 
-    color: var(--text-medium); transition: all 0.15s; 
+
+/* Logo - agora com posicionamento central absoluto */
+.logo { 
+    display: flex; 
+    align-items: center; 
+    font-weight: 700; 
+    font-size: 1.15rem; 
+    color: var(--text-dark); 
+    text-decoration: none;  
+    gap: 10px;
+    
+    /* Centralização absoluta */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
-.header-links a:hover { background: rgba(124,58,237,0.08); color: var(--primary); }
+
+.logo-img { 
+    width: 40px; 
+    height: 40px; 
+    object-fit: contain; 
+    border-radius: 6px; 
+}
+
+.logo-text { 
+    color: var(--primary-dark);
+    white-space: nowrap;
+}
+
+/* Links da nav - mantém no lado direito como estava */
+.header-links { 
+    display: flex; 
+    gap: 24px; 
+    margin-left: auto; /* Empurra para a direita */
+}
+
+.header-links a { 
+    padding: 8px 18px; 
+    border-radius: 20px; 
+    font-size: 14px; 
+    font-weight: 500; 
+    color: var(--text-medium); 
+    transition: all 0.15s; 
+}
+
+.header-links a:hover { 
+    background: rgba(124,58,237,0.08); 
+    color: var(--primary); 
+}
+
+/* Ajuste mobile - mantém o comportamento original */
+@media (max-width: 768px) {    
+    .header-glass { 
+        padding: 0 16px 0 64px; 
+        height: 65px;
+    }
+    .logo {
+        position: static; /* Volta ao fluxo normal no mobile */
+        transform: none;
+        left: auto;
+    }
+    .header-links { 
+        display: none; 
+    }
+}
 
 /* =========================================
    HERO
