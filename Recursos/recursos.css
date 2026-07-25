@@ -276,90 +276,81 @@
 /* =========================================
    FOOTER — cores fixas (NÃO mudam no dark mode)
    ========================================= */
-.footer {
-    background-color: #2d2a28;
-    color: #b8b0a8;
-    padding: 60px 48px 32px;
-    margin-top: auto;
+.footer { 
+    background: #f0f4f8; 
+    color: #4a6a8a; 
+    padding: 60px 48px 32px; 
+    border-top: 1px solid #d0dce8;
 }
-
-.footer-main {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-    max-width: 1200px;
-    margin: 0 auto 48px;
+.footer-main { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 40px; 
+    max-width: 1100px; 
+    margin: 0 auto 48px; 
 }
-
-.footer-col h4 {
+.footer-col h4 { 
+    color: #2c4a6a; 
+    font-size: 15px; 
+    font-weight: 700; 
+    margin-bottom: 20px; 
+}
+.footer-col a { 
+    display: block; 
+    color: #5a7a9a; 
+    font-size: 14px; 
+    padding: 6px 0; 
+    transition: color 0.15s; 
+}
+.footer-col a:hover { 
+    color: #1a3a5a; 
+}
+.social-links { 
+    display: flex; 
+    gap: 12px; 
+}
+.social-links a { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 40px; 
+    height: 40px; 
+    background: #d0dce8; 
+    border-radius: 50%; 
+    color: #2c4a6a; 
+    font-size: 16px; 
+    transition: all 0.15s; 
+}
+.social-links a:hover { 
+    background: #8ab4d6; 
     color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 20px;
+    transform: translateY(-2px); 
+}
+.footer-bottom { 
+    border-top: 1px solid #d0dce8; 
+    padding-top: 24px; 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+    font-size: 13px; 
+    color: #6a8aaa; 
+    max-width: 1100px; 
+    margin: 0 auto; 
+}
+.footer-bottom a { 
+    color: #6a8aaa; 
+    margin-right: 20px; 
+}
+.footer-bottom a:hover { 
+    color: #2c4a6a; 
+}
+.footer-bottom p { 
+    width: 100%; 
+    text-align: center; 
+    margin-top: 8px; 
 }
 
-.footer-col a {
-    display: block;
-    color: #8a827c;
-    font-size: 14px;
-    padding: 6px 0;
-    transition: color 0.15s ease;
-}
-
-.footer-col a:hover {
-    color: #e8e3dd;
-}
-
-.social-links {
-    display: flex;
-    gap: 12px;
-}
-
-.social-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #3a3744;
-    border-radius: 50%;
-    color: #e8e3dd;
-    font-size: 16px;
-    transition: all 0.15s ease;
-}
-
-.social-links a:hover {
-    background: var(--primary-purple);
-    transform: translateY(-2px);
-}
-
-.footer-bottom {
-    border-top: 1px solid #3a3744;
-    padding-top: 24px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    font-size: 13px;
-    color: #6b6368;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-bottom a {
-    color: #8a827c;
-}
-
-.footer-bottom a:hover {
-    color: #e8e3dd;
-    text-decoration: underline;
-}
-
-.footer-bottom p {
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
-}
 
 /* =========================================
    DARK MODE — COMPLETO
@@ -443,30 +434,50 @@ body.a11y-dark-mode .coming-soon-badge {
     color: #f59e0b;
 }
 
-/* Footer — NÃO muda no dark mode */
 body.a11y-dark-mode .footer {
-    background-color: #2d2a28 !important;
-    color: #b8b0a8 !important;
+    background: #01060f; /* Azul escuro acinzentado */
+    color: #8aaccc; /* Azul claro */
+    border-top: 1px solid #2a3a4a;
 }
+
 body.a11y-dark-mode .footer-col h4 {
-    color: #ffffff !important;
+    color: #b8d4e8; /* Azul claro para títulos */
 }
+
 body.a11y-dark-mode .footer-col a {
-    color: #8a827c !important;
+    color: #8aaccc; /* Azul médio claro */
 }
+
 body.a11y-dark-mode .footer-col a:hover {
-    color: #e8e3dd !important;
+    color: #c8e4f8; /* Azul bem claro no hover */
 }
+
 body.a11y-dark-mode .social-links a {
-    background: #3a3744 !important;
-    color: #e8e3dd !important;
+    background: #2a3a4a; /* Fundo escuro azulado */
+    color: #b8d4e8; /* Ícones em azul claro */
 }
+
+body.a11y-dark-mode .social-links a:hover {
+    background: #3a5a7a; /* Azul médio no hover */
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
 body.a11y-dark-mode .footer-bottom {
-    border-top-color: #3a3744 !important;
-    color: #6b6368 !important;
+    border-top: 1px solid #2a3a4a;
+    color: #6a8aaa;
 }
+
 body.a11y-dark-mode .footer-bottom a {
-    color: #8a827c !important;
+    color: #8aaccc;
+}
+
+body.a11y-dark-mode .footer-bottom a:hover {
+    color: #c8e4f8;
+}
+
+body.a11y-dark-mode .footer-bottom p {
+    color: #6a8aaa;
 }
 
 /* =========================================
@@ -566,3 +577,7 @@ body.a11y-dark-mode .footer-bottom a {
         grid-template-columns: 1fr;
     }
 }
+
+
+
+  

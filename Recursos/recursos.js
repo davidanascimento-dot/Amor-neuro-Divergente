@@ -1,6 +1,6 @@
 // =========================================================================
 // RECURSOS.JS — Amor NeuroDivergente
-// Sidebar responsiva + Perfil + Acessibilidade + Filtros
+// Sidebar responsiva + Perfil + Acessibilidade + Filtros + Hub Flutuante
 // =========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -214,6 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     setA11y('darkMode', current ? 'false' : 'true');
                     body.classList.toggle('a11y-dark-mode', !current);
                     updateStatus('darkModeStatus', !current);
+                    // Sincroniza com o hub
+                    updateHubStatus();
                     break;
                 }
                 case 'increaseText': {
@@ -256,6 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     setA11y('dyslexiaFont', current ? 'false' : 'true');
                     body.classList.toggle('a11y-dyslexia', !current);
                     updateStatus('dyslexiaStatus', !current);
+                    // Sincroniza com o hub
+                    updateHubStatus();
                     break;
                 }
                 case 'reduceMotion': {
@@ -263,6 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     setA11y('reduceMotion', current ? 'false' : 'true');
                     body.classList.toggle('a11y-reduce-motion', !current);
                     updateStatus('motionStatus', !current);
+                    // Sincroniza com o hub
+                    updateHubStatus();
                     break;
                 }
                 case 'reset': {
@@ -275,6 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateStatus('linksStatus', false);
                     updateStatus('dyslexiaStatus', false);
                     updateStatus('motionStatus', false);
+                    // Sincroniza com o hub
+                    updateHubStatus();
                     break;
                 }
             }
@@ -282,7 +290,158 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 4. HEADER SCROLL EFFECT
+    // 4. HUB FLUTUANTE - ACESSIBILIDADE
+    // ============================================
+    const hubToggle = document.getElementById('floatingHubToggle');
+    const hubMenu = document.getElementById('floatingHubMenu');
+    const overlay = document.getElementById('floatingOverlay');
+
+    // Função para abrir/fechar o hub
+    function toggleHub() {
+        const isOpen = !hubMenu.hidden;
+        hubMenu.hidden = isOpen;
+        overlay.hidden = isOpen;
+        hubToggle.setAttribute('aria-expanded', !isOpen);
+    }
+
+    function closeHub() {
+        hubMenu.hidden = true;
+        overlay.hidden = true;
+        hubToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    if (hubToggle && hubMenu && overlay) {
+        hubToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleHub();
+        });
+
+        overlay.addEventListener('click', closeHub);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeHub();
+            }
+        });
+    }
+
+    // ============================================
+    // 5. FUNÇÕES DO HUB - ATUALIZAR STATUS
+    // ============================================
+    function updateHubStatus() {
+        // Dark Mode
+        const darkLabel = document.querySelector('.hub-action[data-a11y="darkMode"] .hub-action-label');
+        if (darkLabel) {
+            darkLabel.textContent = document.body.classList.contains('a11y-dark-mode') ? 'Claro' : 'Escuro';
+        }
+
+        // Dislexia
+        const dyslexiaLabel = document.querySelector('.hub-action[data-a11y="dyslexiaFont"] .hub-action-label');
+        if (dyslexiaLabel) {
+            dyslexiaLabel.textContent = document.body.classList.contains('a11y-dyslexia') ? 'Ativo' : 'Dislexia';
+        }
+
+        // Reduzir Movimento
+        const motionLabel = document.querySelector('.hub-action[data-a11y="reduceMotion"] .hub-action-label');
+        if (motionLabel) {
+            motionLabel.textContent = document.body.classList.contains('a11y-reduce-motion') ? 'Ativo' : 'Movimento';
+        }
+    }
+
+    // Atualiza status ao carregar
+    updateHubStatus();
+
+    // ============================================
+    // 6. AÇÕES DO HUB - ACESSIBILIDADE
+    // ============================================
+    document.querySelectorAll('.hub-action[data-a11y]').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const action = this.getAttribute('data-a11y');
+            const main = document.getElementById('mainContent') || document.querySelector('.main-content');
+
+            switch (action) {
+                case 'darkMode': {
+                    const current = getA11y('darkMode') === 'true';
+                    setA11y('darkMode', current ? 'false' : 'true');
+                    body.classList.toggle('a11y-dark-mode', !current);
+                    updateStatus('darkModeStatus', !current);
+                    updateHubStatus();
+                    break;
+                }
+                case 'increaseText': {
+                    const current = getA11y('textSize', 'normal');
+                    if (current === 'large') {
+                        setA11y('textSize', 'normal');
+                        if (main) main.classList.remove('a11y-large-text');
+                    } else {
+                        setA11y('textSize', 'large');
+                        if (main) {
+                            main.classList.remove('a11y-small-text');
+                            main.classList.add('a11y-large-text');
+                        }
+                    }
+                    break;
+                }
+                case 'decreaseText': {
+                    const current = getA11y('textSize', 'normal');
+                    if (current === 'small') {
+                        setA11y('textSize', 'normal');
+                        if (main) main.classList.remove('a11y-small-text');
+                    } else {
+                        setA11y('textSize', 'small');
+                        if (main) {
+                            main.classList.remove('a11y-large-text');
+                            main.classList.add('a11y-small-text');
+                        }
+                    }
+                    break;
+                }
+                case 'dyslexiaFont': {
+                    const current = getA11y('dyslexiaFont') === 'true';
+                    setA11y('dyslexiaFont', current ? 'false' : 'true');
+                    body.classList.toggle('a11y-dyslexia', !current);
+                    updateStatus('dyslexiaStatus', !current);
+                    updateHubStatus();
+                    break;
+                }
+                case 'reduceMotion': {
+                    const current = getA11y('reduceMotion') === 'true';
+                    setA11y('reduceMotion', current ? 'false' : 'true');
+                    body.classList.toggle('a11y-reduce-motion', !current);
+                    updateStatus('motionStatus', !current);
+                    updateHubStatus();
+                    break;
+                }
+                case 'reset': {
+                    ['darkMode', 'highlightLinks', 'dyslexiaFont', 'reduceMotion', 'textSize'].forEach(key => {
+                        localStorage.removeItem('a11y_' + key);
+                    });
+                    body.classList.remove('a11y-dark-mode', 'a11y-highlight-links', 'a11y-dyslexia', 'a11y-reduce-motion');
+                    if (main) main.classList.remove('a11y-large-text', 'a11y-small-text');
+                    updateStatus('darkModeStatus', false);
+                    updateStatus('linksStatus', false);
+                    updateStatus('dyslexiaStatus', false);
+                    updateStatus('motionStatus', false);
+                    updateHubStatus();
+                    break;
+                }
+            }
+
+            // Fecha o hub após a ação
+            closeHub();
+        });
+    });
+
+    // Clicar em links dentro do hub também fecha
+    document.querySelectorAll('.hub-action[href]').forEach(link => {
+        link.addEventListener('click', function() {
+            closeHub();
+        });
+    });
+
+    // ============================================
+    // 7. HEADER SCROLL EFFECT
     // ============================================
     const headerGlass = document.getElementById('headerGlass');
     if (headerGlass) {
@@ -292,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // 5. LOGOUT
+    // 8. LOGOUT
     // ============================================
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -306,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 6. RECURSOS - BUSCA, FILTROS E CARDS
+    // 9. RECURSOS - BUSCA, FILTROS E CARDS
     // ============================================
     const resourcesData = [
         { id: 1, title: "Autismo (TEA)", description: "Artigos sobre diagnóstico, stimming, comunicação, vida adulta e o universo autista.", icon: "fa-solid fa-puzzle-piece", category: "Autismo", link: "/Recursos/artigos/autismo.html" },
@@ -353,6 +512,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderResources();
 
-    console.log('📚 Recursos pronto! Perfil + Acessibilidade + Filtros');
+    console.log('📚 Recursos pronto! Perfil + Acessibilidade + Filtros + Hub Flutuante');
     console.log('👤 Perfil:', localStorage.getItem('userName') || 'Visitante');
 });

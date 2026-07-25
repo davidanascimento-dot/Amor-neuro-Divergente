@@ -77,6 +77,54 @@ body.light-theme {
     --text-primary: #0f172a;
     --text-secondary: #475569;
 }
+/* =============================================
+   MODO DARK - RODAPÉ COM CORES FRIAS
+   ============================================= */
+body.a11y-dark-mode .footer {
+    background: #01060f; /* Azul escuro acinzentado */
+    color: #8aaccc; /* Azul claro */
+    border-top: 1px solid #2a3a4a;
+}
+
+body.a11y-dark-mode .footer-col h4 {
+    color: #b8d4e8; /* Azul claro para títulos */
+}
+
+body.a11y-dark-mode .footer-col a {
+    color: #8aaccc; /* Azul médio claro */
+}
+
+body.a11y-dark-mode .footer-col a:hover {
+    color: #c8e4f8; /* Azul bem claro no hover */
+}
+
+body.a11y-dark-mode .social-links a {
+    background: #2a3a4a; /* Fundo escuro azulado */
+    color: #b8d4e8; /* Ícones em azul claro */
+}
+
+body.a11y-dark-mode .social-links a:hover {
+    background: #3a5a7a; /* Azul médio no hover */
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+body.a11y-dark-mode .footer-bottom {
+    border-top: 1px solid #2a3a4a;
+    color: #6a8aaa;
+}
+
+body.a11y-dark-mode .footer-bottom a {
+    color: #8aaccc;
+}
+
+body.a11y-dark-mode .footer-bottom a:hover {
+    color: #c8e4f8;
+}
+
+body.a11y-dark-mode .footer-bottom p {
+    color: #6a8aaa;
+}
 
 /* Reset e Base */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -520,32 +568,79 @@ ul, ol { list-style: none; }
    FOOTER
    ========================================= */
 .footer { 
-    background: #1a1525; color: #8a827c; 
+    background: #f0f4f8; 
+    color: #4a6a8a; 
     padding: 60px 48px 32px; 
-    border-top: 1px solid var(--border-glass);
+    border-top: 1px solid #d0dce8;
 }
 .footer-main { 
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; 
-    max-width: 1100px; margin: 0 auto 48px; 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 40px; 
+    max-width: 1100px; 
+    margin: 0 auto 48px; 
 }
-.footer-col h4 { color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 20px; }
-.footer-col a { display: block; color: #6b6368; font-size: 14px; padding: 6px 0; transition: color 0.15s; }
-.footer-col a:hover { color: #c4b5e8; }
-.social-links { display: flex; gap: 12px; }
+.footer-col h4 { 
+    color: #2c4a6a; 
+    font-size: 15px; 
+    font-weight: 700; 
+    margin-bottom: 20px; 
+}
+.footer-col a { 
+    display: block; 
+    color: #5a7a9a; 
+    font-size: 14px; 
+    padding: 6px 0; 
+    transition: color 0.15s; 
+}
+.footer-col a:hover { 
+    color: #1a3a5a; 
+}
+.social-links { 
+    display: flex; 
+    gap: 12px; 
+}
 .social-links a { 
-    display: flex; align-items: center; justify-content: center; 
-    width: 40px; height: 40px; background: #2a2733; border-radius: 50%; 
-    color: #e8e3dd; font-size: 16px; transition: all 0.15s; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 40px; 
+    height: 40px; 
+    background: #d0dce8; 
+    border-radius: 50%; 
+    color: #2c4a6a; 
+    font-size: 16px; 
+    transition: all 0.15s; 
 }
-.social-links a:hover { background: var(--primary); transform: translateY(-2px); }
+.social-links a:hover { 
+    background: #8ab4d6; 
+    color: #ffffff;
+    transform: translateY(-2px); 
+}
 .footer-bottom { 
-    border-top: 1px solid #2a2733; padding-top: 24px; 
-    display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; 
-    font-size: 13px; color: #6b6368; max-width: 1100px; margin: 0 auto; 
+    border-top: 1px solid #d0dce8; 
+    padding-top: 24px; 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+    font-size: 13px; 
+    color: #6a8aaa; 
+    max-width: 1100px; 
+    margin: 0 auto; 
 }
-.footer-bottom a { color: #6b6368; margin-right: 20px; }
-.footer-bottom a:hover { color: #c4b5e8; }
-.footer-bottom p { width: 100%; text-align: center; margin-top: 8px; }
+.footer-bottom a { 
+    color: #6a8aaa; 
+    margin-right: 20px; 
+}
+.footer-bottom a:hover { 
+    color: #2c4a6a; 
+}
+.footer-bottom p { 
+    width: 100%; 
+    text-align: center; 
+    margin-top: 8px; 
+}
 
 /* =========================================
    SCROLL REVEAL
@@ -602,7 +697,7 @@ ul, ol { list-style: none; }
     color: #fff;
     font-size: 13px;
     font-weight: 600;
-    padding: 6px 14px;
+    padding: 3px 10px;
     border-radius: 8px;
     white-space: nowrap;
     opacity: 0;
@@ -627,7 +722,7 @@ ul, ol { list-style: none; }
 /* Menu do hub */
 .floating-hub-menu {
     position: absolute;
-    bottom: 380px;
+    bottom: 200px;
     right: 0;
     width: 420px;
     max-width: 92vw;
@@ -866,21 +961,6 @@ body.a11y-small-text { font-size: 90% !important; }
 body.text-increased { font-size: 1.15rem; }
 body.text-decreased { font-size: 0.9rem; }
 
-/* Redução de Movimentos (crucial para sensibilidade vestibular) */
-@media (prefers-reduced-motion: reduce), 
-       body.a11y-reduce-motion,
-       body.reduced-motion {
-    *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
-        scroll-behavior: auto !important;
-        transform: none !important;
-        perspective: none !important;
-    }
-    .hero-bg-img { animation: none !important; transform: scale(1); }
-    .shape { animation: none !important; display: none; }
-}
 
 /* =========================================
    RESPONSIVO
