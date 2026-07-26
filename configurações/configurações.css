@@ -280,6 +280,12 @@
     transition: all var(--transition);
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .menu-toggle {
     display: none;
     position: fixed;
@@ -365,6 +371,8 @@
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
+    background-color: var(--bg-light);
+    transition: background-color 0.3s ease;
 }
 
 .page-header {
@@ -374,11 +382,13 @@
     font-size: 28px;
     font-weight: 700;
     color: var(--text-dark);
+    transition: color 0.3s ease;
 }
 .page-header p {
     font-size: 14px;
     color: var(--text-muted);
     margin-top: 4px;
+    transition: color 0.3s ease;
 }
 
 /* =========================================
@@ -400,12 +410,15 @@
     height: fit-content;
     position: sticky;
     top: 100px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .settings-nav-card h2 {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 4px;
     padding-left: 12px;
+    color: var(--text-dark);
+    transition: color 0.3s ease;
 }
 .view-profile-btn {
     font-size: 13px;
@@ -465,10 +478,15 @@
     outline: none;
     margin-bottom: 20px;
     font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 .search-bar-settings:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+.search-bar-settings::placeholder {
+    color: var(--text-muted);
 }
 
 /* Painéis */
@@ -486,6 +504,7 @@
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 24px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .card-header-purple {
@@ -497,11 +516,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: background-color 0.3s ease;
 }
 .card-header-purple h3 {
     font-size: 16px;
     font-weight: 700;
     color: var(--text-dark);
+    transition: color 0.3s ease;
 }
 
 .btn-outline-edit {
@@ -514,6 +535,7 @@
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     transition: all 0.2s;
+    color: var(--text-dark);
 }
 .btn-outline-edit:hover {
     background: var(--primary-light);
@@ -529,10 +551,12 @@
     font-weight: 600;
     display: block;
     margin-bottom: 4px;
+    transition: color 0.3s ease;
 }
 .info-display-group p {
     font-size: 15px;
     color: var(--text-dark);
+    transition: color 0.3s ease;
 }
 
 .panel-title {
@@ -543,6 +567,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: color 0.3s ease;
 }
 
 /* Formulários */
@@ -555,6 +580,7 @@
     color: var(--text-dark);
     display: block;
     margin-bottom: 8px;
+    transition: color 0.3s ease;
 }
 .form-control {
     width: 100%;
@@ -661,6 +687,7 @@ textarea.form-control {
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid var(--primary-light);
+    transition: border-color 0.3s ease;
 }
 .camera-overlay-btn {
     position: absolute;
@@ -691,6 +718,7 @@ textarea.form-control {
     justify-content: space-between;
     padding: 16px 0;
     border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
 }
 .item-row-setting:last-child {
     border-bottom: none;
@@ -699,11 +727,13 @@ textarea.form-control {
     font-size: 15px;
     font-weight: 600;
     color: var(--text-dark);
+    transition: color 0.3s ease;
 }
 .item-setting-info p {
     font-size: 13px;
     color: var(--text-muted);
     margin-top: 2px;
+    transition: color 0.3s ease;
 }
 
 /* Switch toggle */
@@ -983,10 +1013,26 @@ input:checked + .slider-round:before {
 }
 
 /* =========================================
-   DARK MODE OVERRIDES
+   DARK MODE - CORES FRIAS COMPLETAS
    ========================================= */
+body.a11y-dark-mode {
+    --bg-light: #0f0f1a;
+    --bg-white: #1a1a2e;
+    --bg-gray: #1e1e32;
+    --text-dark: #e8e3dd;
+    --text-muted: #94a3b8;
+    --border-color: #2d2d44;
+    --input-bg: #1a1a2e;
+}
+
+/* Dark Mode - Wrapper */
+body.a11y-dark-mode .settings-wrapper {
+    background: var(--bg-light);
+}
+
+/* Dark Mode - Header */
 body.a11y-dark-mode .header {
-    background: rgba(26,26,46,0.8);
+    background: rgba(26,26,46,0.85);
     border-bottom-color: #2d2d44;
 }
 body.a11y-dark-mode .logo-text {
@@ -995,35 +1041,213 @@ body.a11y-dark-mode .logo-text {
 body.a11y-dark-mode .logo-img {
     filter: brightness(0.9);
 }
+body.a11y-dark-mode .header-links a {
+    color: #b8b0a8;
+}
 body.a11y-dark-mode .header-links a:hover {
     background: rgba(124,58,237,0.15);
     color: #c4b5e8;
 }
+
+/* Dark Mode - Page Header */
+body.a11y-dark-mode .page-header h1 {
+    color: #f1f5f9;
+}
+body.a11y-dark-mode .page-header p {
+    color: #b8b0a8;
+}
+
+/* Dark Mode - Settings Nav Card */
 body.a11y-dark-mode .settings-nav-card {
     background: var(--bg-white);
     border-color: var(--border-color);
 }
+body.a11y-dark-mode .settings-nav-card h2 {
+    color: #f1f5f9;
+}
+body.a11y-dark-mode .tab-button {
+    color: #b8b0a8;
+}
+body.a11y-dark-mode .tab-button:hover {
+    background: rgba(124,58,237,0.15);
+    color: #c4b5e8;
+}
+body.a11y-dark-mode .tab-button.active {
+    background: rgba(124,58,237,0.2);
+    color: #c4b5e8;
+}
+
+/* Dark Mode - Search Bar */
+body.a11y-dark-mode .search-bar-settings {
+    background: var(--bg-white);
+    border-color: var(--border-color);
+    color: #e8e3dd;
+}
+body.a11y-dark-mode .search-bar-settings::placeholder {
+    color: #6b6368;
+}
+
+/* Dark Mode - Cards */
 body.a11y-dark-mode .settings-content-card {
     background: var(--bg-white);
     border-color: var(--border-color);
 }
-body.a11y-dark-mode .tab-button {
-    color: var(--text-dark);
-}
-body.a11y-dark-mode .tab-button:hover {
-    background: var(--primary-light);
-}
-body.a11y-dark-mode .tab-button.active {
-    background: var(--primary-light);
-    color: var(--primary);
-}
+
+/* Dark Mode - Card Header Purple */
 body.a11y-dark-mode .card-header-purple {
-    background: #f3e8ff;
+    background: rgba(124,58,237,0.15);
 }
-body.a11y-dark-mode .menu-toggle {
-    background: rgba(26,26,46,0.9);
+body.a11y-dark-mode .card-header-purple h3 {
+    color: #c4b5e8;
+}
+
+/* Dark Mode - Info Display */
+body.a11y-dark-mode .info-display-group p {
     color: #e8e3dd;
-    border-color: #2d2d44;
+}
+body.a11y-dark-mode .info-display-group label {
+    color: #94a3b8;
+}
+
+/* Dark Mode - Panel Title */
+body.a11y-dark-mode .panel-title {
+    color: #f1f5f9;
+}
+
+/* Dark Mode - Form Controls */
+body.a11y-dark-mode .form-group label {
+    color: #e8e3dd;
+}
+body.a11y-dark-mode .form-control {
+    background: #0f0f1a;
+    color: #e8e3dd;
+    border-color: var(--border-color);
+}
+body.a11y-dark-mode .form-control:focus {
+    background: #1a1a2e;
+    border-color: var(--primary);
+}
+
+/* Dark Mode - Buttons */
+body.a11y-dark-mode .btn-secondary-light {
+    background: #2d2d44;
+    color: #e8e3dd;
+    border-color: #3a3a55;
+}
+body.a11y-dark-mode .btn-secondary-light:hover {
+    background: #3a3a55;
+}
+body.a11y-dark-mode .btn-outline-edit {
+    background: #2d2d44;
+    color: #e8e3dd;
+    border-color: #3a3a55;
+}
+body.a11y-dark-mode .btn-outline-edit:hover {
+    background: rgba(124,58,237,0.2);
+    border-color: var(--primary);
+}
+
+/* Dark Mode - Avatar */
+body.a11y-dark-mode .avatar-wrapper-relative img {
+    border-color: rgba(124,58,237,0.3);
+}
+body.a11y-dark-mode .camera-overlay-btn {
+    background: #2d2d44;
+    border-color: #3a3a55;
+    color: #e8e3dd;
+}
+body.a11y-dark-mode .camera-overlay-btn:hover {
+    background: rgba(124,58,237,0.2);
+    border-color: var(--primary);
+}
+
+/* Dark Mode - Item Rows */
+body.a11y-dark-mode .item-row-setting {
+    border-bottom-color: var(--border-color);
+}
+body.a11y-dark-mode .item-setting-info h4 {
+    color: #e8e3dd;
+}
+body.a11y-dark-mode .item-setting-info p {
+    color: #94a3b8;
+}
+
+/* Dark Mode - Switch Toggle */
+body.a11y-dark-mode .slider-round {
+    background-color: #3a3a55;
+}
+body.a11y-dark-mode input:checked + .slider-round {
+    background-color: var(--primary);
+}
+
+/* Dark Mode - Modal */
+body.a11y-dark-mode .modal-content {
+    background: #1a1a2e;
+    color: #e8e3dd;
+}
+body.a11y-dark-mode .modal-content input {
+    background: #0f0f1a;
+    color: #e8e3dd;
+    border-color: var(--border-color);
+}
+body.a11y-dark-mode .modal-content h3 {
+    color: #f1f5f9;
+}
+
+/* Dark Mode - Voltar Button */
+body.a11y-dark-mode .btn-voltar {
+    color: #b8b0a8;
+}
+body.a11y-dark-mode .btn-voltar:hover {
+    background: rgba(124,58,237,0.15);
+    color: #c4b5e8;
+}
+
+/* ===== RODAPÉ COM CORES FRIAS NO DARK MODE ===== */
+body.a11y-dark-mode .footer {
+    background: #1a2332 !important;
+    color: #8aaccc !important;
+    border-top: 1px solid #2a3a4a !important;
+}
+
+body.a11y-dark-mode .footer-col h4 {
+    color: #b8d4e8 !important;
+}
+
+body.a11y-dark-mode .footer-col a {
+    color: #8aaccc !important;
+}
+
+body.a11y-dark-mode .footer-col a:hover {
+    color: #c8e4f8 !important;
+}
+
+body.a11y-dark-mode .social-links a {
+    background: #2a3a4a !important;
+    color: #b8d4e8 !important;
+}
+
+body.a11y-dark-mode .social-links a:hover {
+    background: #3a5a7a !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+body.a11y-dark-mode .footer-bottom {
+    border-top: 1px solid #2a3a4a !important;
+    color: #6a8aaa !important;
+}
+
+body.a11y-dark-mode .footer-bottom a {
+    color: #8aaccc !important;
+}
+
+body.a11y-dark-mode .footer-bottom a:hover {
+    color: #c8e4f8 !important;
+}
+
+body.a11y-dark-mode .footer-bottom p {
+    color: #6a8aaa !important;
 }
 
 /* =========================================
@@ -1032,7 +1256,7 @@ body.a11y-dark-mode .menu-toggle {
 /* Fonte para Dislexia */
 body.a11y-dyslexia,
 body.a11y-dyslexia * {
-    font-family: var(--font-dyslexia) !important;
+    font-family: 'Atkinson Hyperlegible', sans-serif !important;
     letter-spacing: 0.03em;
 }
 
@@ -1059,10 +1283,9 @@ body.a11y-small-text {
     * {
         transition: none !important;
         animation: none !important;
-         
     }
 }
- 
+
 /* Botão Voltar */
 .btn-voltar {
     display: flex;
@@ -1079,22 +1302,10 @@ body.a11y-small-text {
     transition: all 0.2s;
     font-family: 'Inter', sans-serif;
 }
-
 .btn-voltar:hover {
     background: var(--primary-light);
     color: var(--primary);
 }
-
 .btn-voltar i {
     font-size: 16px;
-}
-
-/* Dark Mode */
-body.a11y-dark-mode .btn-voltar {
-    color: var(--text-primary);
-}
-
-body.a11y-dark-mode .btn-voltar:hover {
-    background: rgba(124,58,237,0.15);
-    color: #c4b5e8;
 }
