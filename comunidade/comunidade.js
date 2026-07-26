@@ -35,6 +35,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
     const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
 
+    // CONFIGURAÇÕES DE IMAGEM PARA GRUPOS
+    const IMAGE_BUCKET = 'group-images';
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+    const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+
     function getUserAvatar() {
         return localStorage.getItem('userAvatar') || AVATAR_PADRAO;
     }
@@ -378,6 +383,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { data, error } = await supabase
             .from('posts')
             .select('*')
+            .eq('is_active', true)
             .order('created_at', { ascending: false })
             .limit(50);
         if (error) { 
@@ -392,6 +398,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             .from('comments')
             .select('*')
             .eq('post_id', postId)
+            .eq('is_active', true)
             .order('created_at', { ascending: true })
             .limit(20);
         if (error) { 
@@ -405,6 +412,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { data, error } = await supabase
             .from('groups')
             .select('*')
+            .eq('is_active', true)
             .limit(20);
         if (error) { 
             console.error('Erro ao carregar grupos:', error.message); 
@@ -417,6 +425,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { data, error } = await supabase
             .from('events')
             .select('*')
+            .eq('is_active', true)
             .gte('date', new Date().toISOString())
             .order('date', { ascending: true })
             .limit(20);
@@ -458,6 +467,194 @@ document.addEventListener("DOMContentLoaded", async () => {
             hour:'2-digit', 
             minute:'2-digit' 
         }); 
+    }
+
+    // =============================================
+    // 10.1. ATUALIZAÇÃO AUTOMÁTICA DE POSTS (REALTIME)
+    // =============================================
+    
+    let postsSubscription = null;
+    let commentsSubscription = null;
+
+    function subscribeToPosts() {
+        if (postsSubscription) {
+            supabase.removeChannel(postsSubscription);
+            postsSubscription = null;
+        }
+
+        postsSubscription = supabase
+            .channel('posts-changes')
+            .on('postgres_changes', 
+                { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'posts' 
+                }, 
+                async (payload) => {
+                    console.log('📢 Novo post detectado!', payload);
+                    await renderPosts();
+                    showToast('📢 Novo post na comunidade!', 'info', 2000);
+                }
+            )
+            .on('postgres_changes', 
+                { 
+                    event: 'DELETE', 
+                    schema: 'public', 
+                    table: 'posts' 
+                }, 
+                async (payload) => {
+                    console.log('🗑️ Post removido!', payload);
+                    await renderPosts();
+                }
+            )
+            .on('postgres_changes', 
+                { 
+                    event: 'UPDATE', 
+                    schema: 'public', 
+                    table: 'posts' 
+                }, 
+                async (payload) => {
+                    console.log('✏️ Post atualizado!', payload);
+                    await renderPosts();
+                }
+            )
+            .subscribe((status) => {
+                console.log('📡 Status da inscrição de posts:', status);
+            });
+    }
+
+    function subscribeToComments() {
+        if (commentsSubscription) {
+            supabase.removeChannel(commentsSubscription);
+            commentsSubscription = null;
+        }
+
+        commentsSubscription = supabase
+            .channel('comments-changes')
+            .on('postgres_changes', 
+                { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'comments' 
+                }, 
+                async (payload) => {
+                    console.log('💬 Novo comentário!', payload);
+                    const postId = payload.new.post_id;
+                    await loadAndShowComments(postId);
+                    await renderPosts();
+                }
+            )
+            .on('postgres_changes', 
+                { 
+                    event: 'DELETE', 
+                    schema: 'public', 
+                    table: 'comments' 
+                }, 
+                async (payload) => {
+                    console.log('🗑️ Comentário removido!', payload);
+                    await renderPosts();
+                }
+            )
+            .subscribe((status) => {
+                console.log('📡 Status da inscrição de comentários:', status);
+            });
+    }
+
+    // =============================================
+    // 10.2. FUNÇÃO PARA DELETAR CONTA
+    // =============================================
+    
+    async function deleteUserAccount(userId) {
+        if (!userId) return;
+        
+        try {
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .update({ 
+                    is_active: false,
+                    deleted_at: new Date().toISOString(),
+                    username: '[Conta removida]',
+                    bio: 'Conta removida',
+                    avatar_url: null
+                })
+                .eq('id', userId);
+
+            if (profileError) throw profileError;
+
+            const { error: storiesError } = await supabase
+                .from('stories')
+                .delete()
+                .eq('user_id', userId);
+
+            if (storiesError) console.warn('⚠️ Erro ao deletar stories:', storiesError);
+
+            const { error: postsError } = await supabase
+                .from('posts')
+                .update({ 
+                    is_active: false,
+                    content: '[Post removido pelo usuário]',
+                    author_name: 'Usuário removido',
+                    author_avatar: null,
+                    video_url: null
+                })
+                .eq('author_id', userId);
+
+            if (postsError) console.warn('⚠️ Erro ao atualizar posts:', postsError);
+
+            const { error: commentsError } = await supabase
+                .from('comments')
+                .update({ 
+                    is_active: false,
+                    content: '[Comentário removido]',
+                    author_name: 'Usuário removido'
+                })
+                .eq('author_id', userId);
+
+            if (commentsError) console.warn('⚠️ Erro ao atualizar comentários:', commentsError);
+
+            const { error: messagesError } = await supabase
+                .from('messages')
+                .update({ 
+                    content: '[Mensagem removida]',
+                    sender_name: 'Usuário removido',
+                    sender_avatar: null
+                })
+                .eq('sender_id', userId);
+
+            if (messagesError) console.warn('⚠️ Erro ao atualizar mensagens:', messagesError);
+
+            const { error: groupsError } = await supabase
+                .from('group_members')
+                .delete()
+                .eq('user_id', userId);
+
+            if (groupsError) console.warn('⚠️ Erro ao remover grupos:', groupsError);
+
+            const { error: eventsError } = await supabase
+                .from('event_participants')
+                .delete()
+                .eq('user_id', userId);
+
+            if (eventsError) console.warn('⚠️ Erro ao remover eventos:', eventsError);
+
+            await loadStories();
+            await renderPosts();
+            await renderGroups();
+
+            showToast('Conta removida com sucesso', 'success');
+            
+            if (currentUser?.id === userId) {
+                await supabase.auth.signOut();
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.href = '/login/login.html';
+                }, 1000);
+            }
+
+        } catch (error) {
+            console.error('❌ Erro ao deletar conta:', error);
+            showToast('Erro ao remover conta', 'error');
+        }
     }
 
     // =============================================
@@ -650,6 +847,189 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // =============================================
+    // 11.5 UPLOAD DE IMAGEM PARA GRUPOS
+    // =============================================
+
+    async function uploadGroupImage(file) {
+        console.log('🖼️ Iniciando upload da imagem do grupo:', file.name);
+        
+        if (!currentUser) {
+            showToast('Faça login para enviar imagens', 'error');
+            return null;
+        }
+        
+        if (file.size > MAX_IMAGE_SIZE) {
+            showToast(`Imagem muito grande! Máx ${MAX_IMAGE_SIZE / (1024 * 1024)}MB`, 'error');
+            return null;
+        }
+        
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            showToast('Formato não suportado. Use JPG, PNG, GIF, WebP ou SVG', 'error');
+            return null;
+        }
+        
+        showToast('📤 Enviando imagem...', 'info', 5000);
+        
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `groups/${currentUser.id}/${Date.now()}.${fileExt}`;
+            console.log('🖼️ Nome do arquivo no storage:', fileName);
+            
+            const { data, error } = await supabase.storage
+                .from(IMAGE_BUCKET)
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+                
+            if (error) {
+                console.error('❌ Erro no upload:', error);
+                showToast('Erro ao enviar imagem: ' + error.message, 'error');
+                return null;
+            }
+            
+            console.log('✅ Upload concluído:', data);
+            
+            const { data: { publicUrl } } = supabase.storage
+                .from(IMAGE_BUCKET)
+                .getPublicUrl(fileName);
+                
+            console.log('✅ URL pública da imagem:', publicUrl);
+            showToast('✅ Imagem enviada com sucesso! 🖼️', 'success');
+            return publicUrl;
+            
+        } catch (error) {
+            console.error('❌ Erro inesperado:', error);
+            showToast('Erro ao enviar imagem', 'error');
+            return null;
+        }
+    }
+
+    // =============================================
+    // 11.6 UPLOAD DE IMAGEM - INPUT E PREVIEW
+    // =============================================
+
+    const imageUploadInput = document.createElement('input');
+    imageUploadInput.type = 'file';
+    imageUploadInput.accept = 'image/*';
+    imageUploadInput.id = 'imageUploadInput';
+    imageUploadInput.style.display = 'none';
+    document.body.appendChild(imageUploadInput);
+
+    function showGroupImagePreview(imageUrl) {
+        const oldPreview = document.querySelector('.group-image-preview-container');
+        if (oldPreview) oldPreview.remove();
+        
+        const container = document.createElement('div');
+        container.className = 'group-image-preview-container';
+        container.style.cssText = `
+            margin: 12px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: #f0f0f0;
+            border: 2px solid var(--border-color);
+        `;
+        container.innerHTML = `
+            <div style="position:relative;">
+                <img src="${imageUrl}" 
+                     alt="Preview da imagem do grupo" 
+                     style="width:100%;max-height:300px;object-fit:cover;display:block;">
+                <button type="button" 
+                        onclick="removeGroupImagePreview()"
+                        style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.7);color:white;border:none;padding:8px 16px;border-radius:30px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.3s;display:flex;align-items:center;gap:6px;">
+                    <i class="fa-solid fa-xmark"></i> Remover
+                </button>
+            </div>
+        `;
+        
+        const target = document.querySelector('#createGroupModal .modal-body');
+        if (target) {
+            const imageField = document.getElementById('groupImage');
+            if (imageField) {
+                imageField.value = imageUrl;
+            }
+            const uploadArea = document.querySelector('.group-image-upload-area');
+            if (uploadArea) {
+                target.insertBefore(container, uploadArea);
+            } else {
+                target.insertBefore(container, target.firstChild);
+            }
+        }
+    }
+
+    window.removeGroupImagePreview = function() {
+        const container = document.querySelector('.group-image-preview-container');
+        if (container) container.remove();
+        
+        const imageField = document.getElementById('groupImage');
+        if (imageField) {
+            imageField.value = '';
+        }
+    };
+
+    imageUploadInput.addEventListener('change', async function(e) {
+        const file = this.files[0];
+        if (!file) return;
+        
+        this.disabled = true;
+        const imageUrl = await uploadGroupImage(file);
+        this.disabled = false;
+        this.value = '';
+        
+        if (imageUrl) {
+            showGroupImagePreview(imageUrl);
+            showToast('✅ Imagem pronta para o grupo! 🖼️', 'success');
+        }
+    });
+
+    // =============================================
+    // 11.7 BOTÃO DE UPLOAD DE IMAGEM NO MODAL DE GRUPO
+    // =============================================
+
+    function setupGroupImageUpload() {
+        const groupImageField = document.getElementById('groupImage');
+        if (!groupImageField) return;
+        
+        const wrapper = groupImageField.parentElement;
+        if (!wrapper) return;
+        
+        // Esconder o campo de URL
+        wrapper.style.display = 'none';
+        
+        // Criar área de upload
+        const uploadArea = document.createElement('div');
+        uploadArea.className = 'group-image-upload-area';
+        uploadArea.style.cssText = `
+            margin: 12px 0;
+            padding: 24px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+        `;
+        uploadArea.innerHTML = `
+            <i class="fa-regular fa-image" style="font-size:36px;display:block;margin-bottom:8px;color:var(--text-muted);"></i>
+            <p style="font-weight:600;color:var(--text-primary);margin:0;">Clique para adicionar imagem do grupo</p>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">PNG, JPG, GIF, WebP ou SVG (máx 10MB)</p>
+        `;
+        uploadArea.addEventListener('click', (e) => {
+            e.preventDefault();
+            imageUploadInput.click();
+        });
+        
+        // Adicionar área de upload antes do campo
+        wrapper.parentElement.insertBefore(uploadArea, wrapper);
+        
+        // Adicionar container para preview
+        const previewContainer = document.createElement('div');
+        previewContainer.id = 'groupImagePreviewContainer';
+        wrapper.parentElement.insertBefore(previewContainer, uploadArea);
+    }
+
+    // =============================================
     // 14. RENDERIZAÇÕES
     // =============================================
     let likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '{}');
@@ -751,7 +1131,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         post_id: postId, 
                         author_id: currentUser.id, 
                         author_name: getUserName(), 
-                        content: text 
+                        content: text,
+                        is_active: true
                     });
                     
                 if (error) { 
@@ -882,45 +1263,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // =============================================
-    // 16. STORIES - ESTILO INSTAGRAM
+    // 16. STORIES - APENAS O PRÓPRIO STORY
     // =============================================
     
     async function loadStories() {
         try {
-            const { data: users, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .limit(20);
-
-            if (error) throw error;
-
             const storiesList = document.getElementById('storiesList');
             if (!storiesList) return;
 
-            const filteredUsers = users.filter(u => u.id !== currentUser?.id);
-
-            if (filteredUsers.length === 0) {
-                storiesList.innerHTML = `
-                    <div class="story-empty">
-                        <span style="color:var(--text-muted);font-size:12px;">
-                            Convide amigos para a comunidade!
-                        </span>
-                    </div>
-                `;
-                return;
-            }
-
-            storiesList.innerHTML = filteredUsers.map(user => `
-                <div class="story-item" data-user-id="${user.id}" onclick="openStory('${user.id}')">
-                    <div class="story-avatar-wrapper">
-                        <img src="${user.avatar_url || '/img/avatar-padrao.png'}" 
-                             alt="${user.username}" 
-                             class="story-avatar"
-                             onerror="this.src='/img/avatar-padrao.png'">
-                    </div>
-                    <span class="story-username">${user.username || 'Usuário'}</span>
-                </div>
-            `).join('');
+            storiesList.style.display = 'none';
 
         } catch (error) {
             console.error('❌ Erro ao carregar stories:', error);
@@ -1202,15 +1553,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 22. CHAT EM TEMPO REAL - CORRIGIDO
     // =============================================
     
-    // VARIÁVEL PARA CONTROLAR O CHAT ATUAL
     let currentChatId = COMMUNITY_CHAT_ID;
     let chatSubscription = null;
 
-    // FUNÇÃO PARA TROCAR DE CHAT
     function switchChat(chatId, chatName) {
         currentChatId = chatId;
         
-        // Atualizar header do chat
         const header = document.getElementById('chatMainHeader');
         if (header) {
             const isGroup = chatId !== COMMUNITY_CHAT_ID;
@@ -1223,10 +1571,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
         }
         
-        // Recarregar mensagens do novo chat
         loadChatMessages(chatId);
-        
-        // Reinscrever para o novo chat
         subscribeToMessages(chatId);
     }
 
@@ -1255,12 +1600,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
     }
 
-    // CARREGAR MENSAGENS - ACEITA chatId como parâmetro
     async function loadChatMessages(chatId = null) {
         const mc = document.getElementById('chatMessages');
         if (!mc) return;
         
         const targetChatId = chatId || currentChatId;
+        
+        console.log(`📥 Carregando mensagens da conversa: ${targetChatId}`);
         
         const { data: messages, error } = await supabase
             .from('messages')
@@ -1340,7 +1686,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // INSCREVER-SE PARA MENSAGENS DO CHAT ATUAL
     function subscribeToMessages(chatId = null) {
         if (chatSubscription) {
             supabase.removeChannel(chatSubscription);
@@ -1348,6 +1693,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         
         const targetChatId = chatId || currentChatId;
+        
+        console.log(`📡 Inscrevendo para mensagens da conversa: ${targetChatId}`);
         
         chatSubscription = supabase
             .channel(`chat-${targetChatId}`)
@@ -1358,7 +1705,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     table: 'messages',
                     filter: `conversation_id=eq.${targetChatId}` 
                 }, 
-                () => {
+                (payload) => {
+                    console.log('💬 Nova mensagem recebida:', payload);
                     loadChatMessages(targetChatId);
                 }
             )
@@ -1367,7 +1715,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
     }
 
-    // ENVIAR MENSAGEM - USA currentChatId
     async function sendMessage() {
         const inp = document.getElementById('chatInput');
         if (!inp || !currentUser) {
@@ -1381,6 +1728,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const videoMatch = msg.match(/📹 Vídeo: (https?:\/\/[^\s]+)/);
         const videoUrl = videoMatch ? videoMatch[1] : null;
         const cleanMsg = msg.replace(/📹 Vídeo: https?:\/\/[^\s]+\s*/, '').trim();
+        
+        console.log(`📤 Enviando mensagem para conversa: ${currentChatId}`);
         
         const { error } = await supabase
             .from('messages')
@@ -1511,7 +1860,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 author_avatar: getUserAvatar(), 
                 content: cleanText,
                 video_url: videoUrl,
-                tag: '# Comunidade' 
+                tag: '# Comunidade',
+                is_active: true
             });
             
         submitPostBtn.disabled = false;
@@ -1593,7 +1943,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 author_id: currentUser.id, 
                 author_name: getUserName(), 
                 content: cleanText || txt,
-                video_url: videoUrl
+                video_url: videoUrl,
+                is_active: true
             });
             
         submitReplyBtn.disabled = false;
@@ -1610,15 +1961,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // =============================================
-    // 26. GRUPOS - VERSÃO CORRIGIDA E UNIFICADA
+    // 26. GRUPOS - CORRIGIDO COM CRIAÇÃO DE CONVERSA
     // =============================================
 
-    // FUNÇÃO PARA CARREGAR GRUPOS
     async function loadGroups() {
         try {
             const { data, error } = await supabase
                 .from('groups')
                 .select('*')
+                .eq('is_active', true)
                 .order('created_at', { ascending: false })
                 .limit(50);
                 
@@ -1634,7 +1985,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // RENDER GRUPOS
     async function renderGroups() {
         const grid = document.getElementById('groupsGrid');
         if (!grid) {
@@ -1698,10 +2048,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderChatGroups();
     }
 
-    // RENDER GRUPOS NO CHAT
-    function renderChatGroups() {
+    async function renderChatGroups() {
         const container = document.getElementById('groupsListContainer');
         if (!container) return;
+
+        // Buscar grupos onde o usuário é membro
+        const { data: memberships, error: membershipError } = await supabase
+            .from('group_members')
+            .select('group_id')
+            .eq('user_id', currentUser?.id);
+
+        if (membershipError) {
+            console.warn('⚠️ Erro ao buscar membros:', membershipError);
+        }
+
+        const memberGroupIds = memberships?.map(m => m.group_id) || [];
+
+        // Buscar grupos ativos
+        const groups = await loadGroups();
+        
+        // Filtrar apenas grupos onde o usuário é membro
+        const userGroups = groups.filter(g => memberGroupIds.includes(g.id));
 
         const geralHtml = `
             <div class="group-chat-item active" data-group-id="community" onclick="switchToCommunityChat()">
@@ -1713,33 +2080,29 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
         `;
 
-        loadGroups().then(groups => {
-            const userGroupsHtml = groups
-                .filter(g => g.is_admin !== true)
-                .map(group => `
-                    <div class="group-chat-item" data-group-id="${group.id}" onclick="openGroupChat('${group.id}')">
-                        <div class="group-chat-avatar">
-                            <img src="${group.image_url || '/img/grupo-padrao.png'}" 
-                                 alt="${group.name}"
-                                 onerror="this.src='/img/grupo-padrao.png'"
-                                 style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-                        </div>
-                        <div class="group-chat-info">
-                            <h4>${group.name}</h4>
-                            <p>${group.members || 0} membros</p>
-                        </div>
+        const userGroupsHtml = userGroups
+            .map(group => `
+                <div class="group-chat-item" data-group-id="${group.id}" onclick="openGroupChat('${group.id}')">
+                    <div class="group-chat-avatar">
+                        <img src="${group.image_url || '/img/grupo-padrao.png'}" 
+                             alt="${group.name}"
+                             onerror="this.src='/img/grupo-padrao.png'"
+                             style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
                     </div>
-                `).join('');
+                    <div class="group-chat-info">
+                        <h4>${group.name}</h4>
+                        <p>${group.members || 0} membros</p>
+                    </div>
+                </div>
+            `).join('');
 
-            container.innerHTML = geralHtml + userGroupsHtml;
-        });
+        container.innerHTML = geralHtml + userGroupsHtml;
     }
 
     // =============================================
-    // 27. FUNÇÕES DOS GRUPOS - UNIFICADAS
+    // 27. FUNÇÕES DOS GRUPOS - CORRIGIDAS
     // =============================================
 
-    // Abrir modal de criar grupo
     window.openCreateGroupModal = function() {
         if (!currentUser) {
             showToast('Faça login para criar um grupo', 'error');
@@ -1749,13 +2112,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (modal) {
             modal.removeAttribute('hidden');
             console.log('📂 Modal de criar grupo aberto');
+            setupGroupImageUpload();
         } else {
             console.error('❌ Modal createGroupModal não encontrado');
             showToast('Erro: Modal não encontrado', 'error');
         }
     };
 
-    // Fechar modal de criar grupo
     window.closeCreateGroupModal = function() {
         const modal = document.getElementById('createGroupModal');
         if (modal) {
@@ -1763,9 +2126,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         const form = document.getElementById('createGroupForm');
         if (form) form.reset();
+        removeGroupImagePreview();
+        const imageField = document.getElementById('groupImage');
+        if (imageField) imageField.value = '';
     };
 
-    // CRIAR GRUPO - ÚNICA VERSÃO
     window.createGroup = async function(event) {
         event.preventDefault();
         console.log('🔄 Criando grupo...');
@@ -1773,7 +2138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const name = document.getElementById('groupName')?.value.trim();
         const description = document.getElementById('groupDescription')?.value.trim();
         const category = document.getElementById('groupCategory')?.value || 'Geral';
-        const image = document.getElementById('groupImage')?.value.trim();
+        const image = document.getElementById('groupImage')?.value.trim() || '/img/grupo-padrao.png';
         const isPrivate = document.getElementById('groupPrivate')?.checked || false;
 
         if (!name) {
@@ -1798,66 +2163,111 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        // Dados para sua tabela
-        const groupData = {
-            name: name,
-            description: description || 'Sem descrição',
-            category: category,
-            members: 1,
-            is_admin: false,
-            is_private: isPrivate,
-            image_url: image || '/img/grupo-padrao.png',
-            created_by: currentUser.id
-        };
-
-        console.log('📦 Enviando:', groupData);
-
         try {
-            const { data, error } = await supabase
+            // 1. Criar o grupo
+            const groupData = {
+                name: name,
+                description: description || 'Sem descrição',
+                category: category,
+                members: 1,
+                is_admin: false,
+                is_private: isPrivate,
+                image_url: image,
+                created_by: currentUser.id,
+                is_active: true
+            };
+
+            console.log('📦 Criando grupo:', groupData);
+
+            const { data: group, error: groupError } = await supabase
                 .from('groups')
                 .insert(groupData)
                 .select()
                 .single();
 
-            if (error) {
-                console.error('❌ Erro:', error);
-                if (error.code === '23505') {
+            if (groupError) {
+                console.error('❌ Erro ao criar grupo:', groupError);
+                if (groupError.code === '23505') {
                     showToast('Já existe um grupo com este nome!', 'error');
-                } else if (error.message.includes('column')) {
-                    showToast('Erro de coluna. Verifique os campos.', 'error');
                 } else {
-                    showToast('Erro: ' + error.message, 'error');
+                    showToast('Erro ao criar grupo: ' + groupError.message, 'error');
                 }
                 return;
             }
 
-            console.log('✅ Grupo criado:', data);
+            console.log('✅ Grupo criado:', group);
 
-            // Adicionar membro (se tabela existir)
+            // 2. Criar uma conversa para o grupo
+            const conversationData = {
+                id: group.id, // Usa o mesmo ID do grupo
+                name: name,
+                type: 'group',
+                created_by: currentUser.id,
+                created_at: new Date().toISOString()
+            };
+
+            console.log('📦 Criando conversa:', conversationData);
+
+            const { error: convError } = await supabase
+                .from('conversations')
+                .insert(conversationData);
+
+            if (convError) {
+                console.error('❌ Erro ao criar conversa:', convError);
+                // Se falhar ao criar a conversa, deletar o grupo
+                await supabase.from('groups').delete().eq('id', group.id);
+                showToast('Erro ao criar chat do grupo', 'error');
+                return;
+            }
+
+            console.log('✅ Conversa criada');
+
+            // 3. Adicionar o criador como participante da conversa
+            const { error: participantError } = await supabase
+                .from('conversation_participants')
+                .insert({
+                    conversation_id: group.id,
+                    user_id: currentUser.id,
+                    joined_at: new Date().toISOString()
+                });
+
+            if (participantError) {
+                console.warn('⚠️ Erro ao adicionar participante:', participantError);
+            } else {
+                console.log('✅ Participante adicionado');
+            }
+
+            // 4. Adicionar membro ao grupo (tabela group_members)
             try {
                 await supabase
                     .from('group_members')
                     .insert({
-                        group_id: data.id,
+                        group_id: group.id,
                         user_id: currentUser.id,
                         joined_at: new Date().toISOString()
                     });
-                console.log('✅ Membro adicionado');
+                console.log('✅ Membro adicionado ao grupo');
             } catch (e) {
                 console.warn('⚠️ group_members:', e.message);
             }
 
-            showToast(`Grupo "${name}" criado! 🎉`, 'success');
+            showToast(`Grupo "${name}" criado com chat! 🎉`, 'success');
             closeCreateGroupModal();
+            
+            // Recarregar grupos e chats
             await renderGroups();
+            await renderChatGroups();
+            
+            // Mudar para o chat do grupo criado
+            switchChat(group.id, group.name);
+            switchToChatTab();
 
         } catch (error) {
-            console.error('❌ Erro:', error);
+            console.error('❌ Erro inesperado:', error);
             showToast('Erro ao criar grupo', 'error');
         }
     };
 
-    // ENTRAR NO GRUPO
     window.joinGroup = async function(groupId) {
         if (!currentUser) {
             showToast('Faça login para entrar', 'error');
@@ -1878,7 +2288,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            // Verificar se já é membro
             try {
                 const { data: existing } = await supabase
                     .from('group_members')
@@ -1903,7 +2312,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.warn('⚠️ group_members:', e.message);
             }
 
-            // Atualizar contador
+            // Adicionar como participante da conversa
+            try {
+                await supabase
+                    .from('conversation_participants')
+                    .insert({
+                        conversation_id: groupId,
+                        user_id: currentUser.id,
+                        joined_at: new Date().toISOString()
+                    });
+                console.log('✅ Participante adicionado à conversa');
+            } catch (e) {
+                console.warn('⚠️ conversation_participants:', e.message);
+            }
+
             await supabase
                 .from('groups')
                 .update({ members: (group.members || 0) + 1 })
@@ -1918,7 +2340,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // ABRIR CHAT DO GRUPO
     window.openGroupChat = async function(groupId) {
         try {
             const { data: group, error } = await supabase
@@ -1929,10 +2350,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (error) throw error;
 
-            // Trocar para o chat do grupo
             switchChat(groupId, group.name);
-
-            // Trocar para aba de conversa
             switchToChatTab();
             
             showToast(`Chat: ${group.name}`, 'success');
@@ -1943,13 +2361,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // VOLTAR PARA CHAT GERAL
     window.switchToCommunityChat = function() {
         switchChat(COMMUNITY_CHAT_ID, 'Chat da Comunidade');
         switchToChatTab();
     };
 
-    // TROCAR PARA ABA CONVERSA
     window.switchToChatTab = function() {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -1965,7 +2381,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     // =============================================
-    // 28. EVENTOS (mantido do original)
+    // 28. EVENTOS
     // =============================================
     async function renderEvents() {
         const grid = document.getElementById('eventsGrid');
@@ -2090,17 +2506,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 33. EVENT LISTENERS DOS MODAIS DE GRUPO
     // =============================================
     
-    // Abrir modal de criar grupo
     document.querySelectorAll('#openCreateGroupBtn, #openCreateGroupFromChatBtn').forEach(btn => {
         if (btn) {
             btn.addEventListener('click', window.openCreateGroupModal);
         }
     });
 
-    // Fechar modal de criar grupo
     document.getElementById('closeCreateGroupModal')?.addEventListener('click', window.closeCreateGroupModal);
 
-    // Fechar modal ao clicar fora
     const createGroupModal = document.getElementById('createGroupModal');
     if (createGroupModal) {
         createGroupModal.addEventListener('click', (e) => {
@@ -2110,11 +2523,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // Form de criar grupo
     document.getElementById('createGroupForm')?.addEventListener('submit', window.createGroup);
 
     // =============================================
-    // 34. INICIALIZAÇÃO
+    // 34. BOTÃO DE DELETAR CONTA
+    // =============================================
+    document.getElementById('deleteAccountBtn')?.addEventListener('click', async () => {
+        if (!currentUser) {
+            showToast('Faça login primeiro', 'error');
+            return;
+        }
+        
+        const confirm = window.confirm(
+            '⚠️ TEM CERTEZA?\n\n' +
+            'Isso irá:\n' +
+            '• Remover todos os seus stories\n' +
+            '• Ocultar seus posts e comentários\n' +
+            '• Remover você de grupos e eventos\n' +
+            '• Sua conta será desativada\n\n' +
+            'Esta ação NÃO pode ser desfeita!'
+        );
+        
+        if (confirm) {
+            await deleteUserAccount(currentUser.id);
+        }
+    });
+
+    // =============================================
+    // 35. INICIALIZAÇÃO
     // =============================================
     await initChat();
     await renderPosts();
@@ -2124,8 +2560,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadProfile();
     updateCommunityJoinButton();
     
+    subscribeToPosts();
+    subscribeToComments();
+    
+    setInterval(() => {
+        loadStories();
+    }, 30000);
+    
     console.log('🚀 Comunidade pronta! 👍💬❤️');
     console.log('🎬 Upload de vídeos ativado!');
+    console.log('🖼️ Upload de imagens para grupos ativado!');
     console.log('📸 Stories e Perfil carregados!');
     console.log('📋 Sistema de Grupos integrado com Supabase!');
+    console.log('🔄 Atualização automática de posts ativada!');
+    console.log('🗑️ Sistema de deleção de conta ativado!');
 });

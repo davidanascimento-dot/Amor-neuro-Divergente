@@ -3028,3 +3028,54 @@ body.a11y-dark-mode .toast-notification {
     align-items: center;
     justify-content: center;
 }
+
+/* Estilo para o botão de upload de imagem do grupo */
+.group-image-upload-area {
+    margin: 12px 0;
+    padding: 24px;
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-secondary);
+}
+
+.group-image-upload-area:hover {
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+
+.group-image-upload-area i {
+    font-size: 36px;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.group-image-upload-area p {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.group-image-upload-area small {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.group-image-preview-container {
+    margin: 12px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+}
+
+.group-image-preview-container img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    display: block;
+}
