@@ -56,6 +56,39 @@ Eu sou a assistente virtual do projeto **Amor NeuroDivergente** — uma comunida
 **Vamos conversar?** Me faça qualquer pergunta sobre neurodiversidade! 💜`;
     }
 
+    // Função para resposta de tópico bloqueado
+    function getBlockedTopicResponse() {
+        return `💜 **Desculpe, não posso responder a isso!**
+
+Meu propósito é ajudar com informações sobre neurodivergência, TDAH, autismo, direitos, organização e bem-estar.
+
+**Posso te ajudar com:**
+🧠 TDAH e Autismo (TEA)
+⚖️ Direitos e legislação
+📋 Organização e produtividade
+🆘 Crises sensoriais e regulação
+🔍 Diagnóstico e avaliação
+🧘 Terapias e tratamentos
+🌈 Neurodiversidade em geral
+
+**Vamos conversar sobre algo que realmente importa?** 💜`;
+    }
+
+    // Função para resposta de erro
+    function getErrorResponse() {
+        return `❌ **Desculpe, ocorreu um erro!**
+
+Não foi possível processar sua pergunta no momento. Por favor, tente novamente mais tarde.
+
+**Enquanto isso, você pode:**
+• Perguntar sobre TDAH e autismo
+• Saber mais sobre direitos e legislação
+• Dicas de organização e produtividade
+• Informações sobre terapias e tratamentos
+
+Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
+    }
+
     // Adicionar mensagem ao chat
     function addModalMessage(text, isUser = false) {
         if (!acolheriaChatBody) return;
@@ -113,24 +146,35 @@ Eu sou a assistente virtual do projeto **Amor NeuroDivergente** — uma comunida
 
     // Gerar resposta via API Groq
     async function generateModalResponse(message) {
+        // Verifica se o tópico é bloqueado
         if (isBlockedModalTopic(message)) {
-            return '💜 Prefiro manter nossa conversa em temas construtivos sobre neurodiversidade. 🌈 Como posso te ajudar de forma saudável hoje?';
+            return getBlockedTopicResponse();
         }
 
-        const systemPrompt = `Você é a AcolherIA, assistente virtual do projeto Amor NeuroDivergente.
+        // System prompt para a IA
+        const systemPrompt = `Você é a AcolherIA, uma assistente virtual acolhedora e especializada em neurodivergência do projeto Amor NeuroDivergente. 
+        
+Seu objetivo é ajudar pessoas neurodivergentes (TDAH, autismo, dislexia, AHSD, entre outros) com informações, acolhimento e suporte.
 
-**Missão:** Oferecer informações precisas, acolhedoras e baseadas em evidências sobre neurodiversidade (TDAH, autismo, dislexia, AHSD, etc.).
+Diretrizes:
+- Seja sempre empática, acolhedora e respeitosa
+- Use linguagem clara, acessível e inclusiva
+- Forneça informações baseadas em evidências
+- Recomende buscar ajuda profissional quando necessário
+- Não dê diagnósticos médicos
+- Mantenha um tom positivo e encorajador
+- Se não souber algo, seja honesta e sugira buscar fontes confiáveis
 
-**Diretrizes:**
-- Responda com empatia e linguagem acessível
-- Use emojis leves quando apropriado (💜, 🌈, 🧠, ✨)
-- Dê exemplos práticos e aplicáveis
-- Limite a resposta a 3-4 parágrafos
-- Se a pergunta envolver saúde mental, recomende buscar um profissional
-- Seja calorosa e não-julgadora
-- Se não souber algo, diga claramente que não sabe
+Áreas de conhecimento:
+- TDAH, Autismo (TEA), Dislexia, AHSD e outras neurodivergências
+- Direitos e legislação para pessoas neurodivergentes
+- Organização e produtividade
+- Crises sensoriais e regulação emocional
+- Processo de diagnóstico e avaliação
+- Terapias e tratamentos disponíveis
+- Inclusão e acessibilidade
 
-**Temas principais:** TDAH, Autismo (TEA), Neurodiversidade, Direitos, Diagnóstico, Terapia, Organização, Crises Sensoriais, Burnout.`;
+Responda sempre de forma acolhedora e informativa, mantendo o foco em apoiar a pessoa neurodivergente.`;
 
         try {
             const response = await fetch(GROQ_URL, {
@@ -168,7 +212,7 @@ Eu sou a assistente virtual do projeto **Amor NeuroDivergente** — uma comunida
 
         } catch (error) {
             console.error('❌ Falha na API Groq:', error.message);
-            return '💜 Desculpe, estou com dificuldades técnicas no momento. Pode tentar novamente em alguns instantes? Se preferir, pode perguntar sobre TDAH, autismo, direitos ou organização que eu posso te ajudar! 🌈';
+            return getErrorResponse();
         }
     }
 
