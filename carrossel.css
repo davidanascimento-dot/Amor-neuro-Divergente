@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CARROSSEL 3D COVERFLOW — Estilos exclusivos
+   CARROSSEL 3D COVERFLOW — Estilos mínimos (SEM BLUR, SEM HOVER, SEM EFEITOS)
    ========================================================================== */
 
 :root {
@@ -26,29 +26,21 @@
     align-items: center;
     justify-content: center;
     transform-style: preserve-3d;
-    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease;
 }
 
 .carousel-triple-card {
     position: absolute;
     width: var(--card-width);
     height: var(--card-height);
-    border-radius: 20px;
+    border-radius: 12px;
     overflow: hidden;
-    background: var(--bg-secondary, #131a2c);
-    border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
-    cursor: grab;
+    background: #131a2c;
+    cursor: default;
     user-select: none;
-    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                opacity 0.6s ease,
-                filter 0.6s ease,
-                box-shadow 0.6s ease;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease,
+                opacity 0.3s ease;
     transform-origin: center center;
-}
-
-.carousel-triple-card:active {
-    cursor: grabbing;
 }
 
 .carousel-triple-card.active-card {
@@ -60,13 +52,13 @@
 .carousel-triple-card.prev-card {
     transform: translate3d(-65%, 0, -120px) rotateY(35deg) scale(0.85);
     z-index: 5;
-    opacity: 0.65;
+    opacity: 0.5;
 }
 
 .carousel-triple-card.next-card {
     transform: translate3d(65%, 0, -120px) rotateY(-35deg) scale(0.85);
     z-index: 5;
-    opacity: 0.65;
+    opacity: 0.5;
 }
 
 .carousel-triple-card.hidden-card {
@@ -88,14 +80,13 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: 0.5s;
 }
 
 .triple-card-overlay {
     position: absolute;
     inset: 0;
     z-index: 2;
-    background: linear-gradient(to top, rgba(11,15,25,0.95) 35%, rgba(11,15,25,0.4) 70%, transparent);
+    background: linear-gradient(to top, rgba(11,15,25,0.95) 35%, rgba(11,15,25,0.5) 70%, transparent);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -106,9 +97,9 @@
 .triple-card-icon {
     width: 46px;
     height: 46px;
-    border-radius: 12px;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 10px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     color: #c084fc;
     display: flex;
     align-items: center;
@@ -130,8 +121,7 @@
     line-height: 1.5;
     margin-bottom: 18px;
     opacity: 0;
-    transform: translateY(10px);
-    transition: 0.4s ease 0.1s;
+    transition: opacity 0.3s ease;
 }
 
 .triple-card-btn {
@@ -142,49 +132,36 @@
     align-items: center;
     gap: 6px;
     opacity: 0;
-    transform: translateY(10px);
-    transition: 0.4s ease 0.2s;
+    transition: opacity 0.3s ease;
 }
 
 .carousel-triple-card.active-card p,
 .carousel-triple-card.active-card .triple-card-btn {
     opacity: 1;
-    transform: translateY(0);
-}
-
-.carousel-triple-card.active-card .triple-card-image img {
-    transform: scale(1.05);
 }
 
 .carousel-triple-card.shadow-neon-glow {
-    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.25), 0 0 30px rgba(139, 92, 246, 0.15);
-    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.2);
 }
 
 .carousel-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 54px;
-    height: 54px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background: var(--bg-glass, rgba(19,26,44,0.65));
-    border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
-    color: var(--text-primary, #f3f4f6);
+    background: #1a1a2e;
+    border: 1px solid #2a2a3a;
+    color: #d1d5db;
     cursor: pointer;
     z-index: 50;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    backdrop-filter: blur(8px);
-    transition: 0.3s;
-}
-
-.carousel-arrow:hover {
-    background: var(--accent-primary, #8b5cf6);
-    color: white;
-    border-color: transparent;
+    transition: none;
 }
 
 .carousel-arrow-left {
@@ -206,19 +183,19 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    cursor: pointer;
-    transition: 0.3s;
+    background: #2a2a3a;
+    cursor: default;
+    transition: none;
 }
 
 .carousel-dot.active {
-    background: var(--accent-primary, #8b5cf6);
+    background: #8b5cf6;
     width: 28px;
     border-radius: 100px;
 }
 
 .carousel-triple-section {
-    padding: 100px 0;
+    padding: 80px 0;
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -232,11 +209,12 @@
 }
 
 .features-sub {
-    color: var(--text-secondary, #9ca3af);
+    color: #9ca3af;
     font-size: 1rem;
     margin-bottom: 50px;
 }
 
+/* Responsivo */
 @media(max-width: 768px) {
     :root {
         --card-width: 260px;
@@ -248,8 +226,8 @@
     }
     
     .carousel-arrow {
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
     }
     
     .carousel-arrow-left {
@@ -280,8 +258,8 @@
     }
     
     .carousel-arrow {
-        width: 36px;
-        height: 36px;
+        width: 34px;
+        height: 34px;
         font-size: 0.9rem;
     }
     
@@ -297,3 +275,4 @@
         font-size: 0.8rem;
     }
 }
+
