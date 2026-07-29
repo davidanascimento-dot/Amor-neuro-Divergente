@@ -968,7 +968,7 @@ body.a11y-reduce-motion * {
     padding: 40px 60px;
     display: flex;
     align-items: center;
-    background-size: 100% 100%; /* Mudança aqui: de cover para 100% 100% */
+    background-size: 100%; /* Mudança aqui: de cover para 100% 100% */
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
