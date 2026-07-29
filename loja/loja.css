@@ -968,11 +968,15 @@ body.a11y-reduce-motion * {
     padding: 40px 60px;
     display: flex;
     align-items: center;
-    background-size: cover;
+    background-size: 100% 100%; /* Mudança aqui: de cover para 100% 100% */
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
     color: #fff;
+    
+    /* Garantia de que a imagem vai se esticar completamente */
+    width: 100%;
+    height: 100%;
 }
 
 /* Overlay escuro para legibilidade do texto */
@@ -1295,10 +1299,6 @@ body.a11y-dark-mode .banner-arrow {
 body.a11y-dark-mode .banner-arrow:hover {
     background: #2d2d44;
 }
-
-
-
-
 /* ==========================================================================
    OFERTAS RELÂMPAGO - SELETORES DE CLASSE
    ========================================================================== */
