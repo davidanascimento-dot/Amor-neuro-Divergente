@@ -1144,7 +1144,10 @@ ul, ol { list-style: none; }
    ========================================= */
 .rights-quick-section {
     padding: 60px 20px;
-    background: linear-gradient(135deg, #ede9fe 0%, #fce7f3 100%);
+    background: linear-gradient(135deg, #21202541 30%, #0a030754 100%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&h=600&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay;
 }
 
 .rights-quick-section .container {
@@ -1152,24 +1155,18 @@ ul, ol { list-style: none; }
     margin: 0 auto;
 }
 
-.rights-box {
-    background: var(--bg-white);
-    border-radius: var(--radius-xl);
-    padding: 48px 40px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid rgba(124, 58, 237, 0.08);
-}
+.rights-box 
 
 .rights-info h2 {
     font-size: 28px;
     font-weight: 800;
-    color: var(--text-dark);
+    color: var(--text-primary);
     margin: 8px 0 12px;
 }
 
 .rights-info p {
     font-size: 16px;
-    color: var(--text-medium);
+    color: var(--text-primary);
     margin-bottom: 28px;
 }
 
@@ -2585,20 +2582,20 @@ body.a11y-dark-mode .whoweare-content .section-badge {
 
 /* Container Principal */
 .community-preview-section {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  display: flex ;
+  justify-content: center ;
+  align-items: center;
 }
 
 /* Cartão com Fundo de Montanha e Escurecimento */
 .community-card {
-  position: relative !important;
-  width: 100% !important;
-  overflow: hidden !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 40px 30px !important;
-  color: #ffffff !important;
+  position: relative ;
+  width: 100% ;
+  overflow: hidden;
+  display: flex ;
+  align-items: center ;
+  padding: 40px 30px ;
+  color: #ffffff ;
   
   /* Imagem de fundo com overlay roxo escuro/translúcido */
   background: 
@@ -2608,43 +2605,43 @@ body.a11y-dark-mode .whoweare-content .section-badge {
 
 /* Área da Imagem/Pessoa (Esquerda) */
 .community-visual {
-  flex: 1 !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: flex-end !important;
-  max-width: 40% !important;
+  flex: 1 ;
+  display: flex ;
+  justify-content: center;
+  align-items: flex-end ;
+  max-width: 40% ;
 }
 
 .banner-comunidade {
-  max-width: 100% !important;
-  height: auto !important;
-  object-fit: contain !important;
+  max-width: 100% ;
+  height: auto ;
+  object-fit: contain ;
 }
 
 /* Área de Texto (Direita) */
 .community-content {
-  flex: 1.2 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 14px !important;
+  flex: 1.2 ;
+  display: flex ;
+  flex-direction: column ;
+  align-items: flex-start ;
+  gap: 14px ;
 }
 
 /* Badges / Destaques "Neuro" e "Comunidade" */
 .community-badges {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
+  display: flex ;
+  flex-direction: column ;
+  align-items: flex-start ;
 }
 
 .badge {
-  display: inline-block !important;
-  padding: 6px 18px !important;
-  border-radius: 8px !important;
-  font-weight: 700 !important;
-  font-size: 1.25rem !important;
+  display: inline-block ;
+  padding: 6px 18px ;
+  border-radius: 8px ;
+  font-weight: 700 ;
+  font-size: 1.25rem ;
   color: #ffffff !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.5px ;
 }
 
 .badge-teal {
@@ -2653,21 +2650,21 @@ body.a11y-dark-mode .whoweare-content .section-badge {
 }
 
 .badge-purple {
-  background-color: #a48be0 !important; /* Roxo suave */
-  color: #ffffff !important;
+  background-color: #a48be0 ; /* Roxo suave */
+  color: #ffffff;
 }
 
 /* Subtítulo: "Sua porta de entrada para o AmorNeuroDivergente" */
 .community-subtitle {
-  font-size: 1.1rem !important;
-  font-weight: 400 !important;
-  line-height: 1.4 !important;
-  margin: 6px 0 0 0 !important;
+  font-size: 1.1rem ;
+  font-weight: 400 ;
+  line-height: 1.4 ;
+  margin: 6px 0 0 0 ;
   color: #ffffff !important;
 }
 
 .community-subtitle strong {
-  font-weight: 700 !important;
+  font-weight: 700 ;
   color: #ffffff !important;
 }
 
