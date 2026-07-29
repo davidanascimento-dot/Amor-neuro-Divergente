@@ -1455,7 +1455,6 @@ body.a11y-grayscale {
     max-width: 820px;
     height: 520px;
     position: relative;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* --- CAPA --- */
@@ -1464,20 +1463,13 @@ body.a11y-grayscale {
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #231932 0%, #150f21 100%);
-    border-radius: 20px 12px 12px 20px;
-    box-shadow: 
-        0 25px 50px -12px rgba(0, 0, 0, 0.7),
-        inset 0 0 0 2px rgba(212, 175, 55, 0.4),
-        inset -8px 0 15px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px;
     cursor: pointer;
     transition: all 0.5s ease;
     z-index: 10;
-    border-left: 12px solid #100b1a;
 }
 
 .diary-wrapper.is-open .diary-cover {
@@ -1495,8 +1487,7 @@ body.a11y-grayscale {
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    background: rgba(0, 0, 0, 0.2);
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+
 }
 
 .cover-icon {
@@ -1536,7 +1527,6 @@ body.a11y-grayscale {
     color: #121019;
     border: none;
     padding: 8px 20px;
-    border-radius: 20px;
     font-weight: 700;
     font-size: 0.8rem;
     letter-spacing: 1px;
@@ -1545,9 +1535,7 @@ body.a11y-grayscale {
     transition: transform 0.2s;
 }
 
-.btn-open-diary:hover {
-    transform: scale(1.05);
-}
+
 
 /* --- CADERNO ABERTO --- */
 .diary-book {
@@ -1802,84 +1790,3 @@ body.a11y-grayscale {
     opacity: 1;
 }
 
-/* =============================================
-   RESPONSIVIDADE
-   ============================================= */
-@media (max-width: 1024px) {
-    .diario-sensorial-container {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    .diario-sidebar {
-        width: 100%;
-        max-height: 200px;
-    }
-
-    .entries-history {
-        max-height: 120px;
-    }
-
-    .diario-workspace {
-        min-height: 400px;
-    }
-
-    .diary-wrapper {
-        height: 450px;
-    }
-
-    .diary-book {
-        flex-direction: column;
-    }
-
-    .book-spine {
-        width: 100%;
-        height: 10px;
-    }
-
-    .page-right::before {
-        left: 15px;
-    }
-
-    .page-left {
-        padding: 15px;
-    }
-
-    .page-right {
-        padding: 15px 20px;
-    }
-
-    .book-actions {
-        position: relative;
-        bottom: auto;
-        right: auto;
-        margin-top: 10px;
-        justify-content: flex-end;
-    }
-}
-
-@media (max-width: 600px) {
-    .diario-sensorial-container {
-        padding: 10px;
-    }
-
-    .diary-wrapper {
-        height: 400px;
-    }
-
-    .cover-title {
-        font-size: 1.3rem;
-    }
-
-    .cover-gold-frame {
-        padding: 20px;
-    }
-
-    .entry-title-input {
-        font-size: 1.4rem;
-    }
-
-    .entry-textarea {
-        font-size: 1.2rem;
-    }
-}
