@@ -346,7 +346,7 @@ ul, ol { list-style: none; }
 .hero-bg-img { 
     width: 100%; height: 100%; object-fit: cover; 
     filter: brightness(0.35) saturate(0.8); 
-    transform: scale(1.05); animation: bgFloat 20s ease-in-out infinite; 
+    transform: scale(1.05); animation: bgFloat 20s ease-in-out infinite;
 }
 .hero-overlay { 
     position: absolute; inset: 0; 
@@ -2581,3 +2581,117 @@ body.a11y-dark-mode .whoweare-content .section-badge {
     background: rgba(124,58,237,0.2);
     color: #a78bfa;
 }
+
+
+/* Container Principal */
+.community-preview-section {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Cartão com Fundo de Montanha e Escurecimento */
+.community-card {
+  position: relative !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 40px 30px !important;
+  color: #ffffff !important;
+  
+  /* Imagem de fundo com overlay roxo escuro/translúcido */
+  background: 
+    linear-gradient(rgba(35, 18, 42, 0.72), rgba(35, 18, 42, 0.72)),
+    url("/img/banner-comunidade.png") center/cover no-repeat !important;
+}
+
+/* Área da Imagem/Pessoa (Esquerda) */
+.community-visual {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-end !important;
+  max-width: 40% !important;
+}
+
+.banner-comunidade {
+  max-width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+/* Área de Texto (Direita) */
+.community-content {
+  flex: 1.2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+}
+
+/* Badges / Destaques "Neuro" e "Comunidade" */
+.community-badges {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.badge {
+  display: inline-block !important;
+  padding: 6px 18px !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+  color: #ffffff !important;
+  letter-spacing: 0.5px !important;
+}
+
+.badge-teal {
+  background-color: #9fe3dd !important; /* Verde água / Teal */
+  color: #ffffff !important;
+}
+
+.badge-purple {
+  background-color: #a48be0 !important; /* Roxo suave */
+  color: #ffffff !important;
+}
+
+/* Subtítulo: "Sua porta de entrada para o AmorNeuroDivergente" */
+.community-subtitle {
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+  margin: 6px 0 0 0 !important;
+  color: #ffffff !important;
+}
+
+.community-subtitle strong {
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+
+/* Descrição: "Quer aprender a base prática..." */
+.community-description {
+  font-size: 0.92rem !important;
+  color: #ffffff !important;
+  line-height: 1.5 !important;
+  max-width: 440px !important;
+  margin: 0 !important;
+}
+
+/* Botão */
+.community-btn {
+  display: inline-block !important;
+  background-color: #c499f8 !important;
+  color: #ffffff !important;
+  padding: 10px 60px !important;
+  border-radius: 6px !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  margin-top: 8px !important;
+  transform: translateX(500px) !important;
+}
+
+
