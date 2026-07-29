@@ -55,16 +55,12 @@
     <!-- Overlay para quando a sidebar estiver aberta -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- =============================================
-    BOTÃO VOLTAR AO TOPO
-    ============================================= -->
+  
     <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
-    <!-- =============================================
-    CONTEÚDO PRINCIPAL
-    ============================================= -->
+  
     <main class="main-content" id="mainContent">
         
         <!-- Header glass -->
@@ -181,6 +177,64 @@
                     </div>
                 </article>
             </div>
+
+             <div class="blog-grid" id="blogGrid">
+                <!-- Cards serão inseridos dinamicamente pelo JavaScript -->
+                <!-- Exemplo de card para demonstração -->
+                <article class="blog-card">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                        <div class="card-badges">
+                            <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 5 min</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-tags">
+                            <span><i class="fa-solid fa-tag"></i> Autismo</span>
+                            <span><i class="fa-solid fa-tag"></i> Inclusão</span>
+                        </div>
+                        <h3>Neurodivergência no ambiente de trabalho: desafios e oportunidades</h3>
+                        <p>Como empresas podem criar ambientes mais inclusivos para profissionais neurodivergentes, promovendo diversidade e inovação.</p>
+                        <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                        <div class="card-badges">
+                            <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 7 min</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-tags">
+                            <span><i class="fa-solid fa-tag"></i> TDAH</span>
+                            <span><i class="fa-solid fa-tag"></i> Produtividade</span>
+                        </div>
+                        <h3>Estratégias para gerenciar o TDAH no dia a dia</h3>
+                        <p>Dicas práticas e ferramentas que ajudam na organização, foco e bem-estar para pessoas com TDAH.</p>
+                        <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                        <div class="card-badges">
+                            <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 4 min</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-tags">
+                            <span><i class="fa-solid fa-tag"></i> Autismo</span>
+                            <span><i class="fa-solid fa-tag"></i> Comunicação</span>
+                        </div>
+                        <h3>Comunicação alternativa e aumentativa: o que é e como usar</h3>
+                        <p>Conheça os recursos de comunicação alternativa para pessoas autistas não-verbais e como eles funcionam.</p>
+                        <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+
+            
+
 
             <!-- Scroll Sentinel para carregamento infinito -->
             <div class="scroll-sentinel" id="scrollSentinel">

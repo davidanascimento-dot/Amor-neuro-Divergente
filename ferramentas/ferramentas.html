@@ -8,10 +8,11 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Cinzel:wght@500;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="ferramentas.css">
+    <link rel="stylesheet" href="diario-sensorial.css">
 </head>
 <body>
 
@@ -43,8 +44,6 @@
             <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
             <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
-
-     
 
         <div class="sidebar-secondary">
             <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
@@ -150,7 +149,7 @@
             <nav class="tabs-nav">
                 <button class="tab-trigger active" data-tab="timer"><i class="fa-regular fa-clock"></i> Timer Visual</button>
                 <button class="tab-trigger" data-tab="safe"><i class="fa-solid fa-shield-heart"></i> Safe Space</button>
-                <button class="tab-trigger" data-tab="sensory"><i class="fa-solid fa-brain"></i> Diário Sensorial</button>
+                <button class="tab-trigger" data-tab="sensory"><i class="fa-solid fa-book"></i> Diário Pessoal</button>
             </nav>
 
             <!-- Tabs Content -->
@@ -192,40 +191,98 @@
                     </div>
                 </div>
 
-                <!-- Tab 3: Diário Sensorial -->
+                <!-- =============================================
+                TAB 3: DIÁRIO PESSOAL (SIMPLIFICADO)
+                ============================================= -->
                 <div class="tab-content" id="tab-sensory">
-                    <p class="card-subtitle" style="margin-bottom: 20px;">Registre como você se sente hoje.</p>
-                    
-                    <h4 class="section-subtitle">Como você está?</h4>
-                    <div class="mood-row">
-                        <button class="mood-btn" data-mood="Muito mal"><span>😫</span><small>Muito mal</small></button>
-                        <button class="mood-btn" data-mood="Mal"><span>😟</span><small>Mal</small></button>
-                        <button class="mood-btn active" data-mood="Neutro"><span>😐</span><small>Neutro</small></button>
-                        <button class="mood-btn" data-mood="Bem"><span>🙂</span><small>Bem</small></button>
-                        <button class="mood-btn" data-mood="Muito bem"><span>😊</span><small>Muito bem</small></button>
-                    </div>
+                    <div class="diario-sensorial-container">
+                        <!-- Sidebar do Diário -->
+                        <aside class="diario-sidebar">
+                            <button class="btn-new-entry" id="btnNewEntry">
+                                <i class="fa-solid fa-pen-to-square"></i> Nova Página
+                            </button>
 
-                    <h4 class="section-subtitle">Nível de energia: <span id="energyDisplay">3/5</span></h4>
-                    <div class="energy-box">
-                        <div class="energy-slider-container">
-                            <span><i class="fa-solid fa-moon"></i></span>
-                            <input type="range" id="energySlider" min="1" max="5" value="3" step="1" class="energy-slider">
-                            <span><i class="fa-solid fa-bolt"></i></span>
-                        </div>
-                    </div>
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="searchInput" placeholder="Buscar nas páginas...">
+                            </div>
 
-                    <h4 class="section-subtitle">Estímulos que incomodam</h4>
-                    <div class="stimuli-grid">
-                        <button class="stimuli-btn" data-stimulus="ruido"><i class="fa-solid fa-volume-high"></i> Ruído</button>
-                        <button class="stimuli-btn" data-stimulus="luz"><i class="fa-solid fa-sun"></i> Luz</button>
-                        <button class="stimuli-btn" data-stimulus="textura"><i class="fa-solid fa-fingerprint"></i> Textura</button>
-                        <button class="stimuli-btn" data-stimulus="cheiro"><i class="fa-solid fa-nose"></i> Cheiro</button>
-                        <button class="stimuli-btn" data-stimulus="temperatura"><i class="fa-solid fa-temperature-half"></i> Temperatura</button>
-                        <button class="stimuli-btn" data-stimulus="social"><i class="fa-solid fa-people-arrows"></i> Social</button>
-                    </div>
+                            <div class="entries-history" id="entriesHistory">
+                                <!-- Registros salvos serão inseridos dinamicamente aqui -->
+                            </div>
+                        </aside>
 
-                    <textarea id="sensoryNotes" class="notes-area" placeholder="Notas opcionais..."></textarea>
-                    <button id="btnSaveSensory" class="btn-timer-primary" style="width:100%;margin-top:10px;"><i class="fa-solid fa-floppy-disk"></i> Registrar entrada</button>
+                        <!-- Área Central do Diário -->
+                        <main class="diario-workspace">
+                            <div class="diary-wrapper" id="diaryWrapper">
+                                
+                                <!-- CAPA DO DIÁRIO -->
+                                <div class="diary-cover" id="diaryCover">
+                                    <div class="cover-ribbon"></div>
+                                    <div class="cover-gold-frame">
+                                        <i class="fa-solid fa-book-bookmark cover-icon"></i>
+                                        <h1 class="cover-title">Meu Diário</h1>
+                                        <p class="cover-subtitle">Um espaço para registrar seus pensamentos e sentimentos</p>
+                                        <button class="btn-open-diary">
+                                            <i class="fa-solid fa-book-open"></i> Abrir Diário
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- CADERNO ABERTO -->
+                                <div class="diary-book">
+                                    
+                                    <!-- PÁGINA ESQUERDA (DATA E INFORMAÇÕES) -->
+                                    <div class="page-left">
+                                        <div class="page-date-badge">
+                                            <span id="displayDate">29 de Julho, 2026</span>
+                                            <i class="fa-regular fa-calendar"></i>
+                                        </div>
+
+                                        <div class="page-info-note">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                            <span>Escreva livremente sobre o seu dia, seus sentimentos, pensamentos e reflexões.</span>
+                                        </div>
+
+                                        <div class="divider-line"></div>
+
+                                        <div>
+                                            <div class="section-label">Como você está se sentindo?</div>
+                                            <input type="text" id="moodInput" class="mood-input" placeholder="Ex: Ansioso, feliz, cansado...">
+                                        </div>
+
+                                        <div>
+                                            <div class="section-label">Nível de energia (1 a 5)</div>
+                                            <div class="energy-control">
+                                                <input type="range" min="1" max="5" value="3" class="energy-slider" id="energySlider">
+                                                <span class="energy-value" id="energyValue">3</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LOMBADA -->
+                                    <div class="book-spine"></div>
+
+                                    <!-- PÁGINA DIREITA (ESCRITA) -->
+                                    <div class="page-right">
+                                        <input type="text" class="entry-title-input" id="entryTitle" placeholder="Título da página...">
+                                        <textarea class="entry-textarea" id="entryContent" placeholder="Querido diário, hoje eu me senti..."></textarea>
+
+                                        <div class="book-actions">
+                                            <button class="btn-page-action btn-close-book" id="btnCloseBook">
+                                                <i class="fa-solid fa-book"></i> Fechar
+                                            </button>
+                                            <button class="btn-page-action" id="btnSaveEntry">
+                                                <i class="fa-solid fa-floppy-disk"></i> Salvar
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </main>
+                    </div>
                 </div>
             </div>
 
@@ -292,9 +349,12 @@
 
     <!-- Toast -->
     <div id="toastMsg" class="toast-msg-custom"></div>
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check"></i> Registro salvo com sucesso!
+    </div>
 
     <script src="ferramentas.js"></script>
-   
+    <script src="diario-sensorial.js"></script>
 
 </body>
 </html>

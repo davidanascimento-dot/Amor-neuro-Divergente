@@ -508,21 +508,6 @@ body.a11y-small-text .main-content {
     font-size: 90% !important;
 }
 
-/* Redução de Movimentos */
-@media (prefers-reduced-motion: reduce),
-body.a11y-reduce-motion {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
-        scroll-behavior: auto !important;
-    }
-    .loading-spinner i {
-        animation: none !important;
-    }
-}
 
 /* =========================================
    RESPONSIVO — Consistente com explorar

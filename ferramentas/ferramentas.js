@@ -610,3 +610,233 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('👋 Bem-vindo à Central de Ferramentas!', 'info');
     }, 500);
 });
+
+
+/**
+ * =============================================
+ * DIÁRIO PESSOAL - LÓGICA SIMPLIFICADA
+ * =============================================
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    // =============================================
+    // FUNÇÃO DE SALVAR REGISTROS
+    // =============================================
+    function salvarRegistroDiario(entryData) {
+        if (!entryData || !entryData.content || entryData.content.trim() === '') {
+            throw new Error('Escreva algo no diário antes de salvar.');
+        }
+
+        let registros = [];
+        try {
+            const stored = localStorage.getItem('diario_registros');
+            registros = stored ? JSON.parse(stored) : [];
+        } catch (e) {
+            console.error('Erro ao carregar registros:', e);
+            registros = [];
+        }
+
+        const novoRegistro = {
+            id: entryData.id || Date.now(),
+            date: entryData.date || new Date().toLocaleDateString('pt-BR', { 
+                day: '2-digit', 
+                month: 'long', 
+                year: 'numeric' 
+            }),
+            title: entryData.title?.trim() || 'Sem título',
+            content: entryData.content.trim(),
+            mood: entryData.mood || '',
+            energy: entryData.energy || 3,
+            updatedAt: new Date().toISOString()
+        };
+
+        const existingIndex = registros.findIndex(r => r.id === novoRegistro.id);
+
+        if (existingIndex !== -1) {
+            registros[existingIndex] = {
+                ...registros[existingIndex],
+                ...novoRegistro
+            };
+        } else {
+            registros.unshift(novoRegistro);
+        }
+
+        try {
+            localStorage.setItem('diario_registros', JSON.stringify(registros));
+        } catch (e) {
+            console.error('Erro ao salvar registros:', e);
+            throw new Error('Não foi possível salvar o registro.');
+        }
+
+        return novoRegistro;
+    }
+
+    // =============================================
+    // FUNÇÃO DE CARREGAR REGISTROS
+    // =============================================
+    function carregarRegistrosDiario(filterText = '') {
+        try {
+            const stored = localStorage.getItem('diario_registros');
+            let registros = stored ? JSON.parse(stored) : [];
+            
+            if (filterText.trim()) {
+                const term = filterText.toLowerCase().trim();
+                registros = registros.filter(r => 
+                    r.title.toLowerCase().includes(term) || 
+                    r.content.toLowerCase().includes(term)
+                );
+            }
+            
+            return registros;
+        } catch (e) {
+            console.error('Erro ao carregar registros:', e);
+            return [];
+        }
+    }
+
+    // =============================================
+    // INICIALIZAÇÃO DA INTERFACE
+    // =============================================
+    
+    // Elementos DOM
+    const diaryWrapper = document.getElementById('diaryWrapper');
+    const diaryCover = document.getElementById('diaryCover');
+    const btnCloseBook = document.getElementById('btnCloseBook');
+    const btnNewEntry = document.getElementById('btnNewEntry');
+    const btnSaveEntry = document.getElementById('btnSaveEntry');
+    
+    const entryTitle = document.getElementById('entryTitle');
+    const entryContent = document.getElementById('entryContent');
+    const displayDate = document.getElementById('displayDate');
+    const energySlider = document.getElementById('energySlider');
+    const energyValue = document.getElementById('energyValue');
+    const moodInput = document.getElementById('moodInput');
+    const entriesHistory = document.getElementById('entriesHistory');
+    const searchInput = document.getElementById('searchInput');
+
+    let currentEntryId = null;
+
+    // Data atual formatada
+    const today = new Date();
+    const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+    displayDate.textContent = today.toLocaleDateString('pt-BR', dateOptions);
+
+    /* --- CONTROLE DE ABERTURA DO DIÁRIO --- */
+    function openDiary() {
+        diaryWrapper.classList.add('is-open');
+    }
+
+    function closeDiary() {
+        diaryWrapper.classList.remove('is-open');
+    }
+
+    diaryCover.addEventListener('click', openDiary);
+    btnCloseBook.addEventListener('click', closeDiary);
+
+    /* --- ENERGIA --- */
+    energySlider.addEventListener('input', (e) => {
+        energyValue.textContent = e.target.value;
+    });
+
+    /* --- GERENCIAMENTO DE REGISTROS --- */
+    function resetForm() {
+        currentEntryId = null;
+        entryTitle.value = '';
+        entryContent.value = '';
+        energySlider.value = 3;
+        energyValue.textContent = '3';
+        moodInput.value = '';
+    }
+
+    btnNewEntry.addEventListener('click', () => {
+        resetForm();
+        openDiary();
+    });
+
+    /* --- SALVAR REGISTRO --- */
+    btnSaveEntry.addEventListener('click', () => {
+        const title = entryTitle.value.trim() || 'Sem título';
+        const content = entryContent.value.trim();
+
+        if (!content) {
+            showToast('Escreva algo no diário antes de salvar.');
+            return;
+        }
+
+        try {
+            const registroSalvo = salvarRegistroDiario({
+                id: currentEntryId,
+                title: title,
+                content: content,
+                mood: moodInput.value.trim(),
+                energy: parseInt(energySlider.value),
+                date: displayDate.textContent
+            });
+
+            currentEntryId = registroSalvo.id;
+            renderSidebarHistory();
+            showToast('Página salva com sucesso!');
+        } catch (error) {
+            showToast('Erro ao salvar: ' + error.message);
+            console.error('Erro ao salvar registro:', error);
+        }
+    });
+
+    /* --- RENDERIZAR HISTÓRICO --- */
+    function renderSidebarHistory(filterText = '') {
+        const registros = carregarRegistrosDiario(filterText);
+        entriesHistory.innerHTML = '';
+
+        if (registros.length === 0) {
+            entriesHistory.innerHTML = `<p style="font-size:0.8rem; color: var(--text-muted); text-align:center; margin-top:20px;">Nenhuma página encontrada.</p>`;
+            return;
+        }
+
+        registros.forEach(entry => {
+            const card = document.createElement('div');
+            card.className = `history-card ${entry.id === currentEntryId ? 'active' : ''}`;
+            card.innerHTML = `
+                <div class="card-header-line">
+                    <span>${entry.date}</span>
+                    <span>⚡ ${entry.energy}/5</span>
+                </div>
+                <div class="card-title-line">${entry.title}</div>
+                <div class="card-preview">${entry.content.substring(0, 50)}${entry.content.length > 50 ? '...' : ''}</div>
+            `;
+
+            card.addEventListener('click', () => {
+                loadEntryIntoDiary(entry);
+                openDiary();
+            });
+
+            entriesHistory.appendChild(card);
+        });
+    }
+
+    function loadEntryIntoDiary(entry) {
+        currentEntryId = entry.id;
+        entryTitle.value = entry.title;
+        entryContent.value = entry.content;
+        displayDate.textContent = entry.date;
+        energySlider.value = entry.energy || 3;
+        energyValue.textContent = entry.energy || 3;
+        moodInput.value = entry.mood || '';
+
+        renderSidebarHistory();
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        renderSidebarHistory(e.target.value);
+    });
+
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        const textNode = toast.childNodes[2];
+        textNode.textContent = " " + msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Inicializar história
+    renderSidebarHistory();
+});

@@ -828,16 +828,6 @@ body.a11y-highlight-links a:not(.sidebar-link):not(.btn-glow):not(.btn-glass):no
 body.a11y-large-text { font-size: 115% !important; }
 body.a11y-small-text { font-size: 90% !important; }
 
-/* Redução de Movimentos */
-@media (prefers-reduced-motion: reduce), 
-       body.a11y-reduce-motion {
-    *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
-        scroll-behavior: auto !important;
-    }
-}
 
 /* ==========================================================================
    RESPONSIVO
