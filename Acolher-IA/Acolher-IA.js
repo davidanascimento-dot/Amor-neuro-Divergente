@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     // CONFIGURAÇÃO DA API GROQ
     // =============================================
-    const GROQ_API_KEY = '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';
+    const GROQ_API_KEY = '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';
     const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
     // =============================================
