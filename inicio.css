@@ -3823,3 +3823,83 @@ body.a11y-dark-mode .acolheria-overlay-bg {
     }
 }
 
+/* ============================================================
+   ESTILOS DA LOGO ACOLHERIA
+   ============================================================ */
+
+/* Logo no badge (ícone pequeno) */
+.acolheria-logo-badge {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    transition: all 0.3s ease;
+}
+
+.acolheria-logo-badge:hover {
+    transform: scale(1.2) rotate(-10deg);
+}
+
+/* Logo na ilustração (grande) */
+.acolheria-logo-illustration {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+}
+
+.acolheria-logo-illustration:hover {
+    transform: rotate(-8deg) scale(1.02);
+    box-shadow: 0 12px 40px rgba(21, 93, 101, 0.15);
+}
+
+/* Logo na seção CTA (versão do Design System) */
+.acolheria-cta-illustration {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px var(--color-shadow);
+    flex-shrink: 0;
+}
+
+/* Se quiser usar a logo como imagem dentro da .acolheria-cta-illustration */
+.acolheria-cta-illustration img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+}
+
+/* Responsividade da Logo */
+@media (max-width: 768px) {
+    .acolheria-logo-illustration {
+        width: 80px;
+        height: 80px;
+        padding: 16px;
+    }
+    
+    .acolheria-cta-illustration {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .acolheria-logo-illustration {
+        width: 60px;
+        height: 60px;
+        padding: 12px;
+    }
+    
+    .acolheria-cta-illustration {
+        width: 60px;
+        height: 60px;
+    }
+}
