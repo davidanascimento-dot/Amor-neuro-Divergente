@@ -1,24 +1,29 @@
 /* =========================================
    RECURSOS.CSS — Artigos e Guias
-   Dark mode completo + Breadcrumb + Seção Em breve
+   Novo formato Hero + Grid de Cards
+   Dark mode completo + Breadcrumb
    ========================================= */
 
 /* =========================================
-   VARIÁVEIS (reforço das que vêm do inicio.css)
+   VARIÁVEIS
    ========================================= */
 :root {
     --bg-warm: #f5f0eb;
     --primary-purple-light: #f4f0fa;
-    --primary-purple-dark: #5a3d96;
+    --primary-purple: #5a3d96;
+    --primary-purple-dark: #3d2b6b;
     --text-dark: #1e293b;
     --text-medium: #5c5652;
     --text-muted: #64748b;
     --border-light: #f0ebe5;
+    --bg-white: #ffffff;
+    --border-color: #e2e8f0;
     --transition-fast: 0.15s ease;
+    --transition-medium: 0.3s ease;
 }
 
 /* =========================================
-   BREADCRUMB (igual ao Explorar)
+   BREADCRUMB
    ========================================= */
 .breadcrumb-nav {
     display: flex;
@@ -47,124 +52,152 @@
 }
 
 /* =========================================
-   CABEÇALHO DA PÁGINA
+   HEADER GLASS
    ========================================= */
-.page-hero {
-    padding: 60px 48px 24px;
-    text-align: center;
-    max-width: 650px;
+
+/* =========================================
+   CONTAINER NOVO FORMATO
+   ========================================= */
+.container-novo {
+    max-width: 1120px;
     margin: 0 auto;
-}
-
-.page-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    height: 60px;
-    background: var(--primary-purple-light);
-    color: var(--primary-purple);
-    border-radius: 18px;
-    font-size: 26px;
-    margin-bottom: 20px;
-}
-
-.page-hero h1 {
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 12px;
-    letter-spacing: -0.02em;
-}
-
-.page-hero p {
-    font-size: 17px;
-    color: var(--text-medium);
-    line-height: 1.7;
+    padding: 0 20px;
 }
 
 /* =========================================
-   SEÇÕES DE CATEGORIA
+   HEADER NOVO (título + tabs)
    ========================================= */
-.category-section {
-    display: flex;
-    align-items: center;
-    gap: 72px;
-    padding: 56px 48px;
-    max-width: 1200px;
-    margin: 0 auto;
+.header-novo {
+    margin-bottom: 32px;
 }
 
-.category-section-reverse {
-    flex-direction: row-reverse;
-}
-
-.category-section + .category-section {
-    border-top: 1px solid var(--border-light);
-}
-
-/* Imagem */
-.category-image {
-    flex: 1;
-    min-width: 0;
-}
-
-.category-image img {
-    width: 100%;
-    border-radius: 20px;
-    object-fit: cover;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    aspect-ratio: 4/3;
-    background: var(--bg-warm);
-}
-
-/* Texto */
-.category-text {
-    flex: 1;
-    min-width: 0;
-}
-
-/* Tags coloridas */
-.category-tag {
-    display: inline-block;
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
+.tag-section {
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    color: var(--primary-purple);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     margin-bottom: 16px;
 }
-.tag-autismo { background: #e8f5e9; color: #2e7d32; }
-.tag-tdah { background: #fff3e0; color: #e65100; }
-.tag-altas-habilidades { background: #e8eaf6; color: #283593; }
-.tag-dislexia { background: #fce4ec; color: #880e4f; }
-.tag-saude-mental { background: #f3e5f5; color: #6a1b9a; }
-.tag-direitos { background: #e0f2f1; color: #00695c; }
 
-.category-text h2 {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 14px;
-    letter-spacing: -0.01em;
+.main-title {
+    font-family: 'Lora', 'Inter', serif;
+    font-size: 2.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #111111;
+    max-width: 700px;
+    margin-bottom: 16px;
 }
 
-.category-text p {
-    font-size: 16px;
-    color: var(--text-medium);
-    line-height: 1.7;
-    margin-bottom: 26px;
-    max-width: 460px;
+.sub-title {
+    font-size: 0.95rem;
+    color: #71717a;
+    margin-bottom: 36px;
 }
 
-/* Botão */
+.tabs {
+    display: flex;
+    gap: 28px;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 1px;
+    overflow-x: auto;
+}
+
+.tab-item {
+    font-size: 0.875rem;
+    color: #666666;
+    text-decoration: none;
+    padding-bottom: 12px;
+    white-space: nowrap;
+    transition: color var(--transition-fast);
+}
+
+.tab-item.active {
+    color: var(--primary-purple);
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-purple);
+}
+
+.tab-item:hover:not(.active) {
+    color: #111111;
+}
+
+/* =========================================
+   HERO CARD
+   ========================================= */
+.hero-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: 40px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.hero-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-destaque {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background-color: var(--primary-purple);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.category-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--primary-purple);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.hero-title {
+    font-family: 'Lora', 'Inter', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #111111;
+    margin-bottom: 16px;
+}
+
+.hero-desc {
+    font-size: 0.925rem;
+    color: #555555;
+    line-height: 1.55;
+    margin-bottom: 24px;
+}
+
 .category-btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 14px 26px;
-    background: #3d364b;
+    background: var(--primary-purple);
     color: #f8f8f8;
     border-radius: 30px;
     font-size: 15px;
@@ -172,6 +205,7 @@
     text-decoration: none;
     transition: all var(--transition-fast);
     box-shadow: 0 4px 15px rgba(124, 92, 191, 0.25);
+    align-self: flex-start;
 }
 
 .category-btn:hover {
@@ -190,97 +224,114 @@
 }
 
 /* =========================================
+   GRID DE CARDS
+   ========================================= */
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 32px;
+    padding-top: 40px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-top-bar {
+    width: 32px;
+    height: 4px;
+    background-color: var(--primary-purple);
+    border-radius: 2px;
+    margin-bottom: 16px;
+}
+
+.card-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-bottom: 16px;
+}
+
+.card .category-tag {
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+}
+
+.card-title {
+    font-family: 'Lora', 'Inter', serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.35;
+    color: #111111;
+    margin: 8px 0 12px 0;
+}
+
+.card-desc {
+    font-size: 0.875rem;
+    color: #666666;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+.card-link {
+    font-size: 0.85rem;
+    color: var(--primary-purple);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.card-link:hover {
+    gap: 12px;
+    color: var(--primary-purple-dark);
+}
+
+.card-meta {
+    font-size: 0.78rem;
+    color: #888888;
+    margin-top: auto;
+}
+
+/* =========================================
    SEÇÃO "EM BREVE"
    ========================================= */
 .coming-soon-section {
-    padding: 60px 48px 80px;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 48px 0 24px 0;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 24px;
     text-align: center;
-    border-top: 1px solid var(--border-light);
 }
 
 .coming-soon-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-dark);
+    font-family: 'Lora', 'Inter', serif;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #111111;
     margin-bottom: 8px;
 }
 
 .coming-soon-text {
-    font-size: 15px;
-    color: var(--text-muted);
-    max-width: 500px;
-    margin: 0 auto 36px;
-    line-height: 1.6;
-}
-
-.coming-soon-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
-
-.coming-soon-card {
-    background: var(--bg-white);
-    border: 2px dashed var(--border-color);
-    border-radius: 16px;
-    padding: 28px 20px;
-    text-align: center;
-    transition: all 0.15s ease;
-    position: relative;
-}
-
-.coming-soon-card:hover {
-    border-color: var(--primary-purple);
-    background: var(--primary-purple-light);
-}
-
-.coming-soon-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: var(--bg-warm);
-    color: var(--text-muted);
-    border-radius: 14px;
-    font-size: 20px;
-    margin-bottom: 14px;
-}
-
-.coming-soon-card h4 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 6px;
-}
-
-.coming-soon-card p {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    margin-bottom: 16px;
-}
-
-.coming-soon-badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 20px;
-    background: #fef3c7;
-    color: #b45309;
+    color: #71717a;
+    font-size: 0.95rem;
+    margin-bottom: 32px;
 }
 
 /* =========================================
-   FOOTER — cores fixas (NÃO mudam no dark mode)
+   FOOTER
    ========================================= */
 .footer { 
     background: #f0f4f8; 
     color: #4a6a8a; 
     padding: 60px 48px 32px; 
     border-top: 1px solid #d0dce8;
+    margin-top: 40px;
 }
 .footer-main { 
     display: grid; 
@@ -301,6 +352,7 @@
     font-size: 14px; 
     padding: 6px 0; 
     transition: color 0.15s; 
+    text-decoration: none;
 }
 .footer-col a:hover { 
     color: #1a3a5a; 
@@ -320,6 +372,7 @@
     color: #2c4a6a; 
     font-size: 16px; 
     transition: all 0.15s; 
+    text-decoration: none;
 }
 .social-links a:hover { 
     background: #8ab4d6; 
@@ -341,6 +394,7 @@
 .footer-bottom a { 
     color: #6a8aaa; 
     margin-right: 20px; 
+    text-decoration: none;
 }
 .footer-bottom a:hover { 
     color: #2c4a6a; 
@@ -351,14 +405,13 @@
     margin-top: 8px; 
 }
 
-
 /* =========================================
    DARK MODE — COMPLETO
    ========================================= */
 body.a11y-dark-mode {
     --bg-warm: #1e1b23;
-    --primary-purple-light: rgba(124, 92, 191, 0.2);
-    --primary-purple-dark: #7c5cbf;
+    --primary-purple: #7c5cbf;
+    --primary-purple-dark: #5a3d96;
     --text-dark: #f1f5f9;
     --text-medium: #b8b0a8;
     --text-muted: #94a3b8;
@@ -367,166 +420,170 @@ body.a11y-dark-mode {
     --border-color: #2d2d44;
 }
 
-/* Hero dark */
-body.a11y-dark-mode .page-hero h1 {
-    color: #f1f5f9 !important;
+/* Header Glass dark */
+body.a11y-dark-mode .header-glass {
+    border-bottom-color: #2d2d44;
 }
-body.a11y-dark-mode .page-hero p {
-    color: #94a3b8 !important;
+body.a11y-dark-mode .logo-text {
+    color: #a78bfa;
 }
-body.a11y-dark-mode .page-icon {
-    background: rgba(124, 92, 191, 0.2);
+body.a11y-dark-mode .header-links a {
+    color: #94a3b8;
+}
+body.a11y-dark-mode .header-links a:hover {
     color: #c4b5e8;
 }
 
 /* Breadcrumb dark */
 body.a11y-dark-mode .breadcrumb-nav span {
-    color: #e8e3dd !important;
+    color: #e8e3dd;
 }
 body.a11y-dark-mode .breadcrumb-nav a {
-    color: #a78bfa !important;
+    color: #a78bfa;
 }
 
-/* Categorias dark */
-body.a11y-dark-mode .category-section + .category-section {
-    border-top-color: #2d2d44;
+/* Header novo dark */
+body.a11y-dark-mode .tag-section {
+    color: #a78bfa;
 }
-body.a11y-dark-mode .category-image img {
+body.a11y-dark-mode .main-title {
+    color: #f1f5f9;
+}
+body.a11y-dark-mode .sub-title {
+    color: #94a3b8;
+}
+body.a11y-dark-mode .tabs {
+    border-bottom-color: #2d2d44;
+}
+body.a11y-dark-mode .tab-item {
+    color: #94a3b8;
+}
+body.a11y-dark-mode .tab-item.active {
+    color: #a78bfa;
+    border-bottom-color: #a78bfa;
+}
+body.a11y-dark-mode .tab-item:hover:not(.active) {
+    color: #f1f5f9;
+}
+
+/* Hero dark */
+body.a11y-dark-mode .hero-card {
+    border-bottom-color: #2d2d44;
+}
+body.a11y-dark-mode .hero-title {
+    color: #f1f5f9;
+}
+body.a11y-dark-mode .hero-desc {
+    color: #94a3b8;
+}
+body.a11y-dark-mode .hero-image-wrapper {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+body.a11y-dark-mode .hero-image {
     filter: brightness(0.85);
 }
-body.a11y-dark-mode .category-text h2 {
-    color: #f1f5f9 !important;
+body.a11y-dark-mode .category-tag {
+    color: #a78bfa;
 }
-body.a11y-dark-mode .category-text p {
-    color: #b8b0a8 !important;
-}
-body.a11y-dark-mode .category-btn {
-    box-shadow: 0 4px 15px rgba(124, 92, 191, 0.15);
+body.a11y-dark-mode .badge-destaque {
+    background: #7c5cbf;
 }
 
-/* Tags no dark mode mantêm cor de fundo escura */
-body.a11y-dark-mode .tag-autismo { background: rgba(46, 125, 50, 0.2); color: #81c784; }
-body.a11y-dark-mode .tag-tdah { background: rgba(230, 81, 0, 0.2); color: #ffb74d; }
-body.a11y-dark-mode .tag-altas-habilidades { background: rgba(40, 53, 147, 0.2); color: #9fa8da; }
-body.a11y-dark-mode .tag-dislexia { background: rgba(136, 14, 79, 0.2); color: #f48fb1; }
-body.a11y-dark-mode .tag-saude-mental { background: rgba(106, 27, 154, 0.2); color: #ce93d8; }
-body.a11y-dark-mode .tag-direitos { background: rgba(0, 105, 92, 0.2); color: #80cbc4; }
+/* Grid cards dark */
+body.a11y-dark-mode .card-title {
+    color: #f1f5f9;
+}
+body.a11y-dark-mode .card-desc {
+    color: #94a3b8;
+}
+body.a11y-dark-mode .card-meta {
+    color: #64748b;
+}
+body.a11y-dark-mode .card-top-bar {
+    background-color: #7c5cbf;
+}
+body.a11y-dark-mode .card-link {
+    color: #a78bfa;
+}
+body.a11y-dark-mode .card-link:hover {
+    color: #c4b5e8;
+}
+body.a11y-dark-mode .card-image {
+    filter: brightness(0.85);
+}
 
 /* Em breve dark */
 body.a11y-dark-mode .coming-soon-section {
     border-top-color: #2d2d44;
 }
-body.a11y-dark-mode .coming-soon-card {
-    background: #1a1a2e;
-    border-color: #2d2d44;
+body.a11y-dark-mode .coming-soon-title {
+    color: #f1f5f9;
 }
-body.a11y-dark-mode .coming-soon-card:hover {
-    border-color: #4a3a5e;
-    background: rgba(124, 92, 191, 0.1);
-}
-body.a11y-dark-mode .coming-soon-icon {
-    background: #2d2d44;
+body.a11y-dark-mode .coming-soon-text {
     color: #94a3b8;
 }
-body.a11y-dark-mode .coming-soon-badge {
-    background: rgba(180, 83, 9, 0.2);
-    color: #f59e0b;
-}
 
+/* Footer dark */
 body.a11y-dark-mode .footer {
-    background: #01060f; /* Azul escuro acinzentado */
-    color: #8aaccc; /* Azul claro */
+    background: #01060f;
+    color: #8aaccc;
     border-top: 1px solid #2a3a4a;
 }
-
 body.a11y-dark-mode .footer-col h4 {
-    color: #b8d4e8; /* Azul claro para títulos */
+    color: #b8d4e8;
 }
-
 body.a11y-dark-mode .footer-col a {
-    color: #8aaccc; /* Azul médio claro */
+    color: #8aaccc;
 }
-
 body.a11y-dark-mode .footer-col a:hover {
-    color: #c8e4f8; /* Azul bem claro no hover */
+    color: #c8e4f8;
 }
-
 body.a11y-dark-mode .social-links a {
-    background: #2a3a4a; /* Fundo escuro azulado */
-    color: #b8d4e8; /* Ícones em azul claro */
+    background: #2a3a4a;
+    color: #b8d4e8;
 }
-
 body.a11y-dark-mode .social-links a:hover {
-    background: #3a5a7a; /* Azul médio no hover */
+    background: #3a5a7a;
     color: #ffffff;
-    transform: translateY(-2px);
 }
-
 body.a11y-dark-mode .footer-bottom {
-    border-top: 1px solid #2a3a4a;
+    border-top-color: #2a3a4a;
     color: #6a8aaa;
 }
-
 body.a11y-dark-mode .footer-bottom a {
     color: #8aaccc;
 }
-
 body.a11y-dark-mode .footer-bottom a:hover {
     color: #c8e4f8;
-}
-
-body.a11y-dark-mode .footer-bottom p {
-    color: #6a8aaa;
 }
 
 /* =========================================
    RESPONSIVIDADE
    ========================================= */
 @media (max-width: 900px) {
-    .category-section,
-    .category-section-reverse {
-        flex-direction: column;
-        gap: 28px;
-        padding: 44px 24px;
+    .hero-card {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 30px 0;
     }
-
-    .page-hero {
-        padding: 48px 24px 16px;
+    .hero-image-wrapper {
+        height: 280px;
     }
-
-    .page-hero h1 {
-        font-size: 28px;
-    }
-
-    .page-hero p {
-        font-size: 16px;
-    }
-
-    .category-text {
-        text-align: center;
-    }
-
-    .category-text p {
-        max-width: 100%;
-    }
-
-    .category-text h2 {
-        font-size: 22px;
-    }
-
-    .category-btn {
-        justify-content: center;
-    }
-
-    .coming-soon-grid {
+    .articles-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-
-    .coming-soon-section {
-        padding: 40px 24px 60px;
+    .main-title {
+        font-size: 2.2rem;
     }
-
+    .header-glass {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .header-links {
+        justify-content: flex-start;
+        gap: 16px;
+    }
     .breadcrumb-nav {
         display: none;
     }
@@ -545,39 +602,52 @@ body.a11y-dark-mode .footer-bottom p {
         align-items: center;
         text-align: center;
     }
+    .container-novo {
+        padding: 0 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    .main-title {
+        font-size: 1.8rem;
+    }
+    .hero-title {
+        font-size: 1.6rem;
+    }
+    .hero-image-wrapper {
+        height: 220px;
+    }
+    .tabs {
+        gap: 16px;
+    }
+    .tab-item {
+        font-size: 0.8rem;
+    }
+    .category-btn {
+        align-self: center;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 480px) {
-    .category-section {
-        padding: 36px 16px;
-        gap: 20px;
-    }
-
-    .page-hero {
-        padding: 40px 16px 8px;
-    }
-
-    .page-hero h1 {
-        font-size: 24px;
-    }
-
-    .category-text h2 {
-        font-size: 20px;
-    }
-
-    .category-text p {
-        font-size: 15px;
-    }
-
-    .coming-soon-grid {
-        grid-template-columns: 1fr;
-    }
-
     .footer-main {
         grid-template-columns: 1fr;
     }
+    .main-title {
+        font-size: 1.5rem;
+    }
+    .hero-card {
+        padding: 20px 0;
+    }
+    .container-novo {
+        padding: 0 8px;
+    }
+    .coming-soon-title {
+        font-size: 1.4rem;
+    }
 }
-
-
-
-  

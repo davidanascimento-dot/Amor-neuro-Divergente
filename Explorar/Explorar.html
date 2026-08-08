@@ -5,18 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Explore artigos, guias, ferramentas e eventos sobre neurodiversidade. Conteúdo organizado de forma clara e acessível.">
     <title>Explorar — Amor NeuroDivergente</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="Explorar.css">
+
 </head>
+
+<body>
+
+    <!-- =============================================
+    SIDEBAR E DEMAIS ELEMENTOS
+    ============================================= -->
 
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
-         
             <div class="acolheria-modal-header">
                 <div class="acolheria-modal-title">
                     <i class="fa-solid fa-robot"></i>
@@ -27,13 +33,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
-           
-            <div class="acolheria-modal-body" id="acolheriaChatBody">
-               
-            </div>
-
-           
+            <div class="acolheria-modal-body" id="acolheriaChatBody"></div>
             <div class="acolheria-suggestions" id="acolheriaSuggestions">
                 <button class="acolheria-suggestion" data-prompt="O que é TDAH?"> TDAH</button>
                 <button class="acolheria-suggestion" data-prompt="O que é autismo?"> Autismo</button>
@@ -42,8 +42,6 @@
                 <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?"> Direitos</button>
                 <button class="acolheria-suggestion" data-prompt="Quero desabafar"> Desabafar</button>
             </div>
-
-           
             <div class="acolheria-modal-footer">
                 <div class="acolheria-input-wrapper">
                     <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
@@ -58,66 +56,18 @@
         </div>
     </div>
 
-   
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
-<body>
 
-    <!-- Botão de toggle da sidebar (sempre visível) -->
-    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
-        <i class="fa-solid fa-bars"></i>
-    </button>
+ 
 
-    <!-- =============================================
-    SIDEBAR — Começa fechada
-    ============================================= -->
-    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
-        <div class="sidebar-profile" id="sidebarProfile">
-            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
-                <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
-                <span id="sidebarUserName">Visitante</span>
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="profile-detail" id="profileDetail" hidden>
-                <p id="sidebarUserEmail">carregando@email.com</p>
-                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav" aria-label="Principal">
-            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/explorar/explorar.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-compass"></i> Explorar</a>
-            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
-            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
-            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
-        </nav>
-
-        
-
-        <div class="sidebar-secondary">
-            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
-            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
-            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
-        </div>
-    </aside>
-
-    <!-- Overlay para quando a sidebar estiver aberta -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- =============================================
-    BOTÃO VOLTAR AO TOPO
-    ============================================= -->
-    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
-        <i class="fa-solid fa-arrow-up"></i>
-    </button>
-
+  
     <!-- =============================================
     CONTEÚDO PRINCIPAL
     ============================================= -->
     <main class="main-content" id="mainContent">
-        
+
         <!-- Header glass -->
         <header class="header-glass" id="headerGlass">
-            <!-- Breadcrumb -->
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <a href="/inicio.html">Início</a>
                 <i class="fa-solid fa-chevron-right"></i>
@@ -140,91 +90,332 @@
             <p>Escolha uma categoria e descubra conteúdos feitos com cuidado para você.</p>
         </section>
 
-        <!-- ARTIGOS E GUIAS -->
-        <section class="explore-section" id="artigos">
-            <div class="explore-section-image"><img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa lendo um artigo em um tablet" loading="lazy"></div>
-            <div class="explore-section-text">
-                <span class="section-icon"><i class="fa-solid fa-book-open"></i></span>
-                <h2>Artigos e Guias</h2>
+        <!-- =============================================
+        CARDS - TODOS OS CONTEÚDOS
+        ============================================= -->
+        <section class="explore-cards-section">
+            <div class="section-header">
+                <h2>Artigos e conteúdos em destaque</h2>
                 <p>Textos completos sobre autismo, TDAH, dislexia, altas habilidades e muito mais.</p>
-                <a href="/Recursos/recursos.html" class="explore-btn">Acessar Artigos e Guias <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-        </section>
+            <div class="cards-container">
+                <div class="cards-grid">
 
-        <!-- BLOG -->
-        <section class="explore-section explore-section-reverse" id="blog">
-            <div class="explore-section-image"><img src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg" alt="Mãos digitando em um notebook" loading="lazy"></div>
-            <div class="explore-section-text">
-                <span class="section-icon"><i class="fa-solid fa-pen-nib"></i></span>
-                <h2>Blog</h2>
-                <p>Histórias reais, reflexões e experiências da nossa comunidade.</p>
-                <a href="/blog/blog.html" class="explore-btn">Ler o Blog <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-        </section>
+                    <!-- ==========================================
+                    CARD 1 - HERO (Destaque principal)
+                    ========================================== -->
+                    <article class="card card-hero card-image bg-brain">
+                        <div>
+                            <span class="badge badge-teal">Artigo</span>
+                            <p class="category">TDAH</p>
+                            <h2 class="title title-large">Como o TDAH transforma a forma de processar o tempo</h2>
+                        </div>
+                        <div>
+                            <p class="description">Para muitas pessoas com TDAH, o tempo não flui de forma linear. Entender essa diferença muda tudo.</p>
+                            <p class="meta"><i class="fa-regular fa-user"></i> Dra. Aline Cardoso · <i class="fa-regular fa-clock"></i> 8 min</p>
+                        </div>
+                    </article>
 
-        <!-- FERRAMENTAS -->
-        <section class="explore-section" id="ferramentas">
-            <div class="explore-section-image"><img src="/img/Mesa organizada com planners visuais, canetas coloridas e materiais de apoio impressos.jpg" alt="Mesa organizada com planners visuais" loading="lazy"></div>
-            <div class="explore-section-text">
-                <span class="section-icon"><i class="fa-solid fa-wrench"></i></span>
-                <h2>Ferramentas</h2>
-                <p>Planners visuais, guias e recursos práticos para facilitar sua rotina.</p>
-                <a href="/ferramentas/ferramentas.html" class="explore-btn">Ver Ferramentas <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-        </section>
+                    <!-- ==========================================
+                    CARD 2
+                    ========================================== -->
+                    <article class="card">
+                        <div>
+                            <span class="badge badge-purple">Guia</span>
+                            <p class="category">Organização</p>
+                            <h3 class="title title-medium">Organização para estudos neurodivergentes</h3>
+                            <p class="description">5 etapas práticas para criar uma rotina que funciona para você.</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-user"></i> Equipe AND · <i class="fa-regular fa-clock"></i> 10 min</p>
+                    </article>
 
-        <!-- EVENTOS -->
-        <section class="explore-section explore-section-reverse" id="eventos">
-            <div class="explore-section-image"><img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.avif" alt="Grupo de pessoas sentadas em círculo" loading="lazy"></div>
-            <div class="explore-section-text">
-                <span class="section-icon"><i class="fa-regular fa-calendar-days"></i></span>
-                <h2>Eventos</h2>
-                <p>Grupos de apoio, workshops e encontros sobre neurodiversidade.</p>
-                <a href="/Recursos/eventos.html" class="explore-btn">Ver Eventos <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-        </section>
+                    <!-- ==========================================
+                    CARD 3
+                    ========================================== -->
+                    <article class="card">
+                        <div>
+                            <span class="badge badge-teal">Comunidade</span>
+                            <p class="category">TDAH Adultos</p>
+                            <h3 class="title title-medium">Alguém mais sente que às 18h sua capacidade simplesmente acaba?</h3>
+                            <p class="description"><i class="fa-regular fa-message"></i> 47 respostas · conversando agora</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-user"></i> Rafael M.</p>
+                    </article>
 
-        <!-- PERGUNTAS FREQUENTES — ACCORDION COM BUSCA -->
-        <section class="faq-section" id="faq">
-            <div class="faq-header">
-                <span class="faq-icon"><i class="fa-regular fa-circle-question"></i></span>
-                <h2>Perguntas Frequentes</h2>
-                <p>Tem dúvidas sobre diagnóstico, direitos, ou como usar o site? Aqui você encontra respostas diretas.</p>
-            </div>
-            
-            <!-- Campo de busca do FAQ -->
-            <div class="faq-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="faqSearchInput" placeholder="Filtrar perguntas..." aria-label="Buscar nas perguntas frequentes">
-            </div>
-            
-            <div class="faq-list" id="faqList">
-                <details class="faq-item" data-keywords="neurodiversidade conceito definição o que é"><summary><span>O que é neurodiversidade?</span><i class="fa-solid fa-chevron-down"></i></summary><div class="faq-answer"><p>Neurodiversidade é o conceito que reconhece que variações neurológicas — como autismo, TDAH, dislexia e outras — são <strong>diferenças naturais</strong> do cérebro humano, não doenças a serem curadas. O termo foi criado pela socióloga Judy Singer nos anos 90.</p></div></details>
-                <details class="faq-item" data-keywords="diagnóstico sus caps ubs obter conseguir laudo médico"><summary><span>Como obter um diagnóstico pelo SUS?</span><i class="fa-solid fa-chevron-down"></i></summary><div class="faq-answer"><p>Procure a <strong>UBS (Unidade Básica de Saúde)</strong> mais próxima. O clínico geral pode encaminhar para um <strong>CAPS (Centro de Atenção Psicossocial)</strong> ou para avaliação neuropsicológica na rede pública. É um direito garantido por lei.</p></div></details>
-                <details class="faq-item" data-keywords="stimming movimento repetitivo autorregulação balançar girar"><summary><span>O que é stimming?</span><i class="fa-solid fa-chevron-down"></i></summary><div class="faq-answer"><p>Stimming (do inglês <em>self-stimulatory behavior</em>) são movimentos repetitivos como balançar as mãos, girar objetos ou fazer sons. É uma <strong>ferramenta de autorregulação</strong> — ajuda a processar estímulos e gerenciar emoções. <strong>Não deve ser reprimido.</strong></p></div></details>
-                <details class="faq-item" data-keywords="nível autismo suporte 1 2 3 diferença tea"><summary><span>Qual a diferença entre autismo nível 1, 2 e 3?</span><i class="fa-solid fa-chevron-down"></i></summary><div class="faq-answer"><p>Os níveis indicam a <strong>quantidade de suporte</strong> que a pessoa precisa no dia a dia. <strong>Nível 1:</strong> precisa de algum suporte. <strong>Nível 2:</strong> precisa de suporte substancial. <strong>Nível 3:</strong> precisa de suporte muito substancial. Uma pessoa pode mudar de nível ao longo da vida.</p></div></details>
-                <details class="faq-item" data-keywords="gratuito site grátis pagar conteúdo acesso"><summary><span>O site é gratuito?</span><i class="fa-solid fa-chevron-down"></i></summary><div class="faq-answer"><p><strong>Sim, todo o conteúdo é gratuito.</strong> Artigos, guias, ferramentas e a comunidade são acessíveis sem custo. Temos uma loja com produtos físicos e aceitamos doações para manter o projeto.</p></div></details>
-                <details class="faq-item" data-keywords="acolheria terapeuta substitui profissional psicólogo ajuda crise"><summary><span>A AcolherIA substitui um terapeuta?</span><i class="fa-solid fa-chevron-down"></i></summary><div class="faq-answer"><p><strong>Não.</strong> A AcolherIA é uma ferramenta de acolhimento e informação, mas não substitui atendimento profissional. Se você estiver em crise, procure o <strong>CVV (188)</strong> ou um serviço de emergência.</p></div></details>
-                <details class="faq-item" data-keywords="ajudar doação voluntário contribuir projeto apoio"><summary><span>Como posso ajudar o projeto?</span><i class="fa-solid fa-chevron-down"></i></summary><div class="faq-answer"><p>Você pode fazer uma <strong>doação</strong> de qualquer valor, comprar produtos na nossa <strong>loja</strong>, ou se voluntariar. Toda contribuição ajuda a manter este espaço seguro e acessível para todes. 💜</p></div></details>
-            </div>
-            
-            <p class="faq-no-results" id="faqNoResults" style="display:none;">Nenhuma pergunta encontrada para "<strong id="faqSearchTerm"></strong>". Tente outro termo.</p>
-        </section>
+                    <!-- ==========================================
+                    CARD 4
+                    ========================================== -->
+                    <article class="card card-image bg-book">
+                        <div>
+                            <span class="badge badge-teal">Artigo</span>
+                            <p class="category">Autismo</p>
+                            <h3 class="title title-medium">Sobrecarga sensorial no trabalho — identificar e prevenir</h3>
+                        </div>
+                        <div>
+                            <p class="description">Estratégias para criar um ambiente que funcione para você, não contra você.</p>
+                            <p class="meta"><i class="fa-regular fa-user"></i> Lucas Ferreira · <i class="fa-regular fa-clock"></i> 6 min</p>
+                        </div>
+                    </article>
 
-        <!-- CONTATO -->
-        <section class="explore-section explore-section-reverse contact-section" id="contato">
-            <div class="explore-section-image"><img src="/img/blog-post-1-DvwhQAY4.jpg" alt="Pessoa segurando um telefone" loading="lazy"></div>
-            <div class="explore-section-text">
-                <span class="section-icon contact-icon"><i class="fa-solid fa-headset"></i></span>
-                <h2>Fale Conosco</h2>
-                <p>Precisa de ajuda, tem alguma sugestão ou quer compartilhar sua história? <strong>Estamos aqui para você 💜</strong></p>
-                <div class="contact-options">
-                    <a href="/Quem somos/CONTATE-NOS/contate.html" class="explore-btn">Ir para Contato <i class="fa-solid fa-arrow-right"></i></a>
-                    <a href="mailto:contato@amorneurodivergente.com" class="contact-link-secondary"><i class="fa-regular fa-envelope"></i> contato@amorneurodivergente.com</a>
+                    <!-- ==========================================
+                    CARD 5
+                    ========================================== -->
+                    <article class="card">
+                        <div>
+                            <span class="badge badge-orange">Blog</span>
+                            <p class="category">Perspectivas</p>
+                            <h3 class="title title-medium">Crescer sem diagnóstico — o que ninguém te conta</h3>
+                            <p class="description">Uma história real de descoberta tardia e os desafios de uma vida sem respostas.</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-user"></i> Fernanda Dias · <i class="fa-regular fa-clock"></i> 4 min</p>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 6
+                    ========================================== -->
+                    <article class="card">
+                        <div>
+                            <span class="badge badge-teal">Ferramenta</span>
+                            <p class="category">Produtividade</p>
+                            <h3 class="title title-medium">Temporizador adaptado ao TDAH</h3>
+                            <p class="description">Pomodoro com pausas personalizáveis e lembretes suaves.</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-circle-check"></i> Ferramenta</p>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 7
+                    ========================================== -->
+                    <article class="card card-image bg-work">
+                        <div>
+                            <span class="badge badge-teal">Artigo</span>
+                            <p class="category">Direitos</p>
+                            <h3 class="title title-medium">Adaptações razoáveis no trabalho: o que a lei garante</h3>
+                        </div>
+                        <div>
+                            <p class="description">Seu empregador tem obrigações. Saiba quais são e como pedir adaptações formalmente.</p>
+                            <p class="meta"><i class="fa-regular fa-user"></i> Mariana Costa · <i class="fa-regular fa-clock"></i> 7 min</p>
+                        </div>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 8
+                    ========================================== -->
+                    <article class="card">
+                        <div>
+                            <span class="badge badge-purple">Guia</span>
+                            <p class="category">Saúde</p>
+                            <h3 class="title title-medium">Regulação sensorial: guia completo</h3>
+                            <p class="description">Entenda seus gatilhos e crie um kit de conforto sensorial para momentos de sobrecarga.</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-user"></i> Equipe AND · <i class="fa-regular fa-clock"></i> 12 min</p>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 9
+                    ========================================== -->
+                    <article class="card card-image bg-therapy">
+                        <div>
+                            <span class="badge badge-pink">Artigo</span>
+                            <p class="category">Saúde Mental</p>
+                            <h3 class="title title-medium">Burnout em pessoas neurodivergentes: sinais e prevenção</h3>
+                        </div>
+                        <div>
+                            <p class="description">Como reconhecer os primeiros sintomas e criar estratégias de autocuidado eficazes.</p>
+                            <p class="meta"><i class="fa-regular fa-user"></i> Dra. Camila Santos · <i class="fa-regular fa-clock"></i> 9 min</p>
+                        </div>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 10
+                    ========================================== -->
+                    <article class="card card-image bg-tech">
+                        <div>
+                            <span class="badge badge-blue">Ferramenta</span>
+                            <p class="category">Tecnologia</p>
+                            <h3 class="title title-medium">Apps essenciais para organização diária</h3>
+                            <p class="description">Seleção de aplicativos gratuitos que ajudam na rotina e na gestão do tempo.</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-circle-check"></i> 5 min</p>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 11
+                    ========================================== -->
+                    <article class="card card-image bg-community">
+                        <div>
+                            <span class="badge badge-green">Comunidade</span>
+                            <p class="category">Convivência</p>
+                            <h3 class="title title-medium">Como explicar a neurodiversidade para a família</h3>
+                        </div>
+                        <div>
+                            <p class="description">Dicas práticas para conversar com parentes e construir uma rede de apoio.</p>
+                            <p class="meta"><i class="fa-regular fa-user"></i> Mariana Silva · <i class="fa-regular fa-clock"></i> 6 min</p>
+                        </div>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 12
+                    ========================================== -->
+                    <article class="card">
+                        <div>
+                            <span class="badge badge-orange">Blog</span>
+                            <p class="category">Experiências</p>
+                            <h3 class="title title-medium">O que eu gostaria que meus professores soubessem</h3>
+                            <p class="description">Relato de uma estudante neurodivergente sobre os desafios na escola.</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-user"></i> Ana Beatriz · <i class="fa-regular fa-clock"></i> 7 min</p>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 13
+                    ========================================== -->
+                    <article class="card">
+                        <div>
+                            <span class="badge badge-purple">Guia</span>
+                            <p class="category">Carreira</p>
+                            <h3 class="title title-medium">Entrevista de emprego para pessoas neurodivergentes</h3>
+                            <p class="description">Como se preparar, o que perguntar e quais adaptações você pode solicitar.</p>
+                        </div>
+                        <p class="meta"><i class="fa-regular fa-user"></i> Equipe AND · <i class="fa-regular fa-clock"></i> 8 min</p>
+                    </article>
+
+                    <!-- ==========================================
+                    CARD 14
+                    ========================================== -->
+                    <article class="card card-image bg-book">
+                        <div>
+                            <span class="badge badge-teal">Artigo</span>
+                            <p class="category">Educação</p>
+                            <h3 class="title title-medium">Dislexia: métodos de ensino que realmente funcionam</h3>
+                        </div>
+                        <div>
+                            <p class="description">Abordagens pedagógicas eficazes para estudantes com dislexia.</p>
+                            <p class="meta"><i class="fa-regular fa-user"></i> Prof. Ricardo Alves · <i class="fa-regular fa-clock"></i> 10 min</p>
+                        </div>
+                    </article>
+
+                    <!-- ==========================================
+                    ÁREA: ARTIGOS E GUIAS (Card personalizado)
+                    ========================================== -->
+                    <div class="card-area">
+                        <div class="area-icon purple"><i class="fa-solid fa-book-open"></i></div>
+                        <h3 class="area-title">Artigos e Guias</h3>
+                        <p class="area-desc">Textos completos sobre autismo, TDAH, dislexia, altas habilidades e muito mais.</p>
+                        <a href="/Recursos/recursos.html" class="area-btn">
+                            Acessar Artigos e Guias <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- ==========================================
+                    ÁREA: BLOG (Card personalizado)
+                    ========================================== -->
+                    <div class="card-area">
+                        <div class="area-icon orange"><i class="fa-solid fa-pen-nib"></i></div>
+                        <h3 class="area-title">Blog</h3>
+                        <p class="area-desc">Histórias reais, reflexões e experiências da nossa comunidade.</p>
+                        <a href="/blog/blog.html" class="area-btn">
+                            Ler o Blog <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- ==========================================
+                    ÁREA: FERRAMENTAS (Card personalizado)
+                    ========================================== -->
+                    <div class="card-area">
+                        <div class="area-icon teal"><i class="fa-solid fa-wrench"></i></div>
+                        <h3 class="area-title">Ferramentas</h3>
+                        <p class="area-desc">Planners visuais, guias e recursos práticos para facilitar sua rotina.</p>
+                        <a href="/ferramentas/ferramentas.html" class="area-btn">
+                            Ver Ferramentas <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- ==========================================
+                    ÁREA: EVENTOS (Card personalizado)
+                    ========================================== -->
+                    <div class="card-area">
+                        <div class="area-icon pink"><i class="fa-regular fa-calendar-days"></i></div>
+                        <h3 class="area-title">Eventos</h3>
+                        <p class="area-desc">Grupos de apoio, workshops e encontros sobre neurodiversidade.</p>
+                        <a href="/Recursos/eventos.html" class="area-btn">
+                            Ver Eventos <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- ==========================================
+                    CARD FAQ (Com busca e accordion integrados)
+                    ========================================== -->
+                    <div class="card-faq card-faq-full">
+                        <div class="faq-header-card">
+                            <div class="faq-icon-card"><i class="fa-regular fa-circle-question"></i></div>
+                            <span class="faq-title-card">Perguntas Frequentes</span>
+                        </div>
+                        <p class="faq-desc-card">Tem dúvidas sobre diagnóstico, direitos, ou como usar o site? Aqui você encontra respostas diretas.</p>
+
+                        <div class="faq-search-card">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="faqSearchInputCard" placeholder="Filtrar perguntas..." aria-label="Buscar nas perguntas frequentes">
+                        </div>
+
+                        <div class="faq-list-card" id="faqListCard">
+                            <details class="faq-item-card" data-keywords="neurodiversidade conceito definição o que é">
+                                <summary><span>O que é neurodiversidade?</span><i class="fa-solid fa-chevron-down"></i></summary>
+                                <div class="faq-answer-card"><p>Neurodiversidade é o conceito que reconhece que variações neurológicas — como autismo, TDAH, dislexia e outras — são <strong>diferenças naturais</strong> do cérebro humano, não doenças a serem curadas. O termo foi criado pela socióloga Judy Singer nos anos 90.</p></div>
+                            </details>
+                            <details class="faq-item-card" data-keywords="diagnóstico sus caps ubs obter conseguir laudo médico">
+                                <summary><span>Como obter um diagnóstico pelo SUS?</span><i class="fa-solid fa-chevron-down"></i></summary>
+                                <div class="faq-answer-card"><p>Procure a <strong>UBS (Unidade Básica de Saúde)</strong> mais próxima. O clínico geral pode encaminhar para um <strong>CAPS (Centro de Atenção Psicossocial)</strong> ou para avaliação neuropsicológica na rede pública. É um direito garantido por lei.</p></div>
+                            </details>
+                            <details class="faq-item-card" data-keywords="stimming movimento repetitivo autorregulação balançar girar">
+                                <summary><span>O que é stimming?</span><i class="fa-solid fa-chevron-down"></i></summary>
+                                <div class="faq-answer-card"><p>Stimming (do inglês <em>self-stimulatory behavior</em>) são movimentos repetitivos como balançar as mãos, girar objetos ou fazer sons. É uma <strong>ferramenta de autorregulação</strong> — ajuda a processar estímulos e gerenciar emoções. <strong>Não deve ser reprimido.</strong></p></div>
+                            </details>
+                            <details class="faq-item-card" data-keywords="nível autismo suporte 1 2 3 diferença tea">
+                                <summary><span>Qual a diferença entre autismo nível 1, 2 e 3?</span><i class="fa-solid fa-chevron-down"></i></summary>
+                                <div class="faq-answer-card"><p>Os níveis indicam a <strong>quantidade de suporte</strong> que a pessoa precisa no dia a dia. <strong>Nível 1:</strong> precisa de algum suporte. <strong>Nível 2:</strong> precisa de suporte substancial. <strong>Nível 3:</strong> precisa de suporte muito substancial. Uma pessoa pode mudar de nível ao longo da vida.</p></div>
+                            </details>
+                            <details class="faq-item-card" data-keywords="gratuito site grátis pagar conteúdo acesso">
+                                <summary><span>O site é gratuito?</span><i class="fa-solid fa-chevron-down"></i></summary>
+                                <div class="faq-answer-card"><p><strong>Sim, todo o conteúdo é gratuito.</strong> Artigos, guias, ferramentas e a comunidade são acessíveis sem custo. Temos uma loja com produtos físicos e aceitamos doações para manter o projeto.</p></div>
+                            </details>
+                            <details class="faq-item-card" data-keywords="acolheria terapeuta substitui profissional psicólogo ajuda crise">
+                                <summary><span>A AcolherIA substitui um terapeuta?</span><i class="fa-solid fa-chevron-down"></i></summary>
+                                <div class="faq-answer-card"><p><strong>Não.</strong> A AcolherIA é uma ferramenta de acolhimento e informação, mas não substitui atendimento profissional. Se você estiver em crise, procure o <strong>CVV (188)</strong> ou um serviço de emergência.</p></div>
+                            </details>
+                            <details class="faq-item-card" data-keywords="ajudar doação voluntário contribuir projeto apoio">
+                                <summary><span>Como posso ajudar o projeto?</span><i class="fa-solid fa-chevron-down"></i></summary>
+                                <div class="faq-answer-card"><p>Você pode fazer uma <strong>doação</strong> de qualquer valor, comprar produtos na nossa <strong>loja</strong>, ou se voluntariar. Toda contribuição ajuda a manter este espaço seguro e acessível para todes. 💜</p></div>
+                            </details>
+                        </div>
+
+                        <p class="faq-no-results-card" id="faqNoResultsCard" style="display:none;">Nenhuma pergunta encontrada para "<strong id="faqSearchTermCard"></strong>".</p>
+
+                        <a href="#faq" class="faq-view-all">Ver todas as perguntas <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- ==========================================
+                    CARD CONTATO
+                    ========================================== -->
+                    <div class="card-contact">
+                        <div class="contact-header">
+                            <div class="contact-icon-card"><i class="fa-solid fa-headset"></i></div>
+                            <span class="contact-title-card">Fale Conosco</span>
+                        </div>
+                        <p class="contact-desc-card">Precisa de ajuda, tem alguma sugestão ou quer compartilhar sua história? <strong>Estamos aqui para você 💜</strong></p>
+                        <div class="contact-actions">
+                            <a href="/Quem somos/CONTATE-NOS/contate.html" class="contact-btn">
+                                Ir para Contato <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                            <a href="mailto:contato@amorneurodivergente.com" class="contact-email">
+                                <i class="fa-regular fa-envelope"></i> contato@amorneurodivergente.com
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
-
 
         <!-- FOOTER -->
         <footer class="footer">
@@ -239,21 +430,16 @@
 
     </main>
 
-          <!-- ========================================= -->
-    <!-- HUB FLUTUANTE - ACESSIBILIDADE + AJUDA    -->
-    <!-- ========================================= -->
-
+    <!-- =============================================
+    HUB FLUTUANTE
+    ============================================= -->
     <div class="floating-hub" id="floatingHub">
-        <!-- Botão principal que abre/fecha o hub -->
         <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
             <span class="floating-hub-label">Acessibilidade</span>
         </button>
-
-        <!-- Menu do hub (aparece ao clicar) -->
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
-                <!-- Linha 1: Acessibilidade -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
                     <div class="floating-hub-actions">
@@ -283,11 +469,7 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- Divisória -->
                 <div class="floating-hub-divider"></div>
-
-                <!-- Linha 2: Ajuda/Atendimento -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
@@ -317,13 +499,54 @@
         </div>
     </div>
 
-    <!-- OVERLAY para fechar ao clicar fora (OBRIGATÓRIO) -->
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
-<script src="Explorar.js"></script>
-<script src="/Acolher-IA/Acolher-IA.js"></script>
+    <!-- SCRIPTS -->
+    <script src="Explorar.js"></script>
+    <script src="/Acolher-IA/Acolher-IA.js"></script>
 
- <div vw class="enabled">
+    <script>
+        // =============================================
+        // FAQ SEARCH - CARD
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('faqSearchInputCard');
+            const items = document.querySelectorAll('#faqListCard .faq-item-card');
+            const noResults = document.getElementById('faqNoResultsCard');
+            const searchTerm = document.getElementById('faqSearchTermCard');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    let found = false;
+
+                    items.forEach(item => {
+                        const keywords = (item.dataset.keywords || '').toLowerCase();
+                        const text = item.textContent.toLowerCase();
+                        const match = query === '' || keywords.includes(query) || text.includes(query);
+
+                        if (match) {
+                            item.removeAttribute('hidden');
+                            found = true;
+                        } else {
+                            item.setAttribute('hidden', '');
+                        }
+                    });
+
+                    if (noResults) {
+                        if (query !== '' && !found) {
+                            noResults.style.display = 'block';
+                            searchTerm.textContent = query;
+                        } else {
+                            noResults.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+    <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper>
             <div class="vw-plugin-top-wrapper"></div>
@@ -334,7 +557,6 @@
     <script>
         new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
-
 
 </body>
 </html>
