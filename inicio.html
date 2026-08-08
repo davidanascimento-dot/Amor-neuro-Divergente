@@ -14,6 +14,7 @@
     
     <link rel="stylesheet" href="inicio.css">
     <link rel="stylesheet" href="carrossel.css">
+    <link rel="stylesheet" href="comunidade/comunidade.css">
 </head>
 
 <body>
@@ -100,21 +101,30 @@
     <main class="main-content" id="mainContent">
         
         <!-- HEADER -->
-        <header class="header-glass" id="headerGlass">
-            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                <a href="/inicio.html"></a>
-                <span></span>
-            </nav>
-            <a href="/inicio.html" class="logo">
-                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
-                <span class="logo-text">Amor NeuroDivergente</span>
+        <header class="navbar">
+        <div class="container navbar-container">
+            <a href="/inicio.html" class="brand" id="brandLink">
+                <div class="brand-icon"></div>
+                <div class="brand-text">
+                    Amor
+                    <span>NEURODIVERGENTE</span>
+                </div>
             </a>
-            <nav class="header-links">
-                <a href="/explorar/explorar.html">Explorar</a>
-                <a href="/comunidade/comunidade.html">Comunidade</a>
-                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+
+            <nav class="nav-links">
+                <a href="/explorar/explorar.html" class="nav-link">Explorar</a>
+                <a href="/comunidade/comunidade.html" class="nav-link">Comunidade</a>
+                <a href="/Direitos/direitos.html">Direitos</a>
             </nav>
-        </header>
+
+            <div class="nav-actions">
+                 <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">AcolherIA</a>
+                <button class="btn-icon-only" id="profileMenuBtn" title="Perfil / Acessibilidade">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
         <!-- ============================================================
         HERO - Com imagem de fundo e texto centralizado
