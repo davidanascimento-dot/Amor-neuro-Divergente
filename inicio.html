@@ -128,89 +128,90 @@
     </header>
 
     
-    <section>
-      <div class="hero-grid">
-        <div>
-          <div class="badge-pill">✨ UM ESPAÇO PARA VOCÊ</div>
-          <h1 class="hero-title">
-            Um lugar para <span class="highlight-green">entender</span> quem você é. 
-            <span class="highlight-purple">E encontrar caminhos</span> que façam sentido para você.
-          </h1>
-          <p class="hero-description">
-            Informação, ferramentas, comunidade e acolhimento para pessoas neurodivergentes, famílias, profissionais e todos que querem compreender melhor a neurodiversidade.
-          </p>
-          <div class="hero-actions">
-            <a href="#explorar" class="btn-primary">Explorar a plataforma <i data-lucide="arrow-right"></i></a>
-            <a href="#chat" class="btn-outline"><i data-lucide="bot"></i> Conhecer a AcolherIA</a>
-          </div>
-          <div class="hero-checklist">
-            <span><i data-lucide="check" style="color:var(--brand-teal); width:16px;"></i> Conteúdo acessível</span>
-            <span>•</span>
-            <span><i data-lucide="check" style="color:var(--brand-teal); width:16px;"></i> Comunidade</span>
-            <span>•</span>
-            <span><i data-lucide="check" style="color:var(--brand-teal); width:16px;"></i> Ferramentas</span>
-            <span>•</span>
-            <span><i data-lucide="check" style="color:var(--brand-teal); width:16px;"></i> Informação</span>
-          </div>
+   <section class="hero-section">
+    <div class="hero-grid">
+      
+      <!-- LADO ESQUERDO: SEUS TEXTOS -->
+      <div class="hero-content">
+        <div class="badge-pill">✨ UM ESPAÇO PARA VOCÊ</div>
+        
+        <h1 class="hero-title">
+          Um lugar para <span class="highlight-green">entender</span> quem você é. 
+          <span class="highlight-purple">E encontrar caminhos</span> que façam sentido para você.
+        </h1>
+        
+        <p class="hero-description">
+          Informação, ferramentas, comunidade e acolhimento para pessoas neurodivergentes, famílias, profissionais e todos que querem compreender melhor a neurodiversidade.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#explorar" class="btn-primary">
+            Explorar a plataforma <i data-lucide="arrow-right"></i>
+          </a>
+          <a href="#chat" class="btn-outline">
+            <i data-lucide="bot"></i> Conhecer a AcolherIA
+          </a>
         </div>
 
-        <div class="hero-mockup-wrapper">
-          <div class="mockup-window">
-            <div class="mockup-header">
-              <span class="dot dot-red"></span>
-              <span class="dot dot-yellow"></span>
-              <span class="dot dot-green"></span>
-            </div>
-            <div class="mockup-grid">
-              <div class="mockup-card-item" style="background:#e6fffa; color:var(--brand-teal);">
-                <i data-lucide="book-open"></i>
-                <span>BIBLIOTECA</span>
-              </div>
-              <div class="mockup-card-item" style="background:#f3e8ff; color:var(--brand-purple);">
-                <i data-lucide="users"></i>
-                <span>Comunidade</span>
-              </div>
-              <div class="mockup-card-item" style="background:#f0fdf4; color:#16a34a;">
-                <i data-lucide="shield"></i>
-                <span>Direitos</span>
-              </div>
-              <div class="mockup-card-item" style="background:#fefce8; color:#d97706;">
-                <i data-lucide="compass"></i>
-                <span>Explorar</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Floating Chat Widget Mockup -->
-          <div class="floating-card-chat">
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-              <i data-lucide="bot" style="color:var(--brand-teal); width:18px;"></i>
-              <strong style="font-size:0.85rem;">AcolherIA</strong>
-              <span style="font-size:0.65rem; color:#10b981;">● Online</span>
-            </div>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">Olá! Como posso ajudar você hoje?</p>
-            <div style="display:flex; gap:4px;">
-              <span style="font-size:0.65rem; padding:2px 8px; background:var(--brand-teal-bg); color:var(--brand-teal); border-radius:10px;">TDAH</span>
-              <span style="font-size:0.65rem; padding:2px 8px; background:var(--brand-teal-bg); color:var(--brand-teal); border-radius:10px;">Autismo</span>
-            </div>
-          </div>
-
-          <!-- Floating Community Counter -->
-          <div class="floating-card-community">
-            <div class="avatar-group">
-              <div class="avatar">A</div>
-              <div class="avatar" style="background:var(--brand-purple);">M</div>
-              <div class="avatar" style="background:var(--brand-yellow);">L</div>
-              <div class="avatar" style="background:#2563eb;">R</div>
-            </div>
-            <div>
-              <div style="font-size:0.75rem; font-weight:700;">Comunidade em movimento</div>
-              <div style="font-size:0.65rem; color:var(--text-muted);">+2.4k pessoas conectadas</div>
-            </div>
-          </div>
+        <div class="hero-checklist">
+          <span><i data-lucide="check" class="icon-check"></i> Conteúdo acessível</span>
+          <span class="divider">•</span>
+          <span><i data-lucide="check" class="icon-check"></i> Comunidade</span>
+          <span class="divider">•</span>
+          <span><i data-lucide="check" class="icon-check"></i> Ferramentas</span>
+          <span class="divider">•</span>
+          <span><i data-lucide="check" class="icon-check"></i> Informação</span>
         </div>
       </div>
-    </section>
+
+  <!-- LADO DIREITO: PERSONAGEM + 4 CARDS INTERATIVOS COM IMAGEM -->
+<div class="hero-visual" id="interactiveArea">
+  <div class="character-container">
+    
+    <!-- Elementos visuais do fundo -->
+    <div class="halo-bg"></div>
+    <div class="orbit-lines"></div>
+
+    <!-- Imagem do Personagem sem fundo -->
+    <img src="/img/personagem-amor.png" alt="Personagem lendo livro" class="character-img">
+
+    <!-- CARD 1: BIBLIOTECA - APENAS IMAGEM -->
+    <div class="interactive-card card-biblioteca">
+      <div class="card-preview">
+        <img src="/img/Biblioteca.png" alt="Ir para Biblioteca">
+        <a href="/biblioteca/biblioteca.html" aria-label="Ir para Biblioteca"></a>
+      </div>
+    </div>
+
+    <!-- CARD 2: COMUNIDADE - APENAS IMAGEM -->
+    <div class="interactive-card card-comunidade">
+      <div class="card-preview">
+        <img src="/img/Comunidade.png" alt="Ir para Comunidade">
+        <a href="/comunidade/comunidade.html" aria-label="Ir para Comunidade"></a>
+      </div>
+    </div>
+
+    <!-- CARD 3: DIREITOS - APENAS IMAGEM -->
+    <div class="interactive-card card-direitos">
+      <div class="card-preview">
+        <img src="/img/Direitos.png" alt="Ir para Direitos">
+        <a href="/direitos/direitos.html" aria-label="Ir para Direitos"></a>
+      </div>
+    </div>
+
+    <!-- CARD 4: EXPLORAR - APENAS IMAGEM -->
+    <div class="interactive-card card-explorar">
+      <div class="card-preview">
+        <img src="/img/Explorar.png" alt="Ir para Explorar">
+        <a href="/explorar/explorar.html" aria-label="Ir para Explorar"></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    </div>
+  </section>
 
 
        <!-- Left Navigation Bar -->

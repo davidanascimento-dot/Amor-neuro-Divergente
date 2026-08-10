@@ -1003,4 +1003,4 @@ Eu sou a assistente virtual do projeto **Amor NeuroDivergente** — uma comunida
     console.log('💬 AcolherIA Modal inicializada com API Groq!');
 
     console.log('✨ Início carregado! Sidebar + Carrossel 3D + Acessibilidade + Hub Flutuante + Reveal');
-});a
+});
