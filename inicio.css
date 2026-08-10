@@ -3415,7 +3415,7 @@ body.a11y-dark-mode .acolheria-overlay-bg {
   background: transparent;
 }
 
-/* Posições dos cards */
+/* Posições dos cards - TODOS ALINHADOS */
 .card-biblioteca {
   top: 5px;
   left: -85px;
@@ -3425,7 +3425,7 @@ body.a11y-dark-mode .acolheria-overlay-bg {
 
 .card-comunidade {
   top: -30px;
-  right: -75px;
+  right: -85px;
   transform: translate(-35px, 35px) scale(0.80);
   transition-delay: 0.08s;
 }
@@ -3468,6 +3468,8 @@ body.a11y-dark-mode .acolheria-overlay-bg {
   position: relative;
   cursor: pointer;
   background: transparent;
+  overflow: hidden;
+  border-radius: 14px;
 }
 
 .card-preview img {
@@ -3519,7 +3521,7 @@ body.a11y-dark-mode .acolheria-overlay-bg {
   display: none !important;
 }
 
-/* Ajuste para telas menores */
+/* RESPONSIVO - AJUSTE PARA TELAS MENORES */
 @media (max-width: 1024px) {
   .interactive-card {
     width: 150px;
@@ -3535,10 +3537,22 @@ body.a11y-dark-mode .acolheria-overlay-bg {
     width: 400px;
   }
   
-  .card-biblioteca { left: -60px; }
-  .card-comunidade { right: -50px; }
-  .card-direitos { left: -40px; }
-  .card-explorar { right: -60px; }
+  .card-biblioteca { 
+    top: 5px;
+    left: -60px; 
+  }
+  .card-comunidade { 
+    top: -20px;
+    right: -60px; 
+  }
+  .card-direitos { 
+    bottom: -15px;
+    left: -40px; 
+  }
+  .card-explorar { 
+    bottom: 5px;
+    right: -60px; 
+  }
 }
 
 @media (max-width: 768px) {
@@ -3562,11 +3576,11 @@ body.a11y-dark-mode .acolheria-overlay-bg {
     left: -40px; 
   }
   .card-comunidade { 
-    top: -20px;
-    right: -35px; 
+    top: -15px;
+    right: -40px; 
   }
   .card-direitos { 
-    bottom: -15px;
+    bottom: -10px;
     left: -25px; 
   }
   .card-explorar { 
@@ -3597,7 +3611,7 @@ body.a11y-dark-mode .acolheria-overlay-bg {
   }
   .card-comunidade { 
     top: -10px;
-    right: -20px; 
+    right: -25px; 
   }
   .card-direitos { 
     bottom: -5px;
@@ -3617,4 +3631,7 @@ body.a11y-dark-mode .acolheria-overlay-bg {
     width: 250px;
     height: 250px;
   }
+}
+.card-preview img {
+  object-position: center center; /* Centraliza a imagem */
 }
