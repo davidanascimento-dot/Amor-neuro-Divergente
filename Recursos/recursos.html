@@ -8,66 +8,23 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="recursos.css">
+    <link rel="stylesheet" href="/comunidade/comunidade.css">
 </head>
 <body>
 
-    <!-- =============================================
-    BOTÃO DE TOGGLE DA SIDEBAR
-    ============================================= -->
-    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
-        <i class="fa-solid fa-bars"></i>
-    </button>
+ 
 
     <!-- =============================================
-    SIDEBAR — Responsiva
-    ============================================= -->
-    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
-        <div class="sidebar-profile" id="sidebarProfile">
-            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
-                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
-                <span id="sidebarUserName">Visitante</span>
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="profile-detail" id="profileDetail" hidden>
-                <p id="sidebarUserEmail">carregando@email.com</p>
-                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav" aria-label="Principal">
-            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
-            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
-            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
-            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
-        </nav>
-
-        
-
-        <div class="sidebar-secondary">
-            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
-            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
-            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
-        </div>
-    </aside>
-
-    <!-- =============================================
-    OVERLAY
-    ============================================= -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- =============================================
-    CONTEÚDO PRINCIPAL
+    CONTEÚDO PRINCIPAL — NOVO FORMATO
     ============================================= -->
     <main class="main-content" id="mainContent">
         
-        <!-- HEADER GLASS com Breadcrumb (igual ao Explorar) -->
+        <!-- HEADER GLASS com Breadcrumb -->
         <header class="header-glass" id="headerGlass">
-            <!-- Breadcrumb -->
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <a href="/inicio.html">Início</a>
                 <i class="fa-solid fa-chevron-right"></i>
@@ -75,135 +32,213 @@
                 <i class="fa-solid fa-chevron-right"></i>
                 <span>Artigos e Guias</span>
             </nav>
-            <a href="/inicio.html" class="logo">
-                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
-                <span class="logo-text">Amor NeuroDivergente</span>
+            <a href="/inicio.html" class="brand" id="brandLink">
+                <div class="brand-icon"></div>
+                <div class="brand-text">
+                    Amor
+                    <span>NEURODIVERGENTE</span>
+                </div>
             </a>
-            <nav class="header-links">
-                <a href="/explorar/explorar.html">Explorar</a>
-                <a href="/comunidade/comunidade.html">Comunidade</a>
+
+            <nav class="nav-links">
+                <a href="/explorar/explorar.html" class="nav-link">Explorar</a>
+                <a href="/comunidade/comunidade.html" class="nav-link">Comunidade</a>
                 <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
+
+            <div class="nav-actions">
+                <button class="btn-acolhia" id="openAcolheriaBtn">✦ AcolhIA</button>
+                <button class="btn-icon-only" id="profileMenuBtn" title="Perfil / Acessibilidade">
+                    <i class="fa-regular fa-user"></i>
+                </button>
         </header>
 
         <!-- =============================================
-        CABEÇALHO DA PÁGINA
+        CONTEÚDO NO FORMATO NOVO (HERO + GRID)
         ============================================= -->
-        <section class="page-hero">
-            <span class="page-icon"><i class="fa-solid fa-book-open"></i></span>
-            <h1>Artigos e Guias</h1>
-            <p>Textos completos sobre autismo, TDAH, dislexia, altas habilidades e outras neurodivergências. Escritos com clareza, sem jargão desnecessário.</p>
-        </section>
+        <div class="container-novo">
+            
+            <!-- Header com Título e Categorias -->
+            <header class="header-novo">
+                <p class="tag-section">Artigos e Guias</p>
+                <h1 class="main-title">Textos completos sobre autismo, TDAH, dislexia, altas habilidades e outras neurodivergências.</h1>
+                <p class="sub-title">Escritos com clareza, sem jargão desnecessário.</p>
+                
+                <nav class="tabs">
+                    <a href="#" class="tab-item active">Todos</a>
+                    <a href="#" class="tab-item">Autismo</a>
+                    <a href="#" class="tab-item">TDAH</a>
+                    <a href="#" class="tab-item">Altas Habilidades</a>
+                    <a href="#" class="tab-item">Dislexia</a>
+                    <a href="#" class="tab-item">Saúde Mental</a>
+                    <a href="#" class="tab-item">Direitos</a>
+                </nav>
+            </header>
+
+            <!-- Artigo em Destaque (Hero) - AUTISMO -->
+            <section class="hero-card">
+                <div class="hero-image-wrapper">
+                    <span class="badge-destaque">Destaque</span>
+                    <img class="hero-image" src="/img/recursos-hero-DaGrMSNl - Copia.jpg" alt="Ilustração representando o espectro autista com cores suaves e formas diversas">
+                </div>
+                <div class="hero-content">
+                    <span class="category-tag">Autismo</span>
+                    <h2 class="hero-title">Autismo (TEA) — diagnóstico, stimming, comunicação e vida adulta</h2>
+                    <p class="hero-desc">Artigos sobre diagnóstico, stimming, comunicação, vida adulta, e tudo que envolve o universo autista. Escritos por pessoas autistas e profissionais aliados.</p>
+                    <a href="/Recursos/autismo/autismo.html" class="category-btn">
+                        Ver artigos sobre Autismo <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Grid de Artigos Secundários -->
+            <section class="articles-grid">
+
+                <!-- TDAH -->
+                <article class="card">
+                    <img class="card-image" src="/img/blog-post-2-Dk5Jy2bJ - Copia.jpg" alt="Pessoa organizando lembretes coloridos em um quadro, representando estratégias para TDAH">
+                    <span class="category-tag">TDAH</span>
+                    <h3 class="card-title">TDAH — estratégias práticas para rotina e organização</h3>
+                    <p class="card-desc">Estratégias práticas para rotina, funções executivas, organização, e tudo sobre viver com TDAH. Sem receitas mágicas — só o que funciona de verdade.</p>
+                    <a href="/Recursos/autismo/Tdah.html" class="card-link">Ver artigos sobre TDAH →</a>
+                </article>
+
+                <!-- ALTAS HABILIDADES -->
+                <article class="card">
+                    <div class="card-top-bar"></div>
+                    <span class="category-tag">Altas Habilidades</span>
+                    <h3 class="card-title">Altas Habilidades e Superdotação</h3>
+                    <p class="card-desc">Dupla excepcionalidade, desenvolvimento de talentos, desafios emocionais e como apoiar pessoas com altas habilidades em casa e na escola.</p>
+                    <a href="/Recursos/autismo/altas-abilidades.html" class="card-link">Ver artigos sobre Altas Habilidades →</a>
+                </article>
+
+                <!-- DISLEXIA -->
+                <article class="card">
+                    <img class="card-image" src="/img/community-hero-CbAAq485 (1) - Copia.jpg" alt="Livro aberto com letras coloridas e uma lâmpada acesa ao lado">
+                    <span class="category-tag">Dislexia</span>
+                    <h3 class="card-title">Dislexia e Outras Dificuldades de Aprendizagem</h3>
+                    <p class="card-desc">Guia para famílias, adaptações escolares, e métodos que respeitam o ritmo de cada pessoa. Porque dificuldade não é preguiça.</p>
+                    <a href="/Recursos/autismo/dislexia.html" class="card-link">Ver artigos sobre Dislexia →</a>
+                </article>
+
+                <!-- SAÚDE MENTAL -->
+                <article class="card">
+                    <div class="card-top-bar"></div>
+                    <span class="category-tag">Saúde Mental</span>
+                    <h3 class="card-title">Saúde Mental e Bem-estar</h3>
+                    <p class="card-desc">Burnout neurodivergente, ansiedade, autocuidado, e como cuidar da sua saúde emocional respeitando sua neurodivergência.</p>
+                    <a href="/Recursos/autismo/saúde.html" class="card-link">Ver artigos sobre Saúde Mental →</a>
+                </article>
+
+                <!-- DIREITOS -->
+                <article class="card">
+                    <img class="card-image" src="/img/Documento com selo oficial e uma caneta, representando direitos legais.png" alt="Documento com selo oficial e uma caneta, representando direitos legais">
+                    <span class="category-tag">Direitos</span>
+                    <h3 class="card-title">Direitos e Legislação</h3>
+                    <p class="card-desc">Informação prática sobre leis, benefícios, inclusão escolar e direitos trabalhistas para pessoas neurodivergentes. Sem juridiquês.</p>
+                    <a href="/Direitos/direitos.html" class="card-link">Ver artigos sobre Direitos →</a>
+                </article>
+
+                <!-- DISPRAXIA (Em breve) -->
+                <article class="card">
+                    <div class="card-top-bar"></div>
+                    <span class="category-tag">Em breve</span>
+                    <h3 class="card-title">Dispraxia</h3>
+                    <p class="card-desc">Coordenação motora e planejamento — novos conteúdos em breve.</p>
+                    <span class="card-meta">Em breve</span>
+                </article>
+
+                <!-- DISCALCULIA (Em breve) -->
+                <article class="card">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&q=80" alt="Números e cálculos">
+                    <span class="category-tag">Em breve</span>
+                    <h3 class="card-title">Discalculia</h3>
+                    <p class="card-desc">Processamento matemático e números — novos conteúdos em breve.</p>
+                    <span class="card-meta">Em breve</span>
+                </article>
+
+                <!-- MUTISMO SELETIVO (Em breve) -->
+                <article class="card">
+                    <div class="card-top-bar"></div>
+                    <span class="category-tag">Em breve</span>
+                    <h3 class="card-title">Mutismo Seletivo</h3>
+                    <p class="card-desc">Comunicação e contextos sociais — novos conteúdos em breve.</p>
+                    <span class="card-meta">Em breve</span>
+                </article>
+
+                <!-- SÍNDROME DE TOURETTE (Em breve) -->
+                <article class="card">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=80" alt="Acolhimento e inclusão">
+                    <span class="category-tag">Em breve</span>
+                    <h3 class="card-title">Síndrome de Tourette</h3>
+                    <p class="card-desc">Tiques, impulsos e acolhimento — novos conteúdos em breve.</p>
+                    <span class="card-meta">Em breve</span>
+                </article>
+
+            </section>
+
+            <!-- Seção Volte Sempre -->
+            <section class="coming-soon-section">
+                <h2 class="coming-soon-title">Em breve por aqui</h2>
+                <p class="coming-soon-text">
+                    Estamos preparando novos conteúdos sobre outras neurodivergências. 
+                    Nossa equipe atualiza esta página periodicamente — <strong>volte sempre!</strong>
+                </p>
+            </section>
+
+        </div>
 
         <!-- =============================================
-        SEÇÕES DE CATEGORIAS
+        FOOTER
         ============================================= -->
-        
-        <!-- AUTISMO -->
-        <section class="category-section">
-            <div class="category-image">
-                <img src="/img/recursos-hero-DaGrMSNl - Copia.jpg" alt="Ilustração representando o espectro autista com cores suaves e formas diversas">
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegue</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                    <a href="/direitos/direitos.html">Direitos</a>
+                    <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Sobre</h4>
+                    <a href="/Quem somos/quem-somos.html">Quem somos</a>
+                    <a href="/blog/blog.html">Blog</a>
+                    <a href="/contato/contato.html">Contato</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Apoie</h4>
+                    <a href="/loja/loja.html">Loja</a>
+                    <a href="/doações/doações.html">Doações</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
             </div>
-            <div class="category-text">
-                <span class="category-tag tag-autismo">Autismo</span>
-                <h2>Autismo (TEA)</h2>
-                <p>Artigos sobre diagnóstico, stimming, comunicação, vida adulta, e tudo que envolve o universo autista. Escritos por pessoas autistas e profissionais aliados.</p>
-                <a href="/Recursos/autismo/autismo.html" class="category-btn">
-                    Ver artigos sobre Autismo <i class="fa-solid fa-arrow-right"></i>
-                </a>
+            <div class="footer-bottom">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <p>© 2026 Amor NeuroDivergente</p>
             </div>
-        </section>
+        </footer>
+    </main>
 
-        <!-- TDAH -->
-        <section class="category-section category-section-reverse">
-            <div class="category-image">
-                <img src="/img/blog-post-2-Dk5Jy2bJ - Copia.jpg" alt="Pessoa organizando lembretes coloridos em um quadro, representando estratégias para TDAH">
-            </div>
-            <div class="category-text">
-                <span class="category-tag tag-tdah">TDAH</span>
-                <h2>TDAH</h2>
-                <p>Estratégias práticas para rotina, funções executivas, organização, e tudo sobre viver com TDAH. Sem receitas mágicas — só o que funciona de verdade.</p>
-                <a href="/Recursos/autismo/Tdah.html" class="category-btn">
-                    Ver artigos sobre TDAH <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </section>
-
-        <!-- ALTAS HABILIDADES -->
-        <section class="category-section">
-            <div class="category-image">
-                <img src="/img/blog-post-3-EqM0ehGW - Copia.jpg" alt="Jovem resolvendo um quebra-cabeça complexo, simbolizando altas habilidades">
-            </div>
-            <div class="category-text">
-                <span class="category-tag tag-altas-habilidades">Altas Habilidades</span>
-                <h2>Altas Habilidades e Superdotação</h2>
-                <p>Dupla excepcionalidade, desenvolvimento de talentos, desafios emocionais e como apoiar pessoas com altas habilidades em casa e na escola.</p>
-                <a href="/Recursos/autismo/altas-abilidades.html" class="category-btn">
-                    Ver artigos sobre Altas Habilidades <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </section>
-
-        <!-- DISLEXIA -->
-        <section class="category-section category-section-reverse">
-            <div class="category-image">
-                <img src="/img/community-hero-CbAAq485 (1) - Copia.jpg" alt="Livro aberto com letras coloridas e uma lâmpada acesa ao lado">
-            </div>
-            <div class="category-text">
-                <span class="category-tag tag-dislexia">Dislexia</span>
-                <h2>Dislexia e Outras Dificuldades de Aprendizagem</h2>
-                <p>Guia para famílias, adaptações escolares, e métodos que respeitam o ritmo de cada pessoa. Porque dificuldade não é preguiça.</p>
-                <a href="/Recursos/autismo/dislexia.html" class="category-btn">
-                    Ver artigos sobre Dislexia <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </section>
-
-        <!-- SAÚDE MENTAL -->
-        <section class="category-section">
-            <div class="category-image">
-                <img src="/img/hero-inicio-5eoimK6p.jpg" alt="Pessoa sentada em posição meditativa, com plantas ao redor, ambiente tranquilo">
-            </div>
-            <div class="category-text">
-                <span class="category-tag tag-saude-mental">Saúde Mental</span>
-                <h2>Saúde Mental e Bem-estar</h2>
-                <p>Burnout neurodivergente, ansiedade, autocuidado, e como cuidar da sua saúde emocional respeitando sua neurodivergência.</p>
-                <a href="/Recursos/autismo/saúde.html" class="category-btn">
-                    Ver artigos sobre Saúde Mental <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </section>
-
-        <!-- DIREITOS E LEIS -->
-        <section class="category-section category-section-reverse">
-            <div class="category-image">
-                <img src="/img/Documento com selo oficial e uma caneta, representando direitos legais.png" alt="Documento com selo oficial e uma caneta, representando direitos legais">
-            </div>
-            <div class="category-text">
-                <span class="category-tag tag-direitos">Direitos</span>
-                <h2>Direitos e Legislação</h2>
-                <p>Informação prática sobre leis, benefícios, inclusão escolar e direitos trabalhistas para pessoas neurodivergentes. Sem juridiquês.</p>
-                <a href="/Direitos/direitos.html" class="category-btn">
-                    Ver artigos sobre Direitos <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </section>
- 
-  <!-- ========================================= -->
-    <!-- HUB FLUTUANTE - ACESSIBILIDADE + AJUDA    -->
-    <!-- ========================================= -->
-
+    <!-- =============================================
+    HUB FLUTUANTE - ACESSIBILIDADE + AJUDA
+    ============================================= -->
     <div class="floating-hub" id="floatingHub">
-        <!-- Botão principal que abre/fecha o hub -->
         <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
             <span class="floating-hub-label">Acessibilidade</span>
         </button>
-
-        <!-- Menu do hub (aparece ao clicar) -->
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
-                <!-- Linha 1: Acessibilidade -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
                     <div class="floating-hub-actions">
@@ -233,11 +268,7 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- Divisória -->
                 <div class="floating-hub-divider"></div>
-
-                <!-- Linha 2: Ajuda/Atendimento -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
@@ -266,59 +297,21 @@
             </div>
         </div>
     </div>
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
-<div class="floating-overlay" id="floatingOverlay" hidden></div>
-
-        <!-- =============================================
-        EM BREVE — NOVAS CATEGORIAS
-        ============================================= -->
-        <section class="coming-soon-section">
-            <h2 class="coming-soon-title">Em breve por aqui</h2>
-            <p class="coming-soon-text">
-                Estamos preparando novos conteúdos sobre outras neurodivergências. 
-                Nossa equipe atualiza esta página periodicamente — <strong>volte sempre!</strong>
-            </p>
-            <div class="coming-soon-grid">
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-ear-listen"></i></span>
-                    <h4>Dispraxia</h4>
-                    <p>Coordenação motora e planejamento</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-calculator"></i></span>
-                    <h4>Discalculia</h4>
-                    <p>Processamento matemático e números</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-comment-slash"></i></span>
-                    <h4>Mutismo Seletivo</h4>
-                    <p>Comunicação e contextos sociais</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-hands"></i></span>
-                    <h4>Síndrome de Tourette</h4>
-                    <p>Tiques, impulsos e acolhimento</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- =============================================
-        FOOTER
-        ============================================= -->
-         <footer class="footer">
-            <div class="footer-main">
-                <div class="footer-col"><h4>Navegue</h4><a href="/inicio.html">Início</a><a href="/explorar/explorar.html">Explorar</a><a href="/comunidade/comunidade.html">Comunidade</a><a href="/direitos/direitos.html">Direitos</a><a href="/chat-Ia/chat-Ia.html">AcolherIA</a></div>
-                <div class="footer-col"><h4>Sobre</h4><a href="/Quem somos/quem-somos.html">Quem somos</a><a href="/blog/blog.html">Blog</a><a href="/contato/contato.html">Contato</a></div>
-                <div class="footer-col"><h4>Apoie</h4><a href="/loja/loja.html">Loja</a><a href="/doações/doações.html">Doações</a></div>
-                <div class="footer-col"><h4>Redes</h4><div class="social-links"><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a><a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a></div></div>
-            </div>
-            <div class="footer-bottom"><a href="#">Política de Privacidade</a><a href="#">Termos de Uso</a><p>© 2026 Amor NeuroDivergente</p></div>
-        </footer>
-    </main>
+    <!-- =============================================
+    VLibras
+    ============================================= -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget("https://vlibras.gov.br/app");
+    </script>
 
     <!-- =============================================
     SCRIPTS
@@ -326,20 +319,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/supabase-cliente.js"></script>
     <script src="recursos.js"></script>
-    
-     <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
-    </div>
 
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        new window.VLibras.Widget("https://vlibras.gov.br/app");
-    </script>
-
-
-    
 </body>
 </html>

@@ -13,80 +13,49 @@
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="ferramentas.css">
     <link rel="stylesheet" href="diario-sensorial.css">
+    <link rel="stylesheet" href="/comunidade/comunidade.css">
 </head>
 <body>
 
-    <!-- Botão de toggle da sidebar (sempre visível) -->
-    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
-        <i class="fa-solid fa-bars"></i>
-    </button>
 
-    <!-- =============================================
-    SIDEBAR — Começa fechada
-    ============================================= -->
-    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
-        <div class="sidebar-profile" id="sidebarProfile">
-            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
-                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
-                <span id="sidebarUserName">Visitante</span>
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="profile-detail" id="profileDetail" hidden>
-                <p id="sidebarUserEmail">carregando@email.com</p>
-                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
-            </div>
-        </div>
+   
 
-        <nav class="sidebar-nav" aria-label="Principal">
-            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
-            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
-            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
-            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
-        </nav>
-
-        <div class="sidebar-secondary">
-            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
-            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
-            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
-        </div>
-    </aside>
-
-    <!-- Overlay para quando a sidebar estiver aberta -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- =============================================
-    BOTÃO VOLTAR AO TOPO
-    ============================================= -->
-    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
-        <i class="fa-solid fa-arrow-up"></i>
-    </button>
-
+   
     <!-- =============================================
     CONTEÚDO PRINCIPAL
     ============================================= -->
     <main class="main-content" id="mainContent">
         
-        <!-- Header glass -->
+           <!-- HEADER GLASS com Breadcrumb -->
         <header class="header-glass" id="headerGlass">
-            <!-- Breadcrumb -->
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <a href="/inicio.html">Início</a>
                 <i class="fa-solid fa-chevron-right"></i>
                 <a href="/explorar/explorar.html">Explorar</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>Ferramentas</span>
+                <span>Artigos e Guias</span>
             </nav>
-            <a href="/inicio.html" class="logo">
-                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
-                <span class="logo-text">Amor NeuroDivergente</span>
+            <a href="/inicio.html" class="brand" id="brandLink">
+                <div class="brand-icon"></div>
+                <div class="brand-text">
+                    Amor
+                    <span>NEURODIVERGENTE</span>
+                </div>
             </a>
-            <nav class="header-links">
-                <a href="/explorar/explorar.html">Explorar</a>
-                <a href="/comunidade/comunidade.html">Comunidade</a>
+
+            <nav class="nav-links">
+                <a href="/explorar/explorar.html" class="nav-link">Explorar</a>
+                <a href="/comunidade/comunidade.html" class="nav-link">Comunidade</a>
                 <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
+
+            <div class="nav-actions">
+                <button class="btn-acolhia" id="openAcolheriaBtn">✦ AcolhIA</button>
+                <button class="btn-icon-only" id="profileMenuBtn" title="Perfil / Acessibilidade">
+                    <i class="fa-regular fa-user"></i>
+                </button>
         </header>
+
 
         <!-- =============================================
         HERO

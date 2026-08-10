@@ -14,11 +14,15 @@
     
     <link rel="stylesheet" href="inicio.css">
     <link rel="stylesheet" href="carrossel.css">
+    <link rel="stylesheet" href="comunidade/comunidade.css">
+    <link rel="stylesheet" href="/inicio1.css">
 </head>
 
 <body>
 
-   
+    <!-- ============================================================
+    ACOLHERIA MODAL
+    ============================================================ -->
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
             <div class="acolheria-modal-header">
@@ -55,8 +59,10 @@
     </div>
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
 
-   
-    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+    <!-- ============================================================
+    SIDEBAR
+    ============================================================ -->
+   <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
@@ -90,365 +96,439 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-   
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
     <main class="main-content" id="mainContent">
         
         <!-- HEADER -->
-        <header class="header-glass" id="headerGlass">
-            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                <a href="/inicio.html"></a>
-                <span></span>
-            </nav>
-            <a href="/inicio.html" class="logo">
-                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
-                <span class="logo-text">Amor NeuroDivergente</span>
+        <header class="navbar">
+        <div class="container navbar-container">
+            <a href="/inicio.html" class="brand" id="brandLink">
+                <div class="brand-icon"></div>
+                <div class="brand-text">
+                    Amor
+                    <span>NEURODIVERGENTE</span>
+                </div>
             </a>
-            <nav class="header-links">
-                <a href="/explorar/explorar.html">Explorar</a>
-                <a href="/comunidade/comunidade.html">Comunidade</a>
-                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+
+            <nav class="nav-links">
+                <a href="/explorar/explorar.html" class="nav-link">Explorar</a>
+                <a href="/comunidade/comunidade.html" class="nav-link">Comunidade</a>
+                <a href="/Direitos/direitos.html">Direitos</a>
             </nav>
-        </header>
 
-       
-        <section class="hero-redesign">
-            <div class="hero-bg">
-                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&h=800&fit=crop" alt="Pessoas conversando em um ambiente acolhedor" class="hero-bg-img">
-                <div class="hero-overlay"></div>
-            </div>
-            <div class="hero-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-            </div>
-            <div class="hero-center">
-                <span class="hero-badge"><i class="fa-solid fa-sparkles"></i> Bem-vinde à comunidade</span>
-                <h1>Você não precisa<br>se explicar aqui.</h1>
-                <p>Um espaço onde stimming é bem-vindo, descansar é respeitado<br>e ninguém vai te chamar de "difícil".</p>
-                
-                <div class="hero-quick-steps">
-                    <span class="quick-step"><span class="step-number">1</span> Crie sua conta</span>
-                    <span class="quick-step"><span class="step-number">2</span> Explore conteúdos</span>
-                    <span class="quick-step"><span class="step-number">3</span> Participe da comunidade</span>
-                </div>
-
-                <div class="hero-buttons">
-                    <a href="/login/login.html" class="btn-glow btn-primary-hero">
-                        <i class="fa-solid fa-user-plus"></i> Comece aqui — é grátis
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <a href="/explorar/explorar.html" class="btn-glass"><i class="fa-solid fa-compass"></i> Explorar recursos</a>
-                </div>
-            </div>
-            <div class="scroll-indicator">
-                <span>Role para descobrir</span>
-                <i class="fa-solid fa-chevron-down"></i>
-            </div>
-        </section>
-
-        
-        <section class="mission-section">
-            <div class="mission-container">
-                <div class="mission-image">
-                    <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=500&fit=crop" alt="Pessoas conversando em ambiente acolhedor" loading="lazy">
-                </div>
-                <div class="mission-content">
-                    <span class="section-badge"><i class="fa-solid fa-heart"></i> Nossa Missão</span>
-                    <h2>NINGUÉM PRECISA SE SENTIR SOZINHO.</h2>
-                    <p>Pessoas neurodivergentes têm duas a três vezes mais chances de enfrentar desafios de saúde mental. Mas o problema não é a neurodivergência — são a falta de informação, o capacitismo e o isolamento que a sociedade impõe.</p>
-                    <p>Criamos este espaço para que, juntos, possamos construir uma rede de apoio acessível, traduzir o conhecimento acadêmico em informações úteis e celebrar a diversidade neurológica como o que ela é: uma parte natural da experiência humana.</p>
-            </div>
-        </section>
-
-        
-       
-        <section class="carousel-triple-section">
-            <span class="section-badge"><i class="fa-solid fa-sparkles"></i> Conheça nossa comunidade</span>
-            <h2>O que você encontra por aqui</h2>
-            <p class="features-sub">Espaços, ferramentas e acolhimento feitos para você</p>
-            
-            <div class="carousel-triple-container">
-                <button class="carousel-arrow carousel-arrow-left" id="carouselPrev" aria-label="Anterior">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                
-                <div class="carousel-triple-track" id="carouselTripleTrack">
-                    <div class="carousel-triple-card">
-                        <span class="card-badge">Destaque</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=500&fit=crop" alt="Estratégias Reais" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-lightbulb"></i></span>
-                            <h3> leitura prática para o dia a dia</h3>
-                            <p>Aprenda a lidar com procrastinação, organizar a rotina e reduzir a ansiedade.</p>
-                            <a href="/blog/blog.html" class="triple-card-btn">Explorar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #db2777, #ec4899);">Seguro</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=500&fit=crop" alt="Acolhimento" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-regular fa-heart"></i></span>
-                            <h3> Comunidade segura para compartilhar</h3>
-                            <p>Compartilhe experiências em um espaço seguro e sem julgamentos.</p>
-                            <a href="/comunidade/comunidade.html" class="triple-card-btn">Participar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #10b981, #34d399);">Novo</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=500&fit=crop" alt="Trilhas" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-road"></i></span>
-                            <h3> Conteúdos sobre TDAH, Autismo e mais</h3>
-                            <p>Conteúdos claros sobre TDAH, autismo adulto, autoestima e regulação emocional.</p>
-                            <a href="/trilhas/trilha.html" class="triple-card-btn">Explorar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">Direitos</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=500&fit=crop" alt="Direitos" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-scale-balanced"></i></span>
-                            <h3> Leis e benefícios traduzidos</h3>
-                            <p>Informação prática sobre leis e benefícios. Sem juridiquês — a gente traduz.</p>
-                            <a href="/direitos/direitos.html" class="triple-card-btn">Consultar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #8b5cf6, #c084fc);">Ao Vivo</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=500&fit=crop" alt="Encontros" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-regular fa-calendar-days"></i></span>
-                            <h3>Eventos e grupos de apoio</h3>
-                            <p>Aulas, rodas de acolhimento e grupos de partilha com especialistas.</p>
-                            <a href="/Recursos/eventos.html" class="triple-card-btn">Ver agenda <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #f43f5e, #fb7185);">Desafio</span>
-                        <div class="triple-card-image">
-                            <img src="/img/blog-post-1-DvwhQAY4 - Copia.jpg" alt="Missões" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-flag-checkered"></i></span>
-                            <h3> Ferramentas que  transformar o seu dia </h3>
-                            <p>Pequenos passos mensais para transformar sua vida de forma leve.</p>
-                            <a href="/ferramentas/ferramentas.html" class="triple-card-btn">Começar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="carousel-arrow carousel-arrow-right" id="carouselNext" aria-label="Próximo">
-                    <i class="fa-solid fa-chevron-right"></i>
+            <div class="nav-actions">
+                 <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">AcolherIA</a>
+                <button class="btn-icon-only" id="profileMenuBtn" title="Perfil / Acessibilidade">
+                    <i class="fa-regular fa-user"></i>
                 </button>
             </div>
+        </div>
+    </header>
 
-            <div class="carousel-dots" id="carouselTripleDots"></div>
-
-            <div class="carousel-cta">
-                <a href="/login/login.html" class="btn-glow">Quero fazer parte <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-        </section>
-
-        <section class="blog-highlights-section">
-            <div class="container">
-                <span class="section-badge"><i class="fa-solid fa-book-open"></i> Conhecimento sem jargão</span>
-                <h2>Artigos & Leituras Recomendadas</h2>
-                <p class="section-sub">Conteúdos escritos com clareza para você entender sem esforço</p>
-                
-                <div class="blog-grid">
-                    <article class="blog-card">
-                        <div class="blog-card-image">
-                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop" alt="Pessoa tirando uma máscara sorridente" loading="lazy">
-                        </div>
-                        <div class="blog-card-content">
-                            <div class="blog-badge-group">
-                                <span class="badge-time"><i class="fa-regular fa-clock"></i> 3 min de leitura</span>
-                                <span class="badge-type"><i class="fa-solid fa-eye"></i> Resumo Visual</span>
-                            </div>
-                            <h3>O que é Masking e por que ele exaure seu cérebro?</h3>
-                            <p>Entenda o hábito de "camuflar" traços neurodivergentes para se encaixar e como começar a desacelerar.</p>
-                            <a href="/blog/post-masking.html" class="blog-link">Ler artigo <i class="fa-solid fa-chevron-right"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="blog-card">
-                        <div class="blog-card-image">
-                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop" alt="Pessoa organizando tarefas no quadro" loading="lazy">
-                        </div>
-                        <div class="blog-card-content">
-                            <div class="blog-badge-group">
-                                <span class="badge-time"><i class="fa-regular fa-clock"></i> 5 min de leitura</span>
-                                <span class="badge-type"><i class="fa-solid fa-list-check"></i> Passo a Passo</span>
-                            </div>
-                            <h3>O método dos "5 minutos" para vencer a procrastinação</h3>
-                            <p>Uma estratégia prática para enganar a resistência do cérebro sem se cobrar perfeição.</p>
-                            <a href="/blog/post-procrastinacao.html" class="blog-link">Ler artigo <i class="fa-solid fa-chevron-right"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="blog-card">
-                        <div class="blog-card-image">
-                            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop" alt="Pessoa lendo um livro em um ambiente calmo" loading="lazy">
-                        </div>
-                        <div class="blog-card-content">
-                            <div class="blog-badge-group">
-                                <span class="badge-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
-                                <span class="badge-type"><i class="fa-solid fa-brain"></i> Neurociência</span>
-                            </div>
-                            <h3>Neurodivergência e Ansiedade: Como o cérebro atípico processa o medo</h3>
-                            <p>Uma explicação clara sobre por que a ansiedade é tão comum em pessoas neurodivergentes.</p>
-                            <a href="/blog/post-ansiedade.html" class="blog-link">Ler artigo <i class="fa-solid fa-chevron-right"></i></a>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="section-action">
-                    <a href="/Recursos/recursos.html" class="btn-glow">Ver todos os artigos <i class="fa-solid fa-arrow-right"></i></a>
-                     <a href="/blog/blog.html" class="btn-glow">Ver Blog <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                </div>
-            </div>
-        </section>
-
-      
-        <section class="rights-quick-section">
-            <div class="container">
-                <div class="rights-box">
-                    <div class="rights-info">
-                        <span class="section-badge"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</span>
-                        <h2>Saber seus direitos não precisa ser complicado</h2>
-                        <p>Traduzimos as leis para você saber exatamente o que exigir na escola, no trabalho ou na saúde.</p>
-                        
-                        <div class="rights-chips">
-                            <a href="/direitos/direitos.html#trabalho" class="chip"><i class="fa-solid fa-briefcase"></i> Adaptações no Trabalho</a>
-                            <a href="/direitos/direitos.html#escola" class="chip"><i class="fa-solid fa-graduation-cap"></i> Direitos na Escola/Faculdade</a>
-                            <a href="/direitos/direitos.html#bpc" class="chip"><i class="fa-solid fa-hand-holding-dollar"></i> BPC / LOAS Simplificado</a>
-                            <a href="/direitos/direitos.html#laudo" class="chip"><i class="fa-solid fa-file-medical"></i> Como emitir o Laudo</a>
-                            <a href="/direitos/direitos.html#saude" class="chip"><i class="fa-solid fa-hospital"></i> Saúde e Terapias</a>
-                            <a href="/direitos/direitos.html#inclusao" class="chip"><i class="fa-solid fa-people-group"></i> Inclusão Social</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        
-        <section class="guides-downloads-section">
-            <div class="container">
-                <span class="section-badge"><i class="fa-solid fa-download"></i> Recursos Úteis</span>
-                <h2>Guias Práticos para o seu Dia a Dia</h2>
-                <p class="section-sub">Materiais gratuitos para baixar, imprimir e usar sempre que precisar</p>
-                
-                <div class="guides-grid">
-                    <div class="guide-card">
-                        <div class="guide-icon"><i class="fa-solid fa-file-pdf"></i></div>
-                        <div class="guide-content">
-                            <h3>Checklist de Crise Sensorial</h3>
-                            <p>Um guia de emergência com o que fazer e o que evitar durante uma crise ou shutdown.</p>
-                            <a href="#" class="btn-download"><i class="fa-solid fa-file-arrow-down"></i> Baixar PDF grátis</a>
-                        </div>
-                    </div>
-
-                    <div class="guide-card">
-                        <div class="guide-icon"><i class="fa-solid fa-calendar-check"></i></div>
-                        <div class="guide-content">
-                            <h3>Planner Diário Sem Pressão</h3>
-                            <p>Layout visual focado em poucas tarefas prioritárias, ideal para mentes atípicas.</p>
-                            <a href="#" class="btn-download"><i class="fa-solid fa-file-arrow-down"></i> Baixar Imprimível</a>
-                        </div>
-                    </div>
-
-                    <div class="guide-card">
-                        <div class="guide-icon"><i class="fa-solid fa-notes-medical"></i></div>
-                        <div class="guide-content">
-                            <h3>Registro de Humor </h3>
-                            <p>Planilha para acompanhar padrões de humor, energia e gatilhos sensoriais ao longo do mês.</p>
-                            <a href="#" class="btn-download"><i class="fa-solid fa-file-arrow-down"></i> Baixar PDF grátis</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-       
-        <section class="whoweare-section">
-            <div class="whoweare-container">
-                <div class="whoweare-content">
-                    <span class="section-badge"><i class="fa-regular fa-users"></i> Quem Somos</span>
-                    <h2>Um espaço feito por pessoas neurodivergentes para pessoas neurodivergentes.</h2>
-                    <p>O <strong>Amor NeuroDivergente</strong> nasceu da necessidade de um lugar onde a informação sobre neurodiversidade fosse acessível, as ferramentas de organização fossem visuais e a comunidade fosse acolhedora.</p>
-                    <p>Somos um ecossistema digital que une <strong>conhecimento, ferramentas práticas e conexão humana</strong> — tudo pensado para respeitar o ritmo, as necessidades sensoriais e a autonomia de cada pessoa.</p>
-                    <p>Nosso compromisso é com a <strong>tradução de direitos</strong>, a <strong>desconstrução do capacitismo</strong> e a <strong>celebração da diversidade neurológica</strong> como uma parte natural e valiosa da experiência humana.</p>
-                    <div class="whoweare-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">+2.000</span>
-                            <span class="stat-label">pessoas acolhidas</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">+50</span>
-                            <span class="stat-label">artigos publicados</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">+30</span>
-                            <span class="stat-label">eventos realizados</span>
-                        </div>
-                    </div>
-                    <a href="/comunidade/comunidade.html" class="btn-whoweare">Conheça o time <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="whoweare-image">
-                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=500&fit=crop" alt="Equipe Amor NeuroDivergente" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-       
-    <section class="community-preview-section">
-  <div class="community-card">
     
-    <!-- Lado Esquerdo: Imagem/Banner com o recorte -->
-    <div class="community-visual">
-      <img src="/img/mulher.png" alt="Comunidade NeuroDivergente" class="banner-comunidade">
-    </div>
-
-    <!-- Lado Direito: Conteúdo e Textos -->
-    <div class="community-content">
+   <section class="hero-section">
+    <div class="hero-grid">
       
-      <!-- Tags com efeito de bloco/badge -->
-      <div class="community-badges">
-        <span class="badge badge-teal">Neuro</span>
-        <span class="badge badge-purple">Comunidade</span>
+      <!-- LADO ESQUERDO: SEUS TEXTOS -->
+      <div class="hero-content">
+        <div class="badge-pill">✨ UM ESPAÇO PARA VOCÊ</div>
+        
+        <h1 class="hero-title">
+          Um lugar para <span class="highlight-green">entender</span> quem você é. 
+          <span class="highlight-purple">E encontrar caminhos</span> que façam sentido para você.
+        </h1>
+        
+        <p class="hero-description">
+          Informação, ferramentas, comunidade e acolhimento para pessoas neurodivergentes, famílias, profissionais e todos que querem compreender melhor a neurodiversidade.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#explorar" class="btn-primary">
+            Explorar a plataforma <i data-lucide="arrow-right"></i>
+          </a>
+          <a href="#chat" class="btn-outline">
+            <i data-lucide="bot"></i> Conhecer a AcolherIA
+          </a>
+        </div>
+
+        <div class="hero-checklist">
+          <span><i data-lucide="check" class="icon-check"></i> Conteúdo acessível</span>
+          <span class="divider">•</span>
+          <span><i data-lucide="check" class="icon-check"></i> Comunidade</span>
+          <span class="divider">•</span>
+          <span><i data-lucide="check" class="icon-check"></i> Ferramentas</span>
+          <span class="divider">•</span>
+          <span><i data-lucide="check" class="icon-check"></i> Informação</span>
+        </div>
       </div>
 
-      <h3 class="community-subtitle">
-        Sua porta de entrada para o <strong>AmorNeuroDivergente</strong>
-      </h3>
+  <!-- LADO DIREITO: PERSONAGEM + 4 CARDS INTERATIVOS COM IMAGEM -->
+<div class="hero-visual" id="interactiveArea">
+  <div class="character-container">
+    
+    <!-- Elementos visuais do fundo -->
+    <div class="halo-bg"></div>
+    <div class="orbit-lines"></div>
 
-      <p class="community-description">
-        Quer aprender a base prática da nossa metodologia e ainda ter a possibilidade de fazer parte da Rede? Inscreva-se agora!
-      </p>
+    <!-- Imagem do Personagem sem fundo -->
+    <img src="/img/personagem-amor.png" alt="Personagem lendo livro" class="character-img">
 
-      <a href="/comunidade/comunidade.html" class="community-btn" id="btn-comunidade">Entre Já</a>
+    <!-- CARD 1: BIBLIOTECA - APENAS IMAGEM -->
+    <div class="interactive-card card-biblioteca">
+      <div class="card-preview">
+        <img src="/img/Biblioteca.png" alt="Ir para Biblioteca">
+        <a href="/biblioteca/biblioteca.html" aria-label="Ir para Biblioteca"></a>
+      </div>
+    </div>
+
+    <!-- CARD 2: COMUNIDADE - APENAS IMAGEM -->
+    <div class="interactive-card card-comunidade">
+      <div class="card-preview">
+        <img src="/img/Comunidade.png" alt="Ir para Comunidade">
+        <a href="/comunidade/comunidade.html" aria-label="Ir para Comunidade"></a>
+      </div>
+    </div>
+
+    <!-- CARD 3: DIREITOS - APENAS IMAGEM -->
+    <div class="interactive-card card-direitos">
+      <div class="card-preview">
+        <img src="/img/Direitos.png" alt="Ir para Direitos">
+        <a href="/direitos/direitos.html" aria-label="Ir para Direitos"></a>
+      </div>
+    </div>
+
+    <!-- CARD 4: EXPLORAR - APENAS IMAGEM -->
+    <div class="interactive-card card-explorar">
+      <div class="card-preview">
+        <img src="/img/ferramentas.png" alt="Ir para Explorar">
+        <a href="/ferramentas/ferramentas.html" aria-label="Ir para Explorar"></a>
+      </div>
     </div>
 
   </div>
-</section>
-       
+</div>
 
-        
+    </div>
+  </section>
+
+
+       <!-- Left Navigation Bar -->
+  <aside class="sidebar">
+    <div class="sidebar-group">
+      <a href="#" class="nav-icon active" title="Início"><i data-lucide="home"></i></a>
+      <a href="#explorar" class="nav-icon" title="Explorar"><i data-lucide="compass"></i></a>
+      <a href="#chat" class="nav-icon" title="Comunidade & Chat"><i data-lucide="message-square"></i></a>
+      <a href="#direitos" class="nav-icon" title="Direitos"><i data-lucide="shield"></i></a>
+      <a href="#conteudo" class="nav-icon" title="Biblioteca"><i data-lucide="book-open"></i></a>
+    </div>
+    <div class="sidebar-group">
+      <a href="#" class="nav-icon"><i data-lucide="shopping-bag"></i></a>
+      <a href="#" class="nav-icon"><i data-lucide="heart"></i></a>
+      <a href="#" class="nav-icon"><i data-lucide="log-out"></i></a>
+    </div>
+  </aside>
+
+
+
+
+    
+          <!-- Floating Chat Widget Mockup -->
+          <div class="floating-card-chat">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <i data-lucide="bot" style="color:var(--brand-teal); width:18px;"></i>
+              <strong style="font-size:0.85rem;">AcolherIA</strong>
+              <span style="font-size:0.65rem; color:#10b981;">● Online</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">Olá! Como posso ajudar você hoje?</p>
+            <div style="display:flex; gap:4px;">
+              <span style="font-size:0.65rem; padding:2px 8px; background:var(--brand-teal-bg); color:var(--brand-teal); border-radius:10px;">TDAH</span>
+              <span style="font-size:0.65rem; padding:2px 8px; background:var(--brand-teal-bg); color:var(--brand-teal); border-radius:10px;">Autismo</span>
+            </div>
+          </div>
+
+    
+        </div>
+      </div>
+    </section>
+
+   
+     <!-- Quick Navigation Block -->
+    <section id="explorar">
+      <div class="quick-nav-box">
+        <div class="quick-nav-header">
+          <div>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--brand-teal); letter-spacing:1px;">NAVEGAÇÃO RÁPIDA</span>
+            <h2 style="font-size:1.5rem; font-weight:700;">Seu espaço hoje</h2>
+          </div>
+          <span style="font-size:0.85rem; color:var(--text-muted);">Escolha uma área e descubra no seu ritmo.</span>
+        </div>
+        <div class="quick-nav-grid">
+          <a href="Explorar/Explorar.html" class="nav-card teal-bg">
+            <div class="nav-card-icon"><i data-lucide="compass"></i></div>
+            <h4>Explorar</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Conteúdos para descobrir</p>
+            <span style="font-size:0.8rem; font-weight:700; color:var(--brand-teal);">Abrir →</span>
+          </a>
+          <a href="comunidade/comunidade.html" class="nav-card purple-bg">
+            <div class="nav-card-icon" style="color:var(--brand-purple);"><i data-lucide="users"></i></div>
+            <h4>Comunidade</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Conversas e trocas</p>
+            <span style="font-size:0.8rem; font-weight:700; color:var(--brand-purple);">Abrir →</span>
+          </a>
+          <a href="Direitos/direitos.html" class="nav-card green-bg">
+            <div class="nav-card-icon" style="color:#16a34a;"><i data-lucide="scale"></i></div>
+            <h4>Direitos</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Informação com clareza</p>
+            <span style="font-size:0.8rem; font-weight:700; color:#16a34a;">Abrir →</span>
+          </a>
+          <a href="biblioteca/biblioteca.html" class="nav-card yellow-bg">
+            <div class="nav-card-icon" style="color:#d97706;"><i data-lucide="book-open"></i></div>
+            <h4>Biblioteca</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Materiais para consultar</p>
+            <span style="font-size:0.8rem; font-weight:700; color:#d97706;">Abrir →</span>
+          </a>
+          <a href="/chat-Ia/chat-Ia.html" class="nav-card cyan-bg">
+            <div class="nav-card-icon" style="color:#0891b2;"><i data-lucide="bot"></i></div>
+            <h4>AcolherIA</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Uma ajuda para começar</p>
+            <span style="font-size:0.8rem; font-weight:700; color:#0891b2;">Abrir →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tour Section (Conheça em 60 segundos) -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">Conheça o Amor NeuroDivergente em 60 segundos</h2>
+        <p class="section-subtitle">Veja como a plataforma funciona antes de começar.</p>
+      </div>
+
+      <div class="tour-grid">
+        <div class="tour-video-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.8rem; opacity:0.8;">Tour pela plataforma</span>
+            <span style="font-size:0.8rem; opacity:0.8;">01:00</span>
+          </div>
+          <div class="tour-play-btn"><i data-lucide="play" style="margin-left:4px;"></i></div>
+          <div style="font-size:0.85rem; opacity:0.9;" id="tourDynamicLabel">Módulo Ativo: 01 Início</div>
+        </div>
+
+        <div class="tour-step-list">
+          <div class="tour-step-item active" onclick="setTourStep(this, '01 Início')">
+            <div class="step-icon-badge"><i data-lucide="home"></i></div>
+            <div>
+              <div style="font-size:0.9rem; font-weight:700;">01 Início</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Visão geral da plataforma</div>
+            </div>
+          </div>
+          <div class="tour-step-item" onclick="setTourStep(this, '02 Explorar')">
+            <div class="step-icon-badge"><i data-lucide="compass"></i></div>
+            <div>
+              <div style="font-size:0.9rem; font-weight:700;">02 Explorar</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Conteúdos e ferramentas</div>
+            </div>
+          </div>
+          <div class="tour-step-item" onclick="setTourStep(this, '03 Comunidade')">
+            <div class="step-icon-badge"><i data-lucide="users"></i></div>
+            <div>
+              <div style="font-size:0.9rem; font-weight:700;">03 Comunidade</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Troca de experiências</div>
+            </div>
+          </div>
+          <div class="tour-step-item" onclick="setTourStep(this, '04 Direitos')">
+            <div class="step-icon-badge"><i data-lucide="shield"></i></div>
+            <div>
+              <div style="font-size:0.9rem; font-weight:700;">04 Direitos</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Guias e orientações legais</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Path Selector Section -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">Por onde você quer começar?</h2>
+        <p class="section-subtitle">Não existe um caminho certo. Escolha o que faz sentido para você agora.</p>
+      </div>
+
+      <div class="path-selector-grid">
+        <div class="path-card active" onclick="selectPath(this)">
+          <div style="font-size:1.8rem; margin-bottom:12px;">🌱</div>
+          <h4 style="font-size:1rem; margin-bottom:6px;">Estou começando a entender</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">Quero aprender o básico sobre neurodivergência.</p>
+          <span style="font-size:0.85rem; font-weight:700; color:var(--brand-teal);">Começar →</span>
+        </div>
+        <div class="path-card" onclick="selectPath(this)">
+          <div style="font-size:1.8rem; margin-bottom:12px;">🧠</div>
+          <h4 style="font-size:1rem; margin-bottom:6px;">Quero entender meu funcionamento</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">Explore conteúdos sobre diferentes formas de funcionamento.</p>
+          <span style="font-size:0.85rem; font-weight:700; color:var(--brand-teal);">Começar →</span>
+        </div>
+        <div class="path-card" onclick="selectPath(this)">
+          <div style="font-size:1.8rem; margin-bottom:12px;">📚</div>
+          <h4 style="font-size:1rem; margin-bottom:6px;">Quero estudar</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">Encontre materiais para escola, faculdade e aprendizagem.</p>
+          <span style="font-size:0.85rem; font-weight:700; color:var(--brand-teal);">Começar →</span>
+        </div>
+        <div class="path-card" onclick="selectPath(this)">
+          <div style="font-size:1.8rem; margin-bottom:12px;">⚖️</div>
+          <h4 style="font-size:1rem; margin-bottom:6px;">Quero conhecer meus direitos</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">Informação clara sobre direitos e acessibilidade.</p>
+          <span style="font-size:0.85rem; font-weight:700; color:var(--brand-teal);">Começar →</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Library Section (Aprenda no seu ritmo) -->
+    <section id="conteudo">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px;">
+        <div>
+          <h2 class="section-title" style="text-align:left;">Aprenda no seu ritmo.</h2>
+          <p class="section-subtitle" style="text-align:left;">Conteúdos organizados para diferentes formas de aprender.</p>
+        </div>
+        <div class="content-filter-bar">
+          <button class="filter-tab active" onclick="filterContent('artigos', this)">Artigos</button>
+          <button class="filter-tab" onclick="filterContent('videos', this)">Vídeos</button>
+          <button class="filter-tab" onclick="filterContent('guias', this)">Guias</button>
+        </div>
+      </div>
+
+      <div class="content-cards-grid" id="contentGrid">
+        <!-- Content Item 1 -->
+        <div class="article-card" data-category="artigos">
+          <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=600&q=80" alt="Brain" class="article-image">
+          <div class="article-body">
+            <div>
+              <div class="article-meta">TDAH • 5 MIN</div>
+              <h3 class="article-title">Entendendo o masking</h3>
+              <p class="article-desc">O que é masking e como ele impacta pessoas neurodivergentes no dia a dia.</p>
+            </div>
+            <a href="#" style="color:var(--brand-teal); font-weight:700; font-size:0.85rem; text-decoration:none;">Ler mais →</a>
+          </div>
+        </div>
+
+        <!-- Content Item 2 -->
+        <div class="article-card" data-category="artigos">
+          <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=600&q=80" alt="Routine" class="article-image">
+          <div class="article-body">
+            <div>
+              <div class="article-meta">ROTINA • 7 MIN</div>
+              <h3 class="article-title">Como organizar uma rotina sem se sobrecarregar</h3>
+              <p class="article-desc">Estratégias simples para criar estrutura sem rigidez excessiva.</p>
+            </div>
+            <a href="#" style="color:var(--brand-teal); font-weight:700; font-size:0.85rem; text-decoration:none;">Ler mais →</a>
+          </div>
+        </div>
+
+        <!-- Content Item 3 -->
+        <div class="article-card" data-category="artigos">
+          <img src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80" alt="Books" class="article-image">
+          <div class="article-body">
+            <div>
+              <div class="article-meta">INTRODUÇÃO • 4 MIN</div>
+              <h3 class="article-title">Neurodiversidade explicada de forma simples</h3>
+              <p class="article-desc">Um ponto de partida acessível para entender o conceito.</p>
+            </div>
+            <a href="#" style="color:var(--brand-teal); font-weight:700; font-size:0.85rem; text-decoration:none;">Ler mais →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat AI Section (AcolherIA Showcase) -->
+    <section id="chat">
+      <div class="chat-section-grid">
+        <div>
+          <div class="logo-badge" style="margin-bottom:16px; background:var(--brand-teal-bg); color:var(--brand-teal);">
+            <i data-lucide="bot"></i>
+          </div>
+          <h2 class="section-title" style="text-align:left;">Quando você não sabe por onde começar, converse.</h2>
+          <p class="section-subtitle" style="text-align:left; margin-bottom:24px;">
+            AcolherIA ajuda você a encontrar informações, organizar ideias e descobrir caminhos dentro da plataforma.
+          </p>
+
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:28px;">
+            <li style="display:flex; align-items:center; gap:10px; font-size:0.9rem; color:var(--text-muted);">
+              <i data-lucide="check-circle-2" style="color:var(--brand-teal); width:18px;"></i> Linguagem simples e acessível
+            </li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:0.9rem; color:var(--text-muted);">
+              <i data-lucide="check-circle-2" style="color:var(--brand-teal); width:18px;"></i> Respostas objetivas e organizadas
+            </li>
+            <li style="display:flex; align-items:center; gap:10px; font-size:0.9rem; color:var(--text-muted);">
+              <i data-lucide="check-circle-2" style="color:var(--brand-teal); width:18px;"></i> Acesso rápido aos conteúdos
+            </li>
+          </ul>
+
+          <button class="btn-primary">Conhecer a AcolherIA <i data-lucide="arrow-right"></i></button>
+        </div>
+
+        <div class="chat-window">
+          <div class="chat-header">
+            <div class="logo-badge" style="width:28px; height:28px;"><i data-lucide="bot" style="width:16px;"></i></div>
+            <div>
+              <strong style="font-size:0.9rem;">AcolherIA</strong>
+              <div style="font-size:0.7rem; color:#10b981;">● Online</div>
+            </div>
+          </div>
+          <div class="chat-body" id="chatMessages">
+            <div class="chat-bubble bot">Olá! Como posso ajudar você hoje? 💚</div>
+            <div class="chat-tags" id="chatTags">
+              <button class="tag-pill" onclick="sendQuickTag('TDAH')">TDAH</button>
+              <button class="tag-pill" onclick="sendQuickTag('Autismo')">Autismo</button>
+              <button class="tag-pill" onclick="sendQuickTag('Organização')">Organização</button>
+              <button class="tag-pill" onclick="sendQuickTag('Crise sensorial')">Crise sensorial</button>
+              <button class="tag-pill" onclick="sendQuickTag('Direitos')">Direitos</button>
+            </div>
+          </div>
+          <div class="chat-input-bar">
+            <input type="text" id="chatInput" placeholder="Escreva sua dúvida..." onkeypress="handleKeyPress(event)">
+            <button class="btn-primary" style="padding: 8px 16px; border-radius: 20px;" onclick="sendMessage()">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dark Rights Section -->
+    <section id="direitos">
+      <div class="rights-dark-hub">
+        <div style="font-size:2.2rem; margin-bottom:12px;">⚖️</div>
+        <h2 style="font-size:2.2rem; font-weight:700; margin-bottom:12px;">Seus direitos, de forma clara.</h2>
+        <p style="max-width:550px; margin:0 auto; font-size:0.95rem; opacity:0.8;">
+          Encontre informações organizadas e explicadas de forma simples para entender seus direitos e recursos de acessibilidade.
+        </p>
+
+        <div class="rights-badges-cloud">
+          <div class="rights-badge"><i data-lucide="accessibility" style="width:16px;"></i> Acessibilidade</div>
+          <div class="rights-badge"><i data-lucide="graduation-cap" style="width:16px;"></i> Educação</div>
+          <div class="rights-badge"><i data-lucide="briefcase" style="width:16px;"></i> Trabalho</div>
+          <div class="rights-badge"><i data-lucide="heart-pulse" style="width:16px;"></i> Atendimento</div>
+          <div class="rights-badge"><i data-lucide="file-text" style="width:16px;"></i> Legislação</div>
+        </div>
+
+        <button class="btn-primary" style="background:var(--brand-teal);">Conhecer meus direitos <i data-lucide="arrow-right"></i></button>
+      </div>
+    </section>
+
+    <!-- Final Call to Action -->
+    <section style="text-align: center; padding-bottom:100px;">
+      <h2 class="section-title">Você encontrou um lugar para começar.</h2>
+      <p class="section-subtitle" style="margin-bottom:28px;">Explore no seu ritmo. Aprenda. Converse. Descubra.</p>
+      <div style="display:flex; justify-content:center; gap:16px;">
+        <a href="#explorar" class="btn-primary">Explorar agora <i data-lucide="arrow-right"></i></a>
+        <a href="#chat" class="btn-outline" style="border-color:var(--brand-teal); color:var(--brand-teal);">Conhecer a AcolherIA</a>
+      </div>
+    </section>
+
+  </div>
+
+        <!-- ============================================================
+        FOOTER - Mantido
+        ============================================================ -->
         <footer class="footer">
             <div class="footer-main">
                 <div class="footer-col"><h4>Navegue</h4><a href="/inicio.html">Início</a><a href="/explorar/explorar.html">Explorar</a><a href="/comunidade/comunidade.html">Comunidade</a><a href="/direitos/direitos.html">Direitos</a><a href="/chat-Ia/chat-Ia.html">AcolherIA</a></div>
@@ -461,7 +541,9 @@
 
     </main>
 
-    <!-- Floating Hub -->
+    <!-- ============================================================
+    FLOATING HUB
+    ============================================================ -->
     <div class="floating-hub" id="floatingHub">
         <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
@@ -499,7 +581,6 @@
                         </button>
                     </div>
                 </div>
-                
 
                 <div class="floating-hub-divider"></div>
 
@@ -510,7 +591,7 @@
                             <i class="fa-solid fa-robot"></i>
                             <span class="hub-action-label">AcolherIA</span>
                         </a>
-                 <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
                             <i class="fa-regular fa-comments"></i>
                             <span class="hub-action-label">Comunidade</span>
                         </a>
@@ -534,7 +615,9 @@
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
-    <!-- JavaScript do site -->
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
     <script src="inicio.js"></script>
     <script src="carrossel.js"></script>
 
@@ -549,6 +632,16 @@
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
         new window.VLibras.Widget("https://vlibras.gov.br/app");
+
+        // Botão da AcolherIA CTA
+        document.getElementById('acolheriaCtaBtn')?.addEventListener('click', function() {
+            const overlay = document.getElementById('acolheriaOverlay');
+            const bg = document.getElementById('acolheriaOverlayBg');
+            overlay.hidden = false;
+            overlay.style.pointerEvents = 'auto';
+            bg.hidden = false;
+            bg.classList.add('active');
+        });
     </script>
 
 </body>
