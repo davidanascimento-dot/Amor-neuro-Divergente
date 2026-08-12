@@ -28,6 +28,8 @@
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
+
 /* =========================================
    HERO COM IMAGEM DE FUNDO
    ========================================= */
@@ -523,82 +525,6 @@
     gap: 6px;
 }
 
-/* =========================================
-   FOOTER
-   ========================================= */
-.footer {
-    background-color: #2d2a28;
-    color: #b8b0a8;
-    padding: 60px 48px 32px;
-    margin-top: auto;
-}
-.footer-main {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-    max-width: 1100px;
-    margin: 0 auto 48px;
-}
-.footer-col h4 {
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-.footer-col a {
-    display: block;
-    color: #8a827c;
-    font-size: 14px;
-    padding: 6px 0;
-    transition: color 0.15s ease;
-}
-.footer-col a:hover {
-    color: #e8e3dd;
-}
-.social-links {
-    display: flex;
-    gap: 12px;
-}
-.social-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #3a3744;
-    border-radius: 50%;
-    color: #e8e3dd;
-    font-size: 16px;
-    transition: all 0.15s ease;
-}
-.social-links a:hover {
-    background: var(--primary);
-    transform: translateY(-2px);
-}
-.footer-bottom {
-    border-top: 1px solid #3a3744;
-    padding-top: 24px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    font-size: 13px;
-    color: #6b6368;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-.footer-bottom a {
-    color: #8a827c;
-}
-.footer-bottom a:hover {
-    color: #e8e3dd;
-    text-decoration: underline;
-}
-.footer-bottom p {
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
-}
 
 /* =========================================
    DARK MODE
@@ -709,6 +635,20 @@ body.a11y-dark-mode .footer-bottom {
         align-items: center;
         text-align: center;
     }
+
+    /* Ajuste da logo no mobile */
+    .header-glass {
+        padding: 12px 18px;
+        padding-left: 76px;
+        justify-content: flex-start;
+    }
+    
+    .logo {
+        position: relative;
+        left: auto;
+        transform: none;
+        margin: 0 auto;
+    }
 }
 @media (max-width: 480px) {
     .rights-hero h1 {
@@ -728,3 +668,4 @@ body.a11y-dark-mode .footer-bottom {
         grid-template-columns: 1fr;
     }
 }
+
