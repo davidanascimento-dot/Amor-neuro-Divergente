@@ -1,7 +1,6 @@
 // =========================================================================
 // RECURSOS.JS — Amor NeuroDivergente
 // Sidebar responsiva + Perfil + Acessibilidade + Filtros + Hub Flutuante
-// Novo formato: Hero + Grid de Cards
 // =========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -33,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 1. SIDEBAR RESPONSIVA
+    // 1. SIDEBAR RESPONSIVA (padrão do projeto)
     // ============================================
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
     const sidebar = document.getElementById('sidebar');
@@ -155,9 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ============================================
-    // 4. FUNÇÕES DE ACESSIBILIDADE
-    // ============================================
     function getA11y(key, defaultValue = 'false') {
         return localStorage.getItem('a11y_' + key) || defaultValue;
     }
@@ -200,15 +196,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (textSize === 'large') main.classList.add('a11y-large-text');
             if (textSize === 'small') main.classList.add('a11y-small-text');
         }
-        
-        // Atualiza labels do hub
-        updateHubStatus();
     }
 
     // Aplica configurações iniciais
     applyA11ySettings();
 
-    // Eventos dos botões de acessibilidade na sidebar
     document.querySelectorAll('.a11y-option, .a11y-reset').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -222,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setA11y('darkMode', current ? 'false' : 'true');
                     body.classList.toggle('a11y-dark-mode', !current);
                     updateStatus('darkModeStatus', !current);
+                    // Sincroniza com o hub
                     updateHubStatus();
                     break;
                 }
@@ -265,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setA11y('dyslexiaFont', current ? 'false' : 'true');
                     body.classList.toggle('a11y-dyslexia', !current);
                     updateStatus('dyslexiaStatus', !current);
+                    // Sincroniza com o hub
                     updateHubStatus();
                     break;
                 }
@@ -273,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setA11y('reduceMotion', current ? 'false' : 'true');
                     body.classList.toggle('a11y-reduce-motion', !current);
                     updateStatus('motionStatus', !current);
+                    // Sincroniza com o hub
                     updateHubStatus();
                     break;
                 }
@@ -286,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateStatus('linksStatus', false);
                     updateStatus('dyslexiaStatus', false);
                     updateStatus('motionStatus', false);
+                    // Sincroniza com o hub
                     updateHubStatus();
                     break;
                 }
@@ -294,12 +290,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 5. HUB FLUTUANTE - ACESSIBILIDADE
+    // 4. HUB FLUTUANTE - ACESSIBILIDADE
     // ============================================
     const hubToggle = document.getElementById('floatingHubToggle');
     const hubMenu = document.getElementById('floatingHubMenu');
     const overlay = document.getElementById('floatingOverlay');
 
+    // Função para abrir/fechar o hub
     function toggleHub() {
         const isOpen = !hubMenu.hidden;
         hubMenu.hidden = isOpen;
@@ -329,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // 6. FUNÇÕES DO HUB - ATUALIZAR STATUS
+    // 5. FUNÇÕES DO HUB - ATUALIZAR STATUS
     // ============================================
     function updateHubStatus() {
         // Dark Mode
@@ -355,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHubStatus();
 
     // ============================================
-    // 7. AÇÕES DO HUB - ACESSIBILIDADE
+    // 6. AÇÕES DO HUB - ACESSIBILIDADE
     // ============================================
     document.querySelectorAll('.hub-action[data-a11y]').forEach(item => {
         item.addEventListener('click', function(e) {
@@ -444,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 8. HEADER SCROLL EFFECT
+    // 7. HEADER SCROLL EFFECT
     // ============================================
     const headerGlass = document.getElementById('headerGlass');
     if (headerGlass) {
@@ -454,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // 9. LOGOUT
+    // 8. LOGOUT
     // ============================================
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -468,58 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 10. FILTRO DE TABS (novo formato)
-    // ============================================
-    const tabItems = document.querySelectorAll('.tab-item');
-    const allCards = document.querySelectorAll('.card');
-    const heroCard = document.querySelector('.hero-card');
-
-    // Extrai a categoria do hero
-    let heroCategory = '';
-    if (heroCard) {
-        const heroTag = heroCard.querySelector('.category-tag');
-        if (heroTag) heroCategory = heroTag.textContent.trim();
-    }
-
-    tabItems.forEach(tab => {
-        tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remove active de todos
-            tabItems.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            const filter = this.textContent.trim();
-            
-            // Filtra os cards
-            allCards.forEach(card => {
-                const cardTag = card.querySelector('.category-tag');
-                if (!cardTag) {
-                    card.style.display = 'block';
-                    return;
-                }
-                const cardCategory = cardTag.textContent.trim();
-                
-                if (filter === 'Todos') {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = cardCategory === filter ? 'block' : 'none';
-                }
-            });
-            
-            // Filtra o hero
-            if (heroCard) {
-                if (filter === 'Todos') {
-                    heroCard.style.display = 'grid';
-                } else {
-                    heroCard.style.display = heroCategory === filter ? 'grid' : 'none';
-                }
-            }
-        });
-    });
-
-    // ============================================
-    // 11. RECURSOS - DADOS PARA FILTROS (fallback)
+    // 9. RECURSOS - BUSCA, FILTROS E CARDS
     // ============================================
     const resourcesData = [
         { id: 1, title: "Autismo (TEA)", description: "Artigos sobre diagnóstico, stimming, comunicação, vida adulta e o universo autista.", icon: "fa-solid fa-puzzle-piece", category: "Autismo", link: "/Recursos/artigos/autismo.html" },
@@ -529,6 +475,42 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 5, title: "Saúde Mental", description: "Burnout neurodivergente, ansiedade, autocuidado e saúde emocional.", icon: "fa-solid fa-heart", category: "Saúde Mental", link: "/Recursos/artigos/saude-mental.html" },
         { id: 6, title: "Direitos e Leis", description: "Informações atualizadas sobre direitos legais e como acessá-los.", icon: "fa-solid fa-scale-balanced", category: "Direitos", link: "/Direitos/direitos.html" },
     ];
+
+    const resourcesGrid = document.querySelector('.resources-grid, .cards-grid');
+    const filterPills = document.querySelectorAll('.pill');
+    let currentFilter = 'Todas';
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function renderResources() {
+        if (!resourcesGrid) return;
+        let filtered = [...resourcesData];
+        if (currentFilter !== 'Todas') filtered = filtered.filter(r => r.category === currentFilter);
+
+        resourcesGrid.innerHTML = filtered.map(r => `
+            <a href="${r.link}" class="resource-card-alt" style="text-decoration:none;color:inherit;display:block;">
+                <div class="icon-box"><i class="${r.icon}"></i></div>
+                <h3>${escapeHtml(r.title)}</h3>
+                <p>${escapeHtml(r.description)}</p>
+                <span class="resource-link">Ver artigos <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+        `).join('');
+    }
+
+    filterPills.forEach(pill => {
+        pill.addEventListener('click', function() {
+            filterPills.forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.textContent.trim();
+            renderResources();
+        });
+    });
+
+    renderResources();
 
     console.log('📚 Recursos pronto! Perfil + Acessibilidade + Filtros + Hub Flutuante');
     console.log('👤 Perfil:', localStorage.getItem('userName') || 'Visitante');

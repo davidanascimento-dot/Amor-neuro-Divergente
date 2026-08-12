@@ -188,6 +188,12 @@
     transition: none;
 }
 
+.carousel-dot.active {
+    background: #8b5cf6;
+    width: 28px;
+    border-radius: 100px;
+}
+
 .carousel-triple-section {
     padding: 80px 0;
     position: relative;

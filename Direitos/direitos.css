@@ -29,93 +29,6 @@
 }
 
 /* =========================================
-   HEADER COM LOGO CENTRALIZADA
-   ========================================= */
-.header-glass {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 40px;
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(229, 221, 210, 0.5);
-    transition: var(--transition);
-}
-
-/* LOGO - centralizada com position absolute */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--text-dark);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-decoration: none;
-}
-
-.logo-img {
-    height: 36px;
-    width: auto;
-}
-
-.logo-text {
-    letter-spacing: -0.3px;
-    color: var(--primary);
-}
-
-/* Links do header - mantém à direita */
-.header-links {
-    display: flex;
-    gap: 24px;
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text-medium);
-    margin-left: auto;
-}
-
-.header-links a {
-    transition: var(--transition);
-    padding: 4px 0;
-    border-bottom: 2px solid transparent;
-    text-decoration: none;
-    color: var(--text-medium);
-}
-
-.header-links a:hover {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
-}
-
-/* Responsivo - esconde links em telas pequenas */
-@media (max-width: 600px) {
-    .header-links {
-        display: none;
-    }
-}
-
-@media (max-width: 768px) {
-    .header-glass {
-        padding: 12px 18px;
-        padding-left: 76px;
-        justify-content: flex-start;
-    }
-    
-    .logo {
-        position: relative;
-        left: auto;
-        transform: none;
-        margin: 0 auto;
-    }
-}
-
-/* =========================================
    HERO COM IMAGEM DE FUNDO
    ========================================= */
 .rights-hero {
@@ -795,20 +708,6 @@ body.a11y-dark-mode .footer-bottom {
         flex-direction: column;
         align-items: center;
         text-align: center;
-    }
-
-    /* Ajuste da logo no mobile */
-    .header-glass {
-        padding: 12px 18px;
-        padding-left: 76px;
-        justify-content: flex-start;
-    }
-    
-    .logo {
-        position: relative;
-        left: auto;
-        transform: none;
-        margin: 0 auto;
     }
 }
 @media (max-width: 480px) {

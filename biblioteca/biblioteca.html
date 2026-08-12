@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="biblioteca.css">
-    <link rel="stylesheet" href="/comunidade/comunidade.css">
 </head>
 
 
@@ -108,27 +107,16 @@
         
         <!-- Header Glass -->
         <header class="header-glass" id="headerGlass">
-           <a href="/inicio.html" class="brand" id="brandLink">
-                <div class="brand-icon"></div>
-                <div class="brand-text">
-                    Amor
-                    <span>NEURODIVERGENTE</span>
-                </div>
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
             </a>
-
-            <nav class="nav-links">
-                <a href="/explorar/explorar.html" class="nav-link">Explorar</a>
-                <a href="/comunidade/comunidade.html" class="nav-link">Comunidade</a>
-                <a href="/Direitos/direitos.html">Direitos</a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/biblioteca/biblioteca.html">Biblioteca</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
-
-            <div class="nav-actions">
-                 <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">AcolherIA</a>
-                <button class="btn-icon-only" id="profileMenuBtn" title="Perfil / Acessibilidade">
-                    <i class="fa-regular fa-user"></i>
-                </button>
-            </div>
-        </div>
         </header>
 
        
@@ -339,18 +327,5 @@
     <script src="/supabase-cliente.js"></script>
     <script src="/inicio.js"></script>
     <script src="biblioteca.js"></script>
-
-     <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
-    </div>
-
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        new window.VLibras.Widget("https://vlibras.gov.br/app");
-    </script>
-
 </body>
 </html>

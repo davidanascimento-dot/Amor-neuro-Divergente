@@ -1,7 +1,7 @@
 /**
- * CARROSSEL SIMPLES — Sem efeitos 3D
+ * CARROSSEL 3D COVERFLOW — Script exclusivo
  */
-class CarrosselSimples {
+class Carrossel3D {
     constructor(trackId, options = {}) {
         this.track = document.getElementById(trackId);
         if (!this.track) {
@@ -23,6 +23,10 @@ class CarrosselSimples {
         this.nextBtn = document.getElementById('carouselNext');
         
         this.autoplayTimer = null;
+        this.isDragging = false;
+        this.dragStartX = 0;
+        this.touchStartX = 0;
+        this.resizeTimeout = null;
         this.isAnimating = false;
 
         this.init();
@@ -39,7 +43,7 @@ class CarrosselSimples {
         this.startAutoplay();
         this.bindEvents();
 
-        console.log(`🎠 Carrossel simples inicializado com ${this.totalCards} cards`);
+        console.log(`🎠 Carrossel 3D inicializado com ${this.totalCards} cards`);
     }
 
     createDots() {
@@ -59,9 +63,22 @@ class CarrosselSimples {
     }
 
     updateCarousel() {
+        const screenWidth = window.innerWidth;
+        let translateOffset = screenWidth < 640 ? 120 : screenWidth < 1024 ? 220 : 310;
+        const scaleActive = screenWidth < 640 ? 1.04 : 1.08;
+        const scaleSide = screenWidth < 640 ? 0.8 : 0.85;
+        const blurSide = screenWidth < 640 ? '0.5px' : '1px';
+        const blurHidden = screenWidth < 640 ? '2px' : '4px';
+        const opacitySide = screenWidth < 640 ? 0.6 : 0.55;
+
         this.cards.forEach((card, index) => {
-            // Resetar todas as classes e estilos
+            let distance = index - this.currentIndex;
+            if (distance > this.totalCards / 2) distance -= this.totalCards;
+            else if (distance < -this.totalCards / 2) distance += this.totalCards;
+
             card.classList.remove('active-card', 'prev-card', 'next-card', 'hidden-card', 'shadow-neon-glow');
+
+            // Resetar estilos inline
             card.style.transform = '';
             card.style.opacity = '';
             card.style.zIndex = '';
@@ -69,17 +86,48 @@ class CarrosselSimples {
             card.style.pointerEvents = '';
             card.style.boxShadow = '';
             card.style.transition = '';
-            
-            // Apenas mostrar/esconder com display
-            if (index === this.currentIndex) {
-                card.style.display = 'block';
+
+            if (distance === 0) {
+                // Card ativo
+                card.style.transform = `translateX(0px) scale(${scaleActive}) rotateY(0deg) translateZ(100px)`;
                 card.style.opacity = '1';
-                card.style.visibility = 'visible';
-                card.classList.add('active-card');
+                card.style.zIndex = '30';
+                card.style.filter = 'blur(0px)';
+                card.classList.add('active-card', 'shadow-neon-glow');
+                card.style.pointerEvents = 'auto';
+                card.style.boxShadow = '0 20px 50px rgba(124, 58, 237, 0.3)';
+                card.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            } else if (distance === -1 || (distance === this.totalCards - 1 && this.currentIndex === 0)) {
+                // Card anterior
+                card.style.transform = `translateX(-${translateOffset}px) scale(${scaleSide}) rotateY(28deg) translateZ(0px)`;
+                card.style.opacity = opacitySide;
+                card.style.zIndex = '20';
+                card.style.filter = `blur(${blurSide})`;
+                card.classList.add('prev-card');
+                card.style.pointerEvents = 'auto';
+                card.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.25)';
+                card.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            } else if (distance === 1 || (distance === -(this.totalCards - 1) && this.currentIndex === this.totalCards - 1)) {
+                // Card próximo
+                card.style.transform = `translateX(${translateOffset}px) scale(${scaleSide}) rotateY(-28deg) translateZ(0px)`;
+                card.style.opacity = opacitySide;
+                card.style.zIndex = '20';
+                card.style.filter = `blur(${blurSide})`;
+                card.classList.add('next-card');
+                card.style.pointerEvents = 'auto';
+                card.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.25)';
+                card.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
             } else {
-                card.style.display = 'none';
+                // Cards ocultos
+                const distanceMultiplier = Math.abs(distance) > 2 ? 1.4 : 1.2;
+                card.style.transform = `translateX(${distance * translateOffset * distanceMultiplier}px) scale(0.6) translateZ(-150px)`;
                 card.style.opacity = '0';
-                card.style.visibility = 'hidden';
+                card.style.zIndex = '10';
+                card.style.filter = `blur(${blurHidden})`;
+                card.classList.add('hidden-card');
+                card.style.pointerEvents = 'none';
+                card.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+                card.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
             }
         });
 
@@ -101,7 +149,7 @@ class CarrosselSimples {
         this.updateCarousel();
         setTimeout(() => {
             this.isAnimating = false;
-        }, 300);
+        }, 600);
     }
 
     prev() {
@@ -111,7 +159,7 @@ class CarrosselSimples {
         this.updateCarousel();
         setTimeout(() => {
             this.isAnimating = false;
-        }, 300);
+        }, 600);
     }
 
     goTo(index) {
@@ -121,7 +169,7 @@ class CarrosselSimples {
         this.updateCarousel();
         setTimeout(() => {
             this.isAnimating = false;
-        }, 300);
+        }, 600);
     }
 
     startAutoplay() {
@@ -157,6 +205,90 @@ class CarrosselSimples {
             });
         }
 
+        // Clique nos cards
+        this.cards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+                if (index !== this.currentIndex) {
+                    this.goTo(index);
+                    this.resetAutoplay();
+                }
+            });
+        });
+
+        // Drag com mouse
+        let isDragging = false;
+        let startX = 0;
+        let isSwiping = false;
+
+        this.track.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX;
+            isSwiping = false;
+            this.stopAutoplay();
+        });
+
+        this.track.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const diffX = startX - e.pageX;
+            if (Math.abs(diffX) > 30) {
+                isSwiping = true;
+            }
+            if (Math.abs(diffX) > 60) {
+                if (diffX > 0) {
+                    this.next();
+                } else {
+                    this.prev();
+                }
+                isDragging = false;
+                this.startAutoplay();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging && !isSwiping) {
+                // Se não houve swipe, é um clique
+            }
+            isDragging = false;
+            if (!this.autoplayTimer) {
+                this.startAutoplay();
+            }
+        });
+
+        // Touch events
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        this.track.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            this.stopAutoplay();
+        }, { passive: true });
+
+        this.track.addEventListener('touchmove', (e) => {
+            const diffX = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    this.next();
+                } else {
+                    this.prev();
+                }
+                touchStartX = e.changedTouches[0].screenX;
+                this.startAutoplay();
+            }
+        }, { passive: true });
+
+        this.track.addEventListener('touchend', () => {
+            if (!this.autoplayTimer) {
+                this.startAutoplay();
+            }
+        }, { passive: true });
+
+        // Pausar autoplay no hover
+        const container = document.querySelector('.carousel-triple-container');
+        if (container) {
+            container.addEventListener('mouseenter', () => this.stopAutoplay());
+            container.addEventListener('mouseleave', () => this.startAutoplay());
+        }
+
         // Teclado
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') {
@@ -170,14 +302,15 @@ class CarrosselSimples {
             }
         });
 
-        // Pausar autoplay no hover
-        const container = document.querySelector('.carousel-triple-container');
-        if (container) {
-            container.addEventListener('mouseenter', () => this.stopAutoplay());
-            container.addEventListener('mouseleave', () => this.startAutoplay());
-        }
+        // Resize com debounce
+        window.addEventListener('resize', () => {
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(() => {
+                this.updateCarousel();
+            }, 150);
+        });
 
-        // Visibilidade da página
+        // Visibilidade da página (pausa quando não está visível)
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 this.stopAutoplay();
@@ -202,7 +335,6 @@ class CarrosselSimples {
         }
         
         this.cards.forEach((card) => {
-            card.style.display = '';
             card.style.transform = '';
             card.style.opacity = '';
             card.style.zIndex = '';
@@ -210,11 +342,10 @@ class CarrosselSimples {
             card.style.pointerEvents = '';
             card.style.boxShadow = '';
             card.style.transition = '';
-            card.style.visibility = '';
             card.classList.remove('active-card', 'prev-card', 'next-card', 'hidden-card', 'shadow-neon-glow');
         });
         
-        console.log('🛑 Carrossel simples destruído');
+        console.log('🛑 Carrossel 3D destruído');
     }
 
     reload() {
@@ -231,7 +362,7 @@ class CarrosselSimples {
         this.updateCarousel();
         this.resetAutoplay();
         
-        console.log(`🔄 Carrossel simples recarregado com ${this.totalCards} cards`);
+        console.log(`🔄 Carrossel 3D recarregado com ${this.totalCards} cards`);
     }
 
     addCard(cardElement, position = 'end') {
@@ -314,28 +445,28 @@ class CarrosselSimples {
 document.addEventListener('DOMContentLoaded', () => {
     const track = document.getElementById('carrosselTripleTrack');
     if (track) {
-        const carrossel = new CarrosselSimples('carrosselTripleTrack', {
+        const carrossel = new Carrossel3D('carrosselTripleTrack', {
             autoplaySpeed: 4500,
             startIndex: 0
         });
         
-        window.carrosselSimples = carrossel;
+        window.carrossel3D = carrossel;
         
         document.addEventListener('carrossel:next', () => {
-            if (window.carrosselSimples) window.carrosselSimples.next();
+            if (window.carrossel3D) window.carrossel3D.next();
         });
         
         document.addEventListener('carrossel:prev', () => {
-            if (window.carrosselSimples) window.carrosselSimples.prev();
+            if (window.carrossel3D) window.carrossel3D.prev();
         });
         
         document.addEventListener('carrossel:goTo', (e) => {
-            if (window.carrosselSimples && e.detail && typeof e.detail.index === 'number') {
-                window.carrosselSimples.goTo(e.detail.index);
+            if (window.carrossel3D && e.detail && typeof e.detail.index === 'number') {
+                window.carrossel3D.goTo(e.detail.index);
             }
         });
         
-        console.log('✅ Carrossel simples inicializado com sucesso!');
+        console.log('✅ Carrossel 3D Coverflow inicializado com sucesso!');
     } else {
         console.warn('⚠️ Elemento carrosselTripleTrack não encontrado no DOM');
     }
@@ -343,5 +474,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Exportar para módulos
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CarrosselSimples;
+    module.exports = Carrossel3D;
 }
