@@ -28,92 +28,7 @@
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* =========================================
-   HEADER COM LOGO CENTRALIZADA
-   ========================================= */
-.header-glass {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 40px;
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(229, 221, 210, 0.5);
-    transition: var(--transition);
-}
 
-/* LOGO - centralizada com position absolute */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--text-dark);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-decoration: none;
-}
-
-.logo-img {
-    height: 36px;
-    width: auto;
-}
-
-.logo-text {
-    letter-spacing: -0.3px;
-    color: var(--primary);
-}
-
-/* Links do header - mantém à direita */
-.header-links {
-    display: flex;
-    gap: 24px;
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text-medium);
-    margin-left: auto;
-}
-
-.header-links a {
-    transition: var(--transition);
-    padding: 4px 0;
-    border-bottom: 2px solid transparent;
-    text-decoration: none;
-    color: var(--text-medium);
-}
-
-.header-links a:hover {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
-}
-
-/* Responsivo - esconde links em telas pequenas */
-@media (max-width: 600px) {
-    .header-links {
-        display: none;
-    }
-}
-
-@media (max-width: 768px) {
-    .header-glass {
-        padding: 12px 18px;
-        padding-left: 76px;
-        justify-content: flex-start;
-    }
-    
-    .logo {
-        position: relative;
-        left: auto;
-        transform: none;
-        margin: 0 auto;
-    }
-}
 
 /* =========================================
    HERO COM IMAGEM DE FUNDO
@@ -610,82 +525,6 @@
     gap: 6px;
 }
 
-/* =========================================
-   FOOTER
-   ========================================= */
-.footer {
-    background-color: #2d2a28;
-    color: #b8b0a8;
-    padding: 60px 48px 32px;
-    margin-top: auto;
-}
-.footer-main {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-    max-width: 1100px;
-    margin: 0 auto 48px;
-}
-.footer-col h4 {
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-.footer-col a {
-    display: block;
-    color: #8a827c;
-    font-size: 14px;
-    padding: 6px 0;
-    transition: color 0.15s ease;
-}
-.footer-col a:hover {
-    color: #e8e3dd;
-}
-.social-links {
-    display: flex;
-    gap: 12px;
-}
-.social-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #3a3744;
-    border-radius: 50%;
-    color: #e8e3dd;
-    font-size: 16px;
-    transition: all 0.15s ease;
-}
-.social-links a:hover {
-    background: var(--primary);
-    transform: translateY(-2px);
-}
-.footer-bottom {
-    border-top: 1px solid #3a3744;
-    padding-top: 24px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    font-size: 13px;
-    color: #6b6368;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-.footer-bottom a {
-    color: #8a827c;
-}
-.footer-bottom a:hover {
-    color: #e8e3dd;
-    text-decoration: underline;
-}
-.footer-bottom p {
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
-}
 
 /* =========================================
    DARK MODE
@@ -829,3 +668,4 @@ body.a11y-dark-mode .footer-bottom {
         grid-template-columns: 1fr;
     }
 }
+
