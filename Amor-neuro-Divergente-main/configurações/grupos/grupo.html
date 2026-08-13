@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Grupos | Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="grupo.css">
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- CONTEÚDO PRINCIPAL                         -->
+    <!-- ============================================ -->
+    <div class="main-wrapper">
+        
+        <!-- NAVBAR SUPERIOR -->
+        <header class="navbar">
+            <div class="nav-left">
+                <a href="/painel-admin/painel.html" class="btn-back" title="Voltar para Painel Admin">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Painel Admin</span>
+                </a>
+                <div class="brand-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <span class="brand-text">Amor NeuroDivergente</span>
+            </div>
+            <nav class="nav-center">
+                <a href="/inicio.html">Início</a>
+                <a href="/Recursos/recursos.html">Recursos</a>
+                <a href="/Quem somos/quem-somos.html">Quem Somos</a>
+                <a href="/Direitos/direitos.html">Direitos</a>
+                <a href="/blog/blog.html">Blog</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">Chat com IA</a>
+            </nav>
+            <div class="nav-right">
+                <button class="search-btn" aria-label="Pesquisar"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <img src="/img/avatar-1776703979307.png" alt="Avatar" class="avatar-img">
+            </div>
+        </header>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            
+            <div class="page-header">
+                <h1>Admin <span>· Grupos</span></h1>
+                <button class="btn-new-group" id="openModalBtn">
+                    <i class="fa-solid fa-plus"></i> Novo grupo
+                </button>
+            </div>
+
+            <!-- LISTA DE GRUPOS -->
+            <div class="groups-list" id="groupsContainer">
+                <!-- Preenchido dinamicamente pelo JS -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE CRIAÇÃO/EDIÇÃO -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h3 id="modalTitle">Novo Grupo</h3>
+            <form id="groupForm">
+                <input type="hidden" id="groupId">
+                <div class="form-group">
+                    <label for="groupNameInput">Nome do Grupo</label>
+                    <input type="text" id="groupNameInput" required placeholder="Ex: Grupo-Geral">
+                </div>
+                <div class="form-group">
+                    <label for="groupDescInput">Descrição</label>
+                    <input type="text" id="groupDescInput" required placeholder="Ex: Grupo de conversas">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="closeModalBtn">Cancelar</button>
+                    <button type="submit" class="btn-new-group">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- BOTÃO DE ACESSIBILIDADE (ESTILO LOJA) -->
+    <button class="accessibility-btn" id="btnAcessibilidade" aria-label="Abrir menu de acessibilidade">
+        <i class="fa-solid fa-person"></i>
+    </button>
+
+    <!-- MENU DE ACESSIBILIDADE -->
+    <div class="accessibility-menu" id="menuAcessibilidade">
+        <div class="accessibility-header">
+            <h3>Acessibilidade</h3>
+            <button class="close-accessibility" id="closeAcessibilidade" aria-label="Fechar painel">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="accessibility-grid">
+            <button class="access-btn"><i class="fa-regular fa-moon"></i><span>Escurecer</span></button>
+            <button class="access-btn"><i class="fa-solid fa-circle-half-stroke"></i><span>Alto<br>Contraste</span></button>
+            <button class="access-btn"><i class="fa-solid fa-text-height"></i><span>Texto<br>Maior</span></button>
+            <button class="access-btn"><i class="fa-solid fa-compress"></i><span>Texto<br>Menor</span></button>
+            <button class="access-btn"><i class="fa-solid fa-arrows-left-right"></i><span>Espaçamento</span></button>
+            <button class="access-btn"><i class="fa-solid fa-link"></i><span>Links</span></button>
+            <button class="access-btn"><i class="fa-solid fa-droplet"></i><span>Saturação</span></button>
+            <button class="access-btn"><i class="fa-regular fa-eye"></i><span>Fonte<br>Dislexia</span></button>
+            <button class="access-btn"><i class="fa-solid fa-rotate-left"></i><span>Reset</span></button>
+        </div>
+    </div>
+
+    <script src="grupo.js"></script>
+</body>
+</html>

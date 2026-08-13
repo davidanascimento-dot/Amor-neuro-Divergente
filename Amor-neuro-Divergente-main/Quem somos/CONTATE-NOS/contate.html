@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Entre em contato com a equipe do Amor NeuroDivergente. Suporte, dúvidas, sugestões e parcerias.">
+    <title>Contato — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="contate.css">
+</head>
+<body>
+
+    <!-- Barra de progresso -->
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- =============================================
+    NAVBAR — Transparente, some ao descer
+    ============================================= -->
+    <header class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-left">
+                <a href="/explorar/explorar.html" class="navbar-back" title="Voltar para Explorar">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="navbar-back-text">Explorar</span>
+                </a>
+            </div>
+
+            <div class="navbar-center">
+                <a href="/inicio.html" class="navbar-brand">
+                    <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="navbar-logo">
+                    <span class="navbar-brand-text">Amor NeuroDivergente</span>
+                </a>
+            </div>
+
+            <div class="navbar-right">
+                <!-- Acessibilidade -->
+                <div class="navbar-a11y">
+                    <button class="a11y-icon-btn" id="a11yToggle" aria-label="Acessibilidade" aria-expanded="false">
+                        <i class="fa-solid fa-universal-access"></i>
+                    </button>
+                    <div class="a11y-dropdown" id="a11yDropdown" hidden>
+                        <button class="a11y-option" data-a11y="darkMode">
+                            <i class="fa-regular fa-moon"></i> Modo escuro
+                            <span class="a11y-status" id="darkModeStatus">Desligado</span>
+                        </button>
+                        <button class="a11y-option" data-a11y="increaseText">
+                            <i class="fa-solid fa-text-height"></i> Aumentar texto
+                        </button>
+                        <button class="a11y-option" data-a11y="decreaseText">
+                            <i class="fa-solid fa-text-slash"></i> Diminuir texto
+                        </button>
+                        <button class="a11y-option" data-a11y="highlightLinks">
+                            <i class="fa-solid fa-link"></i> Destacar links
+                            <span class="a11y-status" id="linksStatus">Desligado</span>
+                        </button>
+                        <button class="a11y-option" data-a11y="dyslexiaFont">
+                            <i class="fa-regular fa-eye"></i> Fonte para dislexia
+                            <span class="a11y-status" id="dyslexiaStatus">Desligado</span>
+                        </button>
+                        <button class="a11y-option" data-a11y="reduceMotion">
+                            <i class="fa-solid fa-person-walking"></i> Reduzir animações
+                            <span class="a11y-status" id="motionStatus">Desligado</span>
+                        </button>
+                        <button class="a11y-reset" data-a11y="reset">
+                            <i class="fa-solid fa-rotate-left"></i> Voltar ao padrão
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- =============================================
+    CONTEÚDO PRINCIPAL
+    ============================================= -->
+    <main class="main-content">
+        
+        <!-- CABEÇALHO DA PÁGINA -->
+        <section class="page-hero">
+            <span class="page-icon"><i class="fa-solid fa-headset"></i></span>
+            <h1>Fale Conosco</h1>
+            <p>Precisa de ajuda, tem alguma sugestão ou quer compartilhar sua história? Nossa equipe está pronta para te ouvir.</p>
+        </section>
+
+        <!-- ÁREA DE CONTEÚDO -->
+        <div class="section">
+            <div class="page-container">
+                
+                <!-- COLUNA ESQUERDA: Formulário Principal -->
+                <div class="form-card">
+                    <form id="support-form">
+                        
+                        <!-- Linha 1: Nome e E-mail -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="form-nome">Nome *</label>
+                                <input type="text" id="form-nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-email">E-mail *</label>
+                                <input type="email" id="form-email" required>
+                            </div>
+                        </div>
+
+                        <!-- Linha 2: Telefone e Cidade -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="form-phone">Telefone / WhatsApp</label>
+                                <input type="tel" id="form-phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-cidade">Cidade</label>
+                                <input type="text" id="form-cidade">
+                            </div>
+                        </div>
+
+                        <!-- Linha 3: Canal Preferido e Departamento -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="form-canal">Canal preferido</label>
+                                <div class="select-wrapper">
+                                    <select id="form-canal">
+                                        <option value="site">Resposta pelo site</option>
+                                        <option value="whatsapp">WhatsApp</option>
+                                        <option value="email">E-mail</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-depto">Departamento</label>
+                                <div class="select-wrapper">
+                                    <select id="form-depto">
+                                        <option value="suporte">Suporte geral</option>
+                                        <option value="financeiro">Financeiro</option>
+                                        <option value="parcerias">Parcerias</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Linha 4: Assunto -->
+                        <div class="form-group full-width">
+                            <label for="form-assunto">Assunto *</label>
+                            <input type="text" id="form-assunto" placeholder="Ex.: Dúvida sobre laudo, denúncia, sugestão..." required>
+                        </div>
+
+                        <!-- Linha 5: Texto do Caso -->
+                        <div class="form-group full-width">
+                            <label for="form-caso">Conte-nos seu caso *</label>
+                            <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa 🌱" required></textarea>
+                            <div class="char-counter"><span id="current-chars">0</span>/4000</div>
+                        </div>
+
+                        <!-- Botão de Envio -->
+                        <button type="submit" class="primary-btn submit-form-btn">
+                            Abrir atendimento
+                        </button>
+
+                        <!-- Termo de Privacidade -->
+                        <p class="privacy-notice">
+                            Ao enviar, você concorda com nossa política de privacidade. Seus dados são tratados com sigilo.
+                        </p>
+                    </form>
+                </div>
+
+                <!-- COLUNA DIREITA: Cards Auxiliares -->
+                <aside class="sidebar-container">
+                    
+                    <!-- Card 1: Como funciona -->
+                    <div class="side-card">
+                        <div class="side-card-header">
+                            <span class="side-icon"><i class="fa-regular fa-circle-question"></i></span>
+                            <h4 class="side-card-title">Como funciona</h4>
+                        </div>
+                        <ol class="info-list-ordered">
+                            <li>Você envia sua mensagem por aqui.</li>
+                            <li>Geramos um <strong>protocolo único</strong> para acompanhar.</li>
+                            <li>Nossa equipe responde em até <strong>48h úteis</strong>.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Card 2: Outros canais -->
+                    <div class="side-card">
+                        <div class="side-card-header">
+                            <span class="side-icon"><i class="fa-regular fa-envelope"></i></span>
+                            <h4 class="side-card-title">Outros canais</h4>
+                        </div>
+                        <ul class="info-list-unordered">
+                            <li>
+                                <span class="list-icon"><i class="fa-regular fa-envelope"></i></span> 
+                                <a href="mailto:contato@amorneurodivergente.com" class="channel-link">contato@amorneurodivergente.com</a>
+                            </li>
+                            <li>
+                                <span class="list-icon"><i class="fa-brands fa-whatsapp"></i></span> 
+                                <span class="channel-text text-muted">WhatsApp em breve</span>
+                            </li>
+                            <li>
+                                <span class="list-icon"><i class="fa-solid fa-language"></i></span> 
+                                <span class="channel-text">Atendimento em PT, EN e ES</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 3: Protocolo -->
+                    <div class="side-card">
+                        <div class="side-card-header">
+                            <span class="side-icon"><i class="fa-regular fa-clock"></i></span>
+                            <h4 class="side-card-title">Prazo de resposta</h4>
+                        </div>
+                        <ul class="info-list-unordered">
+                            <li>
+                                <span class="list-icon"><i class="fa-regular fa-calendar-check"></i></span>
+                                <span class="channel-text">Até <strong>48 horas úteis</strong></span>
+                            </li>
+                            <li>
+                                <span class="list-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                                <span class="channel-text">Atendimento sigiloso e seguro</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </aside>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script src="contate.js"></script>
+</body>
+</html>

@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comunidade Amor NeuroDivergente — um espaço seguro para compartilhar experiências, fazer perguntas e encontrar apoio.">
+    <title>Comunidade — Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="comunidade.css">
+    
+    <style>
+        /* =============================================
+           STORIES - ESTILO INSTAGRAM (VERSÃO COMPACTA)
+           ============================================= */
+        
+        .stories-container {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 16px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        .stories-container::-webkit-scrollbar {
+            height: 0;
+        }
+
+        .stories-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 2px 0;
+            min-width: fit-content;
+        }
+
+        .story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            position: relative;
+        }
+
+        .story-item:hover {
+            transform: scale(1.05);
+        }
+
+        .story-avatar-wrapper {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+
+        .story-avatar-wrapper.viewed {
+            background: #dbdbdb;
+        }
+
+        .story-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--bg-primary);
+            background: var(--bg-secondary);
+        }
+
+        .story-add-btn {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .story-add-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .story-username {
+            font-size: 10px;
+            color: var(--text-secondary);
+            max-width: 52px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        /* =============================================
+           PERFIL - VERSÃO COMPACTA E MODERNA
+           ============================================= */
+
+        .profile-container {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 16px;
+            transition: background 0.3s ease;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            background: var(--bg-secondary);
+        }
+
+        .profile-status {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+        }
+
+        .profile-status.online {
+            background: #10b981;
+        }
+
+        .profile-status.offline {
+            background: #6b7280;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .profile-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+
+        .profile-username {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .profile-edit-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .profile-edit-btn:hover {
+            background: var(--bg-hover);
+            color: var(--primary);
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 4px;
+        }
+
+        .profile-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .profile-bio {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .profile-action-btn {
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .profile-action-btn:hover {
+            background: var(--bg-hover);
+        }
+
+        .profile-action-btn.primary {
+            background: var(--gradient-main);
+            color: white;
+            border: none;
+        }
+
+        .profile-action-btn.primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 10px rgba(147, 51, 234, 0.25);
+        }
+
+        /* =============================================
+           MODAL DE STORY
+           ============================================= */
+
+        .story-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 6000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: storyFadeIn 0.3s ease;
+        }
+
+        .story-modal-overlay[hidden] {
+            display: none !important;
+        }
+
+        @keyframes storyFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .story-modal {
+            width: 100%;
+            max-width: 380px;
+            max-height: 85vh;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .story-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-modal-close:hover {
+            background: rgba(255,0,0,0.5);
+            transform: scale(1.1);
+        }
+
+        .story-modal-content {
+            width: 100%;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .story-modal-content video,
+        .story-modal-content img {
+            width: 100%;
+            max-height: 65vh;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .story-modal-user {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            z-index: 10;
+        }
+
+        .story-modal-user img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .story-modal-user span {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .story-progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.2);
+            z-index: 10;
+            display: flex;
+            gap: 2px;
+            padding: 0 4px;
+        }
+
+        .story-progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.1s linear;
+            width: 0%;
+            border-radius: 2px;
+        }
+
+        /* =============================================
+           DARK MODE - STORIES E PERFIL
+           ============================================= */
+
+        body.a11y-dark-mode .stories-container {
+            background: var(--bg-card);
+            border-bottom-color: var(--border-color);
+        }
+
+        body.a11y-dark-mode .profile-container {
+            background: var(--bg-card);
+            border-bottom-color: var(--border-color);
+        }
+
+        body.a11y-dark-mode .story-avatar {
+            border-color: var(--bg-card);
+        }
+
+        body.a11y-dark-mode .story-add-btn {
+            border-color: var(--bg-card);
+        }
+
+        body.a11y-dark-mode .profile-avatar {
+            border-color: var(--primary);
+        }
+
+        body.a11y-dark-mode .profile-status {
+            border-color: var(--bg-card);
+        }
+
+        body.a11y-dark-mode .profile-username {
+            color: var(--text-primary);
+        }
+
+        body.a11y-dark-mode .profile-bio {
+            color: var(--text-secondary);
+        }
+
+        body.a11y-dark-mode .profile-action-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        body.a11y-dark-mode .profile-action-btn:hover {
+            background: var(--bg-hover);
+        }
+
+        body.a11y-dark-mode .story-modal-overlay {
+            background: rgba(0,0,0,0.95);
+        }
+
+        /* =============================================
+           RESPONSIVO - STORIES E PERFIL
+           ============================================= */
+
+        @media (max-width: 768px) {
+            .story-avatar-wrapper {
+                width: 44px;
+                height: 44px;
+            }
+            
+            .story-username {
+                font-size: 9px;
+                max-width: 44px;
+            }
+            
+            .profile-avatar {
+                width: 48px;
+                height: 48px;
+            }
+            
+            .profile-username {
+                font-size: 14px;
+            }
+            
+            .profile-stats {
+                gap: 12px;
+            }
+            
+            .stat-number {
+                font-size: 12px;
+            }
+            
+            .stat-label {
+                font-size: 10px;
+            }
+            
+            .profile-header {
+                gap: 10px;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .profile-action-btn {
+                width: 100%;
+                text-align: center;
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+            
+            .story-modal {
+                max-width: 100%;
+                border-radius: 0;
+                max-height: 100vh;
+            }
+            
+            .story-modal-content {
+                min-height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .story-avatar-wrapper {
+                width: 38px;
+                height: 38px;
+                padding: 1.5px;
+            }
+            
+            .story-add-btn {
+                width: 15px;
+                height: 15px;
+                font-size: 8px;
+                bottom: -2px;
+                right: -2px;
+            }
+            
+            .story-username {
+                font-size: 8px;
+                max-width: 38px;
+            }
+            
+            .stories-wrapper {
+                gap: 8px;
+            }
+            
+            .profile-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .profile-username {
+                font-size: 13px;
+            }
+            
+            .profile-stats {
+                gap: 8px;
+            }
+            
+            .stat-number {
+                font-size: 11px;
+            }
+            
+            .stat-label {
+                font-size: 9px;
+            }
+            
+            .profile-bio {
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+            
+            .profile-actions {
+                gap: 4px;
+            }
+            
+            .profile-action-btn {
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            
+            .profile-container {
+                padding: 8px 12px;
+            }
+            
+            .stories-container {
+                padding: 6px 12px;
+            }
+        }
+
+        /* =============================================
+           ESTILOS PARA GRUPOS - NOVA FUNÇÃO
+           ============================================= */
+        
+        .groups-grid-custom {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .group-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .group-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .group-card-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .group-card-body {
+            padding: 16px;
+        }
+
+        .group-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .group-card-title .admin-badge {
+            font-size: 12px;
+            background: var(--gradient-main);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .group-card-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .group-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .group-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .group-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .group-card-actions button {
+            flex: 1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .group-card-actions .btn-join {
+            background: var(--gradient-main);
+            color: white;
+            border: none;
+        }
+
+        .group-card-actions .btn-join:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.3);
+        }
+
+        .group-card-actions .btn-chat {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .group-card-actions .btn-chat:hover {
+            background: var(--primary-dark);
+        }
+
+        /* =============================================
+           MODAL DE CRIAR GRUPO
+           ============================================= */
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay[hidden] {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            max-width: 540px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-container::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+
+        .modal-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .modal-header h2 i {
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(29, 155, 240, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .form-group label:has(input[type="checkbox"]) {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .btn-submit-group {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient-main);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit-group:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        /* =============================================
+           BOTÃO FLUTUANTE CRIAR GRUPO
+           ============================================= */
+        
+        .fab-create-group {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: var(--gradient-main);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab-create-group:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(124, 58, 237, 0.6);
+        }
+
+        .fab-create-group .tooltip {
+            position: absolute;
+            right: 70px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .fab-create-group:hover .tooltip {
+            opacity: 1;
+        }
+
+        /* =============================================
+           CORREÇÕES PARA VÍDEOS NOS POSTS
+           ============================================= */
+        
+        .post-video-container {
+            margin: 12px 0 !important;
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            background: #000 !important;
+            width: 100% !important;
+            display: block !important;
+            position: relative !important;
+        }
+
+        .post-video-container video {
+            width: 100% !important;
+            max-height: 400px !important;
+            display: block !important;
+            background: #000 !important;
+            border-radius: 0 !important;
+        }
+
+        .video-preview-container {
+            margin: 12px 0 !important;
+            position: relative !important;
+            display: block !important;
+        }
+
+        .video-preview-wrapper {
+            position: relative !important;
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            background: #000 !important;
+        }
+
+        .video-preview-wrapper video {
+            width: 100% !important;
+            max-height: 300px !important;
+            display: block !important;
+        }
+
+        .video-preview-remove {
+            position: absolute !important;
+            top: 12px !important;
+            right: 12px !important;
+            background: rgba(0,0,0,0.7) !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            border-radius: 30px !important;
+            cursor: pointer !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s !important;
+            z-index: 10 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+
+        .video-preview-remove:hover {
+            background: rgba(255,0,0,0.8) !important;
+            transform: scale(1.05) !important;
+        }
+
+        .chat-video {
+            margin: 8px 0 !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            background: #000 !important;
+            max-width: 200px !important;
+        }
+
+        .chat-video video {
+            width: 100% !important;
+            display: block !important;
+        }
+
+        body.a11y-dark-mode .post-video-container {
+            background: #000 !important;
+        }
+
+        body.a11y-dark-mode .video-preview-wrapper {
+            background: #000 !important;
+        }
+
+        @media (max-width: 768px) {
+            .post-video-container video {
+                max-height: 250px !important;
+            }
+            .video-preview-wrapper video {
+                max-height: 200px !important;
+            }
+            .chat-video {
+                max-width: 150px !important;
+            }
+            .modal-container {
+                padding: 24px 20px;
+            }
+            .groups-grid-custom {
+                grid-template-columns: 1fr;
+            }
+            .fab-create-group {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .post-video-container video {
+                max-height: 180px !important;
+            }
+            .video-preview-wrapper video {
+                max-height: 150px !important;
+            }
+            .group-card-image {
+                height: 100px;
+            }
+            .group-card-title {
+                font-size: 16px;
+            }
+            .modal-header h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =============================================
+    ESTRUTURA PRINCIPAL - ESTILO TWITTER/X
+    ============================================= -->
+    <div class="app-container">
+
+        <!-- TOP BAR - Navegação Superior -->
+        <header class="top-bar">
+            <div class="top-bar-inner">
+                <div class="top-bar-left">
+                    <button class="top-bar-back" id="backBtn" aria-label="Voltar">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <div class="top-bar-brand">
+                        <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="top-bar-logo">
+                        <span class="top-bar-title">Comunidade</span>
+                    </div>
+                </div>
+                <div class="top-bar-center">
+                    <div class="search-container">
+                        <i class="fa-solid fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Pesquisar na comunidade..." id="searchInput">
+                    </div>
+                </div>
+                <div class="top-bar-right">
+                    <button class="top-bar-btn" id="sidebarOpenPostModalBtn" title="Novo Post">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        <span class="btn-label">Postar</span>
+                    </button>
+                    <button class="top-bar-btn" id="profileMenuBtn" title="Perfil">
+                        <img src="/img/foto-padrão.jpg" alt="Perfil" class="top-bar-avatar" id="topBarAvatar">
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-layout">
+
+            <!-- COLUNA ESQUERDA - Navegação (Estilo Twitter/X) -->
+            <aside class="left-sidebar">
+                <nav class="left-nav">
+                    <a href="/inicio.html" class="nav-item">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Início</span>
+                    </a>
+                    <a href="/explorar/explorar.html" class="nav-item">
+                        <i class="fa-solid fa-compass"></i>
+                        <span>Explorar</span>
+                    </a>
+                    <a href="/comunidade/comunidade.html" class="nav-item active">
+                        <i class="fa-regular fa-comments"></i>
+                        <span>Comunidade</span>
+                    </a>
+                    <a href="/direitos/direitos.html" class="nav-item">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                        <span>Seus Direitos</span>
+                    </a>
+                    <a href="/biblioteca/biblioteca.html" class="nav-item">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Biblioteca</span>
+                    </a>
+                    <a href="/loja/loja.html" class="nav-item">
+                        <i class="fa-solid fa-store"></i>
+                        <span>Loja</span>
+                    </a>
+                    <a href="/apoiar/apoiar.html" class="nav-item">
+                        <i class="fa-solid fa-heart"></i>
+                        <span>Apoiar</span>
+                    </a>
+                    <div class="nav-divider"></div>
+                    <button class="nav-item nav-post-btn" id="sidebarOpenPostModalBtn2">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        <span>Postar</span>
+                    </button>
+                </nav>
+                <div class="left-sidebar-footer">
+                    <button class="nav-item" id="logoutBtn">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Sair</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- COLUNA CENTRAL - TIMELINE -->
+            <main class="main-timeline">
+                
+                <!-- Cabeçalho da Timeline -->
+                <header class="timeline-header">
+                    <h2 class="timeline-header-title">Para você</h2>
+                    
+                    <!-- =============================================
+                    STORIES - ABAIXO DO "PARA VOCÊ"
+                    ============================================= -->
+                    <div class="stories-container">
+                        <div class="stories-wrapper" id="storiesWrapper">
+                            <!-- Seu Story -->
+                            <div class="story-item" id="myStory">
+                                <div class="story-avatar-wrapper">
+                                    <img src="/img/avatar-padrao.png" alt="Seu story" class="story-avatar" id="myStoryAvatar">
+                                    <div class="story-add-btn" id="addStoryBtn">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </div>
+                                </div>
+                                <span class="story-username">Seu story</span>
+                            </div>
+                            <!-- Stories dos outros usuários -->
+                            <div id="storiesList"></div>
+                        </div>
+                    </div>
+
+                    <!-- =============================================
+                    PERFIL DO USUÁRIO - ABAIXO DOS STORIES
+                    ============================================= -->
+                   
+                    <!-- Abas -->
+                    <div class="tabs-container">
+                        <button class="tab-btn active" data-tab="forum">Fórum</button>
+                        <button class="tab-btn" data-tab="grupos">Grupos</button>
+                        <button class="tab-btn" data-tab="eventos">Eventos</button>
+                        <button class="tab-btn" data-tab="conversa">Conversa</button>
+                    </div>
+                </header>
+
+                <!-- Conteúdo da Timeline -->
+                <div class="timeline-content">
+                    
+                    <!-- ABA: FÓRUM -->
+                    <div class="tab-content active" id="tab-forum">
+                        
+                        <!-- Caixa de Criação de Post -->
+                        <div class="feed-compose-box">
+                            <img src="/img/avatar-padrao.png" alt="Sua foto" class="timeline-avatar user-current-avatar">
+                            <div class="feed-compose-body">
+                                <textarea id="feedPostInput" placeholder="O que está acontecendo?" rows="2"></textarea>
+                                <div class="feed-compose-footer">
+                                    <div class="compose-toolbar">
+                                        <button type="button" title="Mídia" id="feedMediaBtn"><i class="fa-regular fa-image"></i></button>
+                                        <button type="button" title="GIF"><i class="fa-solid fa-film"></i></button>
+                                        <button type="button" title="Enquete"><i class="fa-solid fa-square-poll-horizontal"></i></button>
+                                        <button type="button" title="Emoji"><i class="fa-regular fa-face-smile"></i></button>
+                                        <button type="button" title="Agendar"><i class="fa-regular fa-calendar-days"></i></button>
+                                        <button type="button" title="Localização"><i class="fa-solid fa-location-dot"></i></button>
+                                    </div>
+                                    <button class="x-btn-primary small" id="feedSubmitPostBtn">Postar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Posts Grid -->
+                        <div class="posts-grid" id="postsGrid"></div>
+                    </div>
+
+                    <!-- ABA: GRUPOS -->
+                    <div class="tab-content" id="tab-grupos">
+                        <div class="section-header-custom">
+                            <h3><i class="fa-solid fa-users"></i> Grupos da Comunidade</h3>
+                            <p class="section-sub-custom">Conecte-se com membros em salas de interesse comum.</p>
+                        </div>
+                        
+                        <!-- Botão Criar Grupo dentro da aba -->
+                        <button class="btn-create-group-inline" id="openCreateGroupBtn">
+                            <i class="fa-solid fa-plus"></i> Criar Novo Grupo
+                        </button>
+                        
+                        <!-- Grid de Grupos -->
+                        <div class="groups-grid-custom" id="groupsGrid">
+                            <!-- Grupos serão renderizados via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- ABA: EVENTOS -->
+                    <div class="tab-content" id="tab-eventos">
+                        <div class="section-header-custom">
+                            <h3><i class="fa-solid fa-calendar"></i> Próximos Eventos</h3>
+                            <p class="section-sub-custom">Confirme presença nos nossos encontros e rodas de conversa ao vivo.</p>
+                        </div>
+                        <div class="events-grid-custom" id="eventsGrid"></div>
+                    </div>
+
+                    <!-- ABA: CONVERSA -->
+                    <div class="tab-content" id="tab-conversa">
+                        <div class="chat-full-container">
+                            <div class="chat-sidebar">
+                                <div class="chat-sidebar-header">
+                                    <h3><i class="fa-solid fa-comments"></i> Canais</h3>
+                                    <button class="btn-create-channel" id="openCreateGroupFromChatBtn" title="Criar novo canal">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="groups-list" id="groupsListContainer">
+                                    <div class="group-chat-item active" data-group-id="community">
+                                        <div class="group-chat-avatar"><i class="fa-solid fa-globe"></i></div>
+                                        <div class="group-chat-info">
+                                            <h4>Geral da Comunidade</h4>
+                                            <p>Conversa ativa</p>
+                                        </div>
+                                    </div>
+                                    <!-- Grupos criados aparecerão aqui -->
+                                </div>
+                            </div>
+                            <div class="chat-main">
+                                <div class="chat-main-header" id="chatMainHeader">
+                                    <div class="chat-main-header-info">
+                                        <i class="fa-solid fa-globe"></i>
+                                        <span>Chat da Comunidade</span>
+                                    </div>
+                                </div>
+                                <div class="chat-messages-area" id="chatMessagesArea">
+                                    <div class="chat-messages" id="chatMessages">
+                                        <div class="chat-placeholder">
+                                            <i class="fa-solid fa-message"></i>
+                                            <p>Carregando mensagens...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="chat-input-area">
+                                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." class="chat-input">
+                                    <button id="sendChatBtn" class="chat-send-btn">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <!-- COLUNA DIREITA - TRENDING & WIDGETS -->
+            <aside class="right-sidebar">
+                
+                <!-- Cards de Trending -->
+                <div class="trending-card">
+                    <div class="trending-header">
+                        <span class="trending-title">O que está acontecendo</span>
+                    </div>
+                    <div class="trending-item">
+                        <span class="trending-category">Notícias · 680 posts</span>
+                        <p class="trending-text">Viral video compara formigas e humanos resolvendo quebra-cabeça em formato de T</p>
+                        <span class="trending-time">4 horas atrás</span>
+                    </div>
+                    <div class="trending-item">
+                        <span class="trending-category">Esportes · 1.582 posts</span>
+                        <p class="trending-text">Erling Haaland interage de forma brincalhona com jovem fã após jogo da Copa</p>
+                        <span class="trending-time">3 horas atrás</span>
+                    </div>
+                    <div class="trending-item">
+                        <span class="trending-category">Esportes · 4.927 posts</span>
+                        <p class="trending-text">Nioh Berg afirma que Erling Haaland é o maior e mais branco jogador, irritando...</p>
+                        <span class="trending-time">6 horas atrás</span>
+                    </div>
+                    <div class="trending-item trending-more">
+                        <button class="trending-more-btn">Mostrar mais</button>
+                    </div>
+                </div>
+
+                <!-- Quem Seguir -->
+                <div class="trending-card">
+                    <div class="trending-header">
+                        <span class="trending-title">Quem seguir</span>
+                    </div>
+                    <div class="follow-item">
+                        <div class="follow-info">
+                            <img src="/img/avatar-padrao.png" alt="" class="follow-avatar">
+                            <div>
+                                <span class="follow-name">GTA 6 Info</span>
+                                <span class="follow-handle">@gta6info</span>
+                            </div>
+                        </div>
+                        <button class="follow-btn">Seguir</button>
+                    </div>
+                    <div class="follow-item">
+                        <div class="follow-info">
+                            <img src="/img/avatar-padrao.png" alt="" class="follow-avatar">
+                            <div>
+                                <span class="follow-name">GTA6 News</span>
+                                <span class="follow-handle">@gta6news</span>
+                            </div>
+                        </div>
+                        <button class="follow-btn">Seguir</button>
+                    </div>
+                    <div class="trending-item trending-more">
+                        <button class="trending-more-btn">Mostrar mais</button>
+                    </div>
+                </div>
+
+                <!-- Regras -->
+                <div class="widget-card">
+                    <div class="widget-title"><i class="fa-solid fa-shield"></i> Regras da Casa</div>
+                    <ul class="rules-list">
+                        <li><i class="fa-solid fa-check"></i> Respeito mútuo é a base de tudo.</li>
+                        <li><i class="fa-solid fa-triangle-exclamation"></i> Use avisos para gatilhos ou conteúdos sensíveis.</li>
+                        <li><i class="fa-solid fa-handshake"></i> Diagnóstico não é pauta de competição.</li>
+                    </ul>
+                </div>
+
+                <!-- AcolherIA -->
+                <div class="widget-card ia-box">
+                    <div class="widget-title"><i class="fa-solid fa-robot"></i> Central AcolherIA</div>
+                    <p class="ia-desc">Nossa IA especializada está disponível para tirar dúvidas conceituais de acessibilidade ou mediar desabafos.</p>
+                    <a href="/chat-Ia/chat-Ia.html" class="btn-ia-chat"><i class="fa-solid fa-wand-magic-sparkles"></i> Iniciar Suporte</a>
+                </div>
+
+                <!-- Atividade -->
+                <div class="widget-card">
+                    <div class="widget-title"><i class="fa-solid fa-chart-line"></i> Atividade da Rede</div>
+                    <ul class="rules-list">
+                        <li><i class="fa-regular fa-message"></i> 156 novos posts hoje</li>
+                        <li><i class="fa-solid fa-users"></i> 234 usuários online agora</li>
+                    </ul>
+                </div>
+
+                <footer class="mini-footer">
+                    <a href="#">Termos</a>
+                    <a href="#">Privacidade</a>
+                    <a href="#">Cookies</a>
+                    <span>© 2026 AND</span>
+                </footer>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- =============================================
+    MODAL: CRIAR GRUPO
+    ============================================= -->
+    <div class="modal-overlay" id="createGroupModal" hidden>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>
+                    <i class="fa-solid fa-users-plus"></i>
+                    Criar Novo Grupo
+                </h2>
+                <button class="modal-close" id="closeCreateGroupModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createGroupForm">
+                    <div class="form-group">
+                        <label for="groupName">Nome do Grupo *</label>
+                        <input type="text" id="groupName" placeholder="Ex: Neurodiversidade no Trabalho" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupDescription">Descrição</label>
+                        <textarea id="groupDescription" rows="3" placeholder="Descreva o propósito do grupo..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupCategory">Categoria</label>
+                        <select id="groupCategory">
+                            <option value="geral">Geral</option>
+                            <option value="apoio">Apoio</option>
+                            <option value="educacao">Educação</option>
+                            <option value="trabalho">Trabalho</option>
+                            <option value="social">Social</option>
+                            <option value="arte">Arte & Cultura</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupImage">URL da Imagem do Grupo</label>
+                        <input type="url" id="groupImage" placeholder="https://exemplo.com/imagem.jpg">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="groupPrivate">
+                            Grupo Privado (apenas convidados)
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-submit-group">
+                        <i class="fa-solid fa-plus"></i>
+                        Criar Grupo
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+    MODAL DE DETALHES DO GRUPO
+    ============================================= -->
+    <div class="modal-overlay" id="groupDetailModal" hidden>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="groupDetailTitle">
+                    <i class="fa-solid fa-users"></i>
+                    Nome do Grupo
+                </h2>
+                <button class="modal-close" id="closeGroupDetailModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="groupDetailContent">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+    MODAIS DE CONVERSA E INTERAÇÃO
+    ============================================= -->
+    
+    <!-- MODAL DE RESPOSTA/COMENTÁRIO -->
+    <div class="modal-overlay" id="replyModalOverlay" hidden>
+        <div class="x-modal" id="replyModal" role="dialog" aria-labelledby="replyModalTitle" aria-hidden="true">
+            <div class="x-modal-header">
+                <button class="x-modal-close-btn" id="closeReplyModalBtn" aria-label="Fechar">&times;</button>
+                <span class="x-modal-action-text">Responder</span>
+            </div>
+            <div class="x-modal-body">
+                <div class="parent-post-thread">
+                    <div class="thread-left">
+                        <img src="/img/avatar-exemplo.png" alt="Avatar do Autor" class="thread-avatar" id="replyParentAvatar">
+                        <div class="thread-line"></div>
+                    </div>
+                    <div class="thread-right">
+                        <div class="post-meta-info">
+                            <span class="post-author-name" id="replyParentName">Nome do Autor</span>
+                            <span class="post-author-handle" id="replyParentHandle">@usuario</span>
+                            <span class="post-timestamp" id="replyParentTime">· 7 de jul</span>
+                        </div>
+                        <p class="post-text-content" id="replyParentContent">Conteúdo do post original...</p>
+                        <div class="replying-to-label">
+                            Respondendo a <a href="#" class="mention-link" id="replyParentMention">@usuario</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="current-user-reply-box">
+                    <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" class="timeline-avatar user-current-avatar">
+                    <div class="reply-input-wrap">
+                        <textarea id="replyContentInput" placeholder="Poste sua resposta" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="x-modal-footer">
+                <div class="compose-toolbar">
+                    <button type="button" title="Mídia" id="replyMediaBtn"><i class="fa-regular fa-image"></i></button>
+                    <button type="button" title="GIF"><i class="fa-solid fa-film"></i></button>
+                    <button type="button" title="Enquete"><i class="fa-solid fa-square-poll-horizontal"></i></button>
+                    <button type="button" title="Emoji"><i class="fa-regular fa-face-smile"></i></button>
+                </div>
+                <button class="x-btn-primary" id="submitReplyBtn">Responder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE NOVA POSTAGEM -->
+    <div class="modal-overlay" id="postModalOverlay" hidden>
+        <div class="x-modal" id="postModal" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="x-modal-header">
+                <button class="x-modal-close-btn" id="closeModalBtn" aria-label="Fechar">&times;</button>
+                <span class="x-modal-action-text">Novo Post</span>
+            </div>
+            <div class="x-modal-body">
+                <div class="compose-inline-box">
+                    <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" class="timeline-avatar user-current-avatar">
+                    <div class="compose-workspace">
+                        <textarea id="postContentInput" placeholder="O que está acontecendo?"></textarea>
+                        <div class="privacy-scope-selector">
+                            <button type="button" class="btn-scope"><i class="fa-solid fa-earth-americas"></i> Qualquer pessoa pode responder</button>
+                        </div>
+                        <div id="videoPreviewContainer"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="x-modal-footer">
+                <div class="compose-toolbar">
+                    <button type="button" title="Mídia" id="postMediaBtn"><i class="fa-regular fa-image"></i></button>
+                    <button type="button" title="GIF"><i class="fa-solid fa-film"></i></button>
+                    <button type="button" title="Enquete"><i class="fa-solid fa-square-poll-horizontal"></i></button>
+                    <button type="button" title="Emoji"><i class="fa-regular fa-face-smile"></i></button>
+                </div>
+                <button class="x-btn-primary" id="submitPostBtn">Postar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ACOLHERIA -->
+    <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
+        <div class="acolheria-modal">
+            <div class="acolheria-modal-header">
+                <div class="acolheria-modal-title">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>AcolherIA</span>
+                    <span class="acolheria-badge">Online</span>
+                </div>
+                <button class="acolheria-modal-close" id="acolheriaClose" aria-label="Fechar AcolherIA">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="acolheria-modal-body" id="acolheriaChatBody"></div>
+            <div class="acolheria-suggestions" id="acolheriaSuggestions">
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?">TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?">Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização">Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?">Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?">Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar">Desabafar</button>
+            </div>
+            <div class="acolheria-modal-footer">
+                <div class="acolheria-input-wrapper">
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="acolheria-footer-note">
+                    <i class="fa-regular fa-circle-check"></i> AcolherIA • Especialista em neurodivergência
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
+
+     <div class="floating-hub" id="floatingHub">
+        <!-- Botão principal que abre/fecha o hub -->
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+
+        <!-- Menu do hub (aparece ao clicar) -->
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <!-- Linha 1: Acessibilidade -->
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Divisória -->
+                <div class="floating-hub-divider"></div>
+
+                <!-- Linha 2: Ajuda/Atendimento -->
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para fechar o hub ao clicar fora -->
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <!-- =============================================
+    SCRIPTS
+    ============================================= -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/supabase-cliente.js"></script>
+    <script src="comunidade.js"></script>
+    <script src="/Acolher-IA/Acolher-IA.js"></script>
+    
+
+
+
+</body>
+</html>

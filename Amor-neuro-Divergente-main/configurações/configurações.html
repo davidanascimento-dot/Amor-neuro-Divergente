@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Configure sua conta, perfil, idioma e preferências de privacidade no Amor NeuroDivergente.">
+    <title>Configurações — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS corrigidos -->
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="configurações.css">
+</head>
+<body>
+
+    <!-- =============================================
+    SIDEBAR — NOVO PADRÃO
+    ============================================= -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configuracoes/configuracoes.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/chat-Ia/chat-Ia.html" class="sidebar-link"><i class="fa-solid fa-robot"></i> Falar com AcolherIA</a>
+        </nav>
+
+        <div class="sidebar-a11y" id="sidebarA11y">
+            <button class="a11y-toggle" id="a11yToggle" aria-expanded="false">
+                <i class="fa-solid fa-universal-access"></i> Acessibilidade
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="a11y-options" id="a11yOptions" hidden>
+                <button class="a11y-option" data-a11y="darkMode">
+                    <i class="fa-regular fa-moon"></i> Modo escuro
+                    <span class="a11y-status" id="darkModeStatus">Desligado</span>
+                </button>
+                <button class="a11y-option" data-a11y="increaseText">
+                    <i class="fa-solid fa-text-height"></i> Aumentar texto
+                </button>
+                <button class="a11y-option" data-a11y="decreaseText">
+                    <i class="fa-solid fa-text-slash"></i> Diminuir texto
+                </button>
+                <button class="a11y-option" data-a11y="highlightLinks">
+                    <i class="fa-solid fa-link"></i> Destacar links
+                    <span class="a11y-status" id="linksStatus">Desligado</span>
+                </button>
+                <button class="a11y-option" data-a11y="dyslexiaFont">
+                    <i class="fa-regular fa-eye"></i> Fonte para dislexia
+                    <span class="a11y-status" id="dyslexiaStatus">Desligado</span>
+                </button>
+                <button class="a11y-option" data-a11y="reduceMotion">
+                    <i class="fa-solid fa-person-walking"></i> Reduzir animações
+                    <span class="a11y-status" id="motionStatus">Desligado</span>
+                </button>
+                <button class="a11y-reset" data-a11y="reset">
+                    <i class="fa-solid fa-rotate-left"></i> Voltar ao padrão
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small">
+                <i class="fa-solid fa-bag-shopping"></i> Loja
+            </a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small">
+                <i class="fa-regular fa-heart"></i> Apoiar
+            </a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+            </a>
+        </div>
+    </aside>
+
+    <!-- =============================================
+    CONTEÚDO PRINCIPAL
+    ============================================= -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- HEADER — COM BOTÃO VOLTAR -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir navegação" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button id="btnVoltar" class="btn-voltar" aria-label="Voltar para página anterior">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar
+                </button>
+            </div>
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+        <!-- =============================================
+        CONTEÚDO DE CONFIGURAÇÕES
+        ============================================= -->
+        <div class="settings-wrapper">
+            
+            <div class="page-header">
+                <h1>Configurações</h1>
+                <p>Gerencie sua conta e preferências</p>
+            </div>
+
+            <div class="settings-container">
+                
+                <!-- Menu lateral de abas -->
+                <div class="settings-nav-card">
+                    <h2>Configurações</h2>
+                    <a href="#" class="view-profile-btn" id="viewProfileBtn">ver perfil</a>
+                    
+                    <button class="tab-button active" data-target="minhaContaPane">
+                        <i class="fa-solid fa-user"></i> Minha Conta
+                    </button>
+                    <button class="tab-button" data-target="perfilPane">
+                        <i class="fa-solid fa-id-card"></i> Perfil
+                    </button>
+                    <button class="tab-button" data-target="idiomaPane">
+                        <i class="fa-solid fa-language"></i> Idioma
+                    </button>
+                    <button class="tab-button" data-target="privacidadePane">
+                        <i class="fa-solid fa-shield-alt"></i> Privacidade e Segurança
+                    </button>
+                </div>
+
+                <!-- Área de conteúdo -->
+                <div class="settings-content-area">
+                    
+                    <input type="text" class="search-bar-settings" placeholder="🔍 Pesquise nas configurações" id="searchSettings">
+
+                    <!-- ABA 1: MINHA CONTA -->
+                    <div class="settings-pane active" id="minhaContaPane">
+                        <div class="settings-content-card">
+                            <div class="card-header-purple">
+                                <h3 id="displayNameHeader">TonyEsterco</h3>
+                                <button class="btn-outline-edit" id="editProfileBtn">Editar Perfil</button>
+                            </div>
+                            <div class="info-display-group">
+                                <label>Nome Exibido</label>
+                                <p id="displayNameInfo">TonyEsterco</p>
+                            </div>
+                            <div class="info-display-group">
+                                <label>E-mail</label>
+                                <p id="userEmail">david.araujo.admin@amorneurodivergente.com</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-content-card">
+                            <div class="panel-title"><i class="fa-solid fa-lock"></i> Senha de autenticação</div>
+                            <button class="btn-secondary-light" id="changePasswordBtn" style="margin-left:0;">Mudar senha</button>
+                        </div>
+
+                        <div class="settings-content-card">
+                            <div class="panel-title"><i class="fa-solid fa-key"></i> Chaves de segurança</div>
+                            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Adicione uma camada de proteção à sua conta com uma chave de segurança</p>
+                            <button class="btn-secondary-light" id="registerSecurityKeyBtn" style="margin-left:0;">Registrar uma Chave de segurança</button>
+                        </div>
+
+                        <div class="settings-content-card">
+                            <div class="panel-title" style="color:#ef4444;"><i class="fa-solid fa-trash-alt"></i> Remoção da conta</div>
+                            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Desativar sua conta significa que você poderá recuperá-la quando quiser.</p>
+                            <button class="btn-danger-red" id="deactivateAccountBtn">Desativar conta</button>
+                            <button class="btn-danger-outline" id="deleteAccountBtn">Excluir conta</button>
+                        </div>
+                    </div>
+
+                    <!-- ABA 2: PERFIL -->
+                    <div class="settings-pane" id="perfilPane">
+                        <div class="settings-content-card">
+                            <div class="avatar-edit-container">
+                                <div class="avatar-wrapper-relative">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar Perfil" id="profileAvatar">
+                                    <div class="camera-overlay-btn" id="cameraUploadBtn">📷</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input type="text" class="form-control" id="profileName" value="TonyEsterco">
+                            </div>
+                            <div class="form-group">
+                                <label>E-mail</label>
+                                <input type="email" class="form-control" id="profileEmail" value="david.araujo.admin@amorneurodivergente.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Sobre mim</label>
+                                <textarea class="form-control" id="profileBio" style="min-height:100px;" placeholder="Conte sobre você">Defensor da neurodiversidade e apaixonado por tecnologia.</textarea>
+                            </div>
+                            <button class="btn-primary-purple" id="saveProfileBtn">Salvar alterações</button>
+                            <button class="btn-secondary-light" id="removeAvatarBtn">Remover avatar</button>
+                        </div>
+                    </div>
+
+                    <!-- ABA 3: IDIOMA -->
+                    <div class="settings-pane" id="idiomaPane">
+                        <div class="settings-content-card">
+                            <div class="item-row-setting" data-lang="pt" style="cursor:pointer; padding: 12px; border-radius: 8px;" id="langPt">
+                                <span style="font-weight: 600;">🇧🇷 Português (Brasil)</span>
+                                <span id="checkPt">✔️</span>
+                            </div>
+                            <div class="item-row-setting" data-lang="en" style="cursor:pointer; padding: 12px;" id="langEn">
+                                <span>🇺🇸 English</span>
+                                <span id="checkEn"></span>
+                            </div>
+                            <div class="item-row-setting" data-lang="es" style="cursor:pointer; padding: 12px;" id="langEs">
+                                <span>🇪🇸 Español</span>
+                                <span id="checkEs"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ABA 4: PRIVACIDADE E SEGURANÇA -->
+                    <div class="settings-pane" id="privacidadePane">
+                        <div class="settings-content-card">
+                            <h3 style="margin-bottom:15px;">Privacidade e Segurança</h3>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Perfil público</h4>
+                                    <p>Permitir que outros vejam seu perfil</p>
+                                </div>
+                                <label class="switch-toggle">
+                                    <input type="checkbox" id="publicProfileToggle" checked>
+                                    <span class="slider-round"></span>
+                                </label>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Mostrar atividade</h4>
+                                    <p>Exibir suas atividades na comunidade</p>
+                                </div>
+                                <label class="switch-toggle">
+                                    <input type="checkbox" id="showActivityToggle" checked>
+                                    <span class="slider-round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-content-card">
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>🔒 Autenticação de dois fatores</h4>
+                                    <p>Adicione uma camada extra de segurança</p>
+                                </div>
+                                <label class="switch-toggle">
+                                    <input type="checkbox" id="twoFactorToggle">
+                                    <span class="slider-round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegue</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                    <a href="/direitos/direitos.html">Direitos</a>
+                    <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Sobre</h4>
+                    <a href="/Quem somos/quem-somos.html">Quem somos</a>
+                    <a href="/blog/blog.html">Blog</a>
+                    <a href="/contato/contato.html">Contato</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Apoie</h4>
+                    <a href="/loja/loja.html">Loja</a>
+                    <a href="/doações/doações.html">Doações</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <p>© 2026 Amor NeuroDivergente</p>
+            </div>
+        </footer>
+        
+    </main>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <input type="password" id="modalInput" placeholder="Digite sua senha atual">
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button id="modalConfirmBtn" class="btn-primary-purple">Confirmar</button>
+                <button id="modalCancelBtn" class="btn-secondary-light">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+    SCRIPTS
+    ============================================= -->
+    
+    <!-- 1. Biblioteca Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- 2. Configuração do Supabase -->
+    <script src="/supabase-cliente.js"></script>
+    
+    <!-- 3. Arquivos principais -->
+    <script src="/inicio.js"></script>
+    <script src="configurações.js"></script>
+
+</body>
+</html>

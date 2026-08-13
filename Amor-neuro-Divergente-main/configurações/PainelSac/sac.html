@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAC — Atendimentos | Amor NeuroDivergente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="sac.css">
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- CONTEÚDO PRINCIPAL                         -->
+    <!-- ============================================ -->
+    <div class="main-wrapper" id="mainWrapper">
+        
+        <!-- HEADER / NAVBAR -->
+        <header class="navbar">
+            <div class="nav-left">
+                <a href="/painel-admin/painel.html" class="btn-back" title="Voltar para Painel Admin">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Painel Admin</span>
+                </a>
+                <div class="brand-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <span class="brand-text">Amor NeuroDivergente</span>
+            </div>
+            
+            <nav class="nav-center">
+                <a href="/inicio.html">Início</a>
+                <a href="/Recursos/recursos.html">Recursos</a>
+                <a href="/Quem somos/quem-somos.html">Quem Somos</a>
+                <a href="/Direitos/direitos.html">Direitos</a>
+                <a href="/blog/blog.html">Blog</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">Chat com IA</a>
+            </nav>
+
+            <div class="nav-right">
+                <button class="search-btn" aria-label="Pesquisar"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <img src="/img/avatar-1776703979307.png" alt="Avatar" class="avatar-img">
+            </div>
+        </header>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            
+            <div class="page-header">
+                <div>
+                    <h1>🎧 SAC — Atendimentos</h1>
+                    <p>Gestão de tickets em tempo real</p>
+                </div>
+                <button class="btn-new-ticket" id="btnNewTicket">
+                    <i class="fa-solid fa-plus"></i> Novo ticket
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p class="stat-label">Ativos</p>
+                    <p class="stat-value green" id="countAtivos">0</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Finalizados Hoje</p>
+                    <p class="stat-value dark" id="countFinalizados">0</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Tempo Médio</p>
+                    <p class="stat-value muted" id="tempoMedio">—</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Avaliação Média</p>
+                    <p class="stat-value muted" id="avaliacaoMedia">—</p>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                
+                <aside class="filters-sidebar">
+                    <div class="filter-group">
+                        <label>Buscar</label>
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="searchInput" placeholder="Protocolo, nome...">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <div class="status-buttons">
+                            <button class="status-btn active" data-filter="todos">Todos <span id="countTodos">3</span></button>
+                            <button class="status-btn" data-filter="ativo">Ativo <span id="countAtivo">0</span></button>
+                            <button class="status-btn" data-filter="pendente">Pendente <span id="countPendente">1</span></button>
+                            <button class="status-btn" data-filter="finalizado">Finalizado <span id="countFinalizado">2</span></button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Departamento</label>
+                        <div class="select-box">
+                            <select id="deptFilter">
+                                <option value="todos">Todos</option>
+                                <option value="suporte">Suporte</option>
+                                <option value="neurodiversidade">Neurodiversidade</option>
+                                <option value="comercial">Comercial</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="table-container">
+                    <table class="tickets-table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Protocolo</th>
+                                <th>Cliente</th>
+                                <th>Contato</th>
+                                <th>Departamento</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketTableBody">
+                            <!-- Preenchido dinamicamente pelo JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="#">Dúvidas frequentes</a></li>
+                        <li><a href="#">Quem Somos</a></li>
+                        <li><a href="#">Recursos</a></li>
+                        <li><a href="#">Direitos</a></li>
+                        <li><a href="#" class="active-link">Fale conosco (SAC)</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Nosso Trabalho</h4>
+                    <ul>
+                        <li><a href="#">Comunidade</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">AcolherIA</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>AmorNeuroDivergente</h4>
+                    <ul>
+                        <li><a href="#">Autismo</a></li>
+                        <li><a href="#">TDAH</a></li>
+                        <li><a href="#">Celebração</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Políticas</h4>
+                    <ul>
+                        <li><a href="#">Política de Privacidade</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col social-col">
+                    <a href="#" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-icon"><i class="fa-solid fa-music"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL DE TICKET -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="ticket-modal">
+            
+            <header class="modal-header">
+                <div class="header-left">
+                    <h2 class="ticket-title" id="modalTicketTitle">Ticket #1</h2>
+                    <span class="badge badge-status" id="modalTicketStatus">Pendente</span>
+                    <span class="badge badge-source">site</span>
+                </div>
+                <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+            </header>
+
+            <section class="ticket-meta-row">
+                <div class="meta-block client-info">
+                    <span class="meta-label">Cliente</span>
+                    <h3 class="meta-value-name" id="modalClientName">—</h3>
+                    <p class="meta-subtext" id="modalClientContact">—</p>
+                </div>
+                
+                <div class="meta-block department-info">
+                    <label class="meta-label">Departamento</label>
+                    <div class="select-container">
+                        <select id="ticketDeptSelect">
+                            <option value="suporte">Suporte</option>
+                            <option value="financeiro">Financeiro</option>
+                            <option value="comercial">Comercial</option>
+                            <option value="neurodiversidade">Neurodiversidade</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <section class="ticket-section">
+                <span class="meta-label">Assunto</span>
+                <div class="subject-box" id="modalSubject">—</div>
+            </section>
+
+            <section class="chat-history" id="chatHistoryContainer">
+                <!-- Mensagens carregadas dinamicamente -->
+            </section>
+
+            <hr class="section-divider">
+
+            <footer class="modal-footer">
+                <div class="reply-input-wrapper">
+                    <textarea id="replyTextarea" placeholder="Digite sua resposta..."></textarea>
+                </div>
+                
+                <div class="footer-actions">
+                    <button type="button" id="toggleStatusBtn" class="secondary-btn">
+                        <span class="btn-icon">↺</span> <span id="toggleStatusText">Reabrir</span>
+                    </button>
+                    <button type="button" id="sendReplyBtn" class="primary-purple-btn">
+                        <span class="btn-icon">➤</span> Enviar
+                    </button>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- BOTÃO DE ACESSIBILIDADE (ESTILO LOJA) -->
+    <button class="accessibility-btn" id="btnAcessibilidade" aria-label="Abrir menu de acessibilidade">
+        <i class="fa-solid fa-person"></i>
+    </button>
+
+    <!-- MENU DE ACESSIBILIDADE -->
+    <div class="accessibility-menu" id="menuAcessibilidade">
+        <div class="accessibility-header">
+            <h3>Acessibilidade</h3>
+            <button class="close-accessibility" id="closeAcessibilidade" aria-label="Fechar painel">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="accessibility-grid">
+            <button class="access-btn"><i class="fa-regular fa-moon"></i><span>Escurecer</span></button>
+            <button class="access-btn"><i class="fa-solid fa-circle-half-stroke"></i><span>Alto<br>Contraste</span></button>
+            <button class="access-btn"><i class="fa-solid fa-text-height"></i><span>Texto<br>Maior</span></button>
+            <button class="access-btn"><i class="fa-solid fa-compress"></i><span>Texto<br>Menor</span></button>
+            <button class="access-btn"><i class="fa-solid fa-arrows-left-right"></i><span>Espaçamento</span></button>
+            <button class="access-btn"><i class="fa-solid fa-link"></i><span>Links</span></button>
+            <button class="access-btn"><i class="fa-solid fa-droplet"></i><span>Saturação</span></button>
+            <button class="access-btn"><i class="fa-regular fa-eye"></i><span>Fonte<br>Dislexia</span></button>
+            <button class="access-btn"><i class="fa-solid fa-rotate-left"></i><span>Reset</span></button>
+        </div>
+    </div>
+
+    <script src="sac.js"></script>
+</body>
+</html>

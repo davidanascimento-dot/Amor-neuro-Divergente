@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Artigos sobre Saúde Mental e Bem-estar neurodivergente: burnout, ansiedade, autocuidado e como cuidar da sua saúde emocional respeitando sua neurodivergência.">
+    <title>Saúde Mental e Bem-estar — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #805AD5;
+            --primary-dark: #6d28d9;
+            --primary-light: #f4f0fa;
+            --text-dark: #1a1a2e;
+            --text-body: #2d3748;
+            --text-medium: #5c5652;
+            --text-muted: #718096;
+            --bg-body: #fdfbfe;
+            --bg-white: #ffffff;
+            --bg-warm: #faf8f5;
+            --border-color: #e8e3dd;
+            --font-main: 'Inter', -apple-system, sans-serif;
+            --font-dyslexia: 'Atkinson Hyperlegible', 'Trebuchet MS', sans-serif;
+            --transition-fast: 0.2s ease;
+            --reading-width: 720px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-body);
+            color: var(--text-body);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img { max-width: 100%; height: auto; display: block; }
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; }
+        :focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; border-radius: 6px; }
+
+        .reading-progress {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            z-index: 300; width: 0; transition: width 0.1s linear;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed; top: 3px; left: 0; right: 0; z-index: 200;
+            padding: 8px 16px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(0); opacity: 1;
+        }
+        .navbar.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+
+        .navbar-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 6px 16px; border-radius: 14px;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(16px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+        }
+
+        .navbar-left { display: flex; align-items: center; }
+        .navbar-back {
+            display: flex; align-items: center; gap: 6px;
+            padding: 7px 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 500; color: var(--text-muted);
+            background: var(--bg-warm); transition: all var(--transition-fast);
+        }
+        .navbar-back:hover { background: var(--primary-light); color: var(--primary); }
+
+        .navbar-center { display: flex; align-items: center; }
+        .navbar-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: var(--primary-dark); }
+        .navbar-logo { width: 26px; height: 26px; border-radius: 6px; object-fit: contain; }
+
+        .navbar-right { display: flex; align-items: center; gap: 10px; }
+        .navbar-a11y { position: relative; }
+        .a11y-icon-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 50%;
+            background: var(--primary-light); color: var(--primary);
+            font-size: 14px; transition: all var(--transition-fast);
+        }
+        .a11y-icon-btn:hover { background: var(--primary); color: #fff; }
+
+        .a11y-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 14px; padding: 8px; min-width: 240px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1); z-index: 250;
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .a11y-dropdown[hidden] { display: none; }
+        .a11y-option, .a11y-reset {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 8px;
+            font-size: 13px; color: var(--text-dark);
+            cursor: pointer; width: 100%; text-align: left;
+            transition: background var(--transition-fast);
+        }
+        .a11y-option:hover, .a11y-reset:hover { background: var(--bg-warm); }
+        .a11y-option i, .a11y-reset i { width: 18px; text-align: center; color: var(--primary); }
+        .a11y-status {
+            margin-left: auto; font-size: 10px; color: #6b6368;
+            background: #f0ebe5; padding: 2px 8px; border-radius: 10px;
+        }
+        .a11y-reset { color: #c98d4e; border-top: 1px solid var(--border-color); margin-top: 4px; padding-top: 12px; }
+
+        /* Banner */
+        .article-hero {
+            width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 32px;
+        }
+        .article-hero-image {
+            width: 100%; height: 420px; border-radius: 20px;
+            overflow: hidden; position: relative; margin-top: 16px;
+        }
+        .article-hero-image img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%);
+            display: flex; align-items: flex-end; padding: 28px;
+        }
+        .hero-caption {
+            color: #fff; font-size: 12px; font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(0,0,0,0.35); backdrop-filter: blur(8px);
+            padding: 6px 14px; border-radius: 20px;
+        }
+
+        /* Conteúdo */
+        .article-container { max-width: var(--reading-width); margin: 0 auto; padding: 48px 24px 80px; }
+        .article-header { margin-bottom: 40px; }
+        .article-header h1 {
+            font-size: 36px; font-weight: 800; color: var(--text-dark);
+            line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 20px;
+        }
+        .article-meta {
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+            font-size: 14px; color: var(--text-muted);
+            padding-bottom: 20px; border-bottom: 1px solid var(--border-color);
+        }
+        .article-meta i { margin-right: 4px; }
+        .article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+        .article-tag {
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+            background: #d1fae5; color: #065f46;
+        }
+
+        .article-content { font-size: 18px; line-height: 1.85; color: var(--text-body); }
+        .article-content p { margin-bottom: 24px; }
+        .article-content strong { color: var(--text-dark); }
+        .article-content h2 { font-size: 24px; font-weight: 700; color: var(--text-dark); margin: 40px 0 16px; }
+        .article-content ul { margin: 0 0 24px 24px; }
+        .article-content ul li { margin-bottom: 8px; padding-left: 8px; }
+        .article-content ul li::marker { color: #10b981; }
+
+        /* Acessibilidade */
+        body.a11y-dark-mode {
+            --bg-body: #12121f; --bg-white: #1a1a2e; --bg-warm: #1e1b23;
+            --text-dark: #e8e3dd; --text-body: #cbd5e1; --text-muted: #94a3b8;
+            --border-color: #2d2d44;
+            background: #0f0f1a !important; color: #e2e8f0 !important;
+        }
+        body.a11y-dark-mode .navbar-inner { background: rgba(26,26,46,0.9) !important; border-color: #2d2d44 !important; }
+        body.a11y-dark-mode .navbar-back { background: #2d2d44 !important; color: #94a3b8 !important; }
+        body.a11y-dark-mode .article-content strong { color: #f1f5f9 !important; }
+
+        .article-content.a11y-large-text { font-size: 135% !important; }
+        .article-content.a11y-small-text { font-size: 82% !important; }
+        body.a11y-dyslexia * { font-family: var(--font-dyslexia) !important; }
+        body.a11y-highlight-links a { text-decoration: underline !important; background: #ff0 !important; color: #000 !important; font-weight: 700 !important; padding: 2px 4px !important; }
+        body.a11y-reduce-motion * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .navbar { padding: 6px 8px; }
+            .navbar-inner { padding: 4px 12px; }
+            .navbar-brand-text { display: none; }
+            .navbar-back-text { display: none; }
+            .article-hero { padding: 0 16px; }
+            .article-hero-image { height: 260px; border-radius: 14px; margin-top: 12px; }
+            .article-container { padding: 32px 16px 64px; }
+            .article-header h1 { font-size: 26px; }
+            .article-content { font-size: 16px; }
+            .article-content h2 { font-size: 20px; }
+            .a11y-dropdown { right: -8px; min-width: 220px; }
+        }
+
+        @media (max-width: 480px) {
+            .article-hero-image { height: 200px; }
+            .article-header h1 { font-size: 22px; }
+            .article-content { font-size: 15px; }
+            .a11y-dropdown { position: fixed; top: 56px; right: 8px; left: 8px; min-width: auto; border-radius: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- =============================================
+    NAVBAR
+    ============================================= -->
+    <header class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-left">
+                <a href="/Recursos/recursos.html" class="navbar-back" title="Voltar para Artigos e Guias">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="navbar-back-text">Artigos e Guias</span>
+                </a>
+            </div>
+
+            <div class="navbar-center">
+                <a href="/inicio.html" class="navbar-brand">
+                    <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="navbar-logo">
+                    <span class="navbar-brand-text">Amor NeuroDivergente</span>
+                </a>
+            </div>
+
+            <div class="navbar-right">
+                <div class="navbar-a11y">
+                    <button class="a11y-icon-btn" id="a11yToggle" aria-label="Acessibilidade" aria-expanded="false">
+                        <i class="fa-solid fa-universal-access"></i>
+                    </button>
+                    <div class="a11y-dropdown" id="a11yDropdown" hidden>
+                        <button class="a11y-option" data-a11y="darkMode"><i class="fa-regular fa-moon"></i> Modo escuro<span class="a11y-status" id="darkModeStatus">Desligado</span></button>
+                        <button class="a11y-option" data-a11y="increaseText"><i class="fa-solid fa-text-height"></i> Aumentar texto</button>
+                        <button class="a11y-option" data-a11y="decreaseText"><i class="fa-solid fa-text-slash"></i> Diminuir texto</button>
+                        <button class="a11y-option" data-a11y="highlightLinks"><i class="fa-solid fa-link"></i> Destacar links<span class="a11y-status" id="linksStatus">Desligado</span></button>
+                        <button class="a11y-option" data-a11y="dyslexiaFont"><i class="fa-regular fa-eye"></i> Fonte para dislexia<span class="a11y-status" id="dyslexiaStatus">Desligado</span></button>
+                        <button class="a11y-option" data-a11y="reduceMotion"><i class="fa-solid fa-person-walking"></i> Reduzir animações<span class="a11y-status" id="motionStatus">Desligado</span></button>
+                        <button class="a11y-reset" data-a11y="reset"><i class="fa-solid fa-rotate-left"></i> Voltar ao padrão</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- =============================================
+    BANNER
+    ============================================= -->
+    <section class="article-hero">
+        <div class="article-hero-image">
+            <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&h=500&fit=crop" 
+                 alt="Pessoa sentada em posição meditativa à beira de um lago ao amanhecer, representando paz interior e autocuidado">
+            <div class="hero-overlay">
+                <div class="hero-caption">
+                    <i class="fa-regular fa-clock"></i> Leitura de 7 minutos
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================================
+    CONTEÚDO DO ARTIGO
+    ============================================= -->
+    <article class="article-container">
+        <header class="article-header">
+            <h1>Saúde Mental Neurodivergente: Autocuidado que Respeita Quem Você É</h1>
+            <div class="article-meta">
+                <span><i class="fa-regular fa-calendar"></i> 15 de março, 2026</span>
+                <span><i class="fa-regular fa-clock"></i> 7 min de leitura</span>
+                <span><i class="fa-regular fa-user"></i> Equipe AND</span>
+            </div>
+            <div class="article-tags">
+                <span class="article-tag">Saúde Mental</span>
+                <span class="article-tag">Burnout</span>
+                <span class="article-tag">Ansiedade</span>
+                <span class="article-tag">Autocuidado</span>
+            </div>
+        </header>
+
+        <div class="article-content" id="articleContent">
+            <p>Cuidar da saúde mental já é um desafio para qualquer pessoa. Para pessoas neurodivergentes, esse desafio é multiplicado por um fator que poucos profissionais de saúde entendem: <strong>não adianta aplicar estratégias neurotípicas em cérebros neurodivergentes</strong>. O autocuidado precisa ser adaptado à forma como seu cérebro realmente funciona — e não ao que a sociedade espera de você.</p>
+
+            <p>Estudos mostram que pessoas neurodivergentes têm <strong>taxas significativamente mais altas</strong> de ansiedade, depressão e burnout do que a população geral. Não porque a neurodivergência em si cause esses problemas, mas porque <strong>viver em um mundo não adaptado</strong> para você é exaustivo.</p>
+
+            <h2>Burnout Neurodivergente: o esgotamento que ninguém vê</h2>
+
+            <p>O burnout neurodivergente é diferente do burnout convencional. Enquanto o burnout tradicional está relacionado ao excesso de trabalho, o burnout neurodivergente vem do <strong>acúmulo de mascaramento social, sobrecarga sensorial e expectativas irreais</strong> impostas por um mundo neurotípico.</p>
+
+            <p>Os sinais incluem:</p>
+
+            <ul>
+                <li><strong>Perda de habilidades:</strong> dificuldade em fazer coisas que antes eram fáceis — como falar, se organizar ou tomar decisões simples.</li>
+                <li><strong>Aumento da sensibilidade sensorial:</strong> sons, luzes e texturas que antes eram toleráveis se tornam insuportáveis.</li>
+                <li><strong>Desregulação emocional:</strong> crises de choro, irritabilidade intensa, meltdowns mais frequentes.</li>
+                <li><strong>Retraimento social extremo:</strong> incapacidade de responder mensagens, atender chamadas ou sair de casa.</li>
+            </ul>
+
+            <p>A recuperação do burnout neurodivergente <strong>não acontece em um fim de semana</strong>. Pode levar semanas ou meses. E o primeiro passo é <strong>parar de se culpar</strong> por estar esgotado.</p>
+
+            <h2>Ansiedade: quando o mundo é alto demais</h2>
+
+            <p>Pessoas neurodivergentes frequentemente experimentam ansiedade de forma diferente. Não é apenas "preocupação excessiva" — é uma <strong>resposta do sistema nervoso a um ambiente que constantemente exige mais do que você pode dar</strong>.</p>
+
+            <p>Para muitos, a ansiedade está ligada a:</p>
+
+            <ul>
+                <li><strong>Antecipação de situações sociais:</strong> o medo de dizer algo "errado", de não entender as entrelinhas, de ser julgado.</li>
+                <li><strong>Sobrecarga sensorial:</strong> lugares barulhentos, iluminados ou cheios de gente podem disparar o sistema de alerta do cérebro.</li>
+                <li><strong>Paralisia de tarefas:</strong> quando a lista de afazeres é tão grande que o cérebro simplesmente "trava".</li>
+            </ul>
+
+            <p>Estratégias que funcionam para cérebros neurodivergentes incluem <strong>reduzir estímulos antes que a ansiedade apareça</strong> — não apenas reagir quando ela já está instalada. Fones de ouvido, pausas sensoriais programadas e ambientes com iluminação suave são medidas preventivas, não "frescuras".</p>
+
+            <h2>Autocuidado neurodivergente: esqueça as regras</h2>
+
+            <p>Muito do que se fala sobre autocuidado foi criado por e para pessoas neurotípicas. "Acordar às 5h para meditar", "fazer yoga todos os dias", "manter um diário de gratidão" — para muitas pessoas neurodivergentes, essas sugestões são <strong>irrealistas e até prejudiciais</strong>.</p>
+
+            <p>O autocuidado neurodivergente tem regras diferentes:</p>
+
+            <ul>
+                <li><strong>Descanse antes de estar exausto.</strong> Não espere o burnout chegar. Pausas preventivas são essenciais.</li>
+                <li><strong>Alimente seus hiperfocos.</strong> Mergulhar em um interesse especial é uma forma legítima e poderosa de recarregar as energias.</li>
+                <li><strong>Stimming é autocuidado.</strong> Balançar, girar, apertar um fidget — isso é regulação emocional, não algo a ser escondido.</li>
+                <li><strong>Diga não sem culpa.</strong> Recusar convites sociais não é grosseria — é preservação de energia.</li>
+                <li><strong>Comemore as pequenas vitórias.</strong> Levantou da cama? Bebeu água? Respondeu uma mensagem? Isso já é conquista.</li>
+            </ul>
+
+            <h2>O direito ao descanso</h2>
+
+            <p>Vivemos em uma cultura que glorifica a produtividade e trata o descanso como preguiça. Para pessoas neurodivergentes, essa pressão é ainda mais pesada — porque muitas vezes <strong>o dobro de esforço é necessário</strong> para realizar as mesmas tarefas que outras pessoas fazem sem pensar.</p>
+
+            <p>Reconhecer seus limites <strong>não é fraqueza</strong>. É inteligência emocional. É autoconhecimento. É sobrevivência.</p>
+
+            <p>Se você está se sentindo esgotado, ansioso ou deprimido, <strong>procure ajuda profissional</strong>. Um psicólogo ou psiquiatra que entenda de neurodiversidade pode fazer toda a diferença. O CVV (Centro de Valorização da Vida) atende 24h pelo número <strong>188</strong> — é gratuito e confidencial.</p>
+
+            <p>Lembre-se: <strong>seu cérebro não está quebrado</strong>. O mundo é que ainda não aprendeu a acolher todas as formas de pensar e sentir. Enquanto isso, cuide de você com a gentileza que você merece. 💚</p>
+        </div>
+    </article>
+
+    <script>
+        // Barra de progresso + Navbar
+        const navbar = document.getElementById('navbar');
+        const progressBar = document.getElementById('readingProgress');
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (currentScrollY / docHeight) * 100 : 0;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+
+            if (currentScrollY < 50) navbar.classList.remove('hidden');
+            else if (currentScrollY > lastScrollY && currentScrollY > 50) navbar.classList.add('hidden');
+            else if (currentScrollY < lastScrollY) navbar.classList.remove('hidden');
+            lastScrollY = currentScrollY;
+        });
+
+        // Acessibilidade
+        const a11yToggle = document.getElementById('a11yToggle');
+        const a11yDropdown = document.getElementById('a11yDropdown');
+
+        if (a11yToggle && a11yDropdown) {
+            a11yToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const hidden = a11yDropdown.hasAttribute('hidden');
+                if (hidden) { a11yDropdown.removeAttribute('hidden'); a11yToggle.setAttribute('aria-expanded', 'true'); }
+                else { a11yDropdown.setAttribute('hidden', ''); a11yToggle.setAttribute('aria-expanded', 'false'); }
+            });
+            document.addEventListener('click', (e) => {
+                if (!a11yDropdown.contains(e.target) && e.target !== a11yToggle) {
+                    a11yDropdown.setAttribute('hidden', ''); a11yToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        function gs(k, fb) { return localStorage.getItem('a11y_' + k) || fb; }
+        function ss(k, v) { localStorage.setItem('a11y_' + k, v); }
+        function usl(id, active) { const el = document.getElementById(id); if (el) el.textContent = active ? 'Ligado' : 'Desligado'; }
+
+        document.querySelectorAll('.a11y-option, .a11y-reset').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const action = btn.getAttribute('data-a11y');
+                const content = document.getElementById('articleContent');
+                const body = document.body;
+                switch (action) {
+                    case 'darkMode': const dm=gs('darkMode')==='true'; ss('darkMode',dm?'false':'true'); if(dm)body.classList.remove('a11y-dark-mode'); else body.classList.add('a11y-dark-mode'); usl('darkModeStatus',!dm); break;
+                    case 'increaseText': const cs=gs('textSize','normal'); if(cs==='large'){ss('textSize','normal');if(content)content.classList.remove('a11y-large-text');}else{ss('textSize','large');if(content){content.classList.remove('a11y-small-text');content.classList.add('a11y-large-text');}} break;
+                    case 'decreaseText': const cz=gs('textSize','normal'); if(cz==='small'){ss('textSize','normal');if(content)content.classList.remove('a11y-small-text');}else{ss('textSize','small');if(content){content.classList.remove('a11y-large-text');content.classList.add('a11y-small-text');}} break;
+                    case 'highlightLinks': const hl=gs('highlightLinks')==='true'; ss('highlightLinks',hl?'false':'true'); if(hl)body.classList.remove('a11y-highlight-links'); else body.classList.add('a11y-highlight-links'); usl('linksStatus',!hl); break;
+                    case 'dyslexiaFont': const df=gs('dyslexiaFont')==='true'; ss('dyslexiaFont',df?'false':'true'); if(df)body.classList.remove('a11y-dyslexia'); else body.classList.add('a11y-dyslexia'); usl('dyslexiaStatus',!df); break;
+                    case 'reduceMotion': const rm=gs('reduceMotion')==='true'; ss('reduceMotion',rm?'false':'true'); if(rm)body.classList.remove('a11y-reduce-motion'); else body.classList.add('a11y-reduce-motion'); usl('motionStatus',!rm); break;
+                    case 'reset': ['darkMode','highlightLinks','dyslexiaFont','reduceMotion','textSize'].forEach(k=>localStorage.removeItem('a11y_'+k)); body.classList.remove('a11y-dark-mode','a11y-highlight-links','a11y-dyslexia','a11y-reduce-motion'); if(content)content.classList.remove('a11y-large-text','a11y-small-text'); usl('darkModeStatus',false);usl('linksStatus',false);usl('dyslexiaStatus',false);usl('motionStatus',false); break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

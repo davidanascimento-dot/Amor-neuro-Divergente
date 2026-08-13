@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trilhas de aprendizado para neurodivergentes — descubra seus superpoderes, entenda seu funcionamento e conquiste medalhas.">
+    <title>Trilhas — Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="trilha.css">
+</head>
+
+<body>
+
+    <!-- ========================================= -->
+    <!-- SIDEBAR                                   -->
+    <!-- ========================================= -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configuracoes/configuracoes.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/trilhas/trilhas.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-road"></i> Trilhas</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/chat-Ia/chat-Ia.html" class="sidebar-link"><i class="fa-solid fa-robot"></i> Falar com AcolherIA</a>
+        </nav>
+
+        <div class="sidebar-a11y" id="sidebarA11y">
+            <button class="a11y-toggle" id="a11yToggle" aria-expanded="false"><i class="fa-solid fa-universal-access"></i> Acessibilidade<i class="fa-solid fa-chevron-down"></i></button>
+            <div class="a11y-options" id="a11yOptions" hidden>
+                <button class="a11y-option" data-a11y="darkMode"><i class="fa-regular fa-moon"></i> Modo escuro<span class="a11y-status" id="darkModeStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="increaseText"><i class="fa-solid fa-text-height"></i> Aumentar texto</button>
+                <button class="a11y-option" data-a11y="decreaseText"><i class="fa-solid fa-text-slash"></i> Diminuir texto</button>
+                <button class="a11y-option" data-a11y="highlightLinks"><i class="fa-solid fa-link"></i> Destacar links<span class="a11y-status" id="linksStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="dyslexiaFont"><i class="fa-regular fa-eye"></i> Fonte para dislexia<span class="a11y-status" id="dyslexiaStatus">Desligado</span></button>
+                <button class="a11y-option" data-a11y="reduceMotion"><i class="fa-solid fa-person-walking"></i> Reduzir animações<span class="a11y-status" id="motionStatus">Desligado</span></button>
+                <button class="a11y-reset" data-a11y="reset"><i class="fa-solid fa-rotate-left"></i> Voltar ao padrão</button>
+            </div>
+        </div>
+
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ========================================= -->
+    <!-- CONTEÚDO PRINCIPAL                        -->
+    <!-- ========================================= -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Header Glass -->
+        <header class="header-glass" id="headerGlass">
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/trilhas/trilhas.html">Trilhas</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+        <!-- ========================================= -->
+        <!-- QUIZ DE PERSONA (sobreposição)            -->
+        <!-- ========================================= -->
+        <div class="quiz-persona-overlay" id="quizPersonaOverlay">
+            <div class="quiz-persona-container">
+                <div class="quiz-persona-header">
+                    <span class="quiz-badge"><i class="fa-solid fa-sparkles"></i> Conheça sua jornada</span>
+                    <h2>🧠 Vamos te conhecer melhor?</h2>
+                    <p>Responda algumas perguntas para descobrir qual trilha é perfeita para você!</p>
+                    <div class="quiz-progress">
+                        <span class="quiz-step" id="quizStep">1 / 5</span>
+                        <div class="quiz-progress-bar">
+                            <div class="quiz-progress-fill" id="quizProgressFill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-persona-body" id="quizPersonaBody">
+                    <!-- Perguntas dinâmicas via JS -->
+                </div>
+                <div class="quiz-persona-footer">
+                    <button class="quiz-btn quiz-btn-skip" id="quizSkipBtn">
+                        Pular <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button class="quiz-btn quiz-btn-next" id="quizNextBtn" disabled>
+                        Próximo <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- PÁGINA DAS TRILHAS                        -->
+        <!-- ========================================= -->
+        <section class="trilhas-page">
+            
+            <!-- Cabeçalho -->
+            <div class="trilhas-header">
+                <div class="trilhas-header-top">
+                    <div class="trilhas-title-group">
+                        <span class="trilhas-badge"><i class="fa-solid fa-sparkles"></i> Aprenda no seu ritmo</span>
+                        <h1>🌱 Suas Trilhas</h1>
+                        <p class="trilhas-subtitle">Cada trilha foi criada para te ajudar a se entender melhor, no seu próprio tempo.</p>
+                    </div>
+                    <div class="progress-summary">
+                        <div class="progress-stat">
+                            <span class="stat-number" id="totalMedalhas">0</span>
+                            <span class="stat-label">Medalhas</span>
+                        </div>
+                        <div class="progress-stat">
+                            <span class="stat-number" id="totalFases">0</span>
+                            <span class="stat-label">Fases</span>
+                        </div>
+                        <div class="progress-stat">
+                            <span class="stat-number" id="totalPontos">0</span>
+                            <span class="stat-label">Pontos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="trilhas-nota">
+                    <i class="fa-regular fa-circle-check"></i> 
+                    Escolha a jornada que mais combina com você — todas são gratuitas e você pode fazer quantas quiser!
+                </div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- TRILHA 1: INFANTIL                        -->
+            <!-- ========================================= -->
+            <div class="trilha-duolingo" data-trilha="infantil" style="display:none;">
+                <div class="trilha-duolingo-header">
+                    <div class="trilha-duolingo-info">
+                        <span class="trilha-duolingo-icon">🧒</span>
+                        <div>
+                            <h2>Jornada Lúdica</h2>
+                            <p>Sugestão: 0 a 12 anos — Descubra seus superpoderes</p>
+                        </div>
+                    </div>
+                    <div class="trilha-duolingo-progress">
+                        <span class="trilha-progress-text" id="progressInfantil">0/3</span>
+                        <div class="trilha-progress-bar">
+                            <div class="trilha-progress-fill" id="progressFillInfantil" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fases-caminho" id="caminhoInfantil">
+                    <!-- Fase 1 -->
+                    <div class="fase-duolingo" data-fase="1" data-trilha="infantil" data-completed="false" data-locked="false">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">🌿</span>
+                                <span class="fase-duolingo-number">1</span>
+                            </div>
+                            <div class="fase-duolingo-linha" style="display:none;"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Meus Sentidos</h3>
+                            <p>Descubra como você percebe o mundo</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Explorador dos Sentidos</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-primary" data-fase="1" data-trilha="infantil">
+                                    <i class="fa-solid fa-play"></i> Começar
+                                </button>
+                                <button class="fase-duolingo-btn fase-duolingo-btn-secondary" style="display:none;" data-fase="1" data-trilha="infantil">
+                                    <i class="fa-solid fa-rotate-left"></i> Revisar
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="available">🔓 Disponível</span>
+                        </div>
+                    </div>
+
+                    <!-- Fase 2 -->
+                    <div class="fase-duolingo" data-fase="2" data-trilha="infantil" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">🚀</span>
+                                <span class="fase-duolingo-number">2</span>
+                            </div>
+                            <div class="fase-duolingo-linha"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Meu Foco</h3>
+                            <p>Como sua atenção funciona?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Mestre da Curiosidade</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-chevron-right"></i> Passo Seguinte
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3 -->
+                    <div class="fase-duolingo" data-fase="3" data-trilha="infantil" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">❤️</span>
+                                <span class="fase-duolingo-number">3</span>
+                            </div>
+                            <div class="fase-duolingo-linha"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Conectando com o Mundo</h3>
+                            <p>Como você faz amizades?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Amigo do Coração</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-chevron-right"></i> Passo Seguinte
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selo de conclusão da trilha -->
+                <div class="trilha-conclusao" id="conclusaoInfantil" style="display:none;">
+                    <div class="trilha-conclusao-content">
+                        <span class="trilha-conclusao-icone">🎉</span>
+                        <div>
+                            <h4>Trilha Infantil Concluída!</h4>
+                            <p>Você descobriu seus superpoderes! A próxima jornada te espera.</p>
+                        </div>
+                        <span class="trilha-conclusao-badge">🏅 +30 pontos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- TRILHA 2: JOVEM                           -->
+            <!-- ========================================= -->
+            <div class="trilha-duolingo" data-trilha="jovem" style="display:none;">
+                <div class="trilha-duolingo-header">
+                    <div class="trilha-duolingo-info">
+                        <span class="trilha-duolingo-icon">⚡</span>
+                        <div>
+                            <h2>Jornada Dinâmica</h2>
+                            <p>Sugestão: 13 a 17 anos — Descubra seu arquétipo</p>
+                        </div>
+                    </div>
+                    <div class="trilha-duolingo-progress">
+                        <span class="trilha-progress-text" id="progressJovem">0/3</span>
+                        <div class="trilha-progress-bar">
+                            <div class="trilha-progress-fill" id="progressFillJovem" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fases-caminho" id="caminhoJovem">
+                    <!-- Fase 1 -->
+                    <div class="fase-duolingo" data-fase="1" data-trilha="jovem" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">⚡</span>
+                                <span class="fase-duolingo-number">1</span>
+                            </div>
+                            <div class="fase-duolingo-linha" style="display:none;"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Energia Social</h3>
+                            <p>Como você recarrega?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Estrategista de Energia</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-lock"></i> Complete a trilha anterior
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+
+                    <!-- Fase 2 -->
+                    <div class="fase-duolingo" data-fase="2" data-trilha="jovem" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">🎨</span>
+                                <span class="fase-duolingo-number">2</span>
+                            </div>
+                            <div class="fase-duolingo-linha"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Estilo de Aprendizado</h3>
+                            <p>Como você aprende melhor?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Mente Criativa</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-chevron-right"></i> Passo Seguinte
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3 -->
+                    <div class="fase-duolingo" data-fase="3" data-trilha="jovem" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">🛡️</span>
+                                <span class="fase-duolingo-number">3</span>
+                            </div>
+                            <div class="fase-duolingo-linha"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Gerenciamento de Crise</h3>
+                            <p>Como lida com frustrações?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Resiliência</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-chevron-right"></i> Passo Seguinte
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trilha-conclusao" id="conclusaoJovem" style="display:none;">
+                    <div class="trilha-conclusao-content">
+                        <span class="trilha-conclusao-icone">🎉</span>
+                        <div>
+                            <h4>Trilha Jovem Concluída!</h4>
+                            <p>Você descobriu seu arquétipo! A jornada adulta te espera.</p>
+                        </div>
+                        <span class="trilha-conclusao-badge">🏅 +30 pontos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- TRILHA 3: ADULTA                          -->
+            <!-- ========================================= -->
+            <div class="trilha-duolingo" data-trilha="adulta" style="display:none;">
+                <div class="trilha-duolingo-header">
+                    <div class="trilha-duolingo-info">
+                        <span class="trilha-duolingo-icon">👨‍💼</span>
+                        <div>
+                            <h2>Jornada Prática</h2>
+                            <p>Sugestão: 18+ anos — Crie seu manual de funcionamento</p>
+                        </div>
+                    </div>
+                    <div class="trilha-duolingo-progress">
+                        <span class="trilha-progress-text" id="progressAdulta">0/3</span>
+                        <div class="trilha-progress-bar">
+                            <div class="trilha-progress-fill" id="progressFillAdulta" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fases-caminho" id="caminhoAdulta">
+                    <!-- Fase 1 -->
+                    <div class="fase-duolingo" data-fase="1" data-trilha="adulta" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">🔍</span>
+                                <span class="fase-duolingo-number">1</span>
+                            </div>
+                            <div class="fase-duolingo-linha" style="display:none;"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Mapeamento Sensorial</h3>
+                            <p>Onde sua energia é consumida?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Consciência Pessoal</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-lock"></i> Complete a trilha anterior
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+
+                    <!-- Fase 2 -->
+                    <div class="fase-duolingo" data-fase="2" data-trilha="adulta" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">🎯</span>
+                                <span class="fase-duolingo-number">2</span>
+                            </div>
+                            <div class="fase-duolingo-linha"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Reconhecimento de Potenciais</h3>
+                            <p>Quais são suas maiores qualidades?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Foco no Potencial</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-chevron-right"></i> Passo Seguinte
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3 -->
+                    <div class="fase-duolingo" data-fase="3" data-trilha="adulta" data-completed="false" data-locked="true">
+                        <div class="fase-duolingo-top">
+                            <div class="fase-duolingo-circle">
+                                <span class="fase-duolingo-emoji">🌟</span>
+                                <span class="fase-duolingo-number">3</span>
+                            </div>
+                            <div class="fase-duolingo-linha"></div>
+                        </div>
+                        <div class="fase-duolingo-body">
+                            <h3>Estratégias de Autorregulação</h3>
+                            <p>O que acalma sua mente?</p>
+                            <div class="fase-duolingo-meta">
+                                <span>🏅 Autonomia</span>
+                                <span>⏱️ 5 min</span>
+                            </div>
+                            <div class="fase-duolingo-actions">
+                                <button class="fase-duolingo-btn fase-duolingo-btn-disabled" disabled>
+                                    <i class="fa-solid fa-chevron-right"></i> Passo Seguinte
+                                </button>
+                            </div>
+                            <span class="fase-duolingo-status" data-status="locked">⏳ Próximo Passo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trilha-conclusao" id="conclusaoAdulta" style="display:none;">
+                    <div class="trilha-conclusao-content">
+                        <span class="trilha-conclusao-icone">🎉</span>
+                        <div>
+                            <h4>Trilha Adulta Concluída!</h4>
+                            <p>Você criou seu manual de funcionamento pessoal! Parabéns pela jornada.</p>
+                        </div>
+                        <span class="trilha-conclusao-badge">🏅 +50 pontos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- CONEXÃO COM O PROJETO                      -->
+            <!-- ========================================= -->
+            <section class="conexao-projeto">
+                <div class="conexao-projeto-content">
+                    <div class="conexao-projeto-texto">
+                        <span class="conexao-badge"><i class="fa-solid fa-heart"></i> Por que isso importa?</span>
+                        <h2>Se conhecer é o primeiro passo</h2>
+                        <p>Ao completar as trilhas, você vai:</p>
+                        <ul>
+                            <li>✅ Descobrir seus <strong>superpoderes</strong> neurodivergentes</li>
+                            <li>✅ Entender seus <strong>desafios</strong> e criar estratégias</li>
+                            <li>✅ Conquistar <strong>medalhas</strong> que contam sua história</li>
+                            <li>✅ Conectar-se com uma <strong>comunidade</strong> que te entende</li>
+                        </ul>
+                        <a href="/comunidade/comunidade.html" class="conexao-btn">
+                            <i class="fa-regular fa-comments"></i> Compartilhe na comunidade
+                        </a>
+                    </div>
+                    <div class="conexao-projeto-imagem">
+                        <div class="conexao-circulo"></div>
+                        <div class="conexao-ilustracao">
+                            <i class="fa-solid fa-people-group"></i>
+                            <span>Você não está sozinhe</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================= -->
+            <!-- ARTIGOS E BLOGS                           -->
+            <!-- ========================================= -->
+            <section class="artigos-section">
+                <div class="artigos-header">
+                    <h2>📚 Explore Nossos Blogs e Artigos</h2>
+                    <p>100% gratuito — Faça as trilhas para receber recomendações personalizadas!</p>
+                </div>
+                <div class="artigos-grid">
+                    <div class="artigo-card">
+                        <div class="artigo-icon">🧠</div>
+                        <h4>Neurociência Prática</h4>
+                        <p>Entenda como seu cérebro funciona e como usar isso a seu favor.</p>
+                        <a href="/blog/neurociencia.html" class="artigo-btn">Ler Agora →</a>
+                        <span class="artigo-badge">🔓 Livre</span>
+                    </div>
+                    <div class="artigo-card">
+                        <div class="artigo-icon">💼</div>
+                        <h4>Trabalho e Carreira</h4>
+                        <p>Estratégias para prosperar no ambiente profissional.</p>
+                        <a href="/blog/carreira.html" class="artigo-btn">Ler Agora →</a>
+                        <span class="artigo-badge">🔓 Livre</span>
+                    </div>
+                    <div class="artigo-card">
+                        <div class="artigo-icon">🌈</div>
+                        <h4>Relacionamentos</h4>
+                        <p>Navegue por amizades, família e relações amorosas.</p>
+                        <a href="/blog/relacionamentos.html" class="artigo-btn">Ler Agora →</a>
+                        <span class="artigo-badge">🔓 Livre</span>
+                    </div>
+                </div>
+                <div class="artigos-nota">
+                    <i class="fa-regular fa-circle-check"></i> Complete as trilhas para receber recomendações personalizadas destes artigos!
+                </div>
+            </section>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegação</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/trilhas/trilhas.html">Trilhas</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Políticas</h4>
+                    <a href="/termos.html">Termos de Uso</a>
+                    <a href="/privacidade.html">Privacidade</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes Sociais</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Amor NeuroDivergente. Todos os direitos reservados.</span>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- ========================================= -->
+    <!-- MODAL DA FASE                             -->
+    <!-- ========================================= -->
+    <div class="fase-modal-overlay" id="faseModalOverlay" hidden>
+        <div class="fase-modal">
+            <div class="fase-modal-header">
+                <div class="fase-modal-title">
+                    <span id="faseModalIcon">🌿</span>
+                    <span id="faseModalName">Meus Sentidos</span>
+                </div>
+                <button class="fase-modal-close" id="faseModalClose">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="fase-modal-body" id="faseModalBody">
+                <!-- Conteúdo dinâmico via JavaScript -->
+            </div>
+            <div class="fase-modal-footer">
+                <div class="fase-progress">
+                    <span class="fase-step" id="faseStep">1/3</span>
+                    <div class="fase-progress-bar">
+                        <div class="fase-progress-fill" id="faseProgressFill" style="width: 33%;"></div>
+                    </div>
+                </div>
+                <button class="fase-btn-next" id="faseBtnNext">Próximo →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fase-modal-overlay-bg" id="faseModalOverlayBg" hidden></div>
+
+    <!-- ========================================= -->
+    <!-- MODAL DE CONCLUSÃO                        -->
+    <!-- ========================================= -->
+    <div class="conclusao-modal-overlay" id="conclusaoModalOverlay" hidden>
+        <div class="conclusao-modal">
+            <div class="conclusao-content">
+                <div class="conclusao-medalha">
+                    <div class="conclusao-medalha-icon" id="conclusaoMedalhaIcon">🏅</div>
+                    <h2 id="conclusaoMedalhaNome">Explorador dos Sentidos</h2>
+                    <p id="conclusaoMedalhaDesc">Você descobriu como seus sentidos percebem o mundo!</p>
+                </div>
+                <div class="conclusao-resultado" id="conclusaoResultado">
+                    <!-- Resultado personalizado -->
+                </div>
+                <button class="conclusao-btn" id="conclusaoBtn">Ver minhas conquistas 🏅</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- HUB FLUTUANTE                             -->
+    <!-- ========================================= -->
+    <div class="floating-hub" id="floatingHub">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="floating-hub-divider"></div>
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/faq/faq.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <!-- JavaScript -->
+    <script src="/supabase-cliente.js"></script>
+    <script src="/inicio.js"></script>
+    <script src="trilha.js"></script>
+</body>
+</html>

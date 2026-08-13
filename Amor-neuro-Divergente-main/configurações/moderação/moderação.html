@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Moderação | Amor NeuroDivergente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="moderação.css">
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- CONTEÚDO PRINCIPAL                         -->
+    <!-- ============================================ -->
+    <div class="main-wrapper">
+        
+        <!-- NAVBAR SUPERIOR -->
+        <header class="navbar">
+            <div class="nav-left">
+                <a href="/painel-admin/painel.html" class="btn-back" title="Voltar para Painel Admin">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Painel Admin</span>
+                </a>
+                <div class="brand-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <span class="brand-text">Amor NeuroDivergente</span>
+            </div>
+            <nav class="nav-center">
+                <a href="/inicio.html">Início</a>
+                <a href="/Recursos/recursos.html">Recursos</a>
+                <a href="/Quem somos/quem-somos.html">Quem Somos</a>
+                <a href="/Direitos/direitos.html">Direitos</a>
+                <a href="/blog/blog.html">Blog</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">Chat com IA</a>
+            </nav>
+            <div class="nav-right">
+                <button class="search-btn" aria-label="Pesquisar"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <img src="/img/avatar-1776703979307.png" alt="Avatar" class="avatar-img">
+            </div>
+        </header>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            
+            <div class="page-header">
+                <h1>Admin <span>· Moderação</span></h1>
+                <button class="btn-new-moderation" id="addModerationBtn">
+                    <i class="fa-solid fa-plus"></i> Novo registro
+                </button>
+            </div>
+
+            <!-- LISTA DE MODERAÇÃO -->
+            <div class="moderation-list" id="moderationContainer">
+                <!-- Preenchido dinamicamente pelo JS -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE NOVO REGISTRO -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h3 id="modalTitle">Novo Registro de Moderação</h3>
+            <form id="moderationForm">
+                <input type="hidden" id="modId">
+                <div class="form-group">
+                    <label for="modType">Tipo</label>
+                    <select id="modType" required>
+                        <option value="user">user</option>
+                        <option value="group">group</option>
+                        <option value="post">post</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modReason">Motivo</label>
+                    <input type="text" id="modReason" required placeholder="Ex: Spam ou propaganda">
+                </div>
+                <div class="form-group">
+                    <label for="modDescription">Descrição</label>
+                    <textarea id="modDescription" rows="3" placeholder="Descreva o ocorrido..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="modTargetId">ID alvo</label>
+                    <input type="text" id="modTargetId" placeholder="Ex: 84ecfccd-633f-4b45-ab01-45c67c4f506b">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="closeModalBtn">Cancelar</button>
+                    <button type="submit" class="btn-new-moderation">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- BOTÃO DE ACESSIBILIDADE (ESTILO LOJA) -->
+    <button class="accessibility-btn" id="btnAcessibilidade" aria-label="Abrir menu de acessibilidade">
+        <i class="fa-solid fa-person"></i>
+    </button>
+
+    <!-- MENU DE ACESSIBILIDADE -->
+    <div class="accessibility-menu" id="menuAcessibilidade">
+        <div class="accessibility-header">
+            <h3>Acessibilidade</h3>
+            <button class="close-accessibility" id="closeAcessibilidade" aria-label="Fechar painel">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="accessibility-grid">
+            <button class="access-btn"><i class="fa-regular fa-moon"></i><span>Escurecer</span></button>
+            <button class="access-btn"><i class="fa-solid fa-circle-half-stroke"></i><span>Alto<br>Contraste</span></button>
+            <button class="access-btn"><i class="fa-solid fa-text-height"></i><span>Texto<br>Maior</span></button>
+            <button class="access-btn"><i class="fa-solid fa-compress"></i><span>Texto<br>Menor</span></button>
+            <button class="access-btn"><i class="fa-solid fa-arrows-left-right"></i><span>Espaçamento</span></button>
+            <button class="access-btn"><i class="fa-solid fa-link"></i><span>Links</span></button>
+            <button class="access-btn"><i class="fa-solid fa-droplet"></i><span>Saturação</span></button>
+            <button class="access-btn"><i class="fa-regular fa-eye"></i><span>Fonte<br>Dislexia</span></button>
+            <button class="access-btn"><i class="fa-solid fa-rotate-left"></i><span>Reset</span></button>
+        </div>
+    </div>
+
+    <script src="moderação.js"></script>
+</body>
+</html>
