@@ -662,6 +662,364 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     // 10. INICIALIZAÇÃO DA APLICAÇÃO
     // =============================================
+
+    // =============================================
+// 11. LEITOR DE PDF COM PDF.JS
+// =============================================
+
+// Carrega o PDF.js via CDN (caso não esteja incluso)
+function carregarPdfJs() {
+    return new Promise((resolve) => {
+        if (typeof pdfjsLib !== 'undefined') {
+            resolve(pdfjsLib);
+            return;
+        }
+        
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
+        script.onload = () => {
+            // Configura o worker
+            const workerScript = document.createElement('script');
+            workerScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            workerScript.onload = () => resolve(pdfjsLib);
+            document.head.appendChild(workerScript);
+        };
+        document.head.appendChild(script);
+    });
+}
+
+// Estado do leitor
+const leitorEstado = {
+    pdfDoc: null,
+    paginaAtual: 1,
+    totalPaginas: 0,
+    escala: 1.0,
+    darkMode: false,
+    fullscreen: false,
+    livroAtual: null,
+    pdfUrl: null
+};
+
+// Elementos do DOM do leitor
+const leitorElements = {
+    overlay: document.getElementById('leituraModalOverlay'),
+    bg: document.getElementById('leituraModalBg'),
+    modal: document.querySelector('.leitura-modal'),
+    titulo: document.getElementById('leituraTitulo'),
+    autor: document.getElementById('leituraAutor'),
+    canvas: document.getElementById('leituraPdfCanvas'),
+    container: document.getElementById('leituraPdfContainer'),
+    pageNum: document.getElementById('leituraPageNum'),
+    pageCount: document.getElementById('leituraPageCount'),
+    prevBtn: document.getElementById('leituraPrevPage'),
+    nextBtn: document.getElementById('leituraNextPage'),
+    zoomIn: document.getElementById('leituraZoomIn'),
+    zoomOut: document.getElementById('leituraZoomOut'),
+    zoomLevel: document.getElementById('leituraZoomLevel'),
+    fullscreenBtn: document.getElementById('leituraFullscreen'),
+    darkModeBtn: document.getElementById('leituraDarkMode'),
+    fecharBtn: document.getElementById('leituraFechar'),
+    progressoBar: document.getElementById('leituraProgressoPreenchido'),
+    progressoTexto: document.getElementById('leituraProgressoTexto')
+};
+
+// Abrir o leitor
+async function abrirLeitor(bookId) {
+    const book = booksDatabase.find(b => b.id == bookId);
+    if (!book) return;
+
+    // Verifica se o livro tem download
+    if (!book.download) {
+        alert('Este livro ainda não está disponível para leitura.');
+        return;
+    }
+
+    // Guarda o livro atual
+    leitorEstado.livroAtual = book;
+    leitorEstado.pdfUrl = book.download;
+
+    // Atualiza cabeçalho
+    leitorElements.titulo.textContent = book.title;
+    leitorElements.autor.textContent = `por ${book.author}`;
+
+    // Mostra o overlay
+    leitorElements.overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+
+    // Mostra loading no canvas
+    const ctx = leitorElements.canvas.getContext('2d');
+    ctx.clearRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
+    ctx.fillStyle = '#f0ede8';
+    ctx.fillRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
+    ctx.fillStyle = '#7c3aed';
+    ctx.font = '16px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('📖 Carregando livro...', leitorElements.canvas.width / 2, leitorElements.canvas.height / 2);
+
+    // Carrega o PDF
+    try {
+        const pdfjs = await carregarPdfJs();
+        
+        // Carrega o documento PDF
+        const loadingTask = pdfjs.getDocument(book.download);
+        const pdf = await loadingTask.promise;
+        
+        leitorEstado.pdfDoc = pdf;
+        leitorEstado.totalPaginas = pdf.numPages;
+        leitorEstado.paginaAtual = 1;
+
+        // Atualiza contador
+        leitorElements.pageCount.textContent = pdf.numPages;
+        leitorElements.pageNum.textContent = 1;
+
+        // Habilita navegação
+        atualizarBotoesNavegacao();
+
+        // Renderiza primeira página
+        renderizarPagina(1);
+
+        // Atualiza progresso
+        atualizarProgresso(1);
+
+    } catch (error) {
+        console.error('Erro ao carregar PDF:', error);
+        const ctx = leitorElements.canvas.getContext('2d');
+        ctx.clearRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
+        ctx.fillStyle = '#fef2f2';
+        ctx.fillRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
+        ctx.fillStyle = '#ef4444';
+        ctx.font = '16px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('❌ Erro ao carregar o PDF. Tente novamente.', leitorElements.canvas.width / 2, leitorElements.canvas.height / 2);
+    }
+}
+
+// Renderizar uma página específica
+async function renderizarPagina(numPagina) {
+    if (!leitorEstado.pdfDoc) return;
+
+    try {
+        const page = await leitorEstado.pdfDoc.getPage(numPagina);
+        const viewport = page.getViewport({ scale: leitorEstado.escala });
+
+        const canvas = leitorElements.canvas;
+        const context = canvas.getContext('2d');
+
+        // Ajusta tamanho do canvas
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        // Renderiza
+        const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+
+        await page.render(renderContext).promise;
+
+        // Atualiza contador
+        leitorElements.pageNum.textContent = numPagina;
+        leitorEstado.paginaAtual = numPagina;
+
+        // Atualiza navegação
+        atualizarBotoesNavegacao();
+        atualizarProgresso(numPagina);
+
+        // Atualiza zoom
+        leitorElements.zoomLevel.textContent = `${Math.round(leitorEstado.escala * 100)}%`;
+
+    } catch (error) {
+        console.error('Erro ao renderizar página:', error);
+    }
+}
+
+// Navegação
+function paginaAnterior() {
+    if (leitorEstado.paginaAtual > 1) {
+        renderizarPagina(leitorEstado.paginaAtual - 1);
+    }
+}
+
+function proximaPagina() {
+    if (leitorEstado.paginaAtual < leitorEstado.totalPaginas) {
+        renderizarPagina(leitorEstado.paginaAtual + 1);
+    }
+}
+
+function atualizarBotoesNavegacao() {
+    leitorElements.prevBtn.disabled = leitorEstado.paginaAtual <= 1;
+    leitorElements.nextBtn.disabled = leitorEstado.paginaAtual >= leitorEstado.totalPaginas;
+}
+
+// Controle de Zoom
+function aumentarZoom() {
+    leitorEstado.escala = Math.min(leitorEstado.escala + 0.1, 3.0);
+    if (leitorEstado.pdfDoc) {
+        renderizarPagina(leitorEstado.paginaAtual);
+    }
+}
+
+function diminuirZoom() {
+    leitorEstado.escala = Math.max(leitorEstado.escala - 0.1, 0.3);
+    if (leitorEstado.pdfDoc) {
+        renderizarPagina(leitorEstado.paginaAtual);
+    }
+}
+
+// Progresso de leitura
+function atualizarProgresso(pagina) {
+    if (leitorEstado.totalPaginas === 0) return;
+    const percentual = Math.round((pagina / leitorEstado.totalPaginas) * 100);
+    leitorElements.progressoBar.style.width = `${percentual}%`;
+    leitorElements.progressoTexto.textContent = `${percentual}% lido`;
+}
+
+// Alternar modo escuro
+function alternarModoEscuro() {
+    leitorEstado.darkMode = !leitorEstado.darkMode;
+    leitorElements.modal.classList.toggle('dark-mode', leitorEstado.darkMode);
+    leitorElements.darkModeBtn.innerHTML = leitorEstado.darkMode 
+        ? '<i class="fa-regular fa-sun"></i>' 
+        : '<i class="fa-solid fa-moon"></i>';
+}
+
+// Tela cheia
+function alternarTelaCheia() {
+    const modal = leitorElements.modal;
+    if (!document.fullscreenElement) {
+        modal.requestFullscreen?.() || modal.webkitRequestFullscreen?.();
+    } else {
+        document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+    }
+}
+
+// Fechar leitor
+function fecharLeitor() {
+    leitorElements.overlay.hidden = true;
+    document.body.style.overflow = '';
+    leitorEstado.pdfDoc = null;
+    leitorEstado.paginaAtual = 1;
+    leitorEstado.totalPaginas = 0;
+    leitorElements.canvas.getContext('2d').clearRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
+    leitorElements.progressoBar.style.width = '0%';
+    leitorElements.progressoTexto.textContent = '0% lido';
+}
+
+// =============================================
+// 12. EVENTOS DO LEITOR
+// =============================================
+
+// Botões de navegação
+leitorElements.prevBtn?.addEventListener('click', paginaAnterior);
+leitorElements.nextBtn?.addEventListener('click', proximaPagina);
+
+// Zoom
+leitorElements.zoomIn?.addEventListener('click', aumentarZoom);
+leitorElements.zoomOut?.addEventListener('click', diminuirZoom);
+
+// Modo escuro
+leitorElements.darkModeBtn?.addEventListener('click', alternarModoEscuro);
+
+// Tela cheia
+leitorElements.fullscreenBtn?.addEventListener('click', alternarTelaCheia);
+
+// Fechar
+leitorElements.fecharBtn?.addEventListener('click', fecharLeitor);
+leitorElements.bg?.addEventListener('click', (e) => {
+    if (e.target === leitorElements.bg) fecharLeitor();
+});
+
+// Teclas de atalho
+document.addEventListener('keydown', (e) => {
+    if (leitorElements.overlay?.hidden) return;
+
+    switch (e.key) {
+        case 'Escape': fecharLeitor(); break;
+        case 'ArrowRight': case ' ': e.preventDefault(); proximaPagina(); break;
+        case 'ArrowLeft': e.preventDefault(); paginaAnterior(); break;
+        case '+': aumentarZoom(); break;
+        case '-': diminuirZoom(); break;
+        case 'f': alternarTelaCheia(); break;
+        case 'd': alternarModoEscuro(); break;
+    }
+});
+
+// Atalhos de página com teclas numéricas (1-9)
+document.addEventListener('keydown', (e) => {
+    if (leitorElements.overlay?.hidden) return;
+    const num = parseInt(e.key);
+    if (num >= 1 && num <= 9 && leitorEstado.totalPaginas >= num) {
+        renderizarPagina(num);
+    }
+});
+
+// =============================================
+// 13. EXPOR FUNÇÕES AO ESCOPO GLOBAL
+// =============================================
+window.abrirLeitor = abrirLeitor;
+window.fecharLeitor = fecharLeitor;
+
+// =============================================
+// 14. SUBSTITUIR openBookModal PARA INCLUIR "LER"
+// =============================================
+
+// Salva a função original
+const _openBookModalOriginal = window.openBookModal;
+
+// Sobrescreve para adicionar botão "Ler"
+window.openBookModal = function(bookId) {
+    const book = booksDatabase.find(b => b.id == bookId);
+    if (!book) return;
+
+    const overlay = document.getElementById('bookModalOverlay');
+    const content = document.getElementById('bookModalContent');
+
+    if (!overlay || !content) return;
+
+    content.innerHTML = `
+        <div class="book-modal-top">
+            <div class="book-modal-cover">
+                <img src="${book.cover}" alt="${book.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="book-placeholder" style="display:none; font-size:40px; color:var(--text-muted);"><i class="fa-solid fa-book"></i></div>
+            </div>
+            <div class="book-modal-details">
+                <h2>${book.title}</h2>
+                <div class="book-modal-author">${book.author}</div>
+                <div class="book-modal-tags">
+                    ${book.genre.map(g => `<span>${g}</span>`).join('')}
+                    <span>${book.age === 'infantil' ? '🧒 Infantil' : book.age === 'jovem' ? '🧑‍🎓 Jovem' : '👨‍💼 Adulto'}</span>
+                    ${book.recomendado ? `<span>⭐ ${book.recomendado}</span>` : ''}
+                </div>
+                <div class="book-modal-meta">
+                    <span><i class="fa-regular fa-clock"></i> ${book.pages} páginas</span>
+                    <span><i class="fa-regular fa-calendar"></i> ${book.year}</span>
+                    <span><i class="fa-regular fa-building"></i> ${book.publisher}</span>
+                </div>
+                <div class="book-modal-sinopse">${book.sinopse}</div>
+                <div class="book-modal-actions">
+                    ${book.download ? `
+                        <button class="book-modal-btn book-modal-btn-download" onclick="abrirLeitor(${book.id})" style="background: #7c3aed; color: #fff;">
+                            <i class="fa-solid fa-book-open"></i> Ler Livro
+                        </button>
+                        <a href="${book.download}" target="_blank" rel="noopener" class="book-modal-btn book-modal-btn-secondary" style="border-color: #10b981; color: #10b981;">
+                            <i class="fa-solid fa-download"></i> Baixar PDF
+                        </a>
+                    ` : `
+                        <span style="font-size:13px; color:var(--text-muted); font-style:italic;">📖 Livro disponível em breve</span>
+                    `}
+                    <button class="book-modal-btn book-modal-btn-secondary" onclick="closeBookModal()">
+                        <i class="fa-solid fa-xmark"></i> Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+};
+
+console.log('📖 Leitor de PDF inicializado com sucesso!');
     renderDestaques();
     renderCategoriasRecomendadas();
     renderBooks();

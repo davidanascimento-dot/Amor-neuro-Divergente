@@ -113,7 +113,6 @@
             </a>
             <nav class="header-links">
                 <a href="/explorar/explorar.html">Explorar</a>
-                <a href="/biblioteca/biblioteca.html">Biblioteca</a>
                 <a href="/comunidade/comunidade.html">Comunidade</a>
                 <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
@@ -122,9 +121,9 @@
        
         <section class="biblioteca-page">
             
-            <!-- ========================================= -->
-            <!-- HERO SECTION - FULLSCREEN                 -->
-            <!-- ========================================= -->
+           
+            <!-- HERO SECTION - FULLSCREEN -->
+          
             <section class="hero-section">
                 <div class="hero-conteudo">
                     <span class="hero-badge"><i class="fa-regular fa-circle-check"></i> Gratuito</span>
@@ -136,9 +135,9 @@
                 </div>
             </section>
 
-            <!-- ========================================= -->
-            <!-- DESTAQUES DO MÊS (CARROSSEL)             -->
-            <!-- ========================================= -->
+           
+            <!-- DESTAQUES DO MÊS (CARROSSEL)-->
+           
             <div class="sessao-destaques" id="biblioteca-livros">
                 <div class="topo-destaques">
                     <h2 class="titulo-destaques">⭐ Destaques do mês</h2>
@@ -160,9 +159,9 @@
                 </div>
             </div>
 
-            <!-- ========================================= -->
-            <!-- TODOS OS LIVROS                           -->
-            <!-- ========================================= -->
+          
+            <!-- TODOS OS LIVROS-->
+           
             <div class="todos-livros-section">
                 <div class="todos-livros-header">
                     <h2 class="todos"> Todos os <span class="todos-title">livros</span> </h2>
@@ -188,9 +187,9 @@
                 <div class="books-counter" id="booksCounter">0 livros encontrados</div>
             </div>
 
-            <!-- ========================================= -->
-            <!-- CHAMADA PARA COMUNIDADE                   -->
-            <!-- ========================================= -->
+         
+            <!-- CHAMADA PARA COMUNIDADE-->
+            
             <div class="biblioteca-chamada">
                 <div class="chamada-content">
                     <div class="chamada-texto">
@@ -239,18 +238,81 @@
 
     </main>
 
-    <!-- ========================================= -->
-    <!-- MODAL DO LIVRO                            -->
-    <!-- ========================================= -->
-    <div class="book-modal-overlay" id="bookModalOverlay" hidden>
-        <div class="book-modal-overlay-bg" id="bookModalBg"></div>
-        <div class="book-modal">
-            <button class="book-modal-close" id="bookModalClose"><i class="fa-solid fa-xmark"></i></button>
-            <div class="book-modal-content" id="bookModalContent">
-                <!-- Conteúdo dinâmico via JavaScript -->
+ 
+<!-- MODAL DE DETALHES DO LIVRO -->
+<div class="book-modal-overlay" id="bookModalOverlay" hidden>
+    <div class="book-modal-overlay-bg" id="bookModalBg"></div>
+    <div class="book-modal">
+        <button class="book-modal-close" id="bookModalClose"><i class="fa-solid fa-xmark"></i></button>
+        <div class="book-modal-content" id="bookModalContent">
+            <!-- Conteúdo dinâmico via JavaScript -->
+        </div>
+    </div>
+</div>
+
+  
+
+<!-- MODAL DE LEITURA COM PDF.JS              -->
+
+<div class="leitura-modal-overlay" id="leituraModalOverlay" hidden>
+    <div class="leitura-modal-bg" id="leituraModalBg"></div>
+    <div class="leitura-modal">
+        <!-- Cabeçalho -->
+        <div class="leitura-modal-header">
+            <div class="leitura-modal-title">
+                <i class="fa-solid fa-book-open"></i>
+                <span id="leituraTitulo">Carregando...</span>
+                <span class="leitura-badge" id="leituraAutor">por Autor</span>
+            </div>
+            <div class="leitura-toolbar">
+                <button class="leitura-toolbar-btn" id="leituraZoomIn" title="Aumentar zoom">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </button>
+                <button class="leitura-toolbar-btn" id="leituraZoomOut" title="Diminuir zoom">
+                    <i class="fa-solid fa-magnifying-glass-minus"></i>
+                </button>
+                <span class="leitura-zoom-level" id="leituraZoomLevel">100%</span>
+                <button class="leitura-toolbar-btn" id="leituraFullscreen" title="Tela cheia">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <button class="leitura-toolbar-btn" id="leituraDarkMode" title="Modo escuro">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="leitura-toolbar-btn leitura-btn-fechar" id="leituraFechar" title="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Corpo do visualizador -->
+        <div class="leitura-modal-body" id="leituraModalBody">
+            <div class="leitura-pdf-container" id="leituraPdfContainer">
+                <canvas id="leituraPdfCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Rodapé com controles de navegação -->
+        <div class="leitura-modal-footer">
+            <div class="leitura-navegacao">
+                <button class="leitura-nav-btn" id="leituraPrevPage" title="Página anterior">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span class="leitura-page-info">
+                    Página <span id="leituraPageNum">1</span> de <span id="leituraPageCount">0</span>
+                </span>
+                <button class="leitura-nav-btn" id="leituraNextPage" title="Próxima página">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="leitura-progresso">
+                <div class="leitura-progresso-bar" id="leituraProgressoBar">
+                    <div class="leitura-progresso-preenchido" id="leituraProgressoPreenchido" style="width: 0%;"></div>
+                </div>
+                <span class="leitura-progresso-texto" id="leituraProgressoTexto">0% lido</span>
             </div>
         </div>
     </div>
+</div>
 
     <!-- ========================================= -->
     <!-- HUB FLUTUANTE                             -->
