@@ -6,67 +6,66 @@
     <title>Sidebar com Ícones</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="comunidade1.css">
+    <link rel="stylesheet" href="/inicio.css">
 </head>
 <body>
-    <!-- BARRA DE NAVEGAÇÃO SUPERIOR -->
-    <nav class="top-nav">
-        <button class="sidebar-toggle-btn" id="sidebarToggle" style="color: rgb(228, 228, 228);">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <!--Pesquisar-->
+    
         
-<div style="position: relative; display: inline-block; margin-left: 100px;" class="Pesquisar">
-  <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999;margin-left: 500px;"></i>
-  <input type="search" class="search" placeholder="Pesquisar" style="padding-left: 35px; padding-right: 10px; padding-top: 8px; padding-bottom: 8px; border-radius: 20px; border: 1px solid #ccc; outline: none; width: 250px;">
-</div>
- 
+  
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 
-  <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar" style="margin-left: 800px;">
-    </nav>
-
-    <!-- OVERLAY PARA MOBILE -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <!-- Perfil -->
-        <div class="sidebar-profile">
-              <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
-             <a href="/inicio.html"><span id="sidebarUserName">Visitante</span></a>
-           
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
+            </div>
         </div>
 
-        <!-- Navegação -->
-        <nav class="sidebar-nav">
-            <a href="#" class="sidebar-link active">
-<i class="fas fa-users"  style="color: rgba(161, 161, 161, 0.781);"></i>
-                  
-            </a>
-            <a href="#" class="sidebar-link">
-               <i class="fas fa-users" style="color: rgba(161, 161, 161, 0.781);"></i>
-                  <span id="sidebarUserName">Visitante</span>
-            </a>
-            
-            <a href="#" class="sidebar-link">
-                <i class="fas fa-users" style="color: rgba(161, 161, 161, 0.781);"></i>
-                  <span id="sidebarUserName">Visitante</span>
-            </a>
-            <a href="#" class="sidebar-link">
-<i class="fas fa-users" style="color: rgba(161, 161, 161, 0.781);"></i>
-                 <span id="sidebarUserName">Visitante</span>
-            </a>
-            <a href="#" class="sidebar-link">
-                 <i class="fas fa-users" style="color: rgba(161, 161, 161, 0.781);"></i>
-                 <span id="sidebarUserName">Visitante</span>
-            </a>
-            <a href="#" class="sidebar-m">
-                 <i class="fas fa-plus" style="color: white;"></i>
-            </a>
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
 
-        
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
     </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+   
+    <main class="main-content" id="mainContent">
+        
+        <!-- HEADER -->
+        <header class="header-glass" id="headerGlass">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/inicio.html"></a>
+                <span></span>
+            </nav>
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
 
     
 
@@ -292,13 +291,112 @@
     </div>
 </div>
 
-<div></div>
+<footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col"><h4>Navegue</h4><a href="/inicio.html">Início</a><a href="/explorar/explorar.html">Explorar</a><a href="/comunidade/comunidade.html">Comunidade</a><a href="/direitos/direitos.html">Direitos</a><a href="/chat-Ia/chat-Ia.html">AcolherIA</a></div>
+                <div class="footer-col"><h4>Sobre</h4><a href="/Quem somos/quem-somos.html">Quem somos</a><a href="/blog/blog.html">Blog</a><a href="/contato/contato.html">Contato</a></div>
+                <div class="footer-col"><h4>Apoie</h4><a href="/loja/loja.html">Loja</a><a href="/doações/doações.html">Doações</a></div>
+                <div class="footer-col"><h4>Redes</h4><div class="social-links"><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a><a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a></div></div>
+            </div>
+            <div class="footer-bottom"><a href="#">Política de Privacidade</a><a href="#">Termos de Uso</a><p>© 2026 Amor NeuroDivergente</p></div>
+        </footer>
+
+    </main>
+
+   
+    <div class="floating-hub" id="floatingHub">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="floating-hub-divider"></div>
+
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </main>
 
 
     <script src="comunidade1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/supabase-cliente.js"></script>
+
+     <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <!-- VLibras -->
+<div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
+</div>
+
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+
+<script>
+    new window.VLibras.Widget(
+        'https://vlibras.gov.br/app'
+    );
+</script>
 
 </body>
 </html>

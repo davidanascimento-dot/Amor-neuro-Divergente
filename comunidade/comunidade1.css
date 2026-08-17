@@ -27,15 +27,7 @@ body {
     overflow-x: hidden;
 }
 
-body {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-              url('/img/fundo-Comunidade.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  
 
-}
 
 /* ==========================================================================
    2. BARRA DE NAVEGAÇÃO SUPERIOR (NAV)
