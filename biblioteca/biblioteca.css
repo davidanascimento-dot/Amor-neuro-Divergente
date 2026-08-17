@@ -289,7 +289,7 @@
 }
 
 /* =========================================
-   MODAL DE LEITURA COM PDF.JS
+   LEITOR TIPO EBOOK — TRANSPARENTE E FLUIDO
    ========================================= */
 
 .leitura-modal-overlay {
@@ -299,99 +299,117 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 20px;
     pointer-events: none;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
 }
 
 .leitura-modal-overlay[hidden] {
     display: none;
 }
 
-.leitura-modal-bg {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(12px);
-    z-index: 495;
-    animation: fadeIn 0.3s ease;
-}
-
+/* =========================================
+   MODAL PRINCIPAL — ESTILO EBOOK
+   ========================================= */
 .leitura-modal {
     position: relative;
     z-index: 500;
     width: 100%;
-    max-width: 960px;
-    max-height: 92vh;
-    background: #f8f5f0;
-    border-radius: 16px;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+    max-width: 820px;
+    max-height: 94vh;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
     overflow: hidden;
-    animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: auto;
     display: flex;
     flex-direction: column;
 }
 
-/* ----- Cabeçalho ----- */
+/* Animação mais suave */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================================
+   CABEÇALHO — FLUTUANTE E TRANSPARENTE
+   ========================================= */
 .leitura-modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 14px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px 16px 0 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     flex-shrink: 0;
     gap: 12px;
     flex-wrap: wrap;
+    z-index: 10;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
 .leitura-modal-title {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     color: #1a1a2e;
     min-width: 0;
+    font-family: 'Inter', sans-serif;
 }
 
 .leitura-modal-title i {
     color: #7c3aed;
     font-size: 18px;
+    opacity: 0.8;
 }
 
 #leituraTitulo {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 300px;
+    max-width: 260px;
+    font-weight: 600;
 }
 
 .leitura-badge {
     font-size: 12px;
     font-weight: 500;
-    color: #8a827c;
-    background: #f0ede8;
-    padding: 2px 12px;
-    border-radius: 12px;
+    color: #6b6b7a;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 14px;
+    border-radius: 20px;
     white-space: nowrap;
+    font-family: 'Inter', sans-serif;
 }
 
 .leitura-toolbar {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
 }
 
 .leitura-toolbar-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
     border: none;
     background: transparent;
     color: #4a4a5a;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -400,93 +418,198 @@
 }
 
 .leitura-toolbar-btn:hover {
-    background: rgba(124, 58, 237, 0.1);
+    background: rgba(124, 58, 237, 0.08);
     color: #7c3aed;
 }
 
 .leitura-toolbar-btn.leitura-btn-fechar {
-    color: #ef4444;
+    color: #94a3b8;
 }
 
 .leitura-toolbar-btn.leitura-btn-fechar:hover {
-    background: rgba(239, 68, 68, 0.12);
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
 }
 
 .leitura-zoom-level {
     font-size: 12px;
-    font-weight: 600;
-    color: #4a4a5a;
+    font-weight: 500;
+    color: #94a3b8;
     min-width: 44px;
     text-align: center;
+    font-family: 'Inter', sans-serif;
 }
 
-/* ----- Corpo (visualizador) ----- */
+/* =========================================
+   CORPO — FUNDO TRANSPARENTE COM EFEITO PAPEL
+   ========================================= */
 .leitura-modal-body {
     flex: 1;
     overflow: auto;
-    padding: 20px;
-    background: #f8f5f0;
+    padding: 28px 32px 32px;
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: 400px;
+    min-height: 420px;
     position: relative;
 }
 
+/* Efeito de "papel" flutuante */
 .leitura-pdf-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     width: 100%;
     max-width: 100%;
+    position: relative;
+}
+
+/* Sombra suave estilo livro */
+.leitura-pdf-container::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 5%;
+    right: 5%;
+    height: 30px;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.08) 0%, transparent 70%);
+    filter: blur(10px);
+    z-index: 0;
+    pointer-events: none;
 }
 
 #leituraPdfCanvas {
     max-width: 100%;
     height: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border-radius: 4px;
-    background: white;
-    transition: all 0.2s ease;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.04),
+        0 1px 3px rgba(0, 0, 0, 0.02),
+        0 8px 40px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
 }
 
-/* Placeholder de carregamento */
-.leitura-loading {
+/* =========================================
+   LEITOR DE TEXTO — ESTILO EBOOK
+   ========================================= */
+.leitura-texto-container {
+    display: none;
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.04),
+        0 1px 3px rgba(0, 0, 0, 0.02),
+        0 8px 40px rgba(0, 0, 0, 0.06);
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 0.3s ease;
+}
+
+.leitura-texto-pagina {
+    padding: 40px 48px 32px;
+    min-height: 460px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    color: #8a827c;
-    gap: 12px;
+    justify-content: space-between;
 }
 
-.leitura-loading i {
-    font-size: 40px;
-    color: #7c3aed;
-    animation: spin 1s linear infinite;
+.leitura-texto-conteudo {
+    font-family: 'Georgia', 'Merriweather', 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.9;
+    color: #1a1a2e;
+    text-align: justify;
+    hyphens: auto;
+    word-spacing: 0.5px;
+    letter-spacing: 0.2px;
 }
 
-.leitura-loading span {
-    font-size: 14px;
+.leitura-texto-conteudo p {
+    margin-bottom: 18px;
+    text-indent: 2em;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.leitura-texto-conteudo h1 {
+    font-family: 'Inter', 'Georgia', serif;
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin: 32px 0 20px;
+    text-indent: 0;
+    letter-spacing: -0.5px;
+    color: #0f0f1a;
 }
 
-/* ----- Rodapé (navegação + progresso) ----- */
+.leitura-texto-conteudo h2 {
+    font-family: 'Inter', 'Georgia', serif;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin: 28px 0 16px;
+    text-indent: 0;
+    color: #1a1a2e;
+}
+
+.leitura-texto-conteudo h3 {
+    font-family: 'Inter', 'Georgia', serif;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    margin: 24px 0 12px;
+    text-indent: 0;
+    color: #2d2d44;
+}
+
+.leitura-texto-conteudo hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    margin: 28px 0;
+}
+
+.leitura-texto-conteudo strong {
+    font-weight: 700;
+    color: #0f0f1a;
+}
+
+.leitura-texto-conteudo em {
+    font-style: italic;
+}
+
+.leitura-texto-numero {
+    text-align: center;
+    font-size: 12px;
+    color: #b0b0b8;
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   RODAPÉ — FLUTUANTE E TRANSPARENTE
+   ========================================= */
 .leitura-modal-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 0 0 16px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     flex-shrink: 0;
     gap: 16px;
     flex-wrap: wrap;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04);
 }
 
 .leitura-navegacao {
@@ -496,10 +619,10 @@
 }
 
 .leitura-nav-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    border: 1.5px solid #e5e0db;
+    border: 1.5px solid rgba(0, 0, 0, 0.06);
     background: transparent;
     color: #4a4a5a;
     font-size: 14px;
@@ -511,22 +634,23 @@
 }
 
 .leitura-nav-btn:hover:not(:disabled) {
-    background: #7c3aed;
-    color: #fff;
+    background: rgba(124, 58, 237, 0.06);
     border-color: #7c3aed;
+    color: #7c3aed;
 }
 
 .leitura-nav-btn:disabled {
-    opacity: 0.4;
+    opacity: 0.3;
     cursor: not-allowed;
 }
 
 .leitura-page-info {
     font-size: 13px;
     font-weight: 500;
-    color: #4a4a5a;
+    color: #6b6b7a;
     min-width: 80px;
     text-align: center;
+    font-family: 'Inter', sans-serif;
 }
 
 .leitura-progresso {
@@ -534,37 +658,41 @@
     align-items: center;
     gap: 12px;
     flex: 1;
-    max-width: 300px;
+    max-width: 260px;
     min-width: 120px;
 }
 
 .leitura-progresso-bar {
     flex: 1;
-    height: 4px;
-    background: #e5e0db;
-    border-radius: 2px;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
     overflow: hidden;
 }
 
 .leitura-progresso-preenchido {
     height: 100%;
     background: linear-gradient(90deg, #7c3aed, #a78bfa);
-    border-radius: 2px;
+    border-radius: 4px;
     transition: width 0.4s ease;
 }
 
 .leitura-progresso-texto {
     font-size: 12px;
-    font-weight: 600;
-    color: #8a827c;
+    font-weight: 500;
+    color: #94a3b8;
     min-width: 50px;
     text-align: right;
+    font-family: 'Inter', sans-serif;
 }
 
-/* ----- MODO ESCURO (para o leitor) ----- */
+/* =========================================
+   MODO ESCURO — ESTILO EBOOK NOTURNO
+   ========================================= */
 .leitura-modal.dark-mode .leitura-modal-header {
-    background: rgba(26, 26, 46, 0.95);
-    border-bottom-color: rgba(255, 255, 255, 0.06);
+    background: rgba(26, 26, 46, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom-color: rgba(255, 255, 255, 0.04);
 }
 
 .leitura-modal.dark-mode .leitura-modal-title {
@@ -572,12 +700,13 @@
 }
 
 .leitura-modal.dark-mode .leitura-modal-body {
-    background: #1a1a2e;
+    background: transparent;
 }
 
 .leitura-modal.dark-mode .leitura-modal-footer {
-    background: rgba(26, 26, 46, 0.95);
-    border-top-color: rgba(255, 255, 255, 0.06);
+    background: rgba(26, 26, 46, 0.92);
+    backdrop-filter: blur(20px);
+    border-top-color: rgba(255, 255, 255, 0.04);
 }
 
 .leitura-modal.dark-mode .leitura-toolbar-btn {
@@ -585,52 +714,96 @@
 }
 
 .leitura-modal.dark-mode .leitura-toolbar-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
     color: #a78bfa;
 }
 
 .leitura-modal.dark-mode .leitura-nav-btn {
-    border-color: #2d2d44;
+    border-color: rgba(255, 255, 255, 0.08);
     color: #b8b0a8;
 }
 
 .leitura-modal.dark-mode .leitura-nav-btn:hover:not(:disabled) {
     border-color: #a78bfa;
-    background: #a78bfa;
-    color: #1a1a2e;
+    background: rgba(167, 139, 250, 0.1);
+    color: #a78bfa;
 }
 
 .leitura-modal.dark-mode .leitura-page-info {
-    color: #b8b0a8;
+    color: #8a827c;
 }
 
 .leitura-modal.dark-mode .leitura-progresso-bar {
-    background: #2d2d44;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.leitura-modal.dark-mode .leitura-progresso-texto {
+    color: #6b6b7a;
 }
 
 .leitura-modal.dark-mode .leitura-badge {
-    background: rgba(255, 255, 255, 0.08);
-    color: #b8b0a8;
+    background: rgba(255, 255, 255, 0.06);
+    color: #8a827c;
 }
 
 .leitura-modal.dark-mode #leituraPdfCanvas {
-    background: #2d2d44;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    background: #1a1a2e;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.2),
+        0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* ----- RESPONSIVO ----- */
+.leitura-modal.dark-mode .leitura-texto-container {
+    background: #1a1a2e;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.2),
+        0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.leitura-modal.dark-mode .leitura-texto-conteudo {
+    color: #d8d0c8;
+}
+
+.leitura-modal.dark-mode .leitura-texto-conteudo h1 {
+    color: #e8e3dd;
+}
+
+.leitura-modal.dark-mode .leitura-texto-conteudo h2 {
+    color: #d8d0c8;
+}
+
+.leitura-modal.dark-mode .leitura-texto-conteudo h3 {
+    color: #c0b8b0;
+}
+
+.leitura-modal.dark-mode .leitura-texto-conteudo strong {
+    color: #e8e3dd;
+}
+
+.leitura-modal.dark-mode .leitura-texto-conteudo hr {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+.leitura-modal.dark-mode .leitura-texto-numero {
+    color: #6b6b7a;
+    border-top-color: rgba(255, 255, 255, 0.04);
+}
+
+/* =========================================
+   RESPONSIVO — EBOOK ADAPTÁVEL
+   ========================================= */
 @media (max-width: 768px) {
     .leitura-modal {
         max-width: 100%;
         max-height: 98vh;
-        border-radius: 12px;
     }
 
     .leitura-modal-header {
-        padding: 10px 14px;
+        padding: 12px 16px;
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
+        gap: 6px;
+        border-radius: 12px 12px 0 0;
     }
 
     .leitura-modal-title {
@@ -639,7 +812,7 @@
     }
 
     #leituraTitulo {
-        max-width: 140px;
+        max-width: 150px;
     }
 
     .leitura-toolbar {
@@ -647,14 +820,15 @@
     }
 
     .leitura-modal-body {
-        padding: 12px;
+        padding: 16px;
         min-height: 300px;
     }
 
     .leitura-modal-footer {
         flex-direction: column;
-        padding: 8px 14px;
+        padding: 10px 16px;
         gap: 8px;
+        border-radius: 0 0 12px 12px;
     }
 
     .leitura-progresso {
@@ -666,9 +840,45 @@
         width: 100%;
         justify-content: center;
     }
+
+    .leitura-texto-pagina {
+        padding: 24px 24px 20px;
+        min-height: 320px;
+    }
+
+    .leitura-texto-conteudo {
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+    .leitura-texto-conteudo h1 {
+        font-size: 22px;
+    }
+
+    .leitura-texto-conteudo h2 {
+        font-size: 18px;
+    }
+
+    .leitura-texto-container {
+        max-width: 100%;
+    }
+
+    .leitura-toolbar-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 480px) {
+    .leitura-modal-overlay {
+        padding: 8px;
+    }
+
+    .leitura-modal-header {
+        padding: 10px 12px;
+    }
+
     .leitura-modal-title {
         font-size: 12px;
     }
@@ -676,12 +886,30 @@
     .leitura-toolbar-btn {
         width: 30px;
         height: 30px;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .leitura-modal-body {
-        padding: 8px;
-        min-height: 200px;
+        padding: 12px;
+        min-height: 220px;
+    }
+
+    .leitura-texto-pagina {
+        padding: 20px 16px 16px;
+        min-height: 260px;
+    }
+
+    .leitura-texto-conteudo {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .leitura-texto-conteudo h1 {
+        font-size: 20px;
+    }
+
+    .leitura-texto-conteudo h2 {
+        font-size: 17px;
     }
 
     .leitura-nav-btn {
@@ -694,8 +922,37 @@
         font-size: 12px;
         min-width: 60px;
     }
+
+    .leitura-modal-footer {
+        padding: 8px 12px;
+    }
 }
 
+/* =========================================
+   ANIMAÇÕES EXTRAS
+   ========================================= */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Scroll personalizado (estilo eBook) */
+.leitura-modal-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.leitura-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.leitura-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.2);
+    border-radius: 4px;
+}
+
+.leitura-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.4);
+}
 /* =========================================
    5. BUSCA E FILTROS
    ========================================= */
