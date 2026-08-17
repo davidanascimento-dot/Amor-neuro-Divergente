@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar com Ícones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="comunidade1.css">
+</head>
+<body>
+    <!-- BARRA DE NAVEGAÇÃO SUPERIOR -->
+    <nav class="top-nav">
+        <button class="sidebar-toggle-btn" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <a href="#" class="nav-brand">
+            <span class="logo-text">Amor Neuro Divergente</span>
+        </a>
+ <input type="search" style="margin-left: 100px;">
+
+  <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar" style="margin-left: 800px;">
+    </nav>
+
+    <!-- OVERLAY PARA MOBILE -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <!-- Perfil -->
+        <div class="sidebar-profile">
+              <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+             <a href="/inicio.html"><span id="sidebarUserName">Visitante</span></a>
+           
+        </div>
+
+        <!-- Navegação -->
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-link active">
+               <i class="fas fa-users"></i>
+                  
+            </a>
+            <a href="#" class="sidebar-link">
+                 <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                  <span id="sidebarUserName">Visitante</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                   <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                  <span id="sidebarUserName">Visitante</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                   <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                 <span id="sidebarUserName">Visitante</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                  <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                 <span id="sidebarUserName">Visitante</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                  <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                 <span id="sidebarUserName">Visitante</span>
+            </a>
+        </nav>
+
+        
+    </aside>
+
+    
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content" id="mainContent">
+       
+<div class="forum-container">
+    <!-- Cabeçalho do Fórum -->
+    <div class="forum-header">
+        <h2><i class="fas fa-comments" style="color: var(--primary-color);"></i> Fórum de Discussão</h2>
+        <span class="forum-stats"><i class="far fa-file-alt"></i> 3 tópicos · <i class="far fa-comment"></i> 12 respostas</span>
+    </div>
+
+    <!-- ===== POST 1 ===== -->
+    <div class="forum-post">
+        <!-- Cabeçalho -->
+        <div class="post-header">
+            <img src="/img/foto-padrão.jpg" alt="Avatar" class="post-avatar">
+            <div class="post-author-info">
+                <div class="post-author-name">
+                    Usuário Exemplo
+                    <span class="badge">Membro</span>
+                </div>
+                <div class="post-meta">
+                    <span><i class="far fa-clock"></i> Há 2 horas</span>
+                    <span><i class="far fa-eye"></i> 45 visualizações</span>
+                    <span><i class="far fa-comment"></i> 3 respostas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo -->
+        <div class="post-body">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+            <img src="/img/blog-post-1-DvwhQAY4.jpg" alt="Imagem do post" class="post-image">
+        </div>
+
+        <!-- Ações -->
+        <div class="post-actions">
+            <button class="post-action-btn liked">
+                <i class="fas fa-heart"></i>
+                <span class="count">42</span>
+            </button>
+            <button class="post-action-btn reply-btn">
+                <i class="far fa-comment"></i>
+                <span class="count">3</span>
+            </button>
+            <button class="post-action-btn">
+                <i class="far fa-share-alt"></i>
+                <span class="count">5</span>
+            </button>
+            <button class="post-action-btn">
+                <i class="far fa-bookmark"></i>
+                <span class="count">2</span>
+            </button>
+            <button class="post-action-btn" style="margin-left: auto;">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+
+        <!-- Respostas/Comentários -->
+        <div class="post-replies">
+            <div class="reply-item">
+                <img src="/img/foto-padrão.jpg" alt="Avatar" class="reply-avatar">
+                <div class="reply-body">
+                    <span class="reply-author">
+                        João Silva
+                        <span class="reply-time">Há 1 hora</span>
+                    </span>
+                    <p class="reply-text">Excelente postagem! Muito informativo.</p>
+                </div>
+            </div>
+            <div class="reply-item">
+                <img src="/img/foto-padrão.jpg" alt="Avatar" class="reply-avatar">
+                <div class="reply-body">
+                    <span class="reply-author">
+                        Maria Santos
+                        <span class="reply-time">Há 30 minutos</span>
+                    </span>
+                    <p class="reply-text">Concordo plenamente. Gostaria de adicionar mais um ponto...</p>
+                </div>
+            </div>
+            <a class="view-more-replies">Ver mais 1 resposta →</a>
+
+            <!-- Input de resposta -->
+            <div class="reply-input-wrapper">
+                <img src="/img/foto-padrão.jpg" alt="Seu avatar" class="reply-avatar" style="width: 30px; height: 30px;">
+                <input type="text" placeholder="Escreva uma resposta...">
+                <button class="send-reply-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== POST 2 ===== -->
+    <div class="forum-post">
+        <div class="post-header">
+            <img src="/img/foto-padrão.jpg" alt="Avatar" class="post-avatar">
+            <div class="post-author-info">
+                <div class="post-author-name">
+                    Visitante
+                    <span class="badge" style="background: #888;">Novato</span>
+                </div>
+                <div class="post-meta">
+                    <span><i class="far fa-clock"></i> Há 5 horas</span>
+                    <span><i class="far fa-eye"></i> 12 visualizações</span>
+                    <span><i class="far fa-comment"></i> 0 respostas</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-body">
+            <p>Alguém já tentou resolver esse problema? Estou com dificuldades para implementar essa funcionalidade.</p>
+        </div>
+
+        <div class="post-actions">
+            <button class="post-action-btn">
+                <i class="far fa-heart"></i>
+                <span class="count">0</span>
+            </button>
+            <button class="post-action-btn reply-btn">
+                <i class="far fa-comment"></i>
+                <span class="count">0</span>
+            </button>
+            <button class="post-action-btn">
+                <i class="far fa-share-alt"></i>
+                <span class="count">0</span>
+            </button>
+            <button class="post-action-btn">
+                <i class="far fa-bookmark"></i>
+                <span class="count">0</span>
+            </button>
+        </div>
+
+        <div class="post-replies">
+            <div class="no-replies">
+                <i class="far fa-comment-dots"></i>
+                Nenhuma resposta ainda. Seja o primeiro a responder!
+            </div>
+
+            <div class="reply-input-wrapper">
+                <img src="/img/foto-padrão.jpg" alt="Seu avatar" class="reply-avatar" style="width: 30px; height: 30px;">
+                <input type="text" placeholder="Escreva uma resposta...">
+                <button class="send-reply-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== POST 3 ===== -->
+    <div class="forum-post">
+        <div class="post-header">
+            <img src="/img/foto-padrão.jpg" alt="Avatar" class="post-avatar">
+            <div class="post-author-info">
+                <div class="post-author-name">
+                    Admin
+                    <span class="badge" style="background: #e67e22;">Moderador</span>
+                </div>
+                <div class="post-meta">
+                    <span><i class="far fa-clock"></i> Há 1 dia</span>
+                    <span><i class="far fa-eye"></i> 128 visualizações</span>
+                    <span><i class="far fa-comment"></i> 7 respostas</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-body">
+            <p><strong>📢 ANÚNCIO IMPORTANTE</strong></p>
+            <p>Novas regras para o fórum foram atualizadas. Por favor, leiam com atenção antes de postar.</p>
+            <ul style="padding-left: 20px; margin: 10px 0; color: var(--text-color);">
+                <li>Seja respeitoso com todos</li>
+                <li>Use títulos descritivos</li>
+                <li>Não compartilhe conteúdo spam</li>
+            </ul>
+        </div>
+
+        <div class="post-actions">
+            <button class="post-action-btn liked">
+                <i class="fas fa-heart"></i>
+                <span class="count">15</span>
+            </button>
+            <button class="post-action-btn reply-btn">
+                <i class="far fa-comment"></i>
+                <span class="count">7</span>
+            </button>
+            <button class="post-action-btn">
+                <i class="far fa-share-alt"></i>
+                <span class="count">3</span>
+            </button>
+            <button class="post-action-btn">
+                <i class="fas fa-star" style="color: #f1c40f;"></i>
+                <span class="count">8</span>
+            </button>
+        </div>
+
+        <div class="post-replies">
+            <div class="reply-item">
+                <img src="/img/foto-padrão.jpg" alt="Avatar" class="reply-avatar">
+                <div class="reply-body">
+                    <span class="reply-author">
+                        Carlos Lima
+                        <span class="reply-time">Há 20 horas</span>
+                    </span>
+                    <p class="reply-text">Obrigado pelo aviso! Vou ler as regras.</p>
+                </div>
+            </div>
+            <div class="reply-item">
+                <img src="/img/foto-padrão.jpg" alt="Avatar" class="reply-avatar">
+                <div class="reply-body">
+                    <span class="reply-author">
+                        Ana Costa
+                        <span class="reply-time">Há 15 horas</span>
+                    </span>
+                    <p class="reply-text">Excelente iniciativa! Isso vai melhorar a comunidade.</p>
+                </div>
+            </div>
+            <a class="view-more-replies">Ver mais 5 respostas →</a>
+
+            <div class="reply-input-wrapper">
+                <img src="/img/foto-padrão.jpg" alt="Seu avatar" class="reply-avatar" style="width: 30px; height: 30px;">
+                <input type="text" placeholder="Escreva uma resposta...">
+                <button class="send-reply-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    </main>
+
+
+    <script src="comunidade1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/supabase-cliente.js"></script>
+
+</body>
+</html>
