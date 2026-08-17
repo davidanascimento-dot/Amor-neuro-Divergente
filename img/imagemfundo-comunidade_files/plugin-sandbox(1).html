@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)https://www.figma.com/plugin-sandbox -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style nonce="">
+      html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script>
+      // This event handler is no longer used. But leaving for now to not break old clients
+      var messageHandler = (event) => {
+        var pluginIframeElement = document.getElementById("plugin-iframe")
+        if (pluginIframeElement && event.source === pluginIframeElement.contentWindow) {
+          parent.postMessage({ origin: event.origin, data: event.data }, window.location.origin)
+        }
+      }
+      window.addEventListener("message", messageHandler)
+      window.__FIGMA_PLUGIN_SANDBOX_PAGE_LOADED = true
+    </script>
+  <style id="vibesuite-dynamic-styles" type="text/css"><br>    @keyframes vibesuiteMicGlow {<br>      0% {<br>        background-color: rgba(255, 255, 255, 0.1);<br>        box-shadow: 0 0 3px rgba(255, 255, 255, 0.2);<br>      }<br>      50% {<br>        background-color: rgba(255, 255, 255, 0.25);<br>        box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);<br>      }<br>      100% {<br>        background-color: rgba(255, 255, 255, 0.1);<br>        box-shadow: 0 0 3px rgba(255, 255, 255, 0.2);<br>      }<br>    }<br><br>    .vibesuite-mic-glowing {<br>      animation: vibesuiteMicGlow 1.5s infinite ease-in-out;<br>    }<br>  </style></head>
+  <body>
+  
+
+</body></html>

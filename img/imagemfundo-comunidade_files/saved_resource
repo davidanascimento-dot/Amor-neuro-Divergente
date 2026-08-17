@@ -1,0 +1,97 @@
+/* Devtools installer */
+(function () {
+  if (typeof window === 'undefined') return
+  if (
+    Object.prototype.hasOwnProperty.call(window, '__REACT_DEVTOOLS_GLOBAL_HOOK__') &&
+    window.__REACT_DEVTOOLS_GLOBAL_HOOK__
+  ) {
+    return
+  }
+
+  var renderers = new Map()
+  var listeners = {}
+  var uidCounter = 0
+  var commitWaiterRoot = typeof globalThis !== 'undefined' ? globalThis : window
+
+  function getCommitWaitersArray() {
+    if (!Array.isArray(commitWaiterRoot.__figmaHtmlDevtoolsCommitWaiters__)) {
+      commitWaiterRoot.__figmaHtmlDevtoolsCommitWaiters__ = []
+    }
+    return commitWaiterRoot.__figmaHtmlDevtoolsCommitWaiters__
+  }
+
+  function flushCommitWaiters() {
+    var commitWaiters = getCommitWaitersArray()
+    if (!commitWaiters.length) return
+    var copy = commitWaiters.slice()
+    commitWaiters.length = 0
+    for (var i = 0; i < copy.length; i++) {
+      var waiter = copy[i]
+      if (waiter && typeof waiter.resolve === 'function') {
+        if (waiter.timer) clearTimeout(waiter.timer)
+        waiter.resolve()
+      }
+    }
+  }
+
+  function inject(renderer) {
+    var id = ++uidCounter
+    renderers.set(id, renderer)
+    return id
+  }
+
+  function on(event, fn) {
+    if (!listeners[event]) listeners[event] = []
+    listeners[event].push(fn)
+  }
+
+  function off(event, fn) {
+    var handlers = listeners[event]
+    if (!handlers) return
+    var index = handlers.indexOf(fn)
+    if (index !== -1) handlers.splice(index, 1)
+    if (handlers.length === 0) delete listeners[event]
+  }
+
+  function sub(event, fn) {
+    on(event, fn)
+    return function () { off(event, fn) }
+  }
+
+  function emit(event, data) {
+    var handlers = listeners[event]
+    if (!handlers) return
+    var copy = handlers.slice()
+    for (var i = 0; i < copy.length; i++) copy[i](data)
+  }
+
+  var hook = {
+    supportsFiber: true,
+    renderers: renderers,
+    listeners: listeners,
+    inject: inject,
+    onCommitFiberRoot: function () {
+      flushCommitWaiters()
+    },
+    onCommitFiberUnmount: function () {},
+    onPostCommitFiberRoot: function () {},
+    setStrictMode: function () {},
+    checkDCE: function () {},
+    getInternalModuleRanges: function () { return null },
+    registerInternalModuleStart: function () {},
+    registerInternalModuleStop: function () {},
+    on: on,
+    off: off,
+    sub: sub,
+    emit: emit,
+  }
+
+  commitWaiterRoot.__figmaHtmlDevtoolsCommitHookFlushesWaiters__ = true
+
+  Object.defineProperty(window, '__REACT_DEVTOOLS_GLOBAL_HOOK__', {
+    configurable: true,
+    enumerable: false,
+    get: function () { return hook },
+  })
+})();
+"use strict";(()=>{(function(){let i=window,k=10,v=2e3,P=100,d,f=0,l=null,p=h(),m,V=["https://figma-gov.com","https://www.figma.com","https://staging.figma.com","https://devenv01.figma.engineering","https://local.figma.engineering:8443","http://localhost:9000"],L=[/^https:\/\/[a-z0-9-]+\.figdev\.systems:8443$/,/^https:\/\/[a-z0-9-]+\.figdev\.systems$/];function _(e){return V.includes(e)||L.some(n=>n.test(e))}function h(){return i.crypto?.randomUUID?.()??`${Date.now()}-${Math.random().toString(36).slice(2)}`}let R=0;function y(){d!==void 0&&(i.clearInterval(d),d=void 0)}function c(e){if(typeof e=="string")return e;if(e instanceof Error)return e.stack||e.message;try{return JSON.stringify(e)??String(e)}catch{return String(e)}}function I(e){return{kind:"runtimeError",error:e instanceof Error?e:new Error(String(e))}}function M(){let e=[],n=i.console,o=!0;function s(r){o&&(e.push(r),e.length>P&&e.shift())}let t=r=>{s(I(r.error||r.message))},a=r=>{s(I(r.reason))};i.addEventListener("error",t),i.addEventListener("unhandledrejection",a);let g={...n,debug:(...r)=>{n.debug(...r),o&&s({kind:"console",type:"debug",sender:"user",message:r.map(c).join(" ")})},error:(...r)=>{n.error(...r),o&&s({kind:"console",type:"error",sender:"user",message:r.map(c).join(" ")})},log:(...r)=>{n.log(...r),o&&s({kind:"console",type:"log",sender:"user",message:r.map(c).join(" ")})},warn:(...r)=>{n.warn(...r),o&&s({kind:"console",type:"warn",sender:"user",message:r.map(c).join(" ")})}};return i.console=g,{drain:()=>{o=!1,i.removeEventListener("error",t),i.removeEventListener("unhandledrejection",a),i.console===g&&(i.console=n);let r=e.slice();return e.length=0,r}}}function T(e,n){let o=l?.core;o&&o.postMessage({method:e,args:n,messageId:R++})}function u(e){T("status",{...e,...m!==void 0?{documentInitId:m}:{}})}function O(e){if(!(e===null||typeof e!="object"||Array.isArray(e)))return e.point_and_edit_source_path_policy}async function S(e){return await import(e)}async function b(e,n,o){let s=e.default;if(typeof s!="function")return{ok:!1,kind:"run",error:"Bootstrap module must export a default function"};try{let t=s({messagePorts:l,queuedLogs:n.drain(),...o!==void 0?{pointAndEditSourcePathPolicy:o}:{}});t!=null&&typeof t.then=="function"&&await t}catch(t){return{ok:!1,kind:"run",error:t instanceof Error?t.message:String(t)}}return{ok:!0}}function U(e,n,o){let s,t=new Promise((a,g)=>{s=i.setTimeout(()=>g(new Error(o)),n)});return Promise.race([e.finally(()=>{i.clearTimeout(s)}),t])}function E(e){return e.ok?{state:"ready",isReady:!0}:e.kind==="load"?{state:"script-load-error",isReady:!1,error:e.error}:{state:"script-execution-error",isReady:!1,error:e.error}}i.addEventListener("message",e=>{if(!_(e.origin))return;let n=e.data;!n||n.type!=="iframe-init"||(y(),l={core:e.ports[0],consumer:e.ports[1]},m=typeof n.documentInitId=="string"?n.documentInitId:p,i.__PREVIEW_IFRAME_INITIAL_OPTIONS__=n.previewIframeInitialOptions,u({state:"init-received",isReady:!1}),(async()=>{let o=n.initScriptURL;if(typeof o!="string"||o===""){u({state:"script-load-error",isReady:!1,error:"Missing initScriptURL"});return}let s;try{s=await S(o)}catch(t){let a=t instanceof Error?t.message:String(t);u(E({ok:!1,kind:"load",error:a}));return}try{let t=await U(b(s,C,O(n.previewIframeInitialOptions)),v,"bootstrap-timeout");u(E(t))}catch(t){let a=t instanceof Error?t.message:String(t);u({state:a==="bootstrap-timeout"?"script-timeout":"script-load-error",isReady:!1,error:a})}})())});function w(){if(f++,f>=k){y();return}i.parent.postMessage({type:"iframe-init-request",documentInitId:p,timestamp:Date.now()},"*")}let C=M();w(),d=i.setInterval(w,1e3)})();})();

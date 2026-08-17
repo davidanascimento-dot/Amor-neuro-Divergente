@@ -27,6 +27,16 @@ body {
     overflow-x: hidden;
 }
 
+body {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+              url('/img/fundo-Comunidade.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  
+
+}
+
 /* ==========================================================================
    2. BARRA DE NAVEGAÇÃO SUPERIOR (NAV)
    ========================================================================== */
@@ -36,8 +46,9 @@ body {
     left: 0;
     right: 0;
     height: var(--nav-height);
-    background: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
+    background:   rgba(16, 14, 17, 0.781) ;
+  backdrop-filter: blur(2px);
+    border-bottom: 1px solid #1f1d1dab;
     display: flex;
     align-items: center;
     padding: 0 20px;
@@ -61,6 +72,15 @@ body {
     background: var(--hover-color);
     color: var(--primary-color);
 }
+
+.search{
+    border-color: #231f25a1;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #3333337c;
+}
+
+
 
 /* Logo e título na nav */
 .nav-brand {
@@ -108,7 +128,7 @@ body {
     left: 0;
     width: var(--sidebar-icon-width); /* Largura inicial: só ícones */
     height: calc(100vh - var(--nav-height)); /* Ocupa o resto da tela */
-    background-color: #ffffff;
+    background-color: rgba(39, 39, 39, 0.884);
     border-right: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
@@ -176,7 +196,7 @@ body.sidebar-expanded .user-name {
     align-items: center;
     gap: 14px;
     padding: 12px 14px;
-    color: var(--text-color);
+    color:  white;
     text-decoration: none;
     border-radius: 8px;
     font-weight: 500;
@@ -187,7 +207,7 @@ body.sidebar-expanded .user-name {
 
 /* Ícones sempre visíveis */
 .sidebar-link i {
-    width: 22px;
+    width: 35px;
     font-size: 1.2rem;
     flex-shrink: 0;
     text-align: center;
@@ -207,6 +227,15 @@ body.sidebar-expanded .sidebar-link .link-text {
 .sidebar-link.active {
     background-color: var(--hover-color);
     color: var(--primary-color);
+}
+
+.sidebar-m{
+background-color: #201a2485;
+padding: 10px;
+border: 1px solid #a19ea386;
+margin: 5px;
+border-radius: 5px;
+position: relative; top: 500px;
 }
 
 /* ==========================================================================
