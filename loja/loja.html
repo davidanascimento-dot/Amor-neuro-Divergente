@@ -62,16 +62,11 @@
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
 <body>
 
-    <!-- Botão de toggle da sidebar (sempre visível) -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- =============================================
-    SIDEBAR — Responsiva
-    ============================================= -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
-        
         <div class="sidebar-profile" id="sidebarProfile">
             <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
                 <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
@@ -85,47 +80,31 @@
         </div>
 
         <nav class="sidebar-nav" aria-label="Principal">
-            <a href="/inicio.html" class="sidebar-link">
-                <i class="fa-solid fa-house"></i> Início
-            </a>
-            <a href="/explorar/explorar.html" class="sidebar-link">
-                <i class="fa-solid fa-compass"></i> Explorar
-            </a>
-            <a href="/comunidade/comunidade.html" class="sidebar-link">
-                <i class="fa-regular fa-comments"></i> Comunidade
-            </a>
-            <a href="/direitos/direitos.html" class="sidebar-link">
-                <i class="fa-solid fa-scale-balanced"></i> Seus Direitos
-            </a>
-             <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
-          
+            <a href="/inicio.html" class="sidebar-link" ><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/explorar/explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/biblioteca/biblioteca.html" class="sidebar-link "><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
 
-      
-
         <div class="sidebar-secondary">
-            <a href="/loja/loja.html" class="sidebar-link small active" aria-current="page">
-                <i class="fa-solid fa-bag-shopping"></i> Loja
-            </a>
-            <a href="/apoiar/apoiar.html" class="sidebar-link small">
-                <i class="fa-regular fa-heart"></i> Apoiar
-            </a>
-            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
-            </a>
+            <a href="/loja/loja.html" class="sidebar-link active"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
         </div>
     </aside>
 
-    <!-- Overlay para fechar sidebar -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- =============================================
-    CONTEÚDO PRINCIPAL
-    ============================================= -->
+   
     <main class="main-content" id="mainContent">
         
-        <!-- HEADER GLASS -->
+        <!-- HEADER -->
         <header class="header-glass" id="headerGlass">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/inicio.html"></a>
+                <span></span>
+            </nav>
             <a href="/inicio.html" class="logo">
                 <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
                 <span class="logo-text">Amor NeuroDivergente</span>
@@ -136,6 +115,9 @@
                 <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
         </header>
+
+
+   
 
         <!-- FILTROS DA LOJA -->
         <section class="shop-filter-section" aria-labelledby="shopTitle">
