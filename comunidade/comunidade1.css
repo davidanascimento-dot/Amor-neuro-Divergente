@@ -46,7 +46,7 @@ body {
     left: 0;
     right: 0;
     height: var(--nav-height);
-    background:   rgba(16, 14, 17, 0.781) ;
+    background:   rgb(26, 25, 27) ;
   backdrop-filter: blur(2px);
     border-bottom: 1px solid #1f1d1dab;
     display: flex;
@@ -78,8 +78,11 @@ body {
     border-radius: 10px;
     padding: 5px;
     background-color: #3333337c;
+ 
 }
-
+.search{
+    margin-left: 500px;
+}
 
 
 /* Logo e título na nav */
@@ -238,6 +241,61 @@ border-radius: 5px;
 position: relative; top: 500px;
 }
 
+
+    /* Container principal */
+        .Forum-F {
+             background: #1c162086;
+            padding: 20px 35px;
+            border-radius: 10px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            transition: all 0.3s ease;
+            margin-left: 50px;
+         margin: 20px;
+        }
+
+
+        /* Estilo base para todos os links */
+        .Forum-F a {
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fdfdfd;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 0.5px;
+            margin-left: 80px;
+        }
+
+    
+.Forum{
+     color: #4a4a4a;
+}
+.Forum:hover{
+     color: #303030;
+}
+        .Forum1 {
+            color: #4a4a4a;
+        }
+
+        .Forum1:hover {
+           color: #000000;
+        }
+
+     .Forum2{
+         color: #4a4a4a;
+     }
+
+     .Forum2:hover{
+         color: #000000;
+     }
+ 
+      
+   
+
 /* ==========================================================================
    5. CONTEÚDO PRINCIPAL (EMPURRADO PELA SIDEBAR)
    ========================================================================== */
@@ -271,54 +329,7 @@ body.sidebar-expanded .main-content {
     margin-bottom: 10px;
 }
 
-/* ==========================================================================
-   7. RESPONSIVIDADE (CELULARES E TABLETS)
-   ========================================================================== */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%); /* Sai da tela no mobile */
-        width: var(--sidebar-width) !important; /* Largura total quando aparece */
-        transition: transform var(--transition-speed) ease;
-        box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-    }
-    
-    /* Quando expandida no mobile, ela aparece por cima */
-    body.mobile-sidebar-open .sidebar {
-        transform: translateX(0);
-    }
 
-    .main-content {
-        margin-left: 0 !important; /* Sem margem no mobile */
-    }
-
-    .nav-links {
-        display: none; /* Esconde links da nav no mobile */
-    }
-
-    .sidebar-link .link-text {
-        opacity: 1 !important; /* Texto visível no mobile */
-    }
-
-    .user-name {
-        opacity: 1 !important;
-    }
-
-    /* Overlay para fechar a sidebar no mobile */
-    .sidebar-overlay {
-        display: none;
-        position: fixed;
-        top: var(--nav-height);
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.3);
-        z-index: 90;
-    }
-
-    body.mobile-sidebar-open .sidebar-overlay {
-        display: block;
-    }
-}
 
 
 /* ==========================================================================
@@ -354,12 +365,12 @@ body.sidebar-expanded .main-content {
 
 /* ========== POST INDIVIDUAL ========== */
 .forum-post {
-    background: #ffffff;
+    background: #131214;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid #f0f0f0;
+    border: 1px solid #242424;
     transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
@@ -394,7 +405,7 @@ body.sidebar-expanded .main-content {
 .post-author-name {
     font-weight: 600;
     font-size: 1rem;
-    color: var(--text-color);
+    color: white;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -414,7 +425,7 @@ body.sidebar-expanded .main-content {
     align-items: center;
     gap: 12px;
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: white;
 }
 
 .post-meta span {
@@ -434,7 +445,7 @@ body.sidebar-expanded .main-content {
 
 .post-body p {
     line-height: 1.7;
-    color: var(--text-color);
+    color:white;
     font-size: 0.95rem;
     margin-bottom: 10px;
 }
@@ -467,7 +478,7 @@ body.sidebar-expanded .main-content {
     border-radius: 50px;
     cursor: pointer;
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color:white;
     transition: all 0.2s ease;
 }
 
@@ -477,7 +488,7 @@ body.sidebar-expanded .main-content {
 
 .post-action-btn:hover {
     background: var(--hover-color);
-    color: var(--primary-color);
+   color: white;
 }
 
 .post-action-btn .count {
@@ -515,7 +526,7 @@ body.sidebar-expanded .main-content {
     display: flex;
     gap: 10px;
     padding: 10px 12px;
-    background: #f8f9fa;
+    background: #2f2f30;
     border-radius: 8px;
     margin-bottom: 8px;
     transition: background 0.2s ease;
@@ -541,26 +552,26 @@ body.sidebar-expanded .main-content {
 .reply-author {
     font-weight: 600;
     font-size: 0.85rem;
-    color: var(--text-color);
+    color: white;
 }
 
 .reply-author .reply-time {
     font-weight: 400;
     font-size: 0.7rem;
-    color: var(--text-muted);
+color: white;
     margin-left: 8px;
 }
 
 .reply-text {
     font-size: 0.9rem;
-    color: var(--text-color);
+    color: white;
     margin-top: 2px;
     line-height: 1.4;
 }
 
 /* Ver mais respostas */
 .view-more-replies {
-    color: var(--primary-color);
+   color: white;
     font-size: 0.85rem;
     cursor: pointer;
     padding: 5px 0;
@@ -577,10 +588,10 @@ body.sidebar-expanded .main-content {
     align-items: center;
     gap: 10px;
     margin-top: 12px;
-    background: #f8f9fa;
+    background: #4d4d4d;
     border-radius: 50px;
     padding: 4px 4px 4px 16px;
-    border: 1px solid #e8e8e8;
+    border: 1px solid #111111;
     transition: all 0.3s ease;
 }
 
@@ -597,11 +608,11 @@ body.sidebar-expanded .main-content {
     padding: 10px 0;
     font-size: 0.9rem;
     outline: none;
-    color: var(--text-color);
+color: white;
 }
 
 .reply-input-wrapper input::placeholder {
-    color: var(--text-muted);
+   color: white;
     font-size: 0.85rem;
 }
 
@@ -633,7 +644,7 @@ body.sidebar-expanded .main-content {
 /* ========== SEM RESPOSTAS ========== */
 .no-replies {
     text-align: center;
-    color: var(--text-muted);
+  color: white;
     font-size: 0.85rem;
     padding: 15px 0;
 }
@@ -645,100 +656,3 @@ body.sidebar-expanded .main-content {
     color: #d0d0d0;
 }
 
-/* ========== RESPONSIVIDADE ========== */
-@media (max-width: 768px) {
-    .forum-container {
-        padding: 0 10px;
-    }
-
-    .forum-post {
-        padding: 15px;
-    }
-
-    .post-avatar {
-        width: 40px;
-        height: 40px;
-    }
-
-    .post-author-name {
-        font-size: 0.9rem;
-    }
-
-    .post-meta {
-        font-size: 0.7rem;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-
-    .post-body p {
-        font-size: 0.9rem;
-    }
-
-    .post-body .post-image {
-        max-height: 200px;
-    }
-
-    .post-actions {
-        gap: 4px;
-    }
-
-    .post-action-btn {
-        padding: 4px 10px;
-        font-size: 0.8rem;
-    }
-
-    .post-action-btn i {
-        font-size: 0.95rem;
-    }
-
-    .reply-input-wrapper {
-        padding: 3px 3px 3px 12px;
-    }
-
-    .reply-input-wrapper input {
-        font-size: 0.85rem;
-        padding: 8px 0;
-    }
-
-    .reply-input-wrapper .send-reply-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .forum-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .forum-header h2 {
-        font-size: 1.2rem;
-    }
-
-    .post-action-btn .count {
-        display: none;
-    }
-}
-
-/* ========== ANIMAÇÕES ========== */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.forum-post {
-    animation: fadeIn 0.4s ease;
-}
-
-@keyframes likePop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-    100% { transform: scale(1); }
-}
-
-.post-action-btn.liked i {
-    animation: likePop 0.3s ease;
-}

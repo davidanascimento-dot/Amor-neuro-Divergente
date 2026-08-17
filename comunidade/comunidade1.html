@@ -10,15 +10,16 @@
 <body>
     <!-- BARRA DE NAVEGAÇÃO SUPERIOR -->
     <nav class="top-nav">
-        <button class="sidebar-toggle-btn" id="sidebarToggle">
+        <button class="sidebar-toggle-btn" id="sidebarToggle" style="color: rgb(228, 228, 228);">
             <i class="fas fa-bars"></i>
         </button>
-        <a href="#" class="nav-brand">
-            <span class="logo-text">Amor Neuro Divergente</span>
-        </a>
+
         <!--Pesquisar-->
         
- <input type="search" style="margin-left: 100px;" class="search" placeholder="Pesquisar"> 
+<div style="position: relative; display: inline-block; margin-left: 100px;" class="Pesquisar">
+  <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999;margin-left: 500px;"></i>
+  <input type="search" class="search" placeholder="Pesquisar" style="padding-left: 35px; padding-right: 10px; padding-top: 8px; padding-bottom: 8px; border-radius: 20px; border: 1px solid #ccc; outline: none; width: 250px;">
+</div>
  
 
   <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar" style="margin-left: 800px;">
@@ -73,13 +74,18 @@
     <main class="main-content" id="mainContent">
        
 <div class="forum-container">
-    <!-- Cabeçalho do Fórum -->
-    <div class="forum-header">
-        <img src="/img/logo-LHN9gCw1.png" alt="" style="width: 100px;">
-        <h2> Amor <span>Neuro</span></h2>
-        <span class="forum-stats"><i class="far fa-file-alt"></i> 3 tópicos · <i class="far fa-comment"></i> 12 respostas</span>
-    </div>
+  
+<div class="Forum-F">
+     <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+  <i class="fas fa-pen" style="color: white; margin-right: 8px;"></i>
+<input type="text" placeholder="O que Está  Acontecendo ? " class="search1">
 
+<button class="btn-Env">Enviar</button>
+<i class="fas fa-image" style="color: white;"></i>
+<i class="fas fa-image" style="color: white;"></i>
+<i class="fas fa-image" style="color: white;"></i>
+<i class="fas fa-image" style="color: white;"></i>
+</div>
     <!-- ===== POST 1 ===== -->
     <div class="forum-post">
         <!-- Cabeçalho -->
@@ -90,11 +96,7 @@
                     Usuário Exemplo
                     <span class="badge">Membro</span>
                 </div>
-                <div class="post-meta">
-                    <span><i class="far fa-clock"></i> Há 2 horas</span>
-                    <span><i class="far fa-eye"></i> 45 visualizações</span>
-                    <span><i class="far fa-comment"></i> 3 respostas</span>
-                </div>
+                
             </div>
         </div>
 
@@ -171,11 +173,7 @@
                     Visitante
                     <span class="badge" style="background: #888;">Novato</span>
                 </div>
-                <div class="post-meta">
-                    <span><i class="far fa-clock"></i> Há 5 horas</span>
-                    <span><i class="far fa-eye"></i> 12 visualizações</span>
-                    <span><i class="far fa-comment"></i> 0 respostas</span>
-                </div>
+                
             </div>
         </div>
 
@@ -227,11 +225,7 @@
                     Admin
                     <span class="badge" style="background: #e67e22;">Moderador</span>
                 </div>
-                <div class="post-meta">
-                    <span><i class="far fa-clock"></i> Há 1 dia</span>
-                    <span><i class="far fa-eye"></i> 128 visualizações</span>
-                    <span><i class="far fa-comment"></i> 7 respostas</span>
-                </div>
+               
             </div>
         </div>
 
@@ -297,6 +291,8 @@
         </div>
     </div>
 </div>
+
+<div></div>
     </main>
 
 
