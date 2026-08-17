@@ -277,31 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', closeHub);
     });
 
-    // ============================================
-    // 7. BOTÃO VOLTAR AO TOPO
-    // ============================================
-    const scrollTopBtn = document.getElementById('scrollTopBtn');
-
-    if (scrollTopBtn) {
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 400) {
-                scrollTopBtn.style.opacity = '1';
-                scrollTopBtn.style.transform = 'translateY(0)';
-                scrollTopBtn.style.pointerEvents = 'auto';
-            } else {
-                scrollTopBtn.style.opacity = '0';
-                scrollTopBtn.style.transform = 'translateY(20px)';
-                scrollTopBtn.style.pointerEvents = 'none';
-            }
-        });
-
-        scrollTopBtn.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    }
 
     // ============================================
     // 8. HEADER SCROLL
@@ -343,10 +318,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(s);
     }
 
+    // No seu arquivo script.js (fora do array de leis)
+
+
+// Injeta na div principal da página (ex: <div id="rights-section"></div>)
+
+
     // ============================================
     // 11. BANCO DE DADOS DE LEIS
     // ============================================
     const lawsDatabase = [
+
         { id: 1, title: "Lei Berenice Piana", description: "Estabelece direitos da pessoa com Transtorno do Espectro Autista, garantindo acesso à educação e serviços públicos.", category: "saude", year: "2012", number: "12.764/2012", icon: "fa-solid fa-heart-pulse", iconClass: "law-icon-saude", externalLink: "http://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm" },
         { id: 2, title: "Lei do Acompanhante Terapêutico", description: "Garante o direito ao acompanhante terapêutico em instituições de ensino para pessoas com deficiência.", category: "educacional", year: "2015", number: "13.146/2015", icon: "fa-solid fa-chalkboard-user", iconClass: "law-icon-educacional", externalLink: "http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" },
         { id: 3, title: "Direito à Saúde Mental", description: "Redirecionamento do modelo assistencial em saúde mental, priorizando o tratamento em comunidade.", category: "saude", year: "2001", number: "10.216/2001", icon: "fa-solid fa-brain", iconClass: "law-icon-saude", externalLink: "http://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10216.htm" },
@@ -360,6 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 11, title: "Lei da Inclusão Profissional", description: "Estabelece quotas para pessoas com deficiência no mercado de trabalho.", category: "social", year: "2016", number: "13.370/2016", icon: "fa-solid fa-briefcase", iconClass: "law-icon-social", externalLink: "http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13370.htm" },
         { id: 12, title: "Lei da Educação Especial", description: "Diretrizes para a educação especial na perspectiva da educação inclusiva.", category: "educacional", year: "2008", number: "11.788/2008", icon: "fa-solid fa-graduation-cap", iconClass: "law-icon-educacional", externalLink: "http://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11788.htm" },
     ];
+
+    
 
     const categoryMap = {
         "educacional": "Educacional",

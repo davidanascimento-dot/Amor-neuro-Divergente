@@ -131,30 +131,34 @@
                 <h1>Juridiquês? Aqui a gente traduz.</h1>
                 <p>Conheça as leis que protegem você e saiba como usá-las no dia a dia. <strong>Sem palavras difíceis.</strong></p>
                 
-                <div class="rights-search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="rightsSearch" placeholder="Buscar por lei, direito ou benefício...">
-                </div>
-                
-                <div class="rights-filters">
-                    <button class="rights-pill active" data-filter="todas">Todas</button>
-                    <button class="rights-pill" data-filter="educacional">Educacional</button>
-                    <button class="rights-pill" data-filter="social">Social</button>
-                    <button class="rights-pill" data-filter="acessibilidade">Acessibilidade</button>
-                    <button class="rights-pill" data-filter="saude">Saúde</button>
-                </div>
+              
             </div>
         </section>
 
         <!-- =============================================
         CARDS DE LEIS
         ============================================= -->
-        <section class="laws-section">
-            <h2 class="laws-section-title">Leis que protegem você</h2>
-            <div class="laws-grid" id="lawsGrid">
-                <!-- Os cards serão gerados pelo JS -->
-            </div>
-        </section>
+       <section class="laws-section">
+    <h2 class="laws-section-title">Leis que protegem você</h2>
+    
+    <!-- Tag semântica para indicar uma área de busca -->
+    <search class="laws-search-container">
+        <form onsubmit="event.preventDefault();">
+            <label for="lawsSearch" class="sr-only">Pesquisar leis:</label>
+            <input 
+                type="search" 
+                id="lawsSearch" 
+                placeholder="Ex: Código de Defesa do Consumidor..." 
+                aria-label="Pesquisar leis que protegem você"
+            >
+        </form>
+    </search>
+
+    <div class="laws-grid" id="lawsGrid">
+        <!-- Os cards serão gerados pelo JS -->
+    </div>
+</section>
+
 
         <!-- =============================================
         RECURSOS ÚTEIS + ENVIE SEU CASO

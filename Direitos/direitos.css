@@ -728,3 +728,66 @@ body.a11y-dark-mode .footer-bottom {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* =========================================
+   SEÇÃO DE LEIS
+   ========================================= */
+.laws-section {
+    padding: 80px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.laws-section-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 24px; /* Reduzido para aproximar da busca */
+}
+
+/* Novo estilo para o contêiner de busca da seção de leis */
+.laws-search-container {
+    max-width: 500px;
+    margin: 0 auto 48px; /* Centraliza e afasta do grid abaixo */
+    display: block;
+}
+.laws-search-container input[type="search"] {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 15px;
+    color: var(--text-dark);
+    background-color: var(--bg-white);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: all var(--transition);
+    font-family: 'Inter', sans-serif;
+    box-shadow: var(--shadow-sm);
+}
+.laws-search-container input[type="search"]::placeholder {
+    color: var(--text-muted);
+}
+.laws-search-container input[type="search"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* Classe utilitária para esconder o label mantendo a acessibilidade */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.laws-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
