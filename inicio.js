@@ -10,7 +10,7 @@ const track = document.getElementById('track');
         const carouselWrapper = document.getElementById('carouselWrapper');
 
 
-        const totalSlides = 7;
+        const totalSlides = 6;
         let currentIndex = 0;
         const slideDuration = 3000; // Tempo de troca automática: 5 segundos
         let autoPlayTimer = null;
