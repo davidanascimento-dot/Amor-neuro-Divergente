@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     // CONFIGURAÇÃO DA API GROQ
     // =============================================
-    const GROQ_API_KEY = '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';
+    const GROQ_API_KEY = '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';
     const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+    
 
     // =============================================
     // ELEMENTOS DO MODAL
@@ -184,7 +185,7 @@ Responda sempre de forma acolhedora e informativa, mantendo o foco em apoiar a p
                     'Authorization': `Bearer ${GROQ_API_KEY}`
                 },
                 body: JSON.stringify({
-                    model: 'llama-3.1-8b-instant',
+                    model: 'openai/gpt-oss-120b',
                     messages: [
                         { role: 'system', content: systemPrompt },
                         { role: 'user', content: message }
