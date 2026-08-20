@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('  - overlay:', sidebarOverlay);
 
     // =============================================
-    // FUNÇÕES DE CONTROLE - USANDO 'active'
+    // FUNÇÕES DE CONTROLE - USANDO 'open'
     // =============================================
     function openSidebar() {
         if (!sidebar) return;
         console.log('📂 Abrindo sidebar');
-        sidebar.classList.add('active');  // ← MUDOU para 'active'
+        sidebar.classList.add('open');  // ← USANDO 'open'
         if (sidebarOverlay) sidebarOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
         if (sidebarToggleBtn) {
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function closeSidebar() {
         if (!sidebar) return;
         console.log('📂 Fechando sidebar');
-        sidebar.classList.remove('active');  // ← MUDOU para 'active'
+        sidebar.classList.remove('open');  // ← USANDO 'open'
         if (sidebarOverlay) sidebarOverlay.classList.remove('active');
         document.body.style.overflow = '';
         if (sidebarToggleBtn) {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function toggleSidebar() {
-        if (sidebar.classList.contains('active')) {  // ← MUDOU para 'active'
+        if (sidebar.classList.contains('open')) {  // ← USANDO 'open'
             closeSidebar();
         } else {
             openSidebar();
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // FECHAR COM TECLA ESC
     // =============================================
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('active')) {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
             console.log('🔄 ESC pressionado, fechando');
             closeSidebar();
         }
