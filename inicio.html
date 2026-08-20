@@ -114,39 +114,110 @@
         </header>
 
        
-        <section class="hero-redesign">
-            <div class="hero-bg">
-                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&h=800&fit=crop" alt="Pessoas conversando em um ambiente acolhedor" class="hero-bg-img">
-                <div class="hero-overlay"></div>
-            </div>
-            <div class="hero-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-            </div>
-            <div class="hero-center">
-                <span class="hero-badge"><i class="fa-solid fa-sparkles"></i> Bem-vinde à comunidade</span>
-                <h1>Você não precisa<br>se explicar aqui.</h1>
-                <p>Um espaço onde stimming é bem-vindo, descansar é respeitado<br>e ninguém vai te chamar de "difícil".</p>
-                
-                <div class="hero-quick-steps">
-                    <span class="quick-step"><span class="step-number">1</span> Crie sua conta</span>
-                    <span class="quick-step"><span class="step-number">2</span> Explore conteúdos</span>
-                    <span class="quick-step"><span class="step-number">3</span> Participe da comunidade</span>
+     <div class="carousel-wrapper" id="carouselWrapper">
+        <div class="carousel-track" id="track">
+            
+            <!-- SLIDE 1: BOAS-VINDAS -->
+            <div class="slide">
+                <div class="slide-content">
+                    <span class="category-tag">Comunidade</span>
+                    <h1 class="slide-title">Bem-vindo à comunidade</h1>
+                    <p class="slide-description">Um espaço acolhedor e feito para você. Explore nossas publicações, ferramentas, eventos e direitos sem precisar se explicar.</p>
+                    <div class="button-group">
+                        <a href="#" class="btn-primary">Comece por aqui</a>
+                        <a href="#" class="btn-secondary">Explorar recursos</a>
+                    </div>
                 </div>
+            </div>
 
-                <div class="hero-buttons">
-                    <a href="/login/login.html" class="btn-glow btn-primary-hero">
-                        <i class="fa-solid fa-user-plus"></i> Comece aqui — é grátis
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <a href="/explorar/explorar.html" class="btn-glass"><i class="fa-solid fa-compass"></i> Explorar recursos</a>
+            <!-- SLIDE 2: BLOG -->
+            <div class="slide">
+                <div class="slide-content">
+                    <span class="category-tag">Blog</span>
+                    <h1 class="slide-title">Reflexões e histórias da comunidade</h1>
+                    <p class="slide-description">Acompanhe relatos, novidades e textos informativos pensados para você ler no seu próprio tempo.</p>
+                    <div class="button-group">
+                        <a href="#" class="btn-primary">Acessar o Blog</a>
+                        <a href="#" class="btn-secondary">Explorar matérias</a>
+                    </div>
                 </div>
             </div>
-            <div class="scroll-indicator">
-                <span>Role para descobrir</span>
-                <i class="fa-solid fa-chevron-down"></i>
+
+            <!-- SLIDE 3: ARTIGOS -->
+            <div class="slide">
+                <div class="slide-content">
+                    <span class="category-tag">Artigos</span>
+                    <h1 class="slide-title">Conteúdo claro sobre TDAH e Autismo</h1>
+                    <p class="slide-description">Informações embasadas e diretas sobre regulação emocional, autoadvocacia e rotina.</p>
+                    <div class="button-group">
+                        <a href="#" class="btn-primary">Ler Artigos</a>
+                        <a href="#" class="btn-secondary">Ver tópicos</a>
+                    </div>
+                </div>
             </div>
-        </section>
+
+            <!-- SLIDE 4: FERRAMENTAS -->
+            <div class="slide">
+                <div class="slide-content">
+                    <span class="category-tag">Ferramentas</span>
+                    <h1 class="slide-title">Recursos para o seu dia a dia</h1>
+                    <p class="slide-description">Guias de organização, rotinas visuais e soluções práticas criadas para simplificar suas tarefas.</p>
+                    <div class="button-group">
+                        <a href="#" class="btn-primary">Conhecer Ferramentas</a>
+                        <a href="#" class="btn-secondary">Ver guias</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5: EVENTOS -->
+            <div class="slide">
+                <div class="slide-content">
+                    <span class="category-tag">Eventos</span>
+                    <h1 class="slide-title">Encontros acolhedores e seguros</h1>
+                    <p class="slide-description">Participe de conversas e encontros onde você pode ser você mesmo sem precisar se explicar.</p>
+                    <div class="button-group">
+                        <a href="#" class="btn-primary">Ver Agenda</a>
+                        <a href="#" class="btn-secondary">Saber mais</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6: DIREITOS -->
+            <div class="slide">
+                <div class="slide-content">
+                    <span class="category-tag">Direitos</span>
+                    <h1 class="slide-title">Leis e benefícios traduzidos</h1>
+                    <p class="slide-description">Entenda seus direitos legais, laudos, prioridades e acessibilidade de maneira simples e objetiva.</p>
+                    <div class="button-group">
+                        <a href="#" class="btn-primary">Entender Direitos</a>
+                        <a href="#" class="btn-secondary">Guia simplificado</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Barra de Controles Inferior -->
+        <div class="controls">
+            <div class="counter-container">
+                <div class="counter">
+                    <span id="current">01</span> / 06
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" aria-label="Anterior">
+                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <button class="nav-btn" id="nextBtn" aria-label="Próximo">
+                    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
         
         <section class="mission-section">
@@ -554,6 +625,7 @@
     <!-- JavaScript -->
     <script src="inicio.js"></script>
     <script src="carrossel.js"></script>
+    <script src="/Acolher-IA/Acolher-IA.js"></script>
     
 
 
