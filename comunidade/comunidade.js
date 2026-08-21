@@ -244,7 +244,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             .from('comments')
             .select('*')
             .eq('post_id', postId)
-            .eq('is_active', true)
             .order('created_at', { ascending: true })
             .limit(20);
         if (error) {
@@ -258,7 +257,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { data, error } = await supabase
             .from('groups')
             .select('*')
-            .eq('is_active', true)
             .order('created_at', { ascending: false })
             .limit(50);
         if (error) {
@@ -830,142 +828,159 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // =============================================
-    // 12. GRUPOS - APENAS GRUPO PRINCIPAL E GRUPOS QUE O USUÁRIO ENTROU
-    // =============================================
-    async function renderGroups() {
-        const grid = document.getElementById('groupsGrid');
-        if (!grid) return;
+   // =============================================
+// 12. GRUPOS - MOSTRAR GRUPOS PÚBLICOS E PRIVADOS QUE O USUÁRIO ENTROU
+// =============================================
+async function renderGroups() {
+    const grid = document.getElementById('groupsGrid');
+    if (!grid) return;
+    
+    // Carregar TODOS os grupos
+    const allGroups = await loadGroups();
+    
+    // Buscar grupos que o usuário atual é membro
+    const { data: memberships, error: membershipError } = await supabase
+        .from('group_members')
+        .select('group_id')
+        .eq('user_id', currentUser?.id);
+
+    if (membershipError) {
+        console.warn('⚠️ Erro ao buscar membros:', membershipError);
+    }
+
+    const memberGroupIds = memberships?.map(m => m.group_id) || [];
+
+    // FILTRO CORRIGIDO: Mostrar grupos públicos OU grupos que o usuário é membro
+    const userGroups = allGroups.filter(g => {
+        // SEMPRE mostrar o grupo Geral
+        if (g.name === 'Geral' || g.id === COMMUNITY_CHAT_ID) return true;
         
-        const allGroups = await loadGroups();
+        // Mostrar grupos PÚBLICOS (is_private = false)
+        if (g.is_private === false) return true;
         
-        const { data: memberships, error: membershipError } = await supabase
-            .from('group_members')
-            .select('group_id')
-            .eq('user_id', currentUser?.id);
+        // Mostrar grupos privados que o usuário é membro
+        return memberGroupIds.includes(g.id);
+    });
 
-        if (membershipError) {
-            console.warn('⚠️ Erro ao buscar membros:', membershipError);
-        }
+    if (!userGroups || userGroups.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-regular fa-users fa-3x"></i>
+                <h4>Nenhum grupo disponível</h4>
+                <p>Crie um grupo ou entre em um existente!</p>
+                <button class="btn-create-group" onclick="window.openCreateGroupModal()">
+                    <i class="fa-solid fa-plus"></i> Criar Grupo
+                </button>
+            </div>
+        `;
+        return;
+    }
 
-        const memberGroupIds = memberships?.map(m => m.group_id) || [];
-
-        const userGroups = allGroups.filter(g => {
-            if (g.name === 'Geral' || g.id === COMMUNITY_CHAT_ID) return true;
-            return memberGroupIds.includes(g.id);
-        });
-
-        if (!userGroups || userGroups.length === 0) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fa-regular fa-users fa-3x"></i>
-                    <h4>Nenhum grupo disponível</h4>
-                    <p>Crie um grupo ou entre em um existente!</p>
-                    <button class="btn-create-group" onclick="window.openCreateGroupModal()">
-                        <i class="fa-solid fa-plus"></i> Criar Grupo
-                    </button>
+    grid.innerHTML = userGroups.map(g => {
+        const isAdmin = g.is_admin === true;
+        const isPrivate = g.is_private === true;
+        const memberCount = g.members || 0;
+        const categoryName = g.category || 'Geral';
+        const imageUrl = g.image_url || '/img/grupo-padrao.png';
+        const isMember = memberGroupIds.includes(g.id) || g.name === 'Geral';
+        const initial = (g.name || 'G').charAt(0).toUpperCase();
+        const colors = ['#7c3aed', '#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6366f1', '#14b8a6'];
+        const bgColor = colors[Math.abs((g.id || '0').charCodeAt(0)) % colors.length];
+        
+        return `
+        <div class="group-card" data-group-id="${g.id}">
+            <div class="group-card-image" style="background:${bgColor}; display:flex; align-items:center; justify-content:center; min-height:120px;">
+                ${imageUrl && imageUrl !== '/img/grupo-padrao.png' ? `<img src="${imageUrl}" alt="${g.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">` : ''}
+                <span style="color:white;font-size:44px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.2);">${initial}</span>
+            </div>
+            <div class="group-card-body">
+                <div class="group-card-title">
+                    ${g.name}
+                    ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
+                    ${isPrivate ? '<i class="fa-solid fa-lock" style="color: var(--text-muted); font-size: 14px;"></i>' : '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Público</span>'}
+                    ${isMember ? '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Membro</span>' : ''}
                 </div>
-            `;
-            return;
-        }
-
-        grid.innerHTML = userGroups.map(g => {
-            const isAdmin = g.is_admin === true;
-            const isPrivate = g.is_private === true;
-            const memberCount = g.members || 0;
-            const categoryName = g.category || 'Geral';
-            const imageUrl = g.image_url || '/img/grupo-padrao.png';
-            const isMember = memberGroupIds.includes(g.id) || g.name === 'Geral';
-            const initial = (g.name || 'G').charAt(0).toUpperCase();
-            const colors = ['#7c3aed', '#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6366f1', '#14b8a6'];
-            const bgColor = colors[Math.abs((g.id || '0').charCodeAt(0)) % colors.length];
-            
-            return `
-            <div class="group-card" data-group-id="${g.id}">
-                <div class="group-card-image" style="background:${bgColor}; display:flex; align-items:center; justify-content:center; min-height:120px;">
-                    ${imageUrl && imageUrl !== '/img/grupo-padrao.png' ? `<img src="${imageUrl}" alt="${g.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">` : ''}
-                    <span style="color:white;font-size:44px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.2);">${initial}</span>
+                <p class="group-card-description">${g.description || 'Sem descrição'}</p>
+                <div class="group-card-meta">
+                    <span><i class="fa-regular fa-user"></i> ${memberCount} membros</span>
+                    <span><i class="fa-regular fa-tag"></i> ${categoryName}</span>
                 </div>
-                <div class="group-card-body">
-                    <div class="group-card-title">
-                        ${g.name}
-                        ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
-                        ${isPrivate ? '<i class="fa-solid fa-lock" style="color: var(--text-muted); font-size: 14px;"></i>' : ''}
-                        ${isMember ? '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Membro</span>' : ''}
-                    </div>
-                    <p class="group-card-description">${g.description || 'Sem descrição'}</p>
-                    <div class="group-card-meta">
-                        <span><i class="fa-regular fa-user"></i> ${memberCount} membros</span>
-                        <span><i class="fa-regular fa-tag"></i> ${categoryName}</span>
-                    </div>
-                    <div class="group-card-actions">
-                        ${isMember ? `
-                            <button class="btn-chat" onclick="window.openGroupChat('${g.id}')">
-                                <i class="fa-regular fa-comments"></i> Conversar
-                            </button>
-                            ${g.name !== 'Geral' ? `
-                            <button class="btn-leave" onclick="window.leaveGroup('${g.id}')" style="background:transparent;color:#ef4444;border-color:#ef4444;">
-                                <i class="fa-solid fa-right-from-bracket"></i> Sair
-                            </button>` : ''}
+                <div class="group-card-actions">
+                    ${isMember ? `
+                        <button class="btn-chat" onclick="window.openGroupChat('${g.id}')">
+                            <i class="fa-regular fa-comments"></i> Conversar
+                        </button>
+                        ${g.name !== 'Geral' ? `
+                        <button class="btn-leave" onclick="window.leaveGroup('${g.id}')" style="background:transparent;color:#ef4444;border-color:#ef4444;">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sair
+                        </button>` : ''}
+                    ` : `
+                        ${!isPrivate ? `
+                        <button class="btn-join" onclick="window.joinGroup('${g.id}')">
+                            <i class="fa-solid fa-right-to-bracket"></i> Entrar
+                        </button>
                         ` : `
-                            <button class="btn-join" onclick="window.joinGroup('${g.id}')">
-                                <i class="fa-solid fa-right-to-bracket"></i> Entrar
-                            </button>
+                        <button class="btn-private" style="background:transparent;color:#888;border-color:#888;cursor:not-allowed;" disabled>
+                            <i class="fa-solid fa-lock"></i> Privado
+                        </button>
                         `}
-                    </div>
+                    `}
                 </div>
-            </div>`;
-        }).join('');
+            </div>
+        </div>`;
+    }).join('');
+    
+    renderChatChannels();
+}
+
+   // =============================================
+// 13. CANAIS DO CHAT - MOSTRAR GRUPOS PÚBLICOS
+// =============================================
+async function renderChatChannels() {
+    const container = document.getElementById('channelsList');
+    if (!container) return;
+
+    const { data: memberships } = await supabase
+        .from('group_members')
+        .select('group_id')
+        .eq('user_id', currentUser?.id);
+
+    const memberGroupIds = memberships?.map(m => m.group_id) || [];
+
+    const allGroups = await loadGroups();
+
+    // FILTRO CORRIGIDO: Mostrar grupos públicos OU grupos que o usuário é membro
+    const userGroups = allGroups.filter(g => {
+        if (g.name === 'Geral' || g.id === COMMUNITY_CHAT_ID) return true;
+        if (g.is_private === false) return true; // GRUPOS PÚBLICOS
+        return memberGroupIds.includes(g.id);
+    });
+
+    if (!userGroups || userGroups.length === 0) {
+        container.innerHTML = `
+            <div class="channel-item" style="color:var(--text-muted);padding:12px;text-align:center;font-size:13px;">
+                <i class="fa-regular fa-comment"></i> Nenhum canal disponível
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = userGroups.map((group, index) => {
+        const isActive = index === 0 ? 'active' : '';
+        const icon = group.name === 'Geral' ? 'fa-solid fa-globe' : 'fa-solid fa-users';
+        const badge = group.name === 'Geral' ? '<span class="channel-badge">●</span>' : '';
         
-        renderChatChannels();
-    }
-
-    // =============================================
-    // 13. CANAIS DO CHAT (APENAS GRUPOS QUE O USUÁRIO PARTICIPA)
-    // =============================================
-    async function renderChatChannels() {
-        const container = document.getElementById('channelsList');
-        if (!container) return;
-
-        const { data: memberships } = await supabase
-            .from('group_members')
-            .select('group_id')
-            .eq('user_id', currentUser?.id);
-
-        const memberGroupIds = memberships?.map(m => m.group_id) || [];
-
-        const allGroups = await loadGroups();
-
-        const userGroups = allGroups.filter(g => {
-            if (g.name === 'Geral' || g.id === COMMUNITY_CHAT_ID) return true;
-            return memberGroupIds.includes(g.id);
-        });
-
-        if (!userGroups || userGroups.length === 0) {
-            container.innerHTML = `
-                <div class="channel-item" style="color:var(--text-muted);padding:12px;text-align:center;font-size:13px;">
-                    <i class="fa-regular fa-comment"></i> Nenhum canal disponível
-                </div>
-            `;
-            return;
-        }
-
-        container.innerHTML = userGroups.map((group, index) => {
-            const isActive = index === 0 ? 'active' : '';
-            const icon = group.name === 'Geral' ? 'fa-solid fa-globe' : 'fa-solid fa-users';
-            const badge = group.name === 'Geral' ? '<span class="channel-badge">●</span>' : '';
-            
-            return `
-            <div class="channel-item ${isActive}" data-channel="${group.id}" onclick="window.openGroupChat('${group.id}')">
-                <div class="channel-icon"><i class="${icon}"></i></div>
-                <div class="channel-info">
-                    <span class="channel-name">${group.name}</span>
-                    <span class="channel-meta">${group.members || 0} membros</span>
-                </div>
-                ${badge}
-            </div>`;
-        }).join('');
-    }
+        return `
+        <div class="channel-item ${isActive}" data-channel="${group.id}" onclick="window.openGroupChat('${group.id}')">
+            <div class="channel-icon"><i class="${icon}"></i></div>
+            <div class="channel-info">
+                <span class="channel-name">${group.name}</span>
+                <span class="channel-meta">${group.members || 0} membros</span>
+            </div>
+            ${badge}
+        </div>`;
+    }).join('');
+}
 
     // =============================================
     // 14. FUNÇÕES DOS GRUPOS
@@ -1062,7 +1077,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 is_private: isPrivate,
                 image_url: imageUrl,
                 created_by: currentUser.id,
-                is_active: true
+            
             };
 
             const { data: group, error: groupError } = await supabase

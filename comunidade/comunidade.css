@@ -166,15 +166,12 @@ body {
     object-fit: cover;
 }
 
-/* ==========================================================================
-   5. MAIN TABS (Navegação)
-   ========================================================================== */
 .main-tabs {
     height: var(--tabs-height);
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 0 20px;
+    padding: 20px;
     background: var(--bg-card);
     border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
@@ -182,6 +179,8 @@ body {
     position: sticky;
     top: var(--header-height);
     z-index: 30;
+    margin: 50px;
+border-radius: 20px;
 }
 
 .main-tab {
