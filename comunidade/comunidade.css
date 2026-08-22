@@ -2602,3 +2602,27 @@ body.a11y-dark-mode .x-btn-primary {
         padding: 4px 8px;
     }
 }
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-message {
+    animation: fadeIn 0.3s ease;
+}
+
+.chat-message.sent {
+    animation: fadeIn 0.2s ease;
+}
+
+.chat-message.received {
+    animation: fadeIn 0.3s ease;
+}

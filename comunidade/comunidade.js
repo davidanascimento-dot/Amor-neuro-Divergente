@@ -1256,56 +1256,65 @@ async function renderChatChannels() {
             showToast('Erro ao abrir chat', 'error');
         }
     };
+// =============================================
+// 15. CHAT - VERSÃO CORRIGIDA E FUNCIONAL
+// =============================================
+let currentChatId = COMMUNITY_CHAT_ID;
+let chatSubscription = null;
+let isSending = false;
 
-    // =============================================
-    // 15. CHAT
-    // =============================================
-    let currentChatId = COMMUNITY_CHAT_ID;
-    let chatSubscription = null;
-
-    function switchChat(chatId, chatName) {
-        currentChatId = chatId;
-        
-        const title = document.getElementById('chatCurrentChannel');
-        if (title) {
-            title.textContent = chatName || 'Geral';
-        }
-        
-        loadChatMessages(chatId);
-        subscribeToMessages(chatId);
+function switchChat(chatId, chatName) {
+    currentChatId = chatId;
+    
+    const title = document.getElementById('chatCurrentChannel');
+    if (title) {
+        title.textContent = chatName || 'Geral';
     }
-
-    async function ensureCommunityChat() {
-        const { data } = await supabase
-            .from('conversations')
-            .select('id')
-            .eq('id', COMMUNITY_CHAT_ID)
-            .maybeSingle();
-        if (!data) {
-            await supabase
-                .from('conversations')
-                .insert({ id: COMMUNITY_CHAT_ID, name: 'Comunidade Geral' });
+    
+    // Atualiza os canais ativos
+    document.querySelectorAll('.channel-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.channel === chatId) {
+            item.classList.add('active');
         }
-    }
+    });
+    
+    loadChatMessages(chatId);
+    subscribeToMessages(chatId);
+}
 
-    async function addUserToChat() {
-        if (!currentUser) return;
+async function ensureCommunityChat() {
+    const { data } = await supabase
+        .from('conversations')
+        .select('id')
+        .eq('id', COMMUNITY_CHAT_ID)
+        .maybeSingle();
+    if (!data) {
         await supabase
-            .from('conversation_participants')
-            .upsert({
-                conversation_id: COMMUNITY_CHAT_ID,
-                user_id: currentUser.id
-            }, {
-                onConflict: 'conversation_id,user_id'
-            });
+            .from('conversations')
+            .insert({ id: COMMUNITY_CHAT_ID, name: 'Comunidade Geral' });
     }
+}
 
-    async function loadChatMessages(chatId = null) {
-        const mc = document.getElementById('chatMessages');
-        if (!mc) return;
-        
-        const targetChatId = chatId || currentChatId;
-        
+async function addUserToChat() {
+    if (!currentUser) return;
+    await supabase
+        .from('conversation_participants')
+        .upsert({
+            conversation_id: COMMUNITY_CHAT_ID,
+            user_id: currentUser.id
+        }, {
+            onConflict: 'conversation_id,user_id'
+        });
+}
+
+async function loadChatMessages(chatId = null) {
+    const mc = document.getElementById('chatMessages');
+    if (!mc) return;
+    
+    const targetChatId = chatId || currentChatId;
+    
+    try {
         const { data: messages, error } = await supabase
             .from('messages')
             .select('*')
@@ -1314,6 +1323,7 @@ async function renderChatChannels() {
             .limit(50);
             
         if (error) {
+            console.error('❌ Erro ao carregar mensagens:', error);
             mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar mensagens</p></div>';
             return;
         }
@@ -1338,7 +1348,7 @@ async function renderChatChannels() {
                 }
                 
                 return `
-                <div class="chat-message ${isSent ? 'sent' : 'received'}">
+                <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${m.id}">
                     ${!isSent ? `
                         <div class="msg-avatar">
                             <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
@@ -1363,47 +1373,149 @@ async function renderChatChannels() {
             `;
         }
         
-        const container = document.querySelector('.chat-messages-container');
-        if (container) {
+        scrollToBottom();
+    } catch (error) {
+        console.error('❌ Erro inesperado:', error);
+        mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar mensagens</p></div>';
+    }
+}
+
+function scrollToBottom() {
+    const container = document.querySelector('.chat-messages-container');
+    if (container) {
+        setTimeout(() => {
             container.scrollTop = container.scrollHeight;
+        }, 100);
+    }
+}
+
+// =============================================
+// ADICIONA MENSAGEM INSTANTANEAMENTE
+// =============================================
+function addMessageToChat(message) {
+    const mc = document.getElementById('chatMessages');
+    if (!mc) return;
+    
+    // Remove placeholder se existir
+    const placeholder = mc.querySelector('.chat-placeholder');
+    if (placeholder) placeholder.remove();
+    
+    // Verifica se a mensagem já existe (evita duplicatas)
+    const existingMessages = mc.querySelectorAll('.chat-message');
+    for (let msg of existingMessages) {
+        if (msg.dataset.messageId === message.id) {
+            return; // Já existe, não adiciona de novo
         }
     }
-
-    function subscribeToMessages(chatId = null) {
-        if (chatSubscription) {
-            supabase.removeChannel(chatSubscription);
-            chatSubscription = null;
-        }
-        
-        const targetChatId = chatId || currentChatId;
-        
-        chatSubscription = supabase
-            .channel(`chat-${targetChatId}`)
-            .on('postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'messages',
-                    filter: `conversation_id=eq.${targetChatId}`
-                },
-                (payload) => {
-                    loadChatMessages(targetChatId);
-                }
-            )
-            .subscribe();
+    
+    const isSent = message.sender_id === currentUser?.id;
+    const senderName = isSent ? 'Você' : (message.sender_name || 'Membro');
+    const userColor = stringToColor(message.sender_id);
+    const avatarUrl = isSent ? getUserAvatar() : (message.sender_avatar || getUserAvatar());
+    
+    let videoHtml = '';
+    if (message.video_url && message.video_url.trim() !== '') {
+        videoHtml = `
+            <div class="chat-video">
+                <video controls style="width:100%;display:block;max-width:200px;border-radius:8px;">
+                    <source src="${message.video_url}" type="video/mp4">
+                </video>
+            </div>
+        `;
     }
+    
+    const messageHtml = `
+        <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${message.id}" style="animation: fadeIn 0.2s ease;">
+            ${!isSent ? `
+                <div class="msg-avatar">
+                    <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
+                         onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';">
+                </div>
+            ` : ''}
+            <div class="msg-content">
+                <div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;">${senderName}</div>
+                <div class="msg-text">${escapeHtml(message.content)}</div>
+                ${videoHtml}
+                <div class="msg-time">${formatChatTime(message.created_at)}</div>
+            </div>
+        </div>
+    `;
+    
+    // Adiciona a mensagem
+    mc.insertAdjacentHTML('beforeend', messageHtml);
+    
+    // Rola para o final
+    scrollToBottom();
+}
 
-    async function sendMessage() {
-        const inp = document.getElementById('chatInput');
-        if (!inp || !currentUser) {
-            showToast('Faça login para enviar mensagens', 'error');
-            return;
-        }
-        
-        const msg = inp.value.trim();
-        if (!msg) return showToast('Digite uma mensagem', 'error');
-        
-        const { error } = await supabase
+// =============================================
+// SUBSCRIÇÃO EM TEMPO REAL (OTIMIZADA)
+// =============================================
+function subscribeToMessages(chatId = null) {
+    // Remove subscription antiga
+    if (chatSubscription) {
+        supabase.removeChannel(chatSubscription);
+        chatSubscription = null;
+    }
+    
+    const targetChatId = chatId || currentChatId;
+    
+    chatSubscription = supabase
+        .channel(`chat-${targetChatId}`)
+        .on('postgres_changes',
+            {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'messages',
+                filter: `conversation_id=eq.${targetChatId}`
+            },
+            (payload) => {
+                // 🚀 ADICIONA APENAS A MENSAGEM NOVA
+                const newMessage = payload.new;
+                console.log('📩 Nova mensagem recebida:', newMessage);
+                addMessageToChat(newMessage);
+            }
+        )
+        .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+                console.log('✅ Chat em tempo real conectado! 🚀');
+            } else {
+                console.log('📡 Status da conexão:', status);
+            }
+        });
+}
+
+// =============================================
+// ENVIA MENSAGEM (COM FEEDBACK VISUAL)
+// =============================================
+async function sendMessage() {
+    // Previne envios duplicados
+    if (isSending) return;
+    
+    const inp = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendChatBtn');
+    
+    if (!inp || !currentUser) {
+        showToast('Faça login para enviar mensagens', 'error');
+        return;
+    }
+    
+    const msg = inp.value.trim();
+    if (!msg) {
+        showToast('Digite uma mensagem', 'error');
+        return;
+    }
+    
+    // Bloqueia o botão
+    isSending = true;
+    if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+    
+    try {
+        // Salva no banco
+        const { data, error } = await supabase
             .from('messages')
             .insert({
                 conversation_id: currentChatId,
@@ -1411,23 +1523,73 @@ async function renderChatChannels() {
                 sender_name: getUserName(),
                 sender_avatar: getUserAvatar(),
                 content: msg
-            });
+            })
+            .select()
+            .single();
             
         if (error) {
-            showToast('Erro ao enviar mensagem', 'error');
+            console.error('❌ Erro ao enviar:', error);
+            showToast('Erro ao enviar: ' + error.message, 'error');
+            
+            // Reativa o input
+            inp.value = msg;
         } else {
+            // Limpa o input
             inp.value = '';
-            await loadChatMessages(currentChatId);
+            
+            // Adiciona a mensagem localmente (resposta otimista)
+            addMessageToChat(data);
+            
+            showToast('✅ Mensagem enviada!', 'success', 1000);
+        }
+    } catch (error) {
+        console.error('❌ Erro inesperado:', error);
+        showToast('Erro ao enviar mensagem', 'error');
+    } finally {
+        // Restaura o botão
+        isSending = false;
+        if (sendBtn) {
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i>';
+        }
+        inp.focus();
+    }
+}
+
+// =============================================
+// EVENTOS DO CHAT
+// =============================================
+document.getElementById('sendChatBtn')?.addEventListener('click', sendMessage);
+
+document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+// =============================================
+// FUNÇÃO PARA RECONECTAR (caso perca conexão)
+// =============================================
+function reconnectChat() {
+    console.log('🔄 Reconectando ao chat...');
+    if (chatSubscription) {
+        supabase.removeChannel(chatSubscription);
+        chatSubscription = null;
+    }
+    subscribeToMessages(currentChatId);
+}
+
+// Verifica a cada 30 segundos se está conectado
+setInterval(() => {
+    if (chatSubscription) {
+        const status = chatSubscription.state;
+        if (status !== 'SUBSCRIBED') {
+            console.warn('⚠️ Conexão perdida, reconectando...');
+            reconnectChat();
         }
     }
-
-    document.getElementById('sendChatBtn')?.addEventListener('click', sendMessage);
-    document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
+}, 30000);
 
     // =============================================
     // 16. EVENTOS
