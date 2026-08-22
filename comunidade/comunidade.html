@@ -508,13 +508,22 @@
     <input type="file" id="videoUploadInput" accept="video/*" style="display:none;">
     <input type="file" id="imageUploadInput" accept="image/*" style="display:none;">
 
-    <!-- =============================================
-    SCRIPTS
-    ============================================= -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/supabase-cliente.js"></script>
-    <script src="comunidade.js"></script>
-    <script src="/Acolher-IA/Acolher-IA.js"></script>
+  <!-- ============================================= -->
+<!-- SCRIPTS -->
+<!-- ============================================= -->
+
+<!-- 1. Supabase (sempre primeiro) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-cliente.js"></script>
+
+<!-- 2. SISTEMA ANTI-HACKER (depois do Supabase) -->
+<script src="/comunidade/honeypot.js"></script>
+
+<!-- 3. Seu código principal -->
+<script src="/comunidade/comunidade.js"></script>
+
+<!-- 4. AcolherIA (por último) -->
+<script src="/Acolher-IA/Acolher-IA.js"></script>
 
 
 </body>

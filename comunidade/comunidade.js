@@ -29,20 +29,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const body = document.body;
     const COMMUNITY_CHAT_ID = '00000000-0000-0000-0000-000000000001';
 
-    const VIDEO_BUCKET = 'videos';
-    const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
-    const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
-
-    const IMAGE_BUCKET = 'group-images';
-    const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
-    const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
-
-    function getUserAvatar() {
-        return localStorage.getItem('userAvatar') || AVATAR_PADRAO;
+    function getUserName() {
+        // 🔒 NÃO USAR LOCALSTORAGE - usar dados do Supabase
+        return currentUser?.user_metadata?.username || 
+               currentUser?.email?.split('@')[0] || 
+               'Usuário';
     }
 
-    function getUserName() {
-        return localStorage.getItem('userName') || currentUser?.email?.split('@')[0] || 'Usuário';
+    function getUserAvatar() {
+        // 🔒 NÃO USAR LOCALSTORAGE - usar dados do Supabase
+        return currentUser?.user_metadata?.avatar_url || AVATAR_PADRAO;
     }
 
     function stringToColor(str) {
@@ -105,10 +101,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // =============================================
     // 2. SINCRONIZAÇÃO DE PERFIL
     // =============================================
-    function syncProfileFromStorage() {
-        const savedName = localStorage.getItem('userName');
-        const savedEmail = localStorage.getItem('userEmail');
-        const savedAvatar = getUserAvatar();
+    function syncProfile() {
+        const userName = getUserName();
+        const userAvatar = getUserAvatar();
+        const userEmail = currentUser?.email || 'carregando@email.com';
         
         const headerAvatar = document.getElementById('headerAvatar');
         const sidebarAvatar = document.getElementById('sidebarAvatar');
@@ -120,22 +116,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         const avatars = [headerAvatar, sidebarAvatar, quickPostAvatar, postModalAvatar];
         avatars.forEach(avatar => {
             if (avatar) {
-                avatar.src = savedAvatar;
+                avatar.src = userAvatar;
                 avatar.onerror = () => { avatar.src = AVATAR_PADRAO; };
             }
         });
         
-        if (savedName && sidebarUserName) sidebarUserName.textContent = savedName;
-        if (savedEmail && sidebarUserEmail) sidebarUserEmail.textContent = savedEmail;
+        if (sidebarUserName) sidebarUserName.textContent = userName;
+        if (sidebarUserEmail) sidebarUserEmail.textContent = userEmail;
     }
 
-    syncProfileFromStorage();
-
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'userAvatar' || e.key === 'userName' || e.key === 'userEmail') {
-            syncProfileFromStorage();
-        }
-    });
+    syncProfile();
 
     // =============================================
     // 3. PERFIL COLAPSÁVEL
@@ -221,52 +211,91 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // =============================================
-    // 6. BANCO DE DADOS
+    // 6. FUNÇÕES DA API (SEGURAS - CHAMAM SQL)
     // =============================================
-    async function loadPosts() {
-        const { data, error } = await supabase
-            .from('posts')
-            .select('*')
-            .eq('is_active', true)
-            .order('created_at', { ascending: false })
-            .limit(50);
+    
+    async function apiCreatePost(content, videoUrl) {
+        const { data, error } = await supabase.rpc('create_post', {
+            p_content: content,
+            p_video_url: videoUrl
+        });
         if (error) {
-            console.error('Erro ao carregar posts:', error.message);
+            showToast('Erro: ' + error.message, 'error');
+            return null;
+        }
+        return data;
+    }
+
+    async function apiCreateComment(postId, content) {
+        const { data, error } = await supabase.rpc('create_comment', {
+            p_post_id: postId,
+            p_content: content
+        });
+        if (error) {
+            showToast('Erro: ' + error.message, 'error');
+            return null;
+        }
+        return data;
+    }
+
+    async function apiToggleLike(postId) {
+        const { data, error } = await supabase.rpc('toggle_like', {
+            p_post_id: postId
+        });
+        if (error) {
+            showToast('Erro: ' + error.message, 'error');
+            return null;
+        }
+        return data;
+    }
+
+    async function apiGetPosts(limit = 50) {
+        const { data, error } = await supabase.rpc('get_posts', {
+            p_limit: limit,
+            p_offset: 0
+        });
+        if (error) {
+            console.error('Erro ao carregar posts:', error);
             return [];
         }
         return data || [];
     }
 
-    async function loadComments(postId) {
-        const { data, error } = await supabase
-            .from('comments')
-            .select('*')
-            .eq('post_id', postId)
-            .order('created_at', { ascending: true })
-            .limit(20);
+    async function apiGetGroups() {
+        const { data, error } = await supabase.rpc('get_user_groups');
         if (error) {
-            console.error('Erro ao carregar comentários:', error.message);
+            console.error('Erro ao carregar grupos:', error);
             return [];
         }
         return data || [];
     }
 
-    async function loadEvents() {
-        const { data, error } = await supabase
-            .from('events')
-            .select('*')
-            .eq('is_active', true)
-            .gte('date', new Date().toISOString())
-            .order('date', { ascending: true })
-            .limit(20);
+    async function apiGetChatChannels() {
+        const { data, error } = await supabase.rpc('get_user_chat_channels');
         if (error) {
-            console.error('Erro ao carregar eventos:', error.message);
+            console.error('Erro ao carregar canais:', error);
             return [];
         }
         return data || [];
     }
 
+    async function apiSendMessage(conversationId, content) {
+        const { data, error } = await supabase.rpc('send_message', {
+            p_conversation_id: conversationId,
+            p_content: content
+        });
+        if (error) {
+            showToast('Erro: ' + error.message, 'error');
+            return null;
+        }
+        return data;
+    }
+
+    // =============================================
+    // 7. ESCAPE HTML E FORMATADORES
+    // =============================================
     function escapeHtml(t) {
+        if (!t) return '';
         const d = document.createElement('div');
         d.textContent = t;
         return d.innerHTML;
@@ -300,132 +329,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // =============================================
-    // 7. UPLOAD DE IMAGEM PARA GRUPOS
-    // =============================================
-    async function uploadGroupImage(file) {
-        if (!currentUser) {
-            showToast('Faça login para enviar imagens', 'error');
-            return null;
-        }
-        
-        if (file.size > MAX_IMAGE_SIZE) {
-            showToast(`Imagem muito grande! Máx ${MAX_IMAGE_SIZE / (1024 * 1024)}MB`, 'error');
-            return null;
-        }
-        
-        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-            showToast('Formato não suportado. Use JPG, PNG, GIF, WebP ou SVG', 'error');
-            return null;
-        }
-        
-        showToast('📤 Enviando imagem...', 'info', 5000);
-        
-        try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `groups/${currentUser.id}/${Date.now()}.${fileExt}`;
-            
-            const { data, error } = await supabase.storage
-                .from(IMAGE_BUCKET)
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
-                
-            if (error) {
-                showToast('Erro ao enviar imagem: ' + error.message, 'error');
-                return null;
-            }
-            
-            const { data: { publicUrl } } = supabase.storage
-                .from(IMAGE_BUCKET)
-                .getPublicUrl(fileName);
-                
-            showToast('✅ Imagem enviada com sucesso! 🖼️', 'success');
-            return publicUrl;
-            
-        } catch (error) {
-            console.error('❌ Erro inesperado:', error);
-            showToast('Erro ao enviar imagem', 'error');
-            return null;
-        }
-    }
-
-    // =============================================
-    // 8. UPLOAD DE VÍDEO
-    // =============================================
-    async function uploadVideo(file) {
-        if (!currentUser) {
-            showToast('Faça login para enviar vídeos', 'error');
-            return null;
-        }
-        
-        if (file.size > MAX_VIDEO_SIZE) {
-            showToast(`Vídeo muito grande! Máx ${MAX_VIDEO_SIZE / (1024 * 1024)}MB`, 'error');
-            return null;
-        }
-        
-        if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
-            showToast('Formato não suportado. Use MP4, WebM ou OGG', 'error');
-            return null;
-        }
-        
-        showToast('📤 Enviando vídeo...', 'info', 5000);
-        
-        try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${currentUser.id}/${Date.now()}.${fileExt}`;
-            
-            const { data, error } = await supabase.storage
-                .from(VIDEO_BUCKET)
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
-                
-            if (error) {
-                showToast('Erro ao enviar vídeo: ' + error.message, 'error');
-                return null;
-            }
-            
-            const { data: { publicUrl } } = supabase.storage
-                .from(VIDEO_BUCKET)
-                .getPublicUrl(fileName);
-                
-            showToast('✅ Vídeo enviado com sucesso! 🎬', 'success');
-            return publicUrl;
-            
-        } catch (error) {
-            console.error('❌ Erro inesperado:', error);
-            showToast('Erro ao enviar vídeo', 'error');
-            return null;
-        }
-    }
-
-    function openFullscreenModal(videoUrl) {
-        const modal = document.createElement('div');
-        modal.className = 'video-fullscreen-modal';
-        modal.innerHTML = `
-            <div class="video-fullscreen-overlay" onclick="if(event.target === this) this.parentElement.remove()">
-                <button class="video-fullscreen-close" onclick="this.closest('.video-fullscreen-modal').remove()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-                <video controls autoplay style="width:90%;max-width:900px;max-height:90vh;border-radius:12px;background:#000;">
-                    <source src="${videoUrl}" type="video/mp4">
-                    <source src="${videoUrl}" type="video/webm">
-                    Seu navegador não suporta vídeos.
-                </video>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        modal.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') modal.remove();
-        });
-        modal.focus();
-    }
-
-    // =============================================
-    // 9. TABS
+    // 8. TABS
     // =============================================
     const mainTabs = document.querySelectorAll('.main-tab');
     const tabScreens = document.querySelectorAll('.tab-screen');
@@ -466,42 +370,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // =============================================
-    // 10. RENDER POSTS
+    // 9. RENDER POSTS
     // =============================================
-    let likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '{}');
-
-    async function handleLike(postId, likesCount) {
-        if (!currentUser) {
-            showToast('Faça login para curtir', 'error');
-            return;
-        }
-        
-        const isLiked = likedPosts[postId];
-        const newLikes = isLiked ? Math.max(0, likesCount - 1) : likesCount + 1;
-        
-        likedPosts[postId] = !isLiked;
-        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-        
-        const { error } = await supabase
-            .from('posts')
-            .update({ likes: newLikes })
-            .eq('id', postId);
-            
-        if (error) {
-            likedPosts[postId] = isLiked;
-            localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-            showToast('Erro ao curtir', 'error');
-        }
-        
-        await renderPosts();
-    }
-
+    
     async function loadAndShowComments(postId) {
-        const comments = await loadComments(postId);
+        const { data: comments, error } = await supabase
+            .from('comments')
+            .select('*')
+            .eq('post_id', postId)
+            .eq('is_active', true)
+            .order('created_at', { ascending: true })
+            .limit(20);
+
         const list = document.querySelector(`#comments-${postId} .comments-list`);
         if (!list) return;
-        
-        if (comments.length === 0) {
+
+        if (error || !comments || comments.length === 0) {
             list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">Nenhum comentário ainda. Seja o primeiro! 💬</p>';
         } else {
             list.innerHTML = comments.map(c => `
@@ -515,24 +399,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function setupPostEvents() {
+        // Likes
         document.querySelectorAll('.like-btn').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            newBtn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                const postId = newBtn.dataset.postId;
-                const likesText = newBtn.textContent.trim();
-                const likes = parseInt(likesText.match(/\d+/)?.[0] || '0');
-                handleLike(postId, likes);
+                const postId = btn.dataset.postId;
+                if (!currentUser) return showToast('Faça login', 'error');
+                
+                const result = await apiToggleLike(postId);
+                if (result) {
+                    const countSpan = btn.querySelector('.count');
+                    const icon = btn.querySelector('i');
+                    if (countSpan) countSpan.textContent = result.likes;
+                    btn.classList.toggle('liked', result.liked);
+                    if (icon) {
+                        icon.className = result.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                    }
+                }
             });
         });
-        
+
+        // Comentários
         document.querySelectorAll('.comment-toggle-btn').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            newBtn.addEventListener('click', async (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                const postId = newBtn.dataset.postId;
+                const postId = btn.dataset.postId;
                 const section = document.getElementById(`comments-${postId}`);
                 if (section) {
                     const isHidden = section.style.display === 'none' || section.style.display === '';
@@ -545,31 +436,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
         });
-        
+
+        // Submit comentários
         document.querySelectorAll('.submit-comment-btn').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            newBtn.addEventListener('click', async (e) => {
+            btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                const postId = newBtn.dataset.postId;
+                const postId = btn.dataset.postId;
                 const input = document.getElementById(`comment-input-${postId}`);
                 const text = input?.value.trim();
                 if (!text) return showToast('Digite um comentário', 'error');
-                if (!currentUser) return showToast('Faça login para comentar', 'error');
-                
-                const { error } = await supabase
-                    .from('comments')
-                    .insert({
-                        post_id: postId,
-                        author_id: currentUser.id,
-                        author_name: getUserName(),
-                        content: text,
-                        is_active: true
-                    });
-                    
-                if (error) {
-                    showToast('Erro ao comentar: ' + error.message, 'error');
-                } else {
+                if (!currentUser) return showToast('Faça login', 'error');
+
+                const result = await apiCreateComment(postId, text);
+                if (result) {
                     input.value = '';
                     showToast('Comentário adicionado! 💬', 'success');
                     await loadAndShowComments(postId);
@@ -577,10 +456,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
 
+        // Vídeo fullscreen
         document.querySelectorAll('.video-fullscreen-btn').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            newBtn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const container = this.closest('.post-video-container');
                 const video = container?.querySelector('video');
@@ -591,12 +469,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    function openFullscreenModal(videoUrl) {
+        const modal = document.createElement('div');
+        modal.className = 'video-fullscreen-modal';
+        modal.innerHTML = `
+            <div class="video-fullscreen-overlay" onclick="if(event.target === this) this.parentElement.remove()">
+                <button class="video-fullscreen-close" onclick="this.closest('.video-fullscreen-modal').remove()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <video controls autoplay style="width:90%;max-width:900px;max-height:90vh;border-radius:12px;background:#000;">
+                    <source src="${videoUrl}" type="video/mp4">
+                    <source src="${videoUrl}" type="video/webm">
+                    Seu navegador não suporta vídeos.
+                </video>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') modal.remove();
+        });
+        modal.focus();
+    }
+
     async function renderPosts() {
         const feed = document.getElementById('postsFeed');
         if (!feed) return;
-        
-        const posts = await loadPosts();
-        
+
+        const posts = await apiGetPosts();
+
         if (!posts || posts.length === 0) {
             feed.innerHTML = `
                 <div class="no-content" style="text-align:center;padding:60px 20px;color:#888;">
@@ -607,14 +508,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
             return;
         }
-        
+
         const userAvatar = getUserAvatar();
-        
+
         feed.innerHTML = posts.map(p => {
-            const isLiked = likedPosts[p.id];
+            const isLiked = p.is_liked || false;
             const postAvatar = p.author_avatar || userAvatar;
             const authorInitial = (p.author_name || 'U').charAt(0).toUpperCase();
-            
+
             let videoHtml = '';
             if (p.video_url && p.video_url.trim() !== '' && p.video_url !== 'null') {
                 videoHtml = `
@@ -630,7 +531,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 `;
             }
-            
+
             return `
             <div class="post-card" data-post-id="${p.id}">
                 <div class="post-header">
@@ -643,7 +544,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="post-body">
                         <div class="post-author-info">
                             <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
-                            <span class="post-author-handle">@${escapeHtml((p.author_name || 'usuario').toLowerCase().replace(/\s/g, ''))}</span>
                             <span class="post-date">· ${formatDate(p.created_at)}</span>
                         </div>
                         <p class="post-text">${escapeHtml(p.content)}</p>
@@ -674,25 +574,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>
             </div>`;
         }).join('');
-        
+
         setupPostEvents();
     }
 
     // =============================================
-    // 11. NOVO POST
+    // 10. NOVO POST
     // =============================================
-    const postModal = document.getElementById('postModal');
     const postModalOverlay = document.getElementById('postModalOverlay');
     const closePostModalBtn = document.getElementById('closeModalBtn');
     const submitPostBtn = document.getElementById('submitPostBtn');
     const postContentInput = document.getElementById('postContentInput');
-
-    const videoUploadInput = document.createElement('input');
-    videoUploadInput.type = 'file';
-    videoUploadInput.accept = 'video/*';
-    videoUploadInput.id = 'videoUploadInput';
-    videoUploadInput.style.display = 'none';
-    document.body.appendChild(videoUploadInput);
 
     document.querySelectorAll('#openPostModalBtn, .btn-create-post').forEach(btn => {
         if (btn) {
@@ -735,8 +627,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     closePostModalBtn?.addEventListener('click', () => {
         if (postModalOverlay) postModalOverlay.setAttribute('hidden', '');
-        const preview = document.querySelector('.video-preview-container');
-        if (preview) preview.remove();
     });
 
     postModalOverlay?.addEventListener('click', (e) => {
@@ -745,65 +635,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    document.getElementById('postMediaBtn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        videoUploadInput.click();
-    });
-
-    videoUploadInput.addEventListener('change', async function(e) {
-        const file = this.files[0];
-        if (!file) return;
-        
-        this.disabled = true;
-        const videoUrl = await uploadVideo(file);
-        this.disabled = false;
-        this.value = '';
-        
-        if (videoUrl && postContentInput) {
-            const currentText = postContentInput.value;
-            postContentInput.value = currentText + `\n📹 Vídeo: ${videoUrl}\n`;
-            showToast('✅ Vídeo pronto para postar! 🎬', 'success');
-        }
-    });
-
     submitPostBtn?.addEventListener('click', async () => {
         let txt = postContentInput?.value.trim();
         if (!txt) return showToast('Digite algo para postar', 'error');
         if (!currentUser) return showToast('Faça login', 'error');
-        
+
         const videoMatch = txt.match(/📹 Vídeo: (https?:\/\/[^\s]+)/);
         const videoUrl = videoMatch ? videoMatch[1] : null;
-        
+
         let cleanText = txt;
         if (videoUrl) {
             cleanText = txt.replace(/📹 Vídeo: https?:\/\/[^\s]+\s*/, '').trim();
         }
-        
         if (!cleanText && videoUrl) {
             cleanText = '🎬 Vídeo compartilhado';
         }
-        
+
         submitPostBtn.disabled = true;
         submitPostBtn.textContent = 'Publicando...';
-        
-        const { error } = await supabase
-            .from('posts')
-            .insert({
-                author_id: currentUser.id,
-                author_name: getUserName(),
-                author_avatar: getUserAvatar(),
-                content: cleanText,
-                video_url: videoUrl,
-                tag: '# Comunidade',
-                is_active: true
-            });
-            
+
+        const postId = await apiCreatePost(cleanText, videoUrl);
+
         submitPostBtn.disabled = false;
         submitPostBtn.textContent = 'Postar';
-        
-        if (error) {
-            showToast('Erro ao publicar: ' + error.message, 'error');
-        } else {
+
+        if (postId) {
             if (postModalOverlay) postModalOverlay.setAttribute('hidden', '');
             showToast('Post publicado! 🎉', 'success');
             await renderPosts();
@@ -814,158 +670,209 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // =============================================
-// 12. GRUPOS - USA get_user_groups
-// =============================================
-async function renderGroups() {
-    const grid = document.getElementById('groupsGrid');
-    if (!grid) return;
-    
-    // 🔥 USA get_user_groups (mostra públicos + membros)
-    const { data: userGroups, error } = await supabase
-        .rpc('get_user_groups', {
-            p_user_id: currentUser?.id || '00000000-0000-0000-0000-000000000000'
-        });
+    // 11. UPLOAD DE VÍDEO
+    // =============================================
+    const videoUploadInput = document.createElement('input');
+    videoUploadInput.type = 'file';
+    videoUploadInput.accept = 'video/*';
+    videoUploadInput.id = 'videoUploadInput';
+    videoUploadInput.style.display = 'none';
+    document.body.appendChild(videoUploadInput);
 
-    if (error) {
-        console.error('❌ Erro ao carregar grupos:', error);
-        grid.innerHTML = `<p style="color:#ef4444;">Erro ao carregar grupos</p>`;
-        return;
-    }
+    document.getElementById('postMediaBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        videoUploadInput.click();
+    });
 
-    if (!userGroups || userGroups.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <i class="fa-regular fa-users fa-3x"></i>
-                <h4>Nenhum grupo disponível</h4>
-                <p>Crie um grupo ou entre em um existente!</p>
-                <button class="btn-create-group" onclick="window.openCreateGroupModal()">
-                    <i class="fa-solid fa-plus"></i> Criar Grupo
-                </button>
-            </div>
-        `;
-        return;
-    }
+    videoUploadInput.addEventListener('change', async function(e) {
+        const file = this.files[0];
+        if (!file) return;
 
-    grid.innerHTML = userGroups.map(g => {
-        const isAdmin = g.is_admin === true;
-        const isPrivate = g.is_private === true;
-        const memberCount = g.members || 0;
-        const categoryName = g.category || 'Geral';
-        const imageUrl = g.image_url || '/img/grupo-padrao.png';
-        const isMember = g.is_member === true || g.name === 'Geral';
-        const initial = (g.name || 'G').charAt(0).toUpperCase();
-        const colors = ['#7c3aed', '#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6366f1', '#14b8a6'];
-        const bgColor = colors[Math.abs((g.id || '0').charCodeAt(0)) % colors.length];
+        this.disabled = true;
         
-        return `
-        <div class="group-card" data-group-id="${g.id}">
-            <div class="group-card-image" style="background:${bgColor}; display:flex; align-items:center; justify-content:center; min-height:120px;">
-                ${imageUrl && imageUrl !== '/img/grupo-padrao.png' ? `<img src="${imageUrl}" alt="${g.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">` : ''}
-                <span style="color:white;font-size:44px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.2);">${initial}</span>
-            </div>
-            <div class="group-card-body">
-                <div class="group-card-title">
-                    ${g.name}
-                    ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
-                    ${isPrivate ? '<i class="fa-solid fa-lock" style="color: var(--text-muted); font-size: 14px;"></i>' : '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Público</span>'}
-                    ${isMember ? '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Membro</span>' : ''}
-                </div>
-                <p class="group-card-description">${g.description || 'Sem descrição'}</p>
-                <div class="group-card-meta">
-                    <span><i class="fa-regular fa-user"></i> ${memberCount} membros</span>
-                    <span><i class="fa-regular fa-tag"></i> ${categoryName}</span>
-                </div>
-                <div class="group-card-actions">
-                    ${isMember ? `
-                        <button class="btn-chat" onclick="window.openGroupChat('${g.id}')">
-                            <i class="fa-regular fa-comments"></i> Conversar
-                        </button>
-                        ${g.name !== 'Geral' ? `
-                        <button class="btn-leave" onclick="window.leaveGroup('${g.id}')" style="background:transparent;color:#ef4444;border-color:#ef4444;">
-                            <i class="fa-solid fa-right-from-bracket"></i> Sair
-                        </button>` : ''}
-                    ` : `
-                        ${!isPrivate ? `
-                        <button class="btn-join" onclick="window.joinGroup('${g.id}')">
-                            <i class="fa-solid fa-right-to-bracket"></i> Entrar
-                        </button>
-                        ` : `
-                        <button class="btn-private" style="background:transparent;color:#888;border-color:#888;cursor:not-allowed;" disabled>
-                            <i class="fa-solid fa-lock"></i> Privado
-                        </button>
-                        `}
-                    `}
-                </div>
-            </div>
-        </div>`;
-    }).join('');
-    
-    // Atualiza canais do chat
-    await renderChatChannels();
-}
-
-// =============================================
-// 13. CANAIS DO CHAT - USA get_user_chat_channels
-// =============================================
-async function renderChatChannels() {
-    const container = document.getElementById('channelsList');
-    if (!container) return;
-
-    // 🔥 USA get_user_chat_channels (SÓ MEMBROS)
-    const { data: userGroups, error } = await supabase
-        .rpc('get_user_chat_channels', {
-            p_user_id: currentUser?.id || '00000000-0000-0000-0000-000000000000'
-        });
-
-    if (error) {
-        console.error('❌ Erro ao carregar canais:', error);
-        container.innerHTML = `
-            <div class="channel-item" style="color:var(--text-muted);padding:12px;text-align:center;font-size:13px;">
-                <i class="fa-regular fa-comment"></i> Nenhum canal disponível
-            </div>
-        `;
-        return;
-    }
-
-    if (!userGroups || userGroups.length === 0) {
-        container.innerHTML = `
-            <div class="channel-item" style="color:var(--text-muted);padding:12px;text-align:center;font-size:13px;">
-                <i class="fa-regular fa-comment"></i> Nenhum canal disponível
-            </div>
-        `;
-        return;
-    }
-
-    // Verifica se o chat atual ainda existe
-    const stillExists = userGroups.some(g => g.id === currentChatId);
-    if (!stillExists && currentChatId !== COMMUNITY_CHAT_ID) {
-        const geral = userGroups.find(g => g.name === 'Geral');
-        if (geral) {
-            currentChatId = geral.id;
-            const title = document.getElementById('chatCurrentChannel');
-            if (title) title.textContent = geral.name;
+        // Validação no frontend
+        const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
+        const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
+        
+        if (file.size > MAX_VIDEO_SIZE) {
+            showToast('Vídeo muito grande! Máx 50MB', 'error');
+            this.disabled = false;
+            this.value = '';
+            return;
         }
-    }
-
-    container.innerHTML = userGroups.map((group) => {
-        const isActive = group.id === currentChatId ? 'active' : '';
-        const icon = group.name === 'Geral' ? 'fa-solid fa-globe' : 'fa-solid fa-users';
-        const badge = group.name === 'Geral' ? '<span class="channel-badge">●</span>' : '';
         
-        return `
-        <div class="channel-item ${isActive}" data-channel="${group.id}" onclick="window.openGroupChat('${group.id}')">
-            <div class="channel-icon"><i class="${icon}"></i></div>
-            <div class="channel-info">
-                <span class="channel-name">${group.name}</span>
-                <span class="channel-meta">${group.members || 0} membros</span>
-            </div>
-            ${badge}
-        </div>`;
-    }).join('');
-}
+        if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
+            showToast('Formato não suportado. Use MP4, WebM ou OGG', 'error');
+            this.disabled = false;
+            this.value = '';
+            return;
+        }
+
+        showToast('📤 Enviando vídeo...', 'info', 5000);
+
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${currentUser.id}/${Date.now()}.${fileExt}`;
+
+            const { data, error } = await supabase.storage
+                .from('videos')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            this.disabled = false;
+            this.value = '';
+
+            if (error) {
+                showToast('Erro ao enviar vídeo: ' + error.message, 'error');
+                return;
+            }
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('videos')
+                .getPublicUrl(fileName);
+
+            if (publicUrl && postContentInput) {
+                const currentText = postContentInput.value;
+                postContentInput.value = currentText + `\n📹 Vídeo: ${publicUrl}\n`;
+                showToast('✅ Vídeo pronto para postar! 🎬', 'success');
+            }
+        } catch (error) {
+            this.disabled = false;
+            this.value = '';
+            showToast('Erro ao enviar vídeo', 'error');
+        }
+    });
 
     // =============================================
-    // 14. SAIR DO GRUPO - VERSÃO COM FUNÇÃO SQL
+    // 12. GRUPOS
+    // =============================================
+    async function renderGroups() {
+        const grid = document.getElementById('groupsGrid');
+        if (!grid) return;
+
+        const groups = await apiGetGroups();
+
+        if (!groups || groups.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-users fa-3x"></i>
+                    <h4>Nenhum grupo disponível</h4>
+                    <p>Crie um grupo ou entre em um existente!</p>
+                    <button class="btn-create-group" onclick="window.openCreateGroupModal()">
+                        <i class="fa-solid fa-plus"></i> Criar Grupo
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = groups.map(g => {
+            const isAdmin = g.is_admin === true;
+            const isPrivate = g.is_private === true;
+            const memberCount = g.members || 0;
+            const categoryName = g.category || 'Geral';
+            const imageUrl = g.image_url || '/img/grupo-padrao.png';
+            const isMember = g.is_member === true || g.name === 'Geral';
+            const initial = (g.name || 'G').charAt(0).toUpperCase();
+            const colors = ['#7c3aed', '#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6366f1', '#14b8a6'];
+            const bgColor = colors[Math.abs((g.id || '0').charCodeAt(0)) % colors.length];
+
+            return `
+            <div class="group-card" data-group-id="${g.id}">
+                <div class="group-card-image" style="background:${bgColor}; display:flex; align-items:center; justify-content:center; min-height:120px;">
+                    ${imageUrl && imageUrl !== '/img/grupo-padrao.png' ? `<img src="${imageUrl}" alt="${g.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">` : ''}
+                    <span style="color:white;font-size:44px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.2);">${initial}</span>
+                </div>
+                <div class="group-card-body">
+                    <div class="group-card-title">
+                        ${g.name}
+                        ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
+                        ${isPrivate ? '<i class="fa-solid fa-lock" style="color: var(--text-muted); font-size: 14px;"></i>' : '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Público</span>'}
+                        ${isMember ? '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Membro</span>' : ''}
+                    </div>
+                    <p class="group-card-description">${escapeHtml(g.description || 'Sem descrição')}</p>
+                    <div class="group-card-meta">
+                        <span><i class="fa-regular fa-user"></i> ${memberCount} membros</span>
+                        <span><i class="fa-regular fa-tag"></i> ${categoryName}</span>
+                    </div>
+                    <div class="group-card-actions">
+                        ${isMember ? `
+                            <button class="btn-chat" onclick="window.openGroupChat('${g.id}')">
+                                <i class="fa-regular fa-comments"></i> Conversar
+                            </button>
+                            ${g.name !== 'Geral' ? `
+                            <button class="btn-leave" onclick="window.leaveGroup('${g.id}')" style="background:transparent;color:#ef4444;border-color:#ef4444;">
+                                <i class="fa-solid fa-right-from-bracket"></i> Sair
+                            </button>` : ''}
+                        ` : `
+                            ${!isPrivate ? `
+                            <button class="btn-join" onclick="window.joinGroup('${g.id}')">
+                                <i class="fa-solid fa-right-to-bracket"></i> Entrar
+                            </button>
+                            ` : `
+                            <button class="btn-private" style="background:transparent;color:#888;border-color:#888;cursor:not-allowed;" disabled>
+                                <i class="fa-solid fa-lock"></i> Privado
+                            </button>
+                            `}
+                        `}
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+
+        await renderChatChannels();
+    }
+
+    // =============================================
+    // 13. CANAIS DO CHAT
+    // =============================================
+    async function renderChatChannels() {
+        const container = document.getElementById('channelsList');
+        if (!container) return;
+
+        const channels = await apiGetChatChannels();
+
+        if (!channels || channels.length === 0) {
+            container.innerHTML = `
+                <div class="channel-item" style="color:var(--text-muted);padding:12px;text-align:center;font-size:13px;">
+                    <i class="fa-regular fa-comment"></i> Nenhum canal disponível
+                </div>
+            `;
+            return;
+        }
+
+        // Verifica se o chat atual ainda existe
+        const stillExists = channels.some(g => g.id === currentChatId);
+        if (!stillExists && currentChatId !== COMMUNITY_CHAT_ID) {
+            const geral = channels.find(g => g.name === 'Geral');
+            if (geral) {
+                currentChatId = geral.id;
+                const title = document.getElementById('chatCurrentChannel');
+                if (title) title.textContent = geral.name;
+            }
+        }
+
+        container.innerHTML = channels.map((group) => {
+            const isActive = group.id === currentChatId ? 'active' : '';
+            const icon = group.name === 'Geral' ? 'fa-solid fa-globe' : 'fa-solid fa-users';
+            const badge = group.name === 'Geral' ? '<span class="channel-badge">●</span>' : '';
+            
+            return `
+            <div class="channel-item ${isActive}" data-channel="${group.id}" onclick="window.openGroupChat('${group.id}')">
+                <div class="channel-icon"><i class="${icon}"></i></div>
+                <div class="channel-info">
+                    <span class="channel-name">${escapeHtml(group.name)}</span>
+                    <span class="channel-meta">${group.members || 0} membros</span>
+                </div>
+                ${badge}
+            </div>`;
+        }).join('');
+    }
+
+    // =============================================
+    // 14. SAIR DO GRUPO
     // =============================================
     window.leaveGroup = async function(groupId) {
         if (!currentUser) {
@@ -980,42 +887,33 @@ async function renderChatChannels() {
 
         if (!confirm('Tem certeza que deseja sair deste grupo?')) return;
 
-        // Desabilita botões
-        const leaveButtons = document.querySelectorAll(`[onclick*="leaveGroup('${groupId}')"]`);
-        leaveButtons.forEach(btn => {
-            btn.disabled = true;
-            btn.textContent = 'Saindo...';
-        });
-
         try {
-            // 🔥 CHAMA A FUNÇÃO SQL
-            const { data: result, error } = await supabase
-                .rpc('leave_group_with_cleanup', {
-                    p_group_id: groupId,
-                    p_user_id: currentUser.id
-                });
+            const { error } = await supabase
+                .from('group_members')
+                .delete()
+                .eq('group_id', groupId)
+                .eq('user_id', currentUser.id);
 
             if (error) throw error;
 
-            if (result && result.success === false) {
-                showToast(result.message, 'error');
-                return;
-            }
+            await supabase
+                .from('conversation_participants')
+                .delete()
+                .eq('conversation_id', groupId)
+                .eq('user_id', currentUser.id);
 
-            showToast(result.message || 'Você saiu do grupo!', 'info');
+            showToast('Você saiu do grupo!', 'info');
 
-            // 🔥 FORÇA RECARGA
             await renderGroups();
             await renderChatChannels();
 
-            // Se estava no chat do grupo, volta pro Geral
             if (currentChatId === groupId) {
                 const { data: geralGroup } = await supabase
                     .from('groups')
                     .select('id, name')
                     .eq('name', 'Geral')
                     .single();
-                    
+
                 if (geralGroup) {
                     switchChat(geralGroup.id, geralGroup.name);
                     switchTab('conversa');
@@ -1026,16 +924,11 @@ async function renderChatChannels() {
         } catch (error) {
             console.error('❌ Erro ao sair:', error);
             showToast('Erro ao sair: ' + error.message, 'error');
-        } finally {
-            leaveButtons.forEach(btn => {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Sair';
-            });
         }
     };
 
     // =============================================
-    // 15. ENTRAR NO GRUPO - VERSÃO COM FUNÇÃO SQL
+    // 15. ENTRAR NO GRUPO
     // =============================================
     window.joinGroup = async function(groupId) {
         if (!currentUser) {
@@ -1043,42 +936,70 @@ async function renderChatChannels() {
             return;
         }
 
-        // Desabilita botão
-        const joinButtons = document.querySelectorAll(`[onclick*="joinGroup('${groupId}')"]`);
-        joinButtons.forEach(btn => {
-            btn.disabled = true;
-            btn.textContent = 'Entrando...';
-        });
-
         try {
-            // 🔥 CHAMA A FUNÇÃO SQL
-            const { data: result, error } = await supabase
-                .rpc('join_group_with_cleanup', {
-                    p_group_id: groupId,
-                    p_user_id: currentUser.id
-                });
+            // Verificar se já é membro
+            const { data: existing, error: checkError } = await supabase
+                .from('group_members')
+                .select('*')
+                .eq('group_id', groupId)
+                .eq('user_id', currentUser.id)
+                .maybeSingle();
 
-            if (error) throw error;
+            if (checkError) throw checkError;
 
-            if (result && result.success === false) {
-                showToast(result.message, 'error');
+            if (existing) {
+                showToast('Você já é membro deste grupo!', 'info');
                 return;
             }
 
-            showToast(result.message || 'Entrou no grupo! 🎉', 'success');
+            // Verificar se o grupo é privado
+            const { data: group, error: groupError } = await supabase
+                .from('groups')
+                .select('is_private')
+                .eq('id', groupId)
+                .single();
 
-            // 🔥 FORÇA RECARGA
+            if (groupError) throw groupError;
+
+            if (group.is_private) {
+                showToast('Grupo privado. Solicite entrada.', 'warning');
+                return;
+            }
+
+            // Entrar no grupo
+            const { error: insertError } = await supabase
+                .from('group_members')
+                .insert({
+                    group_id: groupId,
+                    user_id: currentUser.id,
+                    joined_at: new Date().toISOString()
+                });
+
+            if (insertError) throw insertError;
+
+            // Adicionar à conversa
+            await supabase
+                .from('conversation_participants')
+                .insert({
+                    conversation_id: groupId,
+                    user_id: currentUser.id,
+                    joined_at: new Date().toISOString()
+                });
+
+            // Atualizar contador
+            await supabase
+                .from('groups')
+                .update({ members: supabase.raw('members + 1') })
+                .eq('id', groupId);
+
+            showToast('Entrou no grupo! 🎉', 'success');
+
             await renderGroups();
             await renderChatChannels();
 
         } catch (error) {
             console.error('❌ Erro ao entrar:', error);
             showToast('Erro ao entrar: ' + error.message, 'error');
-        } finally {
-            joinButtons.forEach(btn => {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar';
-            });
         }
     };
 
@@ -1115,41 +1036,8 @@ async function renderChatChannels() {
         const modal = document.getElementById('createGroupModal');
         if (modal) {
             modal.removeAttribute('hidden');
-            setupGroupImageUpload();
         }
     };
-
-    function setupGroupImageUpload() {
-        const imageUploadInput = document.createElement('input');
-        imageUploadInput.type = 'file';
-        imageUploadInput.accept = 'image/*';
-        imageUploadInput.id = 'groupImageUploadInput';
-        imageUploadInput.style.display = 'none';
-        document.body.appendChild(imageUploadInput);
-
-        const uploadArea = document.getElementById('groupImageUploadArea');
-        if (uploadArea) {
-            const newUploadArea = uploadArea.cloneNode(true);
-            uploadArea.parentNode.replaceChild(newUploadArea, uploadArea);
-            newUploadArea.addEventListener('click', () => {
-                imageUploadInput.click();
-            });
-        }
-
-        imageUploadInput.addEventListener('change', async function(e) {
-            const file = this.files[0];
-            if (!file) return;
-            const imageUrl = await uploadGroupImage(file);
-            this.value = '';
-            if (imageUrl) {
-                const imageField = document.getElementById('groupImage');
-                if (imageField) {
-                    imageField.value = imageUrl;
-                }
-                showToast('✅ Imagem pronta para o grupo! 🖼️', 'success');
-            }
-        });
-    }
 
     document.getElementById('openCreateGroupBtn')?.addEventListener('click', window.openCreateGroupModal);
     document.getElementById('openCreateGroupFromChatBtn')?.addEventListener('click', window.openCreateGroupModal);
@@ -1161,7 +1049,7 @@ async function renderChatChannels() {
 
     document.getElementById('createGroupForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const name = document.getElementById('groupName')?.value.trim();
         const description = document.getElementById('groupDescription')?.value.trim();
         const category = document.getElementById('groupCategory')?.value || 'Geral';
@@ -1178,6 +1066,7 @@ async function renderChatChannels() {
             return;
         }
 
+        // Verificar se já existe
         const { data: existing } = await supabase
             .from('groups')
             .select('id')
@@ -1190,28 +1079,25 @@ async function renderChatChannels() {
         }
 
         try {
-            const groupData = {
-                name: name,
-                description: description || 'Sem descrição',
-                category: category,
-                members: 1,
-                is_admin: false,
-                is_private: isPrivate,
-                image_url: imageUrl,
-                created_by: currentUser.id,
-            };
-
+            // Criar grupo
             const { data: group, error: groupError } = await supabase
                 .from('groups')
-                .insert(groupData)
+                .insert({
+                    name: name,
+                    description: description || 'Sem descrição',
+                    category: category,
+                    members: 1,
+                    is_admin: false,
+                    is_private: isPrivate,
+                    image_url: imageUrl,
+                    created_by: currentUser.id,
+                })
                 .select()
                 .single();
 
-            if (groupError) {
-                showToast('Erro ao criar grupo: ' + groupError.message, 'error');
-                return;
-            }
+            if (groupError) throw groupError;
 
+            // Criar conversa
             await supabase
                 .from('conversations')
                 .insert({
@@ -1222,6 +1108,7 @@ async function renderChatChannels() {
                     created_at: new Date().toISOString()
                 });
 
+            // Adicionar criador como participante
             await supabase
                 .from('conversation_participants')
                 .insert({
@@ -1230,6 +1117,7 @@ async function renderChatChannels() {
                     joined_at: new Date().toISOString()
                 });
 
+            // Adicionar criador como membro
             await supabase
                 .from('group_members')
                 .insert({
@@ -1241,13 +1129,13 @@ async function renderChatChannels() {
             showToast(`Grupo "${name}" criado com sucesso! 🎉`, 'success');
             document.getElementById('createGroupModal')?.setAttribute('hidden', '');
             document.getElementById('createGroupForm')?.reset();
-            
+
             await renderGroups();
             switchTab('grupos');
 
         } catch (error) {
             console.error('❌ Erro:', error);
-            showToast('Erro ao criar grupo', 'error');
+            showToast('Erro ao criar grupo: ' + error.message, 'error');
         }
     });
 
@@ -1260,19 +1148,19 @@ async function renderChatChannels() {
 
     function switchChat(chatId, chatName) {
         currentChatId = chatId;
-        
+
         const title = document.getElementById('chatCurrentChannel');
         if (title) {
             title.textContent = chatName || 'Geral';
         }
-        
+
         document.querySelectorAll('.channel-item').forEach(item => {
             item.classList.remove('active');
             if (item.dataset.channel === chatId) {
                 item.classList.add('active');
             }
         });
-        
+
         loadChatMessages(chatId);
         subscribeToMessages(chatId);
     }
@@ -1305,9 +1193,9 @@ async function renderChatChannels() {
     async function loadChatMessages(chatId = null) {
         const mc = document.getElementById('chatMessages');
         if (!mc) return;
-        
+
         const targetChatId = chatId || currentChatId;
-        
+
         try {
             const { data: messages, error } = await supabase
                 .from('messages')
@@ -1315,13 +1203,13 @@ async function renderChatChannels() {
                 .eq('conversation_id', targetChatId)
                 .order('created_at', { ascending: false })
                 .limit(50);
-                
+
             if (error) {
                 console.error('❌ Erro ao carregar mensagens:', error);
                 mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar mensagens</p></div>';
                 return;
             }
-            
+
             if (messages && messages.length > 0) {
                 const sortedMessages = messages.reverse();
                 mc.innerHTML = sortedMessages.map(m => {
@@ -1329,7 +1217,7 @@ async function renderChatChannels() {
                     const senderName = isSent ? 'Você' : (m.sender_name || 'Membro');
                     const userColor = stringToColor(m.sender_id);
                     const avatarUrl = isSent ? getUserAvatar() : (m.sender_avatar || getUserAvatar());
-                    
+
                     let videoHtml = '';
                     if (m.video_url && m.video_url.trim() !== '') {
                         videoHtml = `
@@ -1340,7 +1228,7 @@ async function renderChatChannels() {
                             </div>
                         `;
                     }
-                    
+
                     return `
                     <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${m.id}">
                         ${!isSent ? `
@@ -1350,7 +1238,7 @@ async function renderChatChannels() {
                             </div>
                         ` : ''}
                         <div class="msg-content">
-                            <div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;">${senderName}</div>
+                            <div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;">${escapeHtml(senderName)}</div>
                             <div class="msg-text">${escapeHtml(m.content)}</div>
                             ${videoHtml}
                             <div class="msg-time">${formatChatTime(m.created_at)}</div>
@@ -1366,7 +1254,7 @@ async function renderChatChannels() {
                     </div>
                 `;
             }
-            
+
             scrollToBottom();
         } catch (error) {
             console.error('❌ Erro inesperado:', error);
@@ -1386,22 +1274,22 @@ async function renderChatChannels() {
     function addMessageToChat(message) {
         const mc = document.getElementById('chatMessages');
         if (!mc) return;
-        
+
         const placeholder = mc.querySelector('.chat-placeholder');
         if (placeholder) placeholder.remove();
-        
+
         const existingMessages = mc.querySelectorAll('.chat-message');
         for (let msg of existingMessages) {
             if (msg.dataset.messageId === message.id) {
                 return;
             }
         }
-        
+
         const isSent = message.sender_id === currentUser?.id;
         const senderName = isSent ? 'Você' : (message.sender_name || 'Membro');
         const userColor = stringToColor(message.sender_id);
         const avatarUrl = isSent ? getUserAvatar() : (message.sender_avatar || getUserAvatar());
-        
+
         let videoHtml = '';
         if (message.video_url && message.video_url.trim() !== '') {
             videoHtml = `
@@ -1412,7 +1300,7 @@ async function renderChatChannels() {
                 </div>
             `;
         }
-        
+
         const messageHtml = `
             <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${message.id}" style="animation: fadeIn 0.2s ease;">
                 ${!isSent ? `
@@ -1422,14 +1310,14 @@ async function renderChatChannels() {
                     </div>
                 ` : ''}
                 <div class="msg-content">
-                    <div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;">${senderName}</div>
+                    <div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;">${escapeHtml(senderName)}</div>
                     <div class="msg-text">${escapeHtml(message.content)}</div>
                     ${videoHtml}
                     <div class="msg-time">${formatChatTime(message.created_at)}</div>
                 </div>
             </div>
         `;
-        
+
         mc.insertAdjacentHTML('beforeend', messageHtml);
         scrollToBottom();
     }
@@ -1439,9 +1327,9 @@ async function renderChatChannels() {
             supabase.removeChannel(chatSubscription);
             chatSubscription = null;
         }
-        
+
         const targetChatId = chatId || currentChatId;
-        
+
         chatSubscription = supabase
             .channel(`chat-${targetChatId}`)
             .on('postgres_changes',
@@ -1468,48 +1356,34 @@ async function renderChatChannels() {
 
     async function sendMessage() {
         if (isSending) return;
-        
+
         const inp = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendChatBtn');
-        
+
         if (!inp || !currentUser) {
             showToast('Faça login para enviar mensagens', 'error');
             return;
         }
-        
+
         const msg = inp.value.trim();
         if (!msg) {
             showToast('Digite uma mensagem', 'error');
             return;
         }
-        
+
         isSending = true;
         if (sendBtn) {
             sendBtn.disabled = true;
             sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
         }
-        
+
         try {
-            const { data, error } = await supabase
-                .from('messages')
-                .insert({
-                    conversation_id: currentChatId,
-                    sender_id: currentUser.id,
-                    sender_name: getUserName(),
-                    sender_avatar: getUserAvatar(),
-                    content: msg
-                })
-                .select()
-                .single();
-                
-            if (error) {
-                console.error('❌ Erro ao enviar:', error);
-                showToast('Erro ao enviar: ' + error.message, 'error');
-                inp.value = msg;
-            } else {
+            const result = await apiSendMessage(currentChatId, msg);
+
+            if (result) {
                 inp.value = '';
-                addMessageToChat(data);
                 showToast('✅ Mensagem enviada!', 'success', 1000);
+                await loadChatMessages(currentChatId);
             }
         } catch (error) {
             console.error('❌ Erro inesperado:', error);
@@ -1558,9 +1432,16 @@ async function renderChatChannels() {
     async function renderEvents() {
         const grid = document.getElementById('eventsGrid');
         if (!grid) return;
-        
-        const events = await loadEvents();
-        if (!events || events.length === 0) {
+
+        const { data: events, error } = await supabase
+            .from('events')
+            .select('*')
+            .eq('is_active', true)
+            .gte('date', new Date().toISOString())
+            .order('date', { ascending: true })
+            .limit(20);
+
+        if (error || !events || events.length === 0) {
             grid.innerHTML = `
                 <div class="no-content" style="text-align:center;padding:40px 20px;color:#888;">
                     <i class="fa-solid fa-calendar" style="font-size:32px;display:block;margin-bottom:12px;opacity:0.3;"></i>
@@ -1570,7 +1451,7 @@ async function renderChatChannels() {
             `;
             return;
         }
-        
+
         grid.innerHTML = events.map(ev => {
             const date = new Date(ev.date);
             return `
@@ -1592,7 +1473,7 @@ async function renderChatChannels() {
                 </button>
             </div>`;
         }).join('');
-        
+
         document.querySelectorAll('.event-join-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 if (!currentUser) {
@@ -1633,7 +1514,7 @@ async function renderChatChannels() {
                     schema: 'public',
                     table: 'posts'
                 },
-                async (payload) => {
+                async () => {
                     await renderPosts();
                     showToast('📢 Novo post na comunidade!', 'info', 2000);
                 }
@@ -1668,16 +1549,14 @@ async function renderChatChannels() {
     await addUserToChat();
     await loadChatMessages(COMMUNITY_CHAT_ID);
     subscribeToMessages(COMMUNITY_CHAT_ID);
-    
+
     await renderPosts();
     await renderGroups();
     await renderEvents();
     await renderChatChannels();
-    
+
     subscribeToPosts();
-    
+
     console.log('🚀 Comunidade pronta! 👍💬❤️');
-    console.log('🎬 Upload de vídeos ativado!');
-    console.log('📋 Sistema de Grupos integrado com Supabase!');
-    console.log('🔄 Atualização automática de posts ativada!');
+    console.log('🔒 Sistema 100% seguro via Supabase RPC!');
 });

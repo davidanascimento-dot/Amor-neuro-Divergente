@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>😅 Ops! Algo deu errado...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .trap-container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            animation: float 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .trap-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 0, 100, 0.1), transparent, rgba(255, 0, 100, 0.1), transparent);
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .trap-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .emoji-big {
+            font-size: 120px;
+            display: block;
+            margin-bottom: 20px;
+            animation: bounce 1.5s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(-10deg); }
+        }
+        
+        .trap-title {
+            color: #ff6b6b;
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+            letter-spacing: -1px;
+        }
+        
+        .trap-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .trap-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .trap-info p {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .trap-info .highlight {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        
+        .btn-back {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.3);
+        }
+        
+        .glitch {
+            animation: glitch 0.5s ease infinite;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .trap-countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .countdown-item {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .countdown-item .number {
+            display: block;
+            font-size: 36px;
+            font-weight: 700;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 10px 20px;
+            border-radius: 12px;
+            min-width: 60px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+        
+        .countdown-item .label {
+            display: block;
+            font-size: 12px;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 107, 107, 0.3);
+            border-radius: 50%;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="trap-container">
+        <div class="trap-content">
+            <span class="emoji-big">🤡</span>
+            
+            <h1 class="trap-title glitch">VOCÊ CAIU NA ARMADILHA!</h1>
+            
+            <p class="trap-subtitle">
+                Bem-vindo, <span style="color: #ff6b6b; font-weight: 700;">hacker</span>!<br>
+                Enquanto você tentava invadir nosso sistema,<br>
+                nós já estávamos rastreando você! 😎
+            </p>
+            
+            <!-- ÍCONE NO LUGAR DA IMAGEM -->
+            <div style="width:100%;max-width:200px;margin:20px auto;background:rgba(255,107,107,0.1);border-radius:20px;padding:30px;border:2px dashed rgba(255,107,107,0.3);">
+                <span style="font-size:80px;display:block;">🔒</span>
+                <p style="color:rgba(255,255,255,0.6);margin-top:10px;font-size:14px;">Sistema de Segurança</p>
+            </div>
+            
+            <div class="trap-info">
+                <p>🔍 <span class="highlight">Seu IP foi registrado:</span> <span id="userIP">Carregando...</span></p>
+                <p>🕵️ <span class="highlight">Dados coletados:</span> User-Agent, Localização, Navegador</p>
+                <p>📝 <span class="highlight">Log enviado para:</span> Administrador do site</p>
+                <p>⚠️ <span class="highlight">Ação:</span> Tentativa de <span id="attackType">XSS/SQL Injection</span> detectada</p>
+            </div>
+            
+            <div class="trap-countdown">
+                <div class="countdown-item">
+                    <span class="number" id="hours">00</span>
+                    <span class="label">Horas</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="minutes">00</span>
+                    <span class="label">Minutos</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="seconds">00</span>
+                    <span class="label">Segundos</span>
+                </div>
+            </div>
+            
+            <a href="/inicio.html" class="btn-back">
+                🔒 Voltar para a área segura
+            </a>
+            
+            <p style="color: rgba(255,255,255,0.2); font-size: 12px; margin-top: 20px; font-family: 'Courier New', monospace;">
+                © 2026 - Sistema Anti-Hacker v4.2.1
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        (function() {
+            // Mostrar dados do ataque
+            document.getElementById('attackType').textContent = 
+                sessionStorage.getItem('attackType') || 'XSS/SQL Injection';
+            
+            // IP fake
+            document.getElementById('userIP').textContent = 
+                '192.168.1.' + Math.floor(Math.random() * 255);
+            
+            // Partículas
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                particle.style.animationDelay = (Math.random() * 10) + 's';
+                particle.style.width = (Math.random() * 6 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+            
+            // Countdown
+            let seconds = 0;
+            setInterval(() => {
+                seconds++;
+                const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+                const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+                const secs = String(seconds % 60).padStart(2, '0');
+                document.getElementById('hours').textContent = hours;
+                document.getElementById('minutes').textContent = minutes;
+                document.getElementById('seconds').textContent = secs;
+            }, 1000);
+            
+            // Impedir voltar
+            window.addEventListener('popstate', function(e) {
+                history.pushState(null, document.title, location.href);
+            });
+            history.pushState(null, document.title, location.href);
+            
+            // LOGAR NO SUPABASE (em vez da API)
+            try {
+                const supabase = window.parent.supabaseClient || window.supabaseClient;
+                if (supabase) {
+                    const attackData = {
+                        attack_type: sessionStorage.getItem('attackType') || 'unknown',
+                        payload: sessionStorage.getItem('attackPayload') || null,
+                        user_agent: navigator.userAgent,
+                        url: window.location.href
+                    };
+                    
+                    supabase
+                        .from('attack_logs')
+                        .insert(attackData)
+                        .then(() => console.log('✅ Ataque registrado no Supabase!'))
+                        .catch(err => console.warn('⚠️ Erro ao registrar:', err));
+                }
+            } catch(e) {}
+            
+            console.log('%c🔒 VOCÊ CAIU NA ARMADILHA!', 'font-size: 24px; color: #ff6b6b; font-weight: bold;');
+            console.log('%cSeus dados foram registrados e enviados para o administrador.', 'font-size: 16px; color: #ff6b6b;');
+            console.log('%c👮‍♂️ A polícia cibernética foi notificada.', 'font-size: 16px; color: #ff6b6b;');
+        })();
+    </script>
+</body>
+</html>
