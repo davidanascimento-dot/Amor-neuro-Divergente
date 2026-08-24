@@ -15,16 +15,12 @@
 </head>
 <body>
 
-    <!-- =============================================
-    SIDEBAR TOGGLE (mobile/desktop)
-    ============================================= -->
+  
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- =============================================
-    SIDEBAR (EXTERNA - VEM DO SITE)
-    ============================================= -->
+
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
             <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
@@ -56,14 +52,10 @@
     <!-- Overlay para sidebar no mobile -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- =============================================
-    CONTEÚDO PRINCIPAL
-    ============================================= -->
+ 
     <main class="main-content" id="mainContent">
 
-        <!-- =============================================
-        HEADER (FIXO)
-        ============================================= -->
+
         <header class="header-glass" id="headerGlass">
             <a href="/inicio.html" class="logo">
                 <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
@@ -75,13 +67,11 @@
                 <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
             <button class="header-profile-btn" id="headerProfileBtn" aria-label="Perfil">
-                <img src="/img/avatar-padrao.png" alt="Perfil" class="header-avatar" id="headerAvatar">
+                <img src="/img/foto-padrão.jpg" alt="Perfil" class="header-avatar" id="headerAvatar">
             </button>
         </header>
 
-        <!-- =============================================
-        NAVEGAÇÃO POR ABAS (PRINCIPAL - FULL SCREEN)
-        ============================================= -->
+   
         <nav class="main-tabs" id="mainTabs" role="tablist">
             <button class="main-tab active" data-tab="forum" role="tab" aria-selected="true" aria-controls="screen-forum">
                 <i class="fa-regular fa-message"></i>
@@ -105,14 +95,12 @@
             </button>
         </nav>
 
-        <!-- =============================================
-        ÁREA DE CONTEÚDO (TELAS COMPLETAS)
-        ============================================= -->
+   
+
         <div class="tab-screens">
 
-            <!-- ===========================================
-            TELA: FÓRUM (FULL-SCREEN)
-            ============================================ -->
+        
+
             <section class="tab-screen active" id="screen-forum" role="tabpanel" aria-labelledby="tab-forum">
                 <div class="screen-header">
                     <h2><i class="fa-regular fa-message"></i> Fórum</h2>
@@ -123,7 +111,7 @@
 
                 <!-- Caixa de postagem rápida -->
                 <div class="quick-post">
-                    <img src="/img/avatar-padrao.png" alt="Seu avatar" class="quick-post-avatar" id="quickPostAvatar">
+                    <img src="/img/foto-padrão.jpg" alt="Seu avatar" class="quick-post-avatar" id="quickPostAvatar">
                     <input type="text" id="quickPostInput" placeholder="O que você está pensando? Compartilhe com a comunidade...">
                     <button class="btn-quick-post" id="quickPostBtn">Postar</button>
                 </div>
@@ -134,9 +122,9 @@
                 </div>
             </section>
 
-            <!-- ===========================================
-            TELA: GRUPOS (FULL-SCREEN)
-            ============================================ -->
+          
+
+
             <section class="tab-screen" id="screen-grupos" role="tabpanel" aria-labelledby="tab-grupos">
                 <div class="screen-header">
                     <h2><i class="fa-solid fa-users"></i> Grupos</h2>
@@ -150,9 +138,8 @@
                 </div>
             </section>
 
-            <!-- ===========================================
-            TELA: EVENTOS (FULL-SCREEN)
-            ============================================ -->
+          
+
             <section class="tab-screen" id="screen-eventos" role="tabpanel" aria-labelledby="tab-eventos">
                 <div class="screen-header">
                     <h2><i class="fa-regular fa-calendar"></i> Eventos</h2>
@@ -166,9 +153,8 @@
                 </div>
             </section>
 
-            <!-- ===========================================
-            TELA: CONVERSA (CHAT FULL-SCREEN)
-            ============================================ -->
+           
+
             <section class="tab-screen" id="screen-conversa" role="tabpanel" aria-labelledby="tab-conversa">
                 <div class="chat-full-layout">
                     <!-- Lista de canais (sidebar do chat) -->
@@ -241,9 +227,8 @@
         </div>
     </main>
 
-    <!-- =============================================
-    MODAL: CRIAR GRUPO
-    ============================================= -->
+ 
+
     <div class="modal-overlay" id="createGroupModal" hidden>
         <div class="modal-container">
             <div class="modal-header">
@@ -297,9 +282,7 @@
         </div>
     </div>
 
-    <!-- =============================================
-    MODAL: NOVO POST
-    ============================================= -->
+
     <div class="modal-overlay" id="postModalOverlay" hidden>
         <div class="x-modal" id="postModal" role="dialog" aria-labelledby="postModalTitle" aria-hidden="true">
             <div class="x-modal-header">
@@ -308,7 +291,7 @@
             </div>
             <div class="x-modal-body">
                 <div class="compose-inline-box">
-                    <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" class="timeline-avatar user-current-avatar" id="postModalAvatar">
+                    <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" class="timeline-avatar user-current-avatar" id="postModalAvatar">
                     <div class="compose-workspace">
                         <textarea id="postContentInput" placeholder="O que está acontecendo?" rows="4"></textarea>
                         <div class="privacy-scope-selector">
@@ -330,9 +313,7 @@
         </div>
     </div>
 
-    <!-- =============================================
-    MODAL: RESPOSTA/COMENTÁRIO
-    ============================================= -->
+
     <div class="modal-overlay" id="replyModalOverlay" hidden>
         <div class="x-modal" id="replyModal" role="dialog" aria-labelledby="replyModalTitle" aria-hidden="true">
             <div class="x-modal-header">
@@ -342,7 +323,7 @@
             <div class="x-modal-body">
                 <div class="parent-post-thread">
                     <div class="thread-left">
-                        <img src="/img/avatar-exemplo.png" alt="Avatar do Autor" class="thread-avatar" id="replyParentAvatar">
+                        <img src="/img/foto-padrão.jpg" alt="Avatar do Autor" class="thread-avatar" id="replyParentAvatar">
                         <div class="thread-line"></div>
                     </div>
                     <div class="thread-right">
@@ -358,7 +339,7 @@
                     </div>
                 </div>
                 <div class="current-user-reply-box">
-                    <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" class="timeline-avatar user-current-avatar">
+                    <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" class="timeline-avatar user-current-avatar">
                     <div class="reply-input-wrap">
                         <textarea id="replyContentInput" placeholder="Poste sua resposta" rows="3"></textarea>
                     </div>
@@ -376,9 +357,7 @@
         </div>
     </div>
 
-    <!-- =============================================
-    MODAL: ACOLHERIA
-    ============================================= -->
+
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
             <div class="acolheria-modal-header">
@@ -425,9 +404,8 @@
     </div>
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
 
-    <!-- =============================================
-    HUB FLUTUANTE (Acessibilidade e Ajuda)
-    ============================================= -->
+
+
     <div class="floating-hub" id="floatingHub">
         <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
@@ -502,27 +480,21 @@
     <!-- Overlay para fechar o hub -->
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
-    <!-- =============================================
-    INPUTS OCULTOS PARA UPLOAD DE ARQUIVOS
-    ============================================= -->
+
+
     <input type="file" id="videoUploadInput" accept="video/*" style="display:none;">
     <input type="file" id="imageUploadInput" accept="image/*" style="display:none;">
 
-  <!-- ============================================= -->
-<!-- SCRIPTS -->
-<!-- ============================================= -->
 
-<!-- 1. Supabase (sempre primeiro) -->
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/supabase-cliente.js"></script>
 
-<!-- 2. SISTEMA ANTI-HACKER (depois do Supabase) -->
 <script src="/comunidade/honeypot.js"></script>
 
-<!-- 3. Seu código principal -->
 <script src="/comunidade/comunidade.js"></script>
 
-<!-- 4. AcolherIA (por último) -->
 <script src="/Acolher-IA/Acolher-IA.js"></script>
 
 

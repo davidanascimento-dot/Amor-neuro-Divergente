@@ -30,14 +30,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const COMMUNITY_CHAT_ID = '00000000-0000-0000-0000-000000000001';
 
     function getUserName() {
-        // 🔒 NÃO USAR LOCALSTORAGE - usar dados do Supabase
         return currentUser?.user_metadata?.username || 
                currentUser?.email?.split('@')[0] || 
                'Usuário';
     }
 
     function getUserAvatar() {
-        // 🔒 NÃO USAR LOCALSTORAGE - usar dados do Supabase
         return currentUser?.user_metadata?.avatar_url || AVATAR_PADRAO;
     }
 
@@ -227,7 +225,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function apiCreateComment(postId, content) {
-        const { data, error } = await supabase.rpc('create_comment', {
+        const { data, error } = await supabase.rpc('create_comment_direct', {
             p_post_id: postId,
             p_content: content
         });
@@ -370,103 +368,268 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // =============================================
-    // 9. RENDER POSTS
+    // 9. LOAD AND SHOW COMMENTS - CORRIGIDO
     // =============================================
-    
-    async function loadAndShowComments(postId) {
-        const { data: comments, error } = await supabase
-            .from('comments')
-            .select('*')
-            .eq('post_id', postId)
-            .eq('is_active', true)
-            .order('created_at', { ascending: true })
-            .limit(20);
+    window.loadAndShowComments = async function(postId) {
+        console.log(`🔍 Carregando comentários para post: ${postId}`);
 
-        const list = document.querySelector(`#comments-${postId} .comments-list`);
-        if (!list) return;
+        if (!postId) {
+            console.error('❌ postId é inválido!');
+            return;
+        }
 
-        if (error || !comments || comments.length === 0) {
-            list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">Nenhum comentário ainda. Seja o primeiro! 💬</p>';
-        } else {
-            list.innerHTML = comments.map(c => `
-                <div class="comment-item">
-                    <strong>${escapeHtml(c.author_name || 'Usuário')}</strong>
-                    <p>${escapeHtml(c.content)}</p>
-                    <small>${formatDate(c.created_at)}</small>
+        let section = document.getElementById(`comments-${postId}`);
+        
+        if (!section) {
+            console.warn(`⚠️ Seção não encontrada, criando dinamicamente para post: ${postId}`);
+            
+            const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+            if (!postCard) {
+                console.error(`❌ Post card não encontrado: ${postId}`);
+                return;
+            }
+            
+            section = document.createElement('div');
+            section.className = 'comments-section';
+            section.id = `comments-${postId}`;
+            section.style.display = 'block';
+            section.innerHTML = `
+                <div class="comments-list">
+                    <p style="color:#888;font-size:13px;padding:8px;">⏳ Carregando comentários...</p>
                 </div>
-            `).join('');
+                <div class="add-comment">
+                    <input placeholder="Escreva um comentário..." id="comment-input-${postId}">
+                    <button class="submit-comment-btn" data-post-id="${postId}">Enviar</button>
+                </div>
+            `;
+            
+            const postActions = postCard.querySelector('.post-actions');
+            if (postActions) {
+                postActions.after(section);
+            } else {
+                postCard.appendChild(section);
+            }
+            
+            const submitBtn = section.querySelector('.submit-comment-btn');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
+            }
+            
+            console.log(`✅ Seção criada dinamicamente para post: ${postId}`);
+        }
+
+        const list = section.querySelector('.comments-list');
+        if (!list) {
+            console.error(`❌ Lista não encontrada em: comments-${postId}`);
+            return;
+        }
+
+        list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">⏳ Carregando comentários...</p>';
+
+        try {
+            const { data: comments, error } = await supabase
+                .from('comments')
+                .select('*')
+                .eq('post_id', postId)
+                .eq('is_active', true)
+                .order('created_at', { ascending: true });
+
+            if (error) {
+                console.error('❌ Erro ao carregar comentários:', error);
+                list.innerHTML = `<p style="color:#ef4444;font-size:13px;padding:8px;">❌ Erro: ${error.message}</p>`;
+                return;
+            }
+
+            console.log(`📨 ${comments?.length || 0} comentários encontrados para post ${postId}`);
+
+            if (!comments || comments.length === 0) {
+                list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">💬 Nenhum comentário ainda. Seja o primeiro!</p>';
+            } else {
+                list.innerHTML = comments.map(c => `
+                    <div class="comment-item" style="padding:10px 0;border-bottom:1px solid #eee;">
+                        <strong style="color:#7c3aed;">${escapeHtml(c.author_name || 'Usuário')}</strong>
+                        <p style="margin:4px 0 2px 0;font-size:14px;color:#333;">${escapeHtml(c.content)}</p>
+                        <small style="color:#999;font-size:11px;">${formatDate(c.created_at)}</small>
+                    </div>
+                `).join('');
+            }
+
+            section.style.display = 'block';
+
+            const countBtn = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .count`);
+            if (countBtn) {
+                countBtn.textContent = comments?.length || 0;
+            }
+
+        } catch (error) {
+            console.error('❌ Erro inesperado:', error);
+            list.innerHTML = '<p style="color:#ef4444;font-size:13px;padding:8px;">❌ Erro ao carregar comentários</p>';
+        }
+    };
+
+    // =============================================
+    // SETUP POST EVENTS
+    // =============================================
+    function setupPostEvents() {
+        console.log('🔄 Configurando eventos dos posts...');
+
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.removeEventListener('click', handleLike);
+            btn.addEventListener('click', handleLike);
+        });
+
+        document.querySelectorAll('.comment-toggle-btn').forEach(btn => {
+            btn.removeEventListener('click', handleCommentToggle);
+            btn.addEventListener('click', handleCommentToggle);
+        });
+
+        document.querySelectorAll('.submit-comment-btn').forEach(btn => {
+            btn.removeEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
+            btn.addEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
+        });
+
+        document.querySelectorAll('.video-fullscreen-btn').forEach(btn => {
+            btn.removeEventListener('click', handleVideoFullscreen);
+            btn.addEventListener('click', handleVideoFullscreen);
+        });
+    }
+
+    // =============================================
+    // HANDLERS
+    // =============================================
+    async function handleLike(e) {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const postId = btn.dataset.postId;
+        if (!currentUser) return showToast('Faça login', 'error');
+        
+        const result = await apiToggleLike(postId);
+        if (result) {
+            const countSpan = btn.querySelector('.count');
+            const icon = btn.querySelector('i');
+            if (countSpan) countSpan.textContent = result.likes;
+            btn.classList.toggle('liked', result.liked);
+            if (icon) {
+                icon.className = result.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+            }
         }
     }
 
-    function setupPostEvents() {
-        // Likes
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const postId = btn.dataset.postId;
-                if (!currentUser) return showToast('Faça login', 'error');
+    async function handleCommentToggle(e) {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const postId = btn.dataset.postId;
+        
+        if (!postId) {
+            console.error('❌ postId não encontrado');
+            return;
+        }
+
+        console.log(`🔄 Toggle comentários para post: ${postId}`);
+
+        const section = document.getElementById(`comments-${postId}`);
+        if (!section) {
+            console.error(`❌ Seção não encontrada: comments-${postId}`);
+            return;
+        }
+
+        const isHidden = section.style.display === 'none' || section.style.display === '';
+        
+        if (isHidden) {
+            console.log(`📂 Abrindo comentários do post ${postId}`);
+            section.style.display = 'block';
+            await window.loadAndShowComments(postId);
+        } else {
+            console.log(`📁 Fechando comentários do post ${postId}`);
+            section.style.display = 'none';
+        }
+    }
+
+    // =============================================
+    // handleCommentSubmit - VERSÃO FINAL
+    // =============================================
+    window.handleCommentSubmit = async function(e) {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const postId = btn.dataset.postId;
+        
+        if (!postId) {
+            console.error('❌ postId não encontrado no botão');
+            return;
+        }
+
+        const input = document.getElementById(`comment-input-${postId}`);
+        if (!input) {
+            console.error(`❌ Input não encontrado: comment-input-${postId}`);
+            return;
+        }
+
+        const text = input?.value.trim();
+        
+        if (!text) {
+            showToast('Digite um comentário', 'error');
+            return;
+        }
+        
+        if (!currentUser) {
+            showToast('Faça login para comentar', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
+
+        try {
+            console.log(`📤 Enviando comentário para post ${postId}: ${text}`);
+
+            const { data, error } = await supabase
+                .rpc('create_comment_direct', {
+                    p_post_id: postId,
+                    p_content: text
+                });
+
+            if (error) {
+                console.error('❌ Erro ao enviar comentário:', error);
+                showToast('Erro ao enviar comentário: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Enviar';
+                return;
+            }
+
+            console.log('✅ Comentário enviado! ID:', data);
+            
+            input.value = '';
+            showToast('💬 Comentário adicionado!', 'success');
+            
+            await window.loadAndShowComments(postId);
+            
+            const countBtn = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .count`);
+            if (countBtn) {
+                const { data: postData } = await supabase
+                    .from('posts')
+                    .select('comment_count')
+                    .eq('id', postId)
+                    .single();
                 
-                const result = await apiToggleLike(postId);
-                if (result) {
-                    const countSpan = btn.querySelector('.count');
-                    const icon = btn.querySelector('i');
-                    if (countSpan) countSpan.textContent = result.likes;
-                    btn.classList.toggle('liked', result.liked);
-                    if (icon) {
-                        icon.className = result.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-                    }
-                }
-            });
-        });
+                countBtn.textContent = postData?.comment_count || 0;
+            }
 
-        // Comentários
-        document.querySelectorAll('.comment-toggle-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const postId = btn.dataset.postId;
-                const section = document.getElementById(`comments-${postId}`);
-                if (section) {
-                    const isHidden = section.style.display === 'none' || section.style.display === '';
-                    if (isHidden) {
-                        section.style.display = 'block';
-                        await loadAndShowComments(postId);
-                    } else {
-                        section.style.display = 'none';
-                    }
-                }
-            });
-        });
+        } catch (error) {
+            console.error('❌ Erro inesperado:', error);
+            showToast('Erro ao enviar comentário', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Enviar';
+        }
+    };
 
-        // Submit comentários
-        document.querySelectorAll('.submit-comment-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const postId = btn.dataset.postId;
-                const input = document.getElementById(`comment-input-${postId}`);
-                const text = input?.value.trim();
-                if (!text) return showToast('Digite um comentário', 'error');
-                if (!currentUser) return showToast('Faça login', 'error');
-
-                const result = await apiCreateComment(postId, text);
-                if (result) {
-                    input.value = '';
-                    showToast('Comentário adicionado! 💬', 'success');
-                    await loadAndShowComments(postId);
-                }
-            });
-        });
-
-        // Vídeo fullscreen
-        document.querySelectorAll('.video-fullscreen-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const container = this.closest('.post-video-container');
-                const video = container?.querySelector('video');
-                if (video) {
-                    openFullscreenModal(video.src);
-                }
-            });
-        });
+    function handleVideoFullscreen(e) {
+        e.stopPropagation();
+        const container = e.currentTarget.closest('.post-video-container');
+        const video = container?.querySelector('video');
+        if (video) {
+            openFullscreenModal(video.src);
+        }
     }
 
     function openFullscreenModal(videoUrl) {
@@ -690,7 +853,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         this.disabled = true;
         
-        // Validação no frontend
         const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
         const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
         
@@ -843,21 +1005,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        // Verifica se o chat atual ainda existe
         const stillExists = channels.some(g => g.id === currentChatId);
         if (!stillExists && currentChatId !== COMMUNITY_CHAT_ID) {
-            const geral = channels.find(g => g.name === 'Geral');
+            const geral = channels.find(g => g.name === 'Geral' || g.name === 'Comunidade Geral');
             if (geral) {
                 currentChatId = geral.id;
                 const title = document.getElementById('chatCurrentChannel');
                 if (title) title.textContent = geral.name;
+            } else if (channels.length > 0) {
+                currentChatId = channels[0].id;
+                const title = document.getElementById('chatCurrentChannel');
+                if (title) title.textContent = channels[0].name;
             }
         }
 
         container.innerHTML = channels.map((group) => {
             const isActive = group.id === currentChatId ? 'active' : '';
-            const icon = group.name === 'Geral' ? 'fa-solid fa-globe' : 'fa-solid fa-users';
-            const badge = group.name === 'Geral' ? '<span class="channel-badge">●</span>' : '';
+            const isGeral = group.name === 'Geral' || group.name === 'Comunidade Geral';
+            const icon = isGeral ? 'fa-solid fa-globe' : 'fa-solid fa-users';
+            const badge = isGeral ? '<span class="channel-badge" style="color:#10b981;">●</span>' : '';
             
             return `
             <div class="channel-item ${isActive}" data-channel="${group.id}" onclick="window.openGroupChat('${group.id}')">
@@ -888,39 +1054,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!confirm('Tem certeza que deseja sair deste grupo?')) return;
 
         try {
-            const { error } = await supabase
-                .from('group_members')
-                .delete()
-                .eq('group_id', groupId)
-                .eq('user_id', currentUser.id);
+            const { data, error } = await supabase.rpc('leave_group_with_cleanup', {
+                p_group_id: groupId,
+                p_user_id: currentUser.id
+            });
 
             if (error) throw error;
 
-            await supabase
-                .from('conversation_participants')
-                .delete()
-                .eq('conversation_id', groupId)
-                .eq('user_id', currentUser.id);
+            if (data && data.success) {
+                showToast(data.message || 'Saiu do grupo!', 'info');
+                await renderGroups();
+                await renderChatChannels();
 
-            showToast('Você saiu do grupo!', 'info');
+                if (currentChatId === groupId) {
+                    const { data: geralData } = await supabase
+                        .from('groups')
+                        .select('id, name')
+                        .eq('name', 'Geral')
+                        .maybeSingle();
 
-            await renderGroups();
-            await renderChatChannels();
-
-            if (currentChatId === groupId) {
-                const { data: geralGroup } = await supabase
-                    .from('groups')
-                    .select('id, name')
-                    .eq('name', 'Geral')
-                    .single();
-
-                if (geralGroup) {
-                    switchChat(geralGroup.id, geralGroup.name);
-                    switchTab('conversa');
-                    showToast('🔁 Redirecionado para o chat Geral', 'info', 2000);
+                    if (geralData) {
+                        switchChat(geralData.id, geralData.name);
+                        switchTab('conversa');
+                        showToast('🔁 Redirecionado para o chat Geral', 'info', 2000);
+                    }
                 }
+            } else {
+                showToast(data?.message || 'Erro ao sair do grupo', 'error');
             }
-
         } catch (error) {
             console.error('❌ Erro ao sair:', error);
             showToast('Erro ao sair: ' + error.message, 'error');
@@ -937,66 +1098,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            // Verificar se já é membro
-            const { data: existing, error: checkError } = await supabase
-                .from('group_members')
-                .select('*')
-                .eq('group_id', groupId)
-                .eq('user_id', currentUser.id)
-                .maybeSingle();
+            const { data, error } = await supabase.rpc('join_group_with_cleanup', {
+                p_group_id: groupId,
+                p_user_id: currentUser.id
+            });
 
-            if (checkError) throw checkError;
+            if (error) throw error;
 
-            if (existing) {
-                showToast('Você já é membro deste grupo!', 'info');
-                return;
+            if (data && data.success) {
+                showToast(data.message || 'Entrou no grupo! 🎉', 'success');
+                await renderGroups();
+                await renderChatChannels();
+                
+                const groupName = data.group_name || 'Grupo';
+                switchChat(groupId, groupName);
+                switchTab('conversa');
+            } else {
+                showToast(data?.message || 'Erro ao entrar no grupo', 'error');
             }
-
-            // Verificar se o grupo é privado
-            const { data: group, error: groupError } = await supabase
-                .from('groups')
-                .select('is_private')
-                .eq('id', groupId)
-                .single();
-
-            if (groupError) throw groupError;
-
-            if (group.is_private) {
-                showToast('Grupo privado. Solicite entrada.', 'warning');
-                return;
-            }
-
-            // Entrar no grupo
-            const { error: insertError } = await supabase
-                .from('group_members')
-                .insert({
-                    group_id: groupId,
-                    user_id: currentUser.id,
-                    joined_at: new Date().toISOString()
-                });
-
-            if (insertError) throw insertError;
-
-            // Adicionar à conversa
-            await supabase
-                .from('conversation_participants')
-                .insert({
-                    conversation_id: groupId,
-                    user_id: currentUser.id,
-                    joined_at: new Date().toISOString()
-                });
-
-            // Atualizar contador
-            await supabase
-                .from('groups')
-                .update({ members: supabase.raw('members + 1') })
-                .eq('id', groupId);
-
-            showToast('Entrou no grupo! 🎉', 'success');
-
-            await renderGroups();
-            await renderChatChannels();
-
         } catch (error) {
             console.error('❌ Erro ao entrar:', error);
             showToast('Erro ao entrar: ' + error.message, 'error');
@@ -1066,7 +1185,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        // Verificar se já existe
         const { data: existing } = await supabase
             .from('groups')
             .select('id')
@@ -1079,7 +1197,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            // Criar grupo
             const { data: group, error: groupError } = await supabase
                 .from('groups')
                 .insert({
@@ -1097,7 +1214,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (groupError) throw groupError;
 
-            // Criar conversa
             await supabase
                 .from('conversations')
                 .insert({
@@ -1108,7 +1224,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     created_at: new Date().toISOString()
                 });
 
-            // Adicionar criador como participante
             await supabase
                 .from('conversation_participants')
                 .insert({
@@ -1117,7 +1232,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     joined_at: new Date().toISOString()
                 });
 
-            // Adicionar criador como membro
             await supabase
                 .from('group_members')
                 .insert({
@@ -1166,28 +1280,110 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function ensureCommunityChat() {
-        const { data } = await supabase
-            .from('conversations')
-            .select('id')
-            .eq('id', COMMUNITY_CHAT_ID)
-            .maybeSingle();
-        if (!data) {
-            await supabase
+        try {
+            const { data, error } = await supabase
                 .from('conversations')
-                .insert({ id: COMMUNITY_CHAT_ID, name: 'Comunidade Geral' });
+                .select('id')
+                .eq('id', COMMUNITY_CHAT_ID)
+                .maybeSingle();
+
+            if (error) {
+                console.error('❌ Erro ao verificar conversa:', error);
+                return false;
+            }
+
+            if (!data) {
+                console.log('📝 Criando conversa comunidade...');
+                const { error: insertError } = await supabase
+                    .from('conversations')
+                    .insert({
+                        id: COMMUNITY_CHAT_ID,
+                        name: 'Comunidade Geral',
+                        type: 'group'
+                    });
+
+                if (insertError) {
+                    console.error('❌ Erro ao criar conversa:', insertError);
+                    return false;
+                }
+                console.log('✅ Conversa criada com sucesso!');
+                return true;
+            }
+            
+            console.log('✅ Conversa já existe!');
+            return true;
+            
+        } catch (error) {
+            console.error('❌ Erro em ensureCommunityChat:', error);
+            return false;
         }
     }
 
     async function addUserToChat() {
-        if (!currentUser) return;
-        await supabase
-            .from('conversation_participants')
-            .upsert({
-                conversation_id: COMMUNITY_CHAT_ID,
-                user_id: currentUser.id
-            }, {
-                onConflict: 'conversation_id,user_id'
+        if (!currentUser) {
+            console.log('⚠️ Usuário não logado, pulando addUserToChat');
+            return;
+        }
+        
+        try {
+            const { data, error } = await supabase.rpc('add_user_to_chat', {
+                p_user_id: currentUser.id,
+                p_conversation_id: COMMUNITY_CHAT_ID
             });
+            
+            if (error) {
+                console.error('❌ Erro ao adicionar usuário ao chat (RPC):', error);
+                await addUserToChatFallback();
+            } else if (data && data.success) {
+                console.log('✅ Usuário adicionado ao chat via RPC!');
+            } else {
+                console.error('❌ Falha ao adicionar usuário:', data?.message);
+                await addUserToChatFallback();
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro inesperado em addUserToChat:', error);
+            await addUserToChatFallback();
+        }
+    }
+
+    async function addUserToChatFallback() {
+        try {
+            console.log('🔄 Tentando método alternativo...');
+            
+            const { data: convData } = await supabase
+                .from('conversations')
+                .select('id')
+                .eq('id', COMMUNITY_CHAT_ID)
+                .maybeSingle();
+            
+            if (!convData) {
+                await supabase
+                    .from('conversations')
+                    .insert({
+                        id: COMMUNITY_CHAT_ID,
+                        name: 'Comunidade Geral',
+                        type: 'group'
+                    });
+            }
+            
+            const { error } = await supabase
+                .from('conversation_participants')
+                .insert({
+                    conversation_id: COMMUNITY_CHAT_ID,
+                    user_id: currentUser.id,
+                    joined_at: new Date().toISOString()
+                });
+            
+            if (error) {
+                console.error('❌ Erro no fallback:', error);
+            } else {
+                console.log('✅ Usuário adicionado via fallback!');
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro no fallback:', error);
+        }
     }
 
     async function loadChatMessages(chatId = null) {
@@ -1543,12 +1739,88 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // =============================================
-    // 21. INICIALIZAÇÃO
+    // 21. FUNÇÃO PARA GARANTIR GRUPO GERAL
     // =============================================
+    async function ensureGeralGroup() {
+        try {
+            const { data, error } = await supabase.rpc('ensure_geral_group');
+            if (error) throw error;
+            if (data && data.success) {
+                console.log('✅ Grupo Geral garantido:', data);
+                return data.group_id;
+            }
+            return null;
+        } catch (error) {
+            console.error('❌ Erro ao garantir grupo Geral:', error);
+            return null;
+        }
+    }
+
+    // =============================================
+    // 22. SUBSCRIÇÃO PARA COMENTÁRIOS EM TEMPO REAL
+    // =============================================
+    let commentsSubscription = null;
+
+    function subscribeToComments() {
+        if (commentsSubscription) {
+            supabase.removeChannel(commentsSubscription);
+            commentsSubscription = null;
+        }
+
+        commentsSubscription = supabase
+            .channel('comments-changes')
+            .on('postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'comments'
+                },
+                async (payload) => {
+                    const newComment = payload.new;
+                    console.log('📩 Novo comentário recebido:', newComment);
+                    
+                    if (newComment.author_id === currentUser?.id) return;
+                    
+                    const postId = newComment.post_id;
+                    await window.loadAndShowComments(postId);
+                    
+                    const countBtn = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .count`);
+                    if (countBtn) {
+                        const { data: postData } = await supabase
+                            .from('posts')
+                            .select('comment_count')
+                            .eq('id', postId)
+                            .single();
+                        
+                        if (postData) {
+                            countBtn.textContent = postData.comment_count || 0;
+                        }
+                    }
+                    
+                    showToast('💬 Novo comentário no post!', 'info', 2000);
+                }
+            )
+            .subscribe();
+    }
+
+    // =============================================
+    // 23. INICIALIZAÇÃO
+    // =============================================
+    const geralGroupId = await ensureGeralGroup();
+
     await ensureCommunityChat();
     await addUserToChat();
-    await loadChatMessages(COMMUNITY_CHAT_ID);
-    subscribeToMessages(COMMUNITY_CHAT_ID);
+
+    if (geralGroupId) {
+        currentChatId = geralGroupId;
+        const title = document.getElementById('chatCurrentChannel');
+        if (title) title.textContent = 'Geral';
+    } else {
+        currentChatId = COMMUNITY_CHAT_ID;
+    }
+
+    await loadChatMessages(currentChatId);
+    subscribeToMessages(currentChatId);
 
     await renderPosts();
     await renderGroups();
@@ -1556,6 +1828,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await renderChatChannels();
 
     subscribeToPosts();
+    subscribeToComments();
 
     console.log('🚀 Comunidade pronta! 👍💬❤️');
     console.log('🔒 Sistema 100% seguro via Supabase RPC!');
