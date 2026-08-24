@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const supabase = window.supabaseClient;
 
     // Caminho padrão correto baseado na sua estrutura local
-    const AVATAR_PADRAO = '/img/avatar-1776703979307.png';
+    const AVATAR_PADRAO = '/img/avatar-padrao.png';
 
     // =============================================
     // VERIFICAÇÃO DE STORAGE (anti Tracking Prevention)
@@ -33,38 +33,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function fetchProfile(userId) {
         if (!supabase || !userId) return null;
         
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .maybeSingle();
-        
-        if (error) {
-            console.log('Erro ao buscar perfil:', error.message);
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .maybeSingle();
+            
+            if (error) {
+                console.log('Erro ao buscar perfil:', error.message);
+                return null;
+            }
+            
+            return data;
+        } catch (err) {
+            console.error('Erro em fetchProfile:', err);
             return null;
         }
-        
-        return data;
     }
 
     // Função para salvar/atualizar perfil na tabela profiles
     async function saveProfileToDB(profileData) {
         if (!supabase) return { error: 'Supabase não disponível' };
         
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return { error: 'Usuário não autenticado' };
-        
-        const { data, error } = await supabase
-            .from('profiles')
-            .upsert({
-                id: user.id,
-                ...profileData,
-                updated_at: new Date().toISOString()
-            })
-            .select()
-            .single();
-        
-        return { data, error };
+        try {
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+            
+            if (userError) return { error: userError.message };
+            if (!user) return { error: 'Usuário não autenticado' };
+            
+            const { data, error } = await supabase
+                .from('profiles')
+                .upsert({
+                    id: user.id,
+                    ...profileData,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'id'
+                })
+                .select()
+                .single();
+            
+            return { data, error };
+        } catch (err) {
+            console.error('Erro em saveProfileToDB:', err);
+            return { error: err.message };
+        }
     }
 
     // =============================================
@@ -89,13 +103,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const profile = await fetchProfile(user.id);
                 
                 if (profile) {
-                    currentUser.name = profile.full_name || user.user_metadata?.first_name || user.email.split('@')[0];
+                    currentUser.name = profile.username || profile.full_name || user.user_metadata?.first_name || user.email.split('@')[0];
                     currentUser.bio = profile.bio || '';
                     currentUser.avatar = profile.avatar_url || user.user_metadata?.avatar_url || AVATAR_PADRAO;
                 } else {
-                    currentUser.name = user.user_metadata?.first_name || user.email.split('@')[0];
-                    currentUser.avatar = user.user_metadata?.avatar_url || AVATAR_PADRAO;
-                    currentUser.bio = user.user_metadata?.bio || '';
+                    // Criar perfil se não existir
+                    const defaultUsername = user.user_metadata?.first_name || user.email.split('@')[0];
+                    const defaultAvatar = user.user_metadata?.avatar_url || AVATAR_PADRAO;
+                    
+                    const { error: createError } = await supabase
+                        .from('profiles')
+                        .insert({
+                            id: user.id,
+                            username: defaultUsername,
+                            avatar_url: defaultAvatar,
+                            bio: user.user_metadata?.bio || '',
+                            is_active: true
+                        });
+                    
+                    if (!createError) {
+                        console.log('✅ Perfil criado automaticamente!');
+                        currentUser.name = defaultUsername;
+                        currentUser.avatar = defaultAvatar;
+                    }
                 }
                 
                 saveToLocalStorage();
@@ -144,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             toast.style.opacity = '0';
             toast.style.transition = 'opacity 0.3s ease';
             setTimeout(() => toast.remove(), 300); 
-        }, 2500);
+        }, 3000);
     }
 
     // =============================================
@@ -378,73 +408,107 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             showToast("Subindo imagem para a nuvem...");
 
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-            const filePath = `profiles/${fileName}`;
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const filePath = `profiles/${fileName}`;
 
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('avatars')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
+                // Verificar se o bucket existe, se não criar
+                const { data: buckets } = await supabase.storage.listBuckets();
+                const bucketExists = buckets?.some(b => b.name === 'avatars');
+                
+                if (!bucketExists) {
+                    showToast("Bucket 'avatars' não encontrado. Criando...", true);
+                    // Criar bucket
+                    await supabase.storage.createBucket('avatars', {
+                        public: true,
+                        file_size_limit: 5242880 // 5MB
+                    });
+                }
+
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('avatars')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+
+                if (uploadError) {
+                    console.error("Erro no upload:", uploadError);
+                    showToast("Erro no upload: " + uploadError.message, true);
+                    return;
+                }
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('avatars')
+                    .getPublicUrl(filePath);
+
+                console.log('✅ Upload concluído:', publicUrl);
+
+                // Salvar no perfil
+                const { error: profileError } = await saveProfileToDB({
+                    avatar_url: publicUrl,
+                    avatar_storage_path: filePath
+                });
+                
+                if (profileError) {
+                    console.error("Erro ao salvar avatar no banco:", profileError);
+                    showToast("Erro ao salvar avatar: " + profileError.message, true);
+                    return;
+                }
+
+                // Atualizar metadados do usuário
+                const { error: updateError } = await supabase.auth.updateUser({
+                    data: { avatar_url: publicUrl }
                 });
 
-            if (uploadError) {
-                console.error("Erro no upload:", uploadError);
-                showToast("Erro no upload: " + uploadError.message, true);
-                return;
+                if (updateError) {
+                    console.warn("Aviso: metadados não atualizados:", updateError.message);
+                }
+
+                currentUser.avatar = publicUrl;
+                saveToLocalStorage();
+                updateGlobalUI();
+                showToast('Foto de perfil salva com sucesso! 🌸');
+                
+            } catch (err) {
+                console.error("Erro no upload:", err);
+                showToast("Erro ao enviar imagem: " + err.message, true);
             }
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('avatars')
-                .getPublicUrl(filePath);
-
-            console.log('✅ Upload concluído:', publicUrl);
-
-            const { error: profileError } = await saveProfileToDB({
-                avatar_url: publicUrl,
-                avatar_storage_path: filePath
-            });
-            
-            if (profileError) {
-                console.error("Erro ao salvar avatar no banco:", profileError);
-            }
-
-            const { error: updateError } = await supabase.auth.updateUser({
-                data: { avatar_url: publicUrl }
-            });
-
-            if (updateError) {
-                console.warn("Aviso: metadados não atualizados:", updateError.message);
-            }
-
-            currentUser.avatar = publicUrl;
-            saveToLocalStorage();
-            updateGlobalUI();
-            showToast('Foto de perfil salva com sucesso! 🌸');
         };
         input.click();
     });
 
     // Remover Avatar
     document.getElementById('removeAvatarBtn')?.addEventListener('click', async () => {
-        if (supabase) {
-            showToast("Restaurando avatar padrão...");
+        try {
+            if (supabase) {
+                showToast("Restaurando avatar padrão...");
+                
+                const { error: profileError } = await saveProfileToDB({
+                    avatar_url: AVATAR_PADRAO,
+                    avatar_storage_path: null
+                });
+                
+                if (profileError) {
+                    console.error("Erro ao remover avatar:", profileError);
+                    showToast("Erro ao remover avatar: " + profileError.message, true);
+                    return;
+                }
+                
+                await supabase.auth.updateUser({
+                    data: { avatar_url: AVATAR_PADRAO }
+                });
+            }
             
-            await saveProfileToDB({
-                avatar_url: AVATAR_PADRAO,
-                avatar_storage_path: null
-            });
-            
-            await supabase.auth.updateUser({
-                data: { avatar_url: AVATAR_PADRAO }
-            });
+            currentUser.avatar = AVATAR_PADRAO;
+            saveToLocalStorage(); 
+            updateGlobalUI(); 
+            showToast('Avatar restaurado para o padrão!');
+        } catch (err) {
+            console.error("Erro ao remover avatar:", err);
+            showToast("Erro ao remover avatar: " + err.message, true);
         }
-        
-        currentUser.avatar = AVATAR_PADRAO;
-        saveToLocalStorage(); 
-        updateGlobalUI(); 
-        showToast('Avatar restaurado para o padrão!');
     });
 
     // Salvar alterações de Texto
@@ -455,32 +519,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         let salvouBanco = false;
         
         if (supabase) {
-            showToast("Salvando dados na nuvem...");
-            
-            const { error: profileError } = await saveProfileToDB({
-                full_name: novoNome,
-                bio: novaBio
-            });
-            
-            if (profileError) {
-                console.error("Erro ao salvar no banco:", profileError);
-                showToast("Erro ao salvar: " + profileError.message, true);
-            } else {
-                salvouBanco = true;
-            }
-            
-            await supabase.auth.updateUser({
-                data: { 
-                    first_name: novoNome,
+            try {
+                showToast("Salvando dados na nuvem...");
+                
+                const { error: profileError } = await saveProfileToDB({
+                    username: novoNome,
                     bio: novaBio
+                });
+                
+                if (profileError) {
+                    console.error("Erro ao salvar no banco:", profileError);
+                    showToast("Erro ao salvar: " + profileError.message, true);
+                } else {
+                    salvouBanco = true;
                 }
-            });
+                
+                // Atualizar metadados do usuário
+                await supabase.auth.updateUser({
+                    data: { 
+                        first_name: novoNome,
+                        bio: novaBio,
+                        username: novoNome
+                    }
+                });
+            } catch (err) {
+                console.error("Erro ao salvar:", err);
+                showToast("Erro ao salvar: " + err.message, true);
+            }
         }
 
         currentUser.name = novoNome;
         currentUser.bio = novaBio;
         saveToLocalStorage(); 
         updateGlobalUI(); 
+        
+        // Sincronizar com a comunidade (se aberta)
+        if (window.syncProfile) {
+            try {
+                await window.syncProfile();
+                console.log('✅ Perfil sincronizado com a comunidade!');
+            } catch (err) {
+                console.warn('Não foi possível sincronizar com a comunidade:', err);
+            }
+        }
         
         if (salvouBanco) {
             showToast('Perfil salvo com sucesso! ✅');
