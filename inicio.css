@@ -847,15 +847,17 @@ ul, ol { list-style: none; }
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-.triple-card-btn:hover {
-    background: rgba(255,255,255,0.25);
-    transform: translateY(-2px);
+.btn-glow{
+border: 2px solid var(--bg-secondary);
+    background-color: rgba(126, 7, 201, 0.877);
+    border-radius: 20px;
+    color: white;
 }
 
-.triple-card-btn:active {
-    transform: scale(0.97);
+.btn-glow{
+    padding: 15px;
+    margin: 10px;
 }
-
 /* =========================================
    FEED DA COMUNIDADE
    ========================================= */
