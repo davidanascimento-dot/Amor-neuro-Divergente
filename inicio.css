@@ -2616,13 +2616,14 @@ body.a11y-dark-mode .whoweare-content .section-badge {
 }
 
 .badge-teal {
-  background-color: #9fe3dd !important; /* Verde água / Teal */
-  color: #ffffff !important;
+    background-color: #0596684f;
+border: 1px solid var(--accent-mint);
+
 }
 
 .badge-purple {
-  background-color: #a48be0 ; /* Roxo suave */
-  color: #ffffff;
+    background-color: rgba(216, 112, 147, 0.479);
+border: 1px solid var(--primary);
 }
 
 /* Subtítulo: "Sua porta de entrada para o AmorNeuroDivergente" */
