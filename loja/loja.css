@@ -457,7 +457,7 @@ input { font-family: inherit; }
     outline-offset: -1px;
 }
 .search-input-wrapper::before {
-    content: "🔍"; 
+    content: ""; 
     position: absolute; 
     left: 15px; 
     top: 50%;
