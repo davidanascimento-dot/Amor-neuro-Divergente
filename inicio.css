@@ -1022,7 +1022,7 @@ ul, ol { list-style: none; }
     box-shadow: var(--shadow-sm);
 }
 
-.blog-card:hover, 
+
 
 .blog-card-image {
     width: 100%;
@@ -1156,7 +1156,7 @@ ul, ol { list-style: none; }
 
 .chip i {
     font-size: 16px;
-    color: var(--primary);
+
 }
 
 /* =========================================
