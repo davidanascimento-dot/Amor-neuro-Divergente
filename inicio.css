@@ -1106,16 +1106,23 @@ border: 2px solid var(--bg-secondary);
    CENTRAL DE DIREITOS
    ========================================= */
 .rights-quick-section {
-    padding: 60px 20px;
-    background: linear-gradient(135deg, #21202541 30%, #0a030754 100%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&h=600&fit=crop');
+    border: 1px solid rgba(255, 157, 239, 0.452);
+    border-radius: 5pt;
+    margin: 10px;
+        margin-top: 40px;
+    padding: 70px 20px;
+    background: linear-gradient(135deg, #212025a1 30%, #0a030771 100%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&h=600&fit=crop') ;
+
     background-size: cover;
     background-position: center;
     background-blend-mode: overlay;
 }
 
+
 .rights-quick-section .container {
     max-width: 1000px;
     margin: 0 auto;
+
 }
 
 .rights-box 
