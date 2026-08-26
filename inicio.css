@@ -995,10 +995,7 @@ border: 2px solid var(--bg-secondary);
 /* =========================================
    BLOG DESTAQUES
    ========================================= */
-.blog-highlights-section {
-    padding: 60px 20px;
-    background: var(--bg-body);
-}
+
 
 .blog-highlights-section .container {
     max-width: 1100px;
@@ -1027,11 +1024,7 @@ border: 2px solid var(--bg-secondary);
     box-shadow: var(--shadow-sm);
 }
 
-.blog-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--primary);
-    box-shadow: var(--shadow-md);
-}
+
 
 .blog-card-image {
     width: 100%;
@@ -1046,9 +1039,6 @@ border: 2px solid var(--bg-secondary);
     transition: transform var(--transition);
 }
 
-.blog-card:hover .blog-card-image img {
-    transform: scale(1.03);
-}
 
 .blog-card-content {
     padding: 20px 24px 24px;
@@ -1164,16 +1154,11 @@ border: 2px solid var(--bg-secondary);
     text-decoration: none;
 }
 
-.chip:hover {
-    background: var(--primary-light);
-    border-color: var(--primary);
-    color: var(--primary);
-    transform: translateY(-2px);
-}
+.chip:hover,
 
 .chip i {
     font-size: 16px;
-    color: var(--primary);
+
 }
 
 /* =========================================
@@ -1195,11 +1180,7 @@ border: 2px solid var(--bg-secondary);
     margin-bottom: 32px;
 }
 
-.guides-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-}
+.guides-grid 
 
 .guide-card {
     display: flex;
@@ -1213,8 +1194,8 @@ border: 2px solid var(--bg-secondary);
 }
 
 .guide-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--primary);
+
+
     box-shadow: var(--shadow-md);
 }
 
@@ -1222,8 +1203,7 @@ border: 2px solid var(--bg-secondary);
     width: 48px;
     height: 48px;
     min-width: 48px;
-    border-radius: 12px;
-    background: var(--primary-light);
+  
     color: var(--primary);
     display: flex;
     align-items: center;
@@ -2618,13 +2598,14 @@ body.a11y-dark-mode .whoweare-content .section-badge {
 }
 
 .badge-teal {
-  background-color: #9fe3dd !important; /* Verde água / Teal */
-  color: #ffffff !important;
+    background-color: #0596684f;
+border: 1px solid var(--accent-mint);
+
 }
 
 .badge-purple {
-  background-color: #a48be0 ; /* Roxo suave */
-  color: #ffffff;
+    background-color: rgba(216, 112, 147, 0.479);
+border: 1px solid var(--primary);
 }
 
 /* Subtítulo: "Sua porta de entrada para o AmorNeuroDivergente" */
