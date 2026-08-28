@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", async () => {
     
     // =============================================
@@ -1832,4 +1834,387 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log('🚀 Comunidade pronta! 👍💬❤️');
     console.log('🔒 Sistema 100% seguro via Supabase RPC!');
+
+    
+
+
+
+    /* ADICIONAIS DA COMUNIDADE PORFAVOR NÃO MEXER NÃO TEM EM HTML E CSS SOU A PURA PREGUIÇA*/
+
+    // =============================================
+// FUNÇÕES CORRIGIDAS - COM ÍCONES FONT AWESOME
+// =============================================
+
+// 1. CATEGORIAS DO FÓRUM COM ÍCONES
+window.FORUM_CATEGORIES = [
+    { id: 'duvida', label: 'Dúvida', icon: 'fa-circle-question' },
+    { id: 'experiencia', label: 'Experiência', icon: 'fa-comment-dots' },
+    { id: 'dica', label: 'Dica', icon: 'fa-lightbulb' },
+    { id: 'conquista', label: 'Conquista', icon: 'fa-trophy' },
+    { id: 'neurodivergencia', label: 'Neurodivergência', icon: 'fa-brain' },
+    { id: 'estudos', label: 'Estudos', icon: 'fa-book-open' },
+    { id: 'trabalho', label: 'Trabalho', icon: 'fa-briefcase' },
+    { id: 'acessibilidade', label: 'Acessibilidade', icon: 'fa-universal-access' },
+    { id: 'conversa', label: 'Conversa', icon: 'fa-comments' },
+    { id: 'ajuda', label: 'Preciso de Ajuda', icon: 'fa-hand-holding-heart' }
+];
+
+// 2. ADICIONAR CATEGORIA NO MODAL
+function addCategorySelectorToModal() {
+    var workspace = document.querySelector('.compose-workspace');
+    if (!workspace) return;
+    if (document.getElementById('postCategorySelector')) return;
+    
+    var html = '<div class="post-category-selector" id="postCategorySelector" style="margin-top:10px;">';
+    html += '<label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;"><i class="fa-regular fa-tag"></i> Categoria</label>';
+    html += '<select id="postCategorySelect" style="width:100%;padding:8px 12px;border:2px solid var(--border-color);border-radius:10px;font-size:13px;font-family:Inter,sans-serif;background:var(--bg-secondary);color:var(--text-primary);outline:none;">';
+    
+    window.FORUM_CATEGORIES.forEach(function(c) {
+        html += '<option value="' + c.id + '"><i class="fa-regular ' + c.icon + '"></i> ' + c.label + '</option>';
+    });
+    html += '</select></div>';
+    
+    workspace.insertAdjacentHTML('beforeend', html);
+    
+    var select = document.getElementById('postCategorySelect');
+    if (select) {
+        select.addEventListener('change', function() {
+            var isHelp = this.value === 'ajuda';
+            var helpLabel = document.querySelector('.help-request-label');
+            if (helpLabel) {
+                helpLabel.style.display = isHelp ? 'block' : 'none';
+            }
+            if (isHelp) {
+                showToast('🆘 Sua publicação será marcada como "Preciso de Ajuda"!', 'info', 3000);
+            }
+        });
+    }
+}
+
+// 3. LABEL DE AJUDA
+function addHelpRequestLabel() {
+    var workspace = document.querySelector('.compose-workspace');
+    if (!workspace) return;
+    if (document.querySelector('.help-request-label')) return;
+    
+    var html = '<div class="help-request-label" style="display:none;margin-top:10px;padding:10px 14px;background:#fef3c7;border-radius:10px;border-left:4px solid #f59e0b;font-size:13px;color:#92400e;">';
+    html += '<i class="fa-solid fa-hand-holding-heart" style="color:#f59e0b;"></i>';
+    html += '<strong> Você está pedindo ajuda!</strong>';
+    html += '<p style="margin:4px 0 0 0;font-size:12px;color:#78350f;">A comunidade foi notificada para te apoiar. Alguém responderá em breve. 💜</p>';
+    html += '</div>';
+    
+    workspace.insertAdjacentHTML('beforeend', html);
+}
+
+// 4. REGRAS DA COMUNIDADE COM ÍCONES
+window.showCommunityRules = function() {
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:var(--bg-card,#fff);border-radius:20px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto;padding:24px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:fadeIn 0.25s ease;';
+    
+    var rules = [
+        ['fa-handshake', 'Respeite as pessoas', 'Trate todos com respeito e empatia. Cada pessoa tem sua própria jornada.'],
+        ['fa-ban', 'Não pratique bullying', 'Comportamentos agressivos, ofensivos ou discriminatórios não são tolerados.'],
+        ['fa-lock', 'Não exponha informações pessoais', 'Proteja sua privacidade e a dos outros.'],
+        ['fa-user-slash', 'Não assedie outros usuários', 'Respeite os limites das pessoas. Assédio em qualquer forma resultará em banimento.'],
+        ['fa-heart', 'Ajude a manter um ambiente acolhedor', 'Sua contribuição faz a diferença. Seja gentil e solidário.'],
+        ['fa-filter', 'Conteúdo apropriado', 'Mantenha o conteúdo adequado para todas as idades.'],
+        ['fa-bullseye', 'Mantenha o foco', 'Discussões construtivas e relacionadas à neurodiversidade.']
+    ];
+    
+    var rulesHtml = '';
+    rules.forEach(function(r) {
+        rulesHtml += '<div style="padding:12px 14px;background:var(--bg-secondary,#f7f7f9);border-radius:10px;border-left:4px solid #7c3aed;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;">';
+        rulesHtml += '<i class="fa-solid ' + r[0] + '" style="color:#7c3aed;font-size:18px;margin-top:2px;"></i>';
+        rulesHtml += '<div><strong style="font-size:14px;color:var(--text-primary,#1e293b);">' + r[1] + '</strong>';
+        rulesHtml += '<p style="font-size:13px;color:var(--text-secondary,#64748b);margin:4px 0 0 0;">' + r[2] + '</p></div>';
+        rulesHtml += '</div>';
+    });
+    
+    modal.innerHTML = 
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+        '<h2 style="font-size:20px;font-weight:700;color:var(--text-primary,#1e293b);"><i class="fa-solid fa-shield-halved" style="color:#7c3aed;"></i> Regras da Comunidade</h2>' +
+        '<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="background:none;border:none;font-size:22px;color:var(--text-muted,#94a3b8);cursor:pointer;padding:4px 8px;">✕</button>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;">' + rulesHtml + '</div>' +
+        '<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:30px;background:linear-gradient(135deg,#9333ea,#ec4899);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:Inter,sans-serif;transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'">✅ Entendi e concordo</button>';
+    
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) overlay.remove();
+    });
+};
+
+// 5. BANNER DE REGRAS
+function addRulesBanner() {
+    var screen = document.getElementById('screen-forum');
+    if (!screen) return;
+    if (document.getElementById('rulesBanner')) return;
+    
+    var banner = document.createElement('div');
+    banner.id = 'rulesBanner';
+    banner.style.cssText = 'padding:12px 16px;margin-bottom:12px;background:linear-gradient(135deg,rgba(124,58,237,0.05),rgba(236,72,153,0.05));border-radius:16px;border:1px solid var(--border-color,#e2e8f0);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;';
+    
+    banner.innerHTML = 
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<i class="fa-solid fa-shield-halved" style="font-size:24px;color:#7c3aed;"></i>' +
+        '<div><span style="font-weight:600;color:var(--text-primary,#1e293b);">Regras da Comunidade</span>' +
+        '<p style="font-size:12px;color:var(--text-secondary,#64748b);margin:0;">Ajude a manter um ambiente acolhedor</p></div>' +
+        '</div>' +
+        '<button onclick="window.showCommunityRules()" style="padding:6px 18px;border:1px solid var(--border-color,#e2e8f0);border-radius:20px;background:var(--bg-card,#fff);color:var(--text-primary,#1e293b);font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#7c3aed\'" onmouseout="this.style.borderColor=\'var(--border-color,#e2e8f0)\'">' +
+        '<i class="fa-regular fa-eye"></i> Ver regras</button>';
+    
+    var quickPost = screen.querySelector('.quick-post');
+    if (quickPost) {
+        quickPost.after(banner);
+    } else {
+        screen.insertBefore(banner, screen.firstChild);
+    }
+}
+
+// 6. FILTRO DE GRUPOS COM ÍCONES
+function addGroupSearch() {
+    var screen = document.getElementById('screen-grupos');
+    if (!screen) return;
+    if (document.getElementById('groupSearchInput')) return;
+    
+    var header = screen.querySelector('.screen-header');
+    if (!header) return;
+    
+    var container = document.createElement('div');
+    container.className = 'group-search-filters';
+    container.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:var(--bg-card,#fff);border-radius:16px;border:1px solid var(--border-color,#e2e8f0);';
+    
+    var categories = ['todos', 'apoio', 'educacao', 'trabalho', 'social', 'arte', 'geral'];
+    var catLabels = ['Todos', 'Apoio', 'Educação', 'Trabalho', 'Social', 'Arte', 'Geral'];
+    var catIcons = ['fa-globe', 'fa-hand-holding-heart', 'fa-graduation-cap', 'fa-briefcase', 'fa-users', 'fa-palette', 'fa-comments'];
+    
+    var filterHtml = '<div style="flex:1;min-width:150px;">';
+    filterHtml += '<input id="groupSearchInput" placeholder="🔎 Buscar grupos..." style="width:100%;padding:8px 14px;border:2px solid var(--border-color,#e2e8f0);border-radius:10px;font-size:13px;font-family:Inter,sans-serif;background:var(--bg-secondary,#f7f7f9);color:var(--text-primary,#1e293b);outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'#7c3aed\'" onblur="this.style.borderColor=\'var(--border-color,#e2e8f0)\'">';
+    filterHtml += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
+    
+    categories.forEach(function(cat, index) {
+        var bgColor = cat === 'todos' ? 'background:linear-gradient(135deg,#9333ea,#ec4899);color:#fff;' : 'background:transparent;color:var(--text-secondary,#64748b);';
+        filterHtml += '<button class="group-filter-btn" data-filter="' + cat + '" style="padding:6px 14px;border:2px solid var(--border-color,#e2e8f0);border-radius:20px;' + bgColor + 'font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:4px;">';
+        filterHtml += '<i class="fa-regular ' + catIcons[index] + '"></i> ' + catLabels[index];
+        filterHtml += '</button>';
+    });
+    filterHtml += '</div>';
+    
+    container.innerHTML = filterHtml;
+    header.after(container);
+    
+    var searchInput = document.getElementById('groupSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterGroupCards);
+    }
+    
+    document.querySelectorAll('.group-filter-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.group-filter-btn').forEach(function(b) {
+                b.style.background = 'transparent';
+                b.style.color = 'var(--text-secondary,#64748b)';
+            });
+            this.style.background = 'linear-gradient(135deg,#9333ea,#ec4899)';
+            this.style.color = '#fff';
+            filterGroupCards();
+        });
+    });
+}
+
+function filterGroupCards() {
+    var search = document.getElementById('groupSearchInput')?.value.toLowerCase() || '';
+    var activeFilter = document.querySelector('.group-filter-btn.active')?.dataset.filter || 'todos';
+    
+    document.querySelectorAll('.group-card').forEach(function(card) {
+        var name = card.querySelector('.group-card-title')?.textContent?.toLowerCase() || '';
+        var desc = card.querySelector('.group-card-description')?.textContent?.toLowerCase() || '';
+        var category = card.querySelector('.group-card-meta span:last-child')?.textContent?.toLowerCase() || '';
+        
+        var matchesSearch = name.includes(search) || desc.includes(search);
+        var matchesFilter = activeFilter === 'todos' || category.includes(activeFilter);
+        
+        card.style.display = (matchesSearch && matchesFilter) ? 'block' : 'none';
+    });
+}
+
+// 7. BOTÃO DE NOTIFICAÇÕES
+function addNotificationButton() {
+    if (document.getElementById('notificationsToggle')) return;
+    
+    var header = document.querySelector('.header-glass');
+    if (!header) return;
+    
+    var btn = document.createElement('button');
+    btn.id = 'notificationsToggle';
+    btn.style.cssText = 'background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:50%;position:relative;color:var(--text-secondary,#64748b);font-size:18px;transition:all 0.2s;';
+    btn.innerHTML = '<i class="fa-regular fa-bell"></i><span id="notifBadge" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:50%;display:none;min-width:18px;text-align:center;">0</span>';
+    btn.title = 'Notificações';
+    
+    btn.addEventListener('click', function() {
+        showNotificationPanel();
+    });
+    
+    var links = header.querySelector('.header-links');
+    if (links) {
+        links.after(btn);
+    } else {
+        header.appendChild(btn);
+    }
+}
+
+function showNotificationPanel() {
+    var existing = document.getElementById('notificationPanel');
+    if (existing) {
+        existing.remove();
+        return;
+    }
+    
+    var panel = document.createElement('div');
+    panel.id = 'notificationPanel';
+    panel.style.cssText = 'position:fixed;top:70px;right:20px;width:360px;max-height:70vh;background:var(--bg-card,#fff);border-radius:16px;border:1px solid var(--border-color,#e2e8f0);box-shadow:0 12px 40px rgba(0,0,0,0.12);z-index:10000;overflow:hidden;display:flex;flex-direction:column;animation:fadeIn 0.25s ease;';
+    
+    panel.innerHTML = 
+        '<div style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);display:flex;justify-content:space-between;align-items:center;">' +
+        '<h4 style="font-size:15px;font-weight:700;color:var(--text-primary,#1e293b);"><i class="fa-regular fa-bell" style="color:#7c3aed;"></i> Notificações</h4>' +
+        '<button onclick="this.closest(\'div\').remove()" style="background:none;border:none;font-size:18px;color:var(--text-muted,#94a3b8);cursor:pointer;">✕</button>' +
+        '</div>' +
+        '<div id="notificationsList" style="flex:1;overflow-y:auto;padding:8px 0;">' +
+        '<div style="text-align:center;padding:30px 20px;color:var(--text-muted,#94a3b8);">' +
+        '<i class="fa-regular fa-bell-slash" style="font-size:28px;display:block;margin-bottom:10px;opacity:0.3;"></i>' +
+        '<p style="font-size:14px;">Nenhuma notificação</p></div></div>' +
+        '<div style="padding:8px 16px;border-top:1px solid var(--border-color,#e2e8f0);text-align:center;">' +
+        '<button onclick="markAllRead()" style="background:none;border:none;color:#7c3aed;font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;">Marcar todas como lidas</button></div>';
+    
+    document.body.appendChild(panel);
+    
+    setTimeout(function() {
+        document.addEventListener('click', function closePanel(e) {
+            if (!panel.contains(e.target) && e.target.id !== 'notificationsToggle') {
+                panel.remove();
+                document.removeEventListener('click', closePanel);
+            }
+        });
+    }, 100);
+}
+
+window.markAllRead = function() {
+    showToast('✅ Todas as notificações marcadas como lidas', 'success', 2000);
+    var panel = document.getElementById('notificationPanel');
+    if (panel) panel.remove();
+};
+
+// 8. REAÇÕES COM ÍCONES
+window.REACTIONS = [
+    { id: 'apoiar', label: 'Apoiar', icon: 'fa-heart', color: '#ef4444' },
+    { id: 'util', label: 'Útil', icon: 'fa-lightbulb', color: '#f59e0b' },
+    { id: 'identifico', label: 'Me identifico', icon: 'fa-face-smile', color: '#8b5cf6' },
+    { id: 'comigo', label: 'Estou com você', icon: 'fa-handshake', color: '#10b981' }
+];
+
+// 9. ADICIONAR REAÇÕES AOS POSTS
+function addReactionsToPosts() {
+    var posts = document.querySelectorAll('.post-card');
+    posts.forEach(function(post) {
+        var actionsDiv = post.querySelector('.post-actions');
+        if (!actionsDiv) return;
+        if (actionsDiv.querySelector('.reactions-container')) return;
+        
+        var container = document.createElement('div');
+        container.className = 'reactions-container';
+        container.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;';
+        
+        window.REACTIONS.forEach(function(r) {
+            var btn = document.createElement('button');
+            btn.className = 'reaction-btn';
+            btn.dataset.postId = post.dataset.postId;
+            btn.dataset.reaction = r.id;
+            btn.style.cssText = 'background:none;border:1px solid var(--border-color,#e2e8f0);border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;transition:all 0.2s;font-family:Inter,sans-serif;color:var(--text-secondary,#64748b);display:flex;align-items:center;gap:4px;';
+            btn.innerHTML = '<i class="fa-regular ' + r.icon + '" style="color:' + r.color + ';"></i> <span class="reaction-count" data-reaction="' + r.id + '">0</span>';
+            
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!currentUser) return showToast('Faça login', 'error');
+                
+                var postId = this.dataset.postId;
+                var reactionType = this.dataset.reaction;
+                
+                supabase.rpc('toggle_reaction', {
+                    p_post_id: postId,
+                    p_reaction_type: reactionType
+                }).then(function(result) {
+                    if (result.error) throw result.error;
+                    
+                    var countSpan = btn.querySelector('.reaction-count');
+                    supabase.from('reactions').select('reaction_type', { count: 'exact', head: true })
+                        .eq('post_id', postId).eq('reaction_type', reactionType)
+                        .then(function(res) {
+                            if (countSpan) countSpan.textContent = res.count || 0;
+                        });
+                    
+                    btn.style.borderColor = '#7c3aed';
+                    btn.style.background = 'rgba(124,58,237,0.08)';
+                }).catch(function(error) {
+                    console.error('Erro ao reagir:', error);
+                    showToast('Erro ao reagir', 'error');
+                });
+            });
+            
+            container.appendChild(btn);
+        });
+        
+        actionsDiv.appendChild(container);
+    });
+}
+
+// 10. INICIALIZAR TUDO
+function initCommunityFeatures() {
+    console.log('🚀 Inicializando funcionalidades da comunidade...');
+    
+    addCategorySelectorToModal();
+    addHelpRequestLabel();
+    addRulesBanner();
+    addGroupSearch();
+    addNotificationButton();
+    
+    // Adicionar reações após os posts carregarem
+    setTimeout(addReactionsToPosts, 1000);
+    
+    // Observer para adicionar reações em novos posts
+    var feed = document.getElementById('postsFeed');
+    if (feed) {
+        var observer = new MutationObserver(function() {
+            addReactionsToPosts();
+        });
+        observer.observe(feed, { childList: true, subtree: true });
+    }
+    
+    if (!sessionStorage.getItem('rulesShown')) {
+        setTimeout(function() {
+            window.showCommunityRules();
+            sessionStorage.setItem('rulesShown', 'true');
+        }, 3000);
+    }
+    
+    console.log('✅ Funcionalidades adicionadas com sucesso!');
+    console.log('📦 Categorias, Regras, Filtro de Grupos, Notificações, Reações');
+}
+
+// Executar quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCommunityFeatures);
+} else {
+    setTimeout(initCommunityFeatures, 500);
+
+
+
+    
+}
+
+
+
 });
