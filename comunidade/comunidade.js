@@ -669,106 +669,172 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    async function apiUseInviteCode(code) {
-        // Tentar via RPC primeiro
-        const { data, error } = await supabase.rpc('use_invite_code', { p_code: code });
-        if (!error && data) {
-            return data;
-        }
-        
-        let rpcErrorMsg = error ? error.message : (data ? data.error : 'Erro desconhecido');
-        console.warn('⚠️ RPC use_invite_code falhou, tentando fallback direto:', rpcErrorMsg);
-
-        // FALLBACK: Utilizar convite diretamente via tabelas
-        try {
-            // 1. Buscar convite pelo código (sem filtrar active, pois coluna pode não existir)
-            const { data: invite, error: inviteErr } = await supabase
-                .from('group_invites')
-                .select('*')
-                .eq('code', code)
-                .maybeSingle();
-
-            if (inviteErr) {
-                console.error('❌ Erro ao buscar convite no banco:', inviteErr.message);
-                return { success: false, error: `Erro no banco de dados ao verificar código: ${inviteErr.message}` };
-            }
-
-            if (!invite) {
-                return { success: false, error: 'Código de convite não encontrado. Verifique se o código está correto.' };
-            }
-
-            // Verificar se está ativo (se a coluna existir)
-            if (invite.active === false) {
-                return { success: false, error: 'Este código de convite foi desativado.' };
-            }
-
-            // Verificar expiração localmente (se a coluna existir)
-            if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
-                return { success: false, error: 'Este código de convite já expirou (limite de 7 dias).' };
-            }
-
-            // 2. Buscar detalhes do grupo
-            const { data: group, error: groupErr } = await supabase
-                .from('groups')
-                .select('*')
-                .eq('id', invite.group_id)
-                .single();
-
-            if (groupErr || !group) {
-                return { success: false, error: 'Grupo não encontrado.' };
-            }
-
-            // 3. Verificar se já é membro
-            const { data: alreadyMember, error: memberErr } = await supabase
-                .from('group_members')
-                .select('id')
-                .eq('group_id', invite.group_id)
-                .eq('user_id', currentUser?.id)
-                .maybeSingle();
-
-            if (alreadyMember) {
-                return { success: false, error: 'Você já é membro deste grupo.' };
-            }
-
-            // 4. Adicionar ao grupo
-            const { error: insertMemberErr } = await supabase
-                .from('group_members')
-                .insert({
-                    group_id: invite.group_id,
-                    user_id: currentUser?.id,
-                    joined_at: new Date().toISOString()
-                });
-
-            if (insertMemberErr) {
-                return { success: false, error: insertMemberErr.message };
-            }
-
-            // 5. Adicionar à conversa do grupo
-            await supabase
-                .from('conversation_participants')
-                .insert({
-                    conversation_id: invite.group_id,
-                    user_id: currentUser?.id,
-                    joined_at: new Date().toISOString()
-                });
-
-            // 6. Incrementar contador de membros
-            await supabase
-                .from('groups')
-                .update({ members: (group.members || 0) + 1 })
-                .eq('id', invite.group_id);
-
-            return {
-                success: true,
-                group_id: invite.group_id,
-                group_name: group.name
-            };
-        } catch (fallbackErr) {
-            console.error('❌ Exceção no fallback de usar convite:', fallbackErr);
-            return { success: false, error: fallbackErr.message };
-        }
+   // =============================================
+// API USE INVITE CODE - CORRIGIDO
+// =============================================
+async function apiUseInviteCode(code) {
+    // Tentar via RPC primeiro
+    const { data, error } = await supabase.rpc('use_invite_code', { p_code: code });
+    if (!error && data) {
+        return data;
     }
+    
+    console.warn('⚠️ RPC use_invite_code falhou, tentando fallback direto:', error?.message);
 
+    // FALLBACK: Utilizar convite diretamente via tabelas
+    try {
+        // 1. Buscar convite pelo código
+        const { data: invite, error: inviteErr } = await supabase
+            .from('group_invites')
+            .select('*, group_invites_uses(count)')
+            .eq('code', code)
+            .maybeSingle();
+
+        if (inviteErr) {
+            console.error('❌ Erro ao buscar convite:', inviteErr.message);
+            return { success: false, error: `Erro ao verificar código: ${inviteErr.message}` };
+        }
+
+        if (!invite) {
+            return { success: false, error: 'Código de convite não encontrado.' };
+        }
+
+        // ✅ Verificar se está ativo
+        if (invite.active === false) {
+            return { success: false, error: 'Este código de convite foi desativado.' };
+        }
+
+        // ✅ Verificar expiração
+        if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
+            return { success: false, error: 'Este código de convite já expirou.' };
+        }
+
+        // ✅ Verificar se já usou
+        const { data: existingUse, error: useErr } = await supabase
+            .from('group_invites_uses')
+            .select('id')
+            .eq('invite_id', invite.id)
+            .eq('user_id', currentUser?.id)
+            .maybeSingle();
+
+        if (existingUse) {
+            return { success: false, error: 'Você já usou este código de convite.' };
+        }
+
+        // ✅ Verificar limite de uso
+        const { data: uses, error: countErr } = await supabase
+            .from('group_invites_uses')
+            .select('id', { count: 'exact' })
+            .eq('invite_id', invite.id);
+
+        const useCount = uses?.length || 0;
+        const MAX_USES = 10;
+
+        if (useCount >= MAX_USES) {
+            // Desativar convite
+            await supabase
+                .from('group_invites')
+                .update({ active: false })
+                .eq('id', invite.id);
+            
+            return { success: false, error: 'Este código de convite atingiu o limite de uso.' };
+        }
+
+        // 2. Buscar detalhes do grupo
+        const { data: group, error: groupErr } = await supabase
+            .from('groups')
+            .select('*')
+            .eq('id', invite.group_id)
+            .single();
+
+        if (groupErr || !group) {
+            return { success: false, error: 'Grupo não encontrado.' };
+        }
+
+        // 3. Verificar se já é membro
+        const { data: alreadyMember, error: memberErr } = await supabase
+            .from('group_members')
+            .select('id')
+            .eq('group_id', invite.group_id)
+            .eq('user_id', currentUser?.id)
+            .maybeSingle();
+
+        if (alreadyMember) {
+            return { success: false, error: 'Você já é membro deste grupo.' };
+        }
+
+        // 4. Adicionar ao grupo
+        const { error: insertMemberErr } = await supabase
+            .from('group_members')
+            .insert({
+                group_id: invite.group_id,
+                user_id: currentUser?.id,
+                joined_at: new Date().toISOString()
+            });
+
+        if (insertMemberErr) {
+            return { success: false, error: insertMemberErr.message };
+        }
+
+        // 5. Adicionar à conversa
+        await supabase
+            .from('conversation_participants')
+            .insert({
+                conversation_id: invite.group_id,
+                user_id: currentUser?.id,
+                joined_at: new Date().toISOString()
+            });
+
+        // 6. ✅ Registrar uso do convite
+        await supabase
+            .from('group_invites_uses')
+            .insert({
+                invite_id: invite.id,
+                user_id: currentUser?.id,
+                used_at: new Date().toISOString()
+            });
+
+        // 7. Incrementar contador de membros
+        await supabase
+            .from('groups')
+            .update({ members: (group.members || 0) + 1 })
+            .eq('id', invite.group_id);
+
+        // 8. Verificar se atingiu o limite
+        const { data: updatedUses, error: updatedErr } = await supabase
+            .from('group_invites_uses')
+            .select('id', { count: 'exact' })
+            .eq('invite_id', invite.id);
+
+        const updatedCount = updatedUses?.length || 0;
+
+        if (updatedCount >= MAX_USES) {
+            await supabase
+                .from('group_invites')
+                .update({ active: false })
+                .eq('id', invite.id);
+        }
+
+        // 9. Mensagem de sistema
+        await supabase.from('messages').insert({
+            conversation_id: invite.group_id,
+            sender_id: currentUser?.id,
+            sender_name: '🔔 Sistema',
+            content: `📢 Novo membro entrou no grupo: ${group.name}! Seja bem-vindo(a)! 🎉`,
+            created_at: new Date().toISOString()
+        });
+
+        return {
+            success: true,
+            group_id: invite.group_id,
+            group_name: group.name,
+            message: 'Você entrou no grupo com sucesso!'
+        };
+    } catch (fallbackErr) {
+        console.error('❌ Exceção no fallback:', fallbackErr);
+        return { success: false, error: fallbackErr.message };
+    }
+}
 
     // =============================================
     // 7. ESCAPE HTML E FORMATADORES
@@ -2262,8 +2328,8 @@ if (groupImageUploadArea) {
         }
     }
 
-    // =============================================
-// RENDER MESSAGES - FUNÇÃO AUXILIAR
+// =============================================
+// RENDER MESSAGES - CORRIGIDO
 // =============================================
 function renderMessages(container, messages) {
     if (!container || !messages || messages.length === 0) {
@@ -2277,33 +2343,45 @@ function renderMessages(container, messages) {
         return;
     }
 
-    container.innerHTML = messages.map(m => {
-        const isSent = m.sender_id === currentUser?.id;
-        const senderName = isSent ? 'Você' : (m.sender_name || 'Membro');
-        const userColor = stringToColor(m.sender_id);
-        const avatarUrl = isSent ? getUserAvatar() : (m.sender_avatar || getUserAvatar());
+    // ✅ Usar Set para evitar duplicação
+    const renderedIds = new Set();
+    
+    // ✅ Ordenar por data (mais antigas primeiro)
+    const sortedMessages = [...messages].sort((a, b) => 
+        new Date(a.created_at) - new Date(b.created_at)
+    );
+    
+    container.innerHTML = sortedMessages
+        .filter(m => {
+            if (renderedIds.has(m.id)) return false;
+            renderedIds.add(m.id);
+            return true;
+        })
+        .map(m => {
+            const isSent = m.sender_id === currentUser?.id;
+            const senderName = m.sender_name || 'Membro';
+            const userColor = stringToColor(m.sender_id);
+            const avatarUrl = m.sender_avatar || AVATAR_PADRAO;
 
-        return `
-        <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${m.id}">
-            ${!isSent ? `
-                <div class="msg-avatar">
-                    <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
-                         onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
+            return `
+            <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${m.id}" data-sender-id="${m.sender_id}">
+                ${!isSent ? `
+                    <div class="msg-avatar">
+                        <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
+                             onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
+                    </div>
+                ` : ''}
+                <div class="msg-content" style="${isSent ? 'background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff;' : 'background: var(--bg-secondary, #f1f5f9);'}">
+                    ${!isSent ? `<div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
+                    <div class="msg-text" style="word-wrap:break-word;white-space:pre-wrap;">${escapeHtml(m.content)}</div>
+                    <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--text-muted, #94a3b8);'}font-size:10px;margin-top:4px;text-align:right;">
+                        ${formatChatTime(m.created_at)}
+                    </div>
                 </div>
-            ` : ''}
-            <div class="msg-content" style="${isSent ? 'background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff;' : 'background: var(--bg-secondary, #f1f5f9);'}">
-                ${!isSent ? `<div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
-                <div class="msg-text" style="word-wrap:break-word;white-space:pre-wrap;">${escapeHtml(m.content)}</div>
-                <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--text-muted, #94a3b8);'}font-size:10px;margin-top:4px;text-align:right;">
-                    ${formatChatTime(m.created_at)}
-                </div>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-   // =============================================
-// LOAD CHAT MESSAGES - USANDO RPC
+            </div>`;
+        }).join('');
+}// =============================================
+// LOAD CHAT MESSAGES - CORRIGIDO
 // =============================================
 async function loadChatMessages(chatId = null) {
     const mc = document.getElementById('chatMessages');
@@ -2323,7 +2401,7 @@ async function loadChatMessages(chatId = null) {
     try {
         console.log(`📤 Carregando mensagens para: ${targetChatId}`);
         
-        // ✅ USAR RPC em vez de consulta direta
+        // ✅ USAR RPC get_messages
         const { data: messages, error } = await supabase.rpc('get_messages', {
             p_conversation_id: targetChatId,
             p_limit: 50
@@ -2335,10 +2413,11 @@ async function loadChatMessages(chatId = null) {
             return;
         }
 
+        console.log(`📊 Mensagens carregadas: ${messages?.length || 0}`);
+
         if (messages && messages.length > 0) {
-            // RPC já retorna em ordem decrescente, reverter para mostrar mais antigas primeiro
-            const sortedMessages = messages.reverse();
-            renderMessages(mc, sortedMessages);
+            // ✅ A RPC já retorna ordenada, mas garantimos a ordem
+            renderMessages(mc, messages);
         } else {
             mc.innerHTML = `
                 <div class="chat-placeholder">
@@ -2355,7 +2434,6 @@ async function loadChatMessages(chatId = null) {
         mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar mensagens</p></div>';
     }
 }
-
     function scrollToBottom() {
         const container = document.querySelector('.chat-messages-container');
         if (container) {
@@ -2365,8 +2443,8 @@ async function loadChatMessages(chatId = null) {
         }
     }
 
-   // =============================================
-// ADD MESSAGE TO CHAT
+// =============================================
+// ADD MESSAGE TO CHAT - CORRIGIDO
 // =============================================
 function addMessageToChat(message) {
     const mc = document.getElementById('chatMessages');
@@ -2376,7 +2454,7 @@ function addMessageToChat(message) {
     const placeholder = mc.querySelector('.chat-placeholder');
     if (placeholder) placeholder.remove();
 
-    // Verificar duplicação
+    // ✅ Verificar duplicação por ID
     const existingMessages = mc.querySelectorAll('.chat-message');
     for (let msg of existingMessages) {
         if (msg.dataset.messageId === message.id) {
@@ -2385,13 +2463,16 @@ function addMessageToChat(message) {
         }
     }
 
+    // ✅ Determinar se a mensagem é do usuário atual
     const isSent = message.sender_id === currentUser?.id;
-    const senderName = isSent ? 'Você' : (message.sender_name || 'Membro');
+    
+    // ✅ Usar os dados da mensagem, NÃO do usuário atual
+    const senderName = message.sender_name || 'Membro';
     const userColor = stringToColor(message.sender_id);
-    const avatarUrl = isSent ? getUserAvatar() : (message.sender_avatar || getUserAvatar());
+    const avatarUrl = message.sender_avatar || AVATAR_PADRAO;
 
     const messageHtml = `
-        <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${message.id}" style="animation: fadeIn 0.3s ease;">
+        <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${message.id}" data-sender-id="${message.sender_id}" style="animation: fadeIn 0.3s ease;">
             ${!isSent ? `
                 <div class="msg-avatar">
                     <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
@@ -2400,7 +2481,7 @@ function addMessageToChat(message) {
             ` : ''}
             <div class="msg-content" style="${isSent ? 'background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff;' : 'background: var(--bg-secondary, #f1f5f9);'}">
                 ${!isSent ? `<div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
-                <div class="msg-text">${escapeHtml(message.content)}</div>
+                <div class="msg-text" style="word-wrap:break-word;white-space:pre-wrap;">${escapeHtml(message.content)}</div>
                 <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--text-muted, #94a3b8);'}font-size:10px;margin-top:4px;text-align:right;">
                     ${formatChatTime(message.created_at)}
                 </div>
@@ -2411,41 +2492,94 @@ function addMessageToChat(message) {
     mc.insertAdjacentHTML('beforeend', messageHtml);
     scrollToBottom();
 }
-    function subscribeToMessages(chatId = null) {
-        if (chatSubscription) {
-            supabase.removeChannel(chatSubscription);
-            chatSubscription = null;
-        }
-
-        const targetChatId = chatId || currentChatId;
-
-        chatSubscription = supabase
-            .channel(`chat-${targetChatId}`)
-            .on('postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'messages',
-                    filter: `conversation_id=eq.${targetChatId}`
-                },
-                (payload) => {
-                    const newMessage = payload.new;
-                    console.log('📩 Nova mensagem recebida:', newMessage);
-                    addMessageToChat(newMessage);
-                }
-            )
-            .subscribe((status, err) => {
-                if (status === 'SUBSCRIBED') {
-                    console.log('✅ Chat em tempo real conectado! 🚀');
-                } else if (status === 'CHANNEL_ERROR' || err) {
-                    console.error('❌ Erro no canal de Realtime:', status, err);
-                    showToast('⚠️ Erro de conexão em tempo real. Verifique se o Realtime está ativo no Supabase.', 'warning', 6000);
-                } else {
-                    console.log('📡 Status da conexão:', status);
-                }
-            });
+    // =============================================
+// SUBSCRIBE TO MESSAGES - CORRIGIDO
+// =============================================
+function subscribeToMessages(chatId = null) {
+    // Validar chatId
+    if (!chatId) {
+        console.error('❌ chatId inválido para subscription');
+        return;
     }
 
+    // Verificar se é UUID válido
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(chatId)) {
+        console.error('❌ chatId não é UUID válido:', chatId);
+        return;
+    }
+
+    // Remover subscription anterior
+    if (chatSubscription) {
+        try {
+            console.log('🔄 Removendo subscription anterior...');
+            supabase.removeChannel(chatSubscription);
+        } catch(e) {
+            console.warn('⚠️ Erro ao remover canal:', e);
+        }
+        chatSubscription = null;
+    }
+
+    console.log(`📡 Inscrevendo no canal: messages:conversation_id=eq.${chatId}`);
+
+    // ✅ Criar subscription com timeout
+    chatSubscription = supabase
+        .channel(`messages:conversation_id=eq.${chatId}`)
+        .on(
+            'postgres_changes',
+            {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'messages',
+                filter: `conversation_id=eq.${chatId}`
+            },
+            (payload) => {
+                const newMessage = payload.new;
+                console.log('📩 Nova mensagem recebida:', newMessage);
+                
+                // Ignorar mensagens próprias
+                if (newMessage.sender_id === currentUser?.id) {
+                    console.log('⏭️ Ignorando mensagem própria');
+                    return;
+                }
+                
+                // Verificar duplicação
+                const existing = document.querySelector(`[data-message-id="${newMessage.id}"]`);
+                if (existing) {
+                    console.log('⏭️ Mensagem já existe');
+                    return;
+                }
+                
+                // Adicionar ao chat
+                addMessageToChat(newMessage);
+                scrollToBottom();
+            }
+        )
+        .subscribe((status, err) => {
+            if (status === 'SUBSCRIBED') {
+                console.log('✅ Chat em tempo real conectado! 🚀');
+                // Resetar contador de reconexão
+                if (window._reconnectAttempts) {
+                    window._reconnectAttempts = 0;
+                }
+            } else if (status === 'CHANNEL_ERROR' || err) {
+                console.error('❌ Erro no canal de Realtime:', status, err);
+                // ✅ Apenas tentar reconectar se não estiver em loop
+                if (!window._reconnecting) {
+                    window._reconnecting = true;
+                    setTimeout(() => {
+                        window._reconnecting = false;
+                        if (chatSubscription?.state !== 'SUBSCRIBED') {
+                            console.log('🔄 Tentando reconectar...');
+                            subscribeToMessages(chatId);
+                        }
+                    }, 5000); // ✅ Esperar 5 segundos antes de reconectar
+                }
+            } else {
+                console.log('📡 Status da conexão:', status);
+            }
+        });
+}
    // =============================================
 // SEND MESSAGE - USANDO RPC
 // =============================================
