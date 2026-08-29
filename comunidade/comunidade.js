@@ -1978,77 +1978,99 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    async function loadChatMessages(chatId = null) {
-        const mc = document.getElementById('chatMessages');
-        if (!mc) return;
-
-        const targetChatId = chatId || currentChatId;
-
-        try {
-            const { data: messages, error } = await supabase
-                .from('messages')
-                .select('*')
-                .eq('conversation_id', targetChatId)
-                .order('created_at', { ascending: false })
-                .limit(50);
-
-            if (error) {
-                console.error('❌ Erro ao carregar mensagens:', error);
-                mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar mensagens</p></div>';
-                return;
-            }
-
-            if (messages && messages.length > 0) {
-                const sortedMessages = messages.reverse();
-                mc.innerHTML = sortedMessages.map(m => {
-                    const isSent = m.sender_id === currentUser?.id;
-                    const senderName = isSent ? 'Você' : (m.sender_name || 'Membro');
-                    const userColor = stringToColor(m.sender_id);
-                    const avatarUrl = isSent ? getUserAvatar() : (m.sender_avatar || getUserAvatar());
-
-                    let videoHtml = '';
-                    if (m.video_url && m.video_url.trim() !== '') {
-                        videoHtml = `
-                            <div class="chat-video">
-                                <video controls style="width:100%;display:block;max-width:200px;border-radius:8px;">
-                                    <source src="${m.video_url}" type="video/mp4">
-                                </video>
-                            </div>
-                        `;
-                    }
-
-                    return `
-                    <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${m.id}">
-                        ${!isSent ? `
-                            <div class="msg-avatar">
-                                <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
-                                     onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';">
-                            </div>
-                        ` : ''}
-                        <div class="msg-content">
-                            <div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;">${escapeHtml(senderName)}</div>
-                            <div class="msg-text">${escapeHtml(m.content)}</div>
-                            ${videoHtml}
-                            <div class="msg-time">${formatChatTime(m.created_at)}</div>
-                        </div>
-                    </div>`;
-                }).join('');
-            } else {
-                mc.innerHTML = `
-                    <div class="chat-placeholder">
-                        <i class="fa-solid fa-comments"></i>
-                        <p>Nenhuma mensagem ainda</p>
-                        <p style="font-size:12px;color:#aaa;">Seja o primeiro a dizer oi! 👋</p>
-                    </div>
-                `;
-            }
-
-            scrollToBottom();
-        } catch (error) {
-            console.error('❌ Erro inesperado:', error);
-            mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar mensagens</p></div>';
-        }
+    // =============================================
+// RENDER MESSAGES - FUNÇÃO AUXILIAR
+// =============================================
+function renderMessages(container, messages) {
+    if (!container || !messages || messages.length === 0) {
+        container.innerHTML = `
+            <div class="chat-placeholder">
+                <i class="fa-solid fa-comments"></i>
+                <p>Nenhuma mensagem ainda</p>
+                <p style="font-size:12px;color:#aaa;">Seja o primeiro a dizer oi! 👋</p>
+            </div>
+        `;
+        return;
     }
+
+    container.innerHTML = messages.map(m => {
+        const isSent = m.sender_id === currentUser?.id;
+        const senderName = isSent ? 'Você' : (m.sender_name || 'Membro');
+        const userColor = stringToColor(m.sender_id);
+        const avatarUrl = isSent ? getUserAvatar() : (m.sender_avatar || getUserAvatar());
+
+        return `
+        <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${m.id}">
+            ${!isSent ? `
+                <div class="msg-avatar">
+                    <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
+                         onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
+                </div>
+            ` : ''}
+            <div class="msg-content" style="${isSent ? 'background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff;' : 'background: var(--bg-secondary, #f1f5f9);'}">
+                ${!isSent ? `<div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
+                <div class="msg-text" style="word-wrap:break-word;white-space:pre-wrap;">${escapeHtml(m.content)}</div>
+                <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--text-muted, #94a3b8);'}font-size:10px;margin-top:4px;text-align:right;">
+                    ${formatChatTime(m.created_at)}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+   // =============================================
+// LOAD CHAT MESSAGES - USANDO RPC
+// =============================================
+async function loadChatMessages(chatId = null) {
+    const mc = document.getElementById('chatMessages');
+    if (!mc) {
+        console.error('❌ Elemento chatMessages não encontrado');
+        return;
+    }
+
+    const targetChatId = chatId || currentChatId || '00000000-0000-0000-0000-000000000001';
+
+    if (!targetChatId || targetChatId === 'undefined') {
+        console.error('❌ chatId inválido:', targetChatId);
+        mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>ID da conversa inválido</p></div>';
+        return;
+    }
+
+    try {
+        console.log(`📤 Carregando mensagens para: ${targetChatId}`);
+        
+        // ✅ USAR RPC em vez de consulta direta
+        const { data: messages, error } = await supabase.rpc('get_messages', {
+            p_conversation_id: targetChatId,
+            p_limit: 50
+        });
+
+        if (error) {
+            console.error('❌ Erro ao carregar mensagens (RPC):', error);
+            mc.innerHTML = `<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro: ${error.message}</p></div>`;
+            return;
+        }
+
+        if (messages && messages.length > 0) {
+            // RPC já retorna em ordem decrescente, reverter para mostrar mais antigas primeiro
+            const sortedMessages = messages.reverse();
+            renderMessages(mc, sortedMessages);
+        } else {
+            mc.innerHTML = `
+                <div class="chat-placeholder">
+                    <i class="fa-solid fa-comments"></i>
+                    <p>Nenhuma mensagem ainda</p>
+                    <p style="font-size:12px;color:#aaa;">Seja o primeiro a dizer oi! 👋</p>
+                </div>
+            `;
+        }
+
+        scrollToBottom();
+    } catch (error) {
+        console.error('❌ Erro inesperado:', error);
+        mc.innerHTML = '<div class="chat-placeholder"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar mensagens</p></div>';
+    }
+}
 
     function scrollToBottom() {
         const container = document.querySelector('.chat-messages-container');
@@ -2059,57 +2081,52 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    function addMessageToChat(message) {
-        const mc = document.getElementById('chatMessages');
-        if (!mc) return;
+   // =============================================
+// ADD MESSAGE TO CHAT
+// =============================================
+function addMessageToChat(message) {
+    const mc = document.getElementById('chatMessages');
+    if (!mc) return;
 
-        const placeholder = mc.querySelector('.chat-placeholder');
-        if (placeholder) placeholder.remove();
+    // Remover placeholder se existir
+    const placeholder = mc.querySelector('.chat-placeholder');
+    if (placeholder) placeholder.remove();
 
-        const existingMessages = mc.querySelectorAll('.chat-message');
-        for (let msg of existingMessages) {
-            if (msg.dataset.messageId === message.id) {
-                return;
-            }
+    // Verificar duplicação
+    const existingMessages = mc.querySelectorAll('.chat-message');
+    for (let msg of existingMessages) {
+        if (msg.dataset.messageId === message.id) {
+            console.log('⏭️ Mensagem já existe, ignorando');
+            return;
         }
-
-        const isSent = message.sender_id === currentUser?.id;
-        const senderName = isSent ? 'Você' : (message.sender_name || 'Membro');
-        const userColor = stringToColor(message.sender_id);
-        const avatarUrl = isSent ? getUserAvatar() : (message.sender_avatar || getUserAvatar());
-
-        let videoHtml = '';
-        if (message.video_url && message.video_url.trim() !== '') {
-            videoHtml = `
-                <div class="chat-video">
-                    <video controls style="width:100%;display:block;max-width:200px;border-radius:8px;">
-                        <source src="${message.video_url}" type="video/mp4">
-                    </video>
-                </div>
-            `;
-        }
-
-        const messageHtml = `
-            <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${message.id}" style="animation: fadeIn 0.2s ease;">
-                ${!isSent ? `
-                    <div class="msg-avatar">
-                        <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
-                             onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';">
-                    </div>
-                ` : ''}
-                <div class="msg-content">
-                    <div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;">${escapeHtml(senderName)}</div>
-                    <div class="msg-text">${escapeHtml(message.content)}</div>
-                    ${videoHtml}
-                    <div class="msg-time">${formatChatTime(message.created_at)}</div>
-                </div>
-            </div>
-        `;
-
-        mc.insertAdjacentHTML('beforeend', messageHtml);
-        scrollToBottom();
     }
 
+    const isSent = message.sender_id === currentUser?.id;
+    const senderName = isSent ? 'Você' : (message.sender_name || 'Membro');
+    const userColor = stringToColor(message.sender_id);
+    const avatarUrl = isSent ? getUserAvatar() : (message.sender_avatar || getUserAvatar());
+
+    const messageHtml = `
+        <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${message.id}" style="animation: fadeIn 0.3s ease;">
+            ${!isSent ? `
+                <div class="msg-avatar">
+                    <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
+                         onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
+                </div>
+            ` : ''}
+            <div class="msg-content" style="${isSent ? 'background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff;' : 'background: var(--bg-secondary, #f1f5f9);'}">
+                ${!isSent ? `<div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
+                <div class="msg-text">${escapeHtml(message.content)}</div>
+                <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--text-muted, #94a3b8);'}font-size:10px;margin-top:4px;text-align:right;">
+                    ${formatChatTime(message.created_at)}
+                </div>
+            </div>
+        </div>
+    `;
+
+    mc.insertAdjacentHTML('beforeend', messageHtml);
+    scrollToBottom();
+}
     function subscribeToMessages(chatId = null) {
         if (chatSubscription) {
             supabase.removeChannel(chatSubscription);
@@ -2145,49 +2162,81 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
     }
 
-    async function sendMessage() {
-        if (isSending) return;
+   // =============================================
+// SEND MESSAGE - USANDO RPC
+// =============================================
+async function sendMessage() {
+    if (isSending) return;
 
-        const inp = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendChatBtn');
+    const inp = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendChatBtn');
 
-        if (!inp || !currentUser) {
-            showToast('Faça login para enviar mensagens', 'error');
-            return;
-        }
-
-        const msg = inp.value.trim();
-        if (!msg) {
-            showToast('Digite uma mensagem', 'error');
-            return;
-        }
-
-        isSending = true;
-        if (sendBtn) {
-            sendBtn.disabled = true;
-            sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-        }
-
-        try {
-            const result = await apiSendMessage(currentChatId, msg);
-
-            if (result) {
-                inp.value = '';
-                showToast('✅ Mensagem enviada!', 'success', 1000);
-                await loadChatMessages(currentChatId);
-            }
-        } catch (error) {
-            console.error('❌ Erro inesperado:', error);
-            showToast('Erro ao enviar mensagem', 'error');
-        } finally {
-            isSending = false;
-            if (sendBtn) {
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i>';
-            }
-            inp.focus();
-        }
+    if (!inp || !currentUser) {
+        showToast('Faça login para enviar mensagens', 'error');
+        return;
     }
+
+    const msg = inp.value.trim();
+    if (!msg) {
+        showToast('Digite uma mensagem', 'error');
+        return;
+    }
+
+    isSending = true;
+    if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+
+    try {
+        console.log(`📤 Enviando mensagem para: ${currentChatId}`);
+        
+        // ✅ USAR RPC em vez de consulta direta
+        const { data, error } = await supabase.rpc('send_message', {
+            p_conversation_id: currentChatId,
+            p_content: msg
+        });
+
+        if (error) {
+            console.error('❌ Erro ao enviar:', error);
+            showToast('Erro ao enviar mensagem: ' + error.message, 'error');
+            return;
+        }
+
+        if (data && data.success) {
+            console.log('✅ Mensagem enviada:', data);
+            inp.value = '';
+            
+            // Adicionar a mensagem localmente
+            const newMessage = {
+                id: data.message_id,
+                conversation_id: currentChatId,
+                sender_id: currentUser.id,
+                sender_name: 'Você',
+                sender_avatar: getUserAvatar(),
+                content: msg,
+                created_at: data.created_at || new Date().toISOString()
+            };
+            
+            addMessageToChat(newMessage);
+            scrollToBottom();
+            
+            showToast('✅ Mensagem enviada!', 'success', 1000);
+        } else {
+            showToast(data?.error || 'Erro ao enviar mensagem', 'error');
+        }
+    } catch (error) {
+        console.error('❌ Erro inesperado:', error);
+        showToast('Erro ao enviar mensagem', 'error');
+    } finally {
+        isSending = false;
+        if (sendBtn) {
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i>';
+        }
+        inp.focus();
+    }
+}
 
     document.getElementById('sendChatBtn')?.addEventListener('click', sendMessage);
 
