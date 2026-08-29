@@ -1388,6 +1388,290 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
+
+    // =============================================
+// UPLOAD DE IMAGEM PARA GRUPOS
+// =============================================
+
+// Elementos do upload
+const groupImageUploadArea = document.getElementById('groupImageUploadArea');
+const groupImageInput = document.getElementById('groupImage');
+const groupImagePreviewContainer = document.getElementById('groupImagePreviewContainer');
+let uploadedImageUrl = null;
+
+// Função para criar preview
+function createImagePreview(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            resolve(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// 1. Clique na área de upload para abrir seletor de arquivos
+if (groupImageUploadArea) {
+    groupImageUploadArea.addEventListener('click', () => {
+        // Criar input de arquivo temporário
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+        
+        fileInput.click();
+        
+        fileInput.addEventListener('change', async function(e) {
+            const file = this.files[0];
+            if (!file) {
+                this.remove();
+                return;
+            }
+            
+            // Validar arquivo
+            const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+            const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+            
+            if (file.size > MAX_SIZE) {
+                showToast('❌ Imagem muito grande! Máx 10MB', 'error', 3000);
+                this.remove();
+                return;
+            }
+            
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                showToast('❌ Formato não suportado. Use JPG, PNG, WEBP, GIF ou SVG', 'error', 3000);
+                this.remove();
+                return;
+            }
+            
+            // Mostrar preview
+            const previewUrl = await createImagePreview(file);
+            
+            // Criar preview
+            groupImagePreviewContainer.innerHTML = `
+                <div class="image-preview-wrapper">
+                    <img src="${previewUrl}" alt="Preview da imagem do grupo" class="group-image-preview">
+                    <button type="button" class="remove-image-btn" id="removeGroupImageBtn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Esconder área de upload
+            groupImageUploadArea.style.display = 'none';
+            
+            // Botão para remover imagem
+            document.getElementById('removeGroupImageBtn')?.addEventListener('click', () => {
+                groupImagePreviewContainer.innerHTML = '';
+                groupImageUploadArea.style.display = 'flex';
+                groupImageInput.value = '';
+                uploadedImageUrl = null;
+                showToast('🖼️ Imagem removida', 'info', 1500);
+            });
+            
+            // Enviar para o Supabase Storage
+            showToast('📤 Enviando imagem...', 'info', 3000);
+            
+            try {
+                // Criar bucket se não existir (via Supabase)
+                const { data: buckets } = await supabase.storage.listBuckets();
+                const groupBucket = buckets?.find(b => b.name === 'group-images');
+                
+                if (!groupBucket) {
+                    // Criar bucket (pode ser feito manualmente no dashboard também)
+                    // Nota: criar bucket via API precisa de permissões de service_role
+                    console.warn('⚠️ Bucket "group-images" não encontrado. Criando...');
+                    // Como alternativa, vamos usar o bucket 'avatars' que já existe
+                }
+                
+                // Gerar nome único para a imagem
+                const fileExt = file.name.split('.').pop();
+                const fileName = `groups/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                
+                // Tentar upload no bucket 'group-images', se falhar, usar 'avatars'
+                let publicUrl = null;
+                let uploadError = null;
+                
+                // Tentativa 1: Bucket 'group-images'
+                const { data: uploadData, error: uploadErr } = await supabase.storage
+                    .from('group-images')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    });
+                
+                if (uploadErr) {
+                    console.warn('⚠️ Upload no bucket group-images falhou:', uploadErr.message);
+                    uploadError = uploadErr;
+                    
+                    // Tentativa 2: Bucket 'avatars'
+                    try {
+                        const { data: uploadData2, error: uploadErr2 } = await supabase.storage
+                            .from('avatars')
+                            .upload(fileName, file, {
+                                cacheControl: '3600',
+                                upsert: true
+                            });
+                        
+                        if (uploadErr2) {
+                            throw uploadErr2;
+                        }
+                        
+                        // Obter URL pública do bucket 'avatars'
+                        const { data: { publicUrl: url2 } } = supabase.storage
+                            .from('avatars')
+                            .getPublicUrl(fileName);
+                        publicUrl = url2;
+                    } catch (err2) {
+                        console.error('❌ Upload no bucket avatars também falhou:', err2.message);
+                        showToast('❌ Erro ao enviar imagem: ' + err2.message, 'error', 4000);
+                        return;
+                    }
+                } else {
+                    // Obter URL pública do bucket 'group-images'
+                    const { data: { publicUrl: url1 } } = supabase.storage
+                        .from('group-images')
+                        .getPublicUrl(fileName);
+                    publicUrl = url1;
+                }
+                
+                if (publicUrl) {
+                    // Preencher o campo de URL
+                    groupImageInput.value = publicUrl;
+                    uploadedImageUrl = publicUrl;
+                    
+                    showToast('✅ Imagem enviada com sucesso! 🎉', 'success', 3000);
+                    console.log('📸 Imagem enviada:', publicUrl);
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro no upload:', error);
+                showToast('❌ Erro ao enviar imagem: ' + error.message, 'error', 4000);
+            }
+            
+            this.remove();
+        });
+    });
+}
+
+// 2. Drag and drop (opcional)
+if (groupImageUploadArea) {
+    // Prevenir comportamento padrão
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        groupImageUploadArea.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+    
+    // Highlight ao arrastar
+    groupImageUploadArea.addEventListener('dragenter', () => {
+        groupImageUploadArea.classList.add('drag-over');
+    });
+    
+    groupImageUploadArea.addEventListener('dragleave', () => {
+        groupImageUploadArea.classList.remove('drag-over');
+    });
+    
+    groupImageUploadArea.addEventListener('drop', async (e) => {
+        groupImageUploadArea.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            // Simular clique no input de arquivo
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+            document.body.appendChild(fileInput);
+            
+            // Criar DataTransfer com o arquivo
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+            
+            // Disparar evento change
+            const event = new Event('change');
+            fileInput.dispatchEvent(event);
+            
+            fileInput.addEventListener('change', async function(e2) {
+                // O código do evento change acima será executado
+                // Mas precisamos garantir que o arquivo seja processado
+                const selectedFile = this.files[0];
+                if (!selectedFile) return;
+                
+                // Processar arquivo (similar ao código acima)
+                const MAX_SIZE = 10 * 1024 * 1024;
+                const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+                
+                if (selectedFile.size > MAX_SIZE) {
+                    showToast('❌ Imagem muito grande! Máx 10MB', 'error');
+                    this.remove();
+                    return;
+                }
+                
+                if (!ALLOWED_TYPES.includes(selectedFile.type)) {
+                    showToast('❌ Formato não suportado', 'error');
+                    this.remove();
+                    return;
+                }
+                
+                const previewUrl = await createImagePreview(selectedFile);
+                groupImagePreviewContainer.innerHTML = `
+                    <div class="image-preview-wrapper">
+                        <img src="${previewUrl}" alt="Preview" class="group-image-preview">
+                        <button type="button" class="remove-image-btn" id="removeGroupImageBtn">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `;
+                groupImageUploadArea.style.display = 'none';
+                
+                document.getElementById('removeGroupImageBtn')?.addEventListener('click', () => {
+                    groupImagePreviewContainer.innerHTML = '';
+                    groupImageUploadArea.style.display = 'flex';
+                    groupImageInput.value = '';
+                    uploadedImageUrl = null;
+                });
+                
+                // Upload para o Storage
+                const fileExt = selectedFile.name.split('.').pop();
+                const fileName = `groups/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                
+                try {
+                    const { data, error } = await supabase.storage
+                        .from('group-images')
+                        .upload(fileName, selectedFile, {
+                            cacheControl: '3600',
+                            upsert: true
+                        });
+                    
+                    if (error) throw error;
+                    
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('group-images')
+                        .getPublicUrl(fileName);
+                    
+                    groupImageInput.value = publicUrl;
+                    uploadedImageUrl = publicUrl;
+                    showToast('✅ Imagem enviada!', 'success');
+                } catch (error) {
+                    console.error('❌ Erro:', error);
+                    showToast('❌ Erro ao enviar imagem', 'error');
+                }
+                
+                this.remove();
+            });
+        }
+    });
+}
+
+// 3. Função para criar o bucket (se necessário) - execute no console ou SQL
+// No SQL Editor do Supabase:
+// INSERT INTO storage.buckets (id, name, public) 
+// VALUES ('group-images', 'group-images', true) 
+// ON CONFLICT (id) DO NOTHING;
     // =============================================
     // 12. GRUPOS
     // =============================================
