@@ -2626,3 +2626,840 @@ body.a11y-dark-mode .x-btn-primary {
 .chat-message.received {
     animation: fadeIn 0.3s ease;
 }
+
+/* =============================================
+   SISTEMA DE AMIZADES E CONVITES
+   ============================================= */
+
+/* --- Pesquisa de Usuários --- */
+.user-search-section {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 6px 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.user-search-bar:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.user-search-bar i {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.user-search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    width: 100%;
+    font-family: inherit;
+}
+
+.user-search-bar input::placeholder {
+    color: var(--text-muted);
+}
+
+/* --- Resultados da Pesquisa --- */
+.user-search-results {
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+.user-search-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+.user-search-result:hover {
+    background: var(--bg-hover);
+}
+
+.user-search-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.user-search-avatar-fallback {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.user-search-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-search-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-search-handle {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.btn-add-friend {
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-add-friend.add {
+    background: var(--gradient-main);
+    color: #fff;
+}
+
+.btn-add-friend.add:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.btn-add-friend.pending {
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    cursor: default;
+}
+
+.btn-add-friend.friends {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    cursor: default;
+}
+
+.btn-add-friend.accept {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.btn-add-friend.accept:hover {
+    background: #22c55e;
+    color: #fff;
+}
+
+.user-search-empty {
+    padding: 16px 12px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* --- Seções de Amigos --- */
+.friends-section {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.friends-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.friends-section-header i {
+    margin-right: 4px;
+}
+
+.friend-request-count {
+    background: var(--secondary);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* --- Lista de Solicitações --- */
+.friend-requests-list {
+    padding: 0 8px 8px;
+}
+
+.friend-request-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 10px;
+    background: var(--bg-card);
+    margin-bottom: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.friend-request-card .user-search-info {
+    flex: 1;
+}
+
+.friend-request-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.btn-request-action {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-request-accept {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.btn-request-accept:hover {
+    background: #22c55e;
+    color: #fff;
+}
+
+.btn-request-reject {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.btn-request-reject:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+/* --- Lista de Amigos --- */
+.friends-list {
+    padding: 0 8px 8px;
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.friend-item:hover {
+    background: var(--bg-hover);
+}
+
+.friend-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.friend-avatar-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.friend-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.friend-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.friend-handle {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.friend-chat-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+
+.friend-chat-btn:hover {
+    background: rgba(124, 58, 237, 0.1);
+}
+
+.empty-friends {
+    padding: 12px 8px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* --- Separador de Canais --- */
+.channels-divider {
+    display: flex;
+    align-items: center;
+    padding: 8px 14px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+/* --- Botão Usar Código na Tela de Grupos --- */
+.screen-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-use-invite {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-use-invite:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(124, 58, 237, 0.05);
+}
+
+.btn-use-invite i {
+    color: var(--primary);
+}
+
+/* --- Botões de Ação no Card de Grupo (Adicionar amigo / Compartilhar convite) --- */
+.group-admin-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-group-admin {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.btn-group-admin:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(124, 58, 237, 0.05);
+}
+
+/* --- Modais Pequenos --- */
+.modal-sm {
+    max-width: 420px;
+}
+
+.modal-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.modal-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+}
+
+.modal-search-bar:focus-within {
+    border-color: var(--primary);
+}
+
+.modal-search-bar i {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.modal-search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    width: 100%;
+    font-family: inherit;
+}
+
+/* --- Lista de amigos para grupo --- */
+.friends-for-group-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.friend-for-group-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    transition: background 0.15s;
+}
+
+.friend-for-group-item:hover {
+    background: var(--bg-hover);
+}
+
+.friend-for-group-item .friend-avatar,
+.friend-for-group-item .friend-avatar-fallback {
+    width: 40px;
+    height: 40px;
+    font-size: 15px;
+}
+
+.friend-for-group-item .friend-info {
+    flex: 1;
+}
+
+.btn-add-to-group {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--gradient-main);
+    color: #fff;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-add-to-group:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.btn-add-to-group:disabled {
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    cursor: default;
+    transform: none;
+    box-shadow: none;
+}
+
+/* --- Lista de grupos para amigo --- */
+.groups-for-friend-list {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.group-for-friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    transition: background 0.15s;
+    cursor: pointer;
+}
+
+.group-for-friend-item:hover {
+    background: var(--bg-hover);
+}
+
+.group-for-friend-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.group-for-friend-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.group-for-friend-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.group-for-friend-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* --- Código de Convite --- */
+.invite-code-body {
+    text-align: center;
+    padding: 20px 16px !important;
+}
+
+.invite-code-display {
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 16px 0;
+}
+
+.invite-code-text {
+    font-family: 'Courier New', monospace;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 12px;
+    color: var(--primary);
+    user-select: all;
+}
+
+.invite-code-expiry {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.invite-code-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn-invite-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-btn);
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    background: var(--gradient-main);
+    color: #fff;
+}
+
+.btn-invite-action:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.btn-invite-action.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-invite-action.btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: none;
+}
+
+/* --- Input de código de convite --- */
+.invite-code-input-group {
+    margin: 20px 0;
+}
+
+.invite-code-input {
+    width: 180px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 10px;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    background: var(--bg-secondary);
+    color: var(--primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.invite-code-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+.invite-code-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.btn-enter-group {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+    font-size: 15px;
+}
+
+/* --- Perfil do Amigo --- */
+.friend-profile-body {
+    text-align: center;
+    padding: 24px 16px !important;
+}
+
+.friend-profile-avatar-wrapper {
+    margin-bottom: 12px;
+}
+
+.friend-profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-light);
+}
+
+.friend-profile-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.friend-profile-handle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.friend-profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn-friend-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: var(--radius-btn);
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-chat-friend {
+    background: var(--gradient-main);
+    color: #fff;
+}
+
+.btn-chat-friend:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.btn-friend-action.btn-add-to-group {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 12px 20px;
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+}
+
+.btn-friend-action.btn-add-to-group:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* --- DM Channel Items (na lista de canais) --- */
+.channel-item.dm-channel .channel-icon {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--primary);
+}
+
+.channel-item.dm-channel .channel-icon img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+    .user-search-section {
+        padding: 6px 8px;
+    }
+
+    .user-search-bar input {
+        font-size: 12px;
+    }
+
+    .friends-section-header {
+        padding: 8px 10px 4px;
+    }
+
+    .friend-item {
+        padding: 4px 6px;
+    }
+
+    .friend-name,
+    .friend-handle {
+        display: none;
+    }
+
+    .friend-chat-btn {
+        display: none;
+    }
+
+    .channels-divider span {
+        display: none;
+    }
+
+    .user-search-bar {
+        padding: 4px 8px;
+    }
+
+    .screen-header-actions {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .btn-use-invite {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .btn-use-invite span {
+        display: none;
+    }
+
+    .modal-sm {
+        max-width: 95vw;
+    }
+
+    .invite-code-text {
+        font-size: 28px;
+        letter-spacing: 8px;
+    }
+
+    .invite-code-input {
+        font-size: 24px;
+        letter-spacing: 6px;
+        width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .screen-header-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .friend-profile-avatar {
+        width: 64px;
+        height: 64px;
+    }
+
+    .invite-code-display {
+        padding: 16px;
+    }
+}

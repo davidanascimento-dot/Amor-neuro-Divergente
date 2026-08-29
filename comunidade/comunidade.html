@@ -128,9 +128,14 @@
             <section class="tab-screen" id="screen-grupos" role="tabpanel" aria-labelledby="tab-grupos">
                 <div class="screen-header">
                     <h2><i class="fa-solid fa-users"></i> Grupos</h2>
-                    <button class="btn-create-group" id="openCreateGroupBtn">
-                        <i class="fa-solid fa-plus"></i> Criar Grupo
-                    </button>
+                    <div class="screen-header-actions">
+                        <button class="btn-use-invite" id="useInviteCodeBtn">
+                            <i class="fa-solid fa-key"></i> Usar código
+                        </button>
+                        <button class="btn-create-group" id="openCreateGroupBtn">
+                            <i class="fa-solid fa-plus"></i> Criar Grupo
+                        </button>
+                    </div>
                 </div>
 
                 <div class="groups-grid" id="groupsGrid">
@@ -160,11 +165,45 @@
                     <!-- Lista de canais (sidebar do chat) -->
                     <aside class="chat-channels">
                         <div class="chat-channels-header">
-                            <h3><i class="fa-regular fa-comments"></i> Canais</h3>
+                            <h3><i class="fa-regular fa-comments"></i> Conversas</h3>
                             <button class="btn-new-channel" id="openCreateGroupFromChatBtn" title="Novo canal">
                                 <i class="fa-solid fa-plus"></i>
                             </button>
                         </div>
+
+                        <!-- Barra de pesquisa de usuários -->
+                        <div class="user-search-section">
+                            <div class="user-search-bar">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="userSearchInput" placeholder="Pesquisar usuário..." autocomplete="off">
+                            </div>
+                            <div id="userSearchResults" class="user-search-results" hidden></div>
+                        </div>
+
+                        <!-- Solicitações de amizade pendentes -->
+                        <div id="friendRequestsSection" class="friends-section" hidden>
+                            <div class="friends-section-header">
+                                <span><i class="fa-solid fa-user-clock"></i> Solicitações</span>
+                                <span class="friend-request-count" id="friendRequestCount">0</span>
+                            </div>
+                            <div id="friendRequestsList" class="friend-requests-list"></div>
+                        </div>
+
+                        <!-- Lista de amigos -->
+                        <div id="friendsSection" class="friends-section">
+                            <div class="friends-section-header">
+                                <span><i class="fa-solid fa-user-group"></i> Amigos</span>
+                            </div>
+                            <div id="friendsList" class="friends-list">
+                                <div class="empty-friends">Pesquise usuários acima para adicionar amigos</div>
+                            </div>
+                        </div>
+
+                        <!-- Separador visual -->
+                        <div class="channels-divider">
+                            <span>Canais</span>
+                        </div>
+
                         <div class="channels-list" id="channelsList">
                             <div class="channel-item active" data-channel="geral">
                                 <div class="channel-icon"><i class="fa-solid fa-hashtag"></i></div>
@@ -484,6 +523,110 @@
 
     <input type="file" id="videoUploadInput" accept="video/*" style="display:none;">
     <input type="file" id="imageUploadInput" accept="image/*" style="display:none;">
+
+    <!-- Modal: Adicionar amigo a grupo -->
+    <div class="modal-overlay" id="addFriendToGroupModal" hidden>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-user-plus"></i> Adicionar amigo</h2>
+                <button class="modal-close" id="closeAddFriendToGroupModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchFriendForGroupInput" placeholder="Pesquisar entre seus amigos..." autocomplete="off">
+                </div>
+                <div id="friendsForGroupList" class="friends-for-group-list">
+                    <!-- Lista de amigos renderizada via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Selecionar grupo para adicionar amigo -->
+    <div class="modal-overlay" id="selectGroupForFriendModal" hidden>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-users"></i> Adicionar a um grupo</h2>
+                <button class="modal-close" id="closeSelectGroupModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-subtitle" id="selectGroupSubtitle">Selecione um grupo</p>
+                <div id="groupsForFriendList" class="groups-for-friend-list">
+                    <!-- Lista de grupos renderizada via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Código de convite do grupo -->
+    <div class="modal-overlay" id="inviteCodeModal" hidden>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-key"></i> Convite para o grupo</h2>
+                <button class="modal-close" id="closeInviteCodeModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body invite-code-body">
+                <p class="modal-subtitle" id="inviteCodeGroupName">Grupo</p>
+                <div class="invite-code-display">
+                    <span id="inviteCodeValue" class="invite-code-text">-----</span>
+                </div>
+                <p class="invite-code-expiry" id="inviteCodeExpiry">Expira em 7 dias</p>
+                <div class="invite-code-actions">
+                    <button class="btn-invite-action" id="copyInviteCodeBtn">
+                        <i class="fa-regular fa-clipboard"></i> Copiar código
+                    </button>
+                    <button class="btn-invite-action btn-secondary" id="regenerateInviteCodeBtn">
+                        <i class="fa-solid fa-rotate"></i> Gerar novo código
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Usar código de convite -->
+    <div class="modal-overlay" id="useInviteCodeModal" hidden>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-key"></i> Usar código de convite</h2>
+                <button class="modal-close" id="closeUseInviteCodeModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body invite-code-body">
+                <p class="modal-subtitle">Digite o código do convite para entrar em um grupo</p>
+                <div class="invite-code-input-group">
+                    <input type="text" id="inviteCodeInput" class="invite-code-input" maxlength="5" placeholder="00000" autocomplete="off">
+                </div>
+                <button class="btn-submit btn-enter-group" id="submitInviteCodeBtn">
+                    <i class="fa-solid fa-right-to-bracket"></i> Entrar no grupo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Perfil do amigo -->
+    <div class="modal-overlay" id="friendProfileModal" hidden>
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-user"></i> Perfil</h2>
+                <button class="modal-close" id="closeFriendProfileModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body friend-profile-body">
+                <div class="friend-profile-avatar-wrapper">
+                    <img src="/img/foto-padrão.jpg" alt="Avatar" class="friend-profile-avatar" id="friendProfileAvatar">
+                </div>
+                <h3 class="friend-profile-name" id="friendProfileName">Nome</h3>
+                <p class="friend-profile-handle" id="friendProfileHandle">@usuario</p>
+                <div class="friend-profile-actions">
+                    <button class="btn-friend-action btn-chat-friend" id="friendProfileChatBtn">
+                        <i class="fa-regular fa-comment-dots"></i> Conversar
+                    </button>
+                    <button class="btn-friend-action btn-add-to-group" id="friendProfileAddToGroupBtn">
+                        <i class="fa-solid fa-users"></i> Adicionar a grupo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

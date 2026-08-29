@@ -196,6 +196,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             setTimeout(() => toast.remove(), 400);
         }, duration);
     }
+    // Expor showToast globalmente (necessário para onclicks em HTML injetado)
+    window.showToast = showToast;
 
     // =============================================
     // 5. LOGOUT
@@ -288,8 +290,485 @@ document.addEventListener("DOMContentLoaded", async () => {
             showToast('Erro: ' + error.message, 'error');
             return null;
         }
-        return data;
+        return data !== null && data !== undefined ? data : { success: true };
     }
+
+    // =============================================
+    // 6.5. API AMIZADES E CONVITES
+    // =============================================
+    async function apiSearchUsers(query) {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('search_users', { p_query: query });
+        if (!error && data) {
+            return data;
+        }
+        
+        console.warn('⚠️ RPC search_users falhou, tentando fallback direto:', error?.message);
+        
+        // FALLBACK: Consultar a tabela profiles diretamente
+        try {
+            // Não expor emails! Buscar apenas por username
+            const { data: profiles, error: searchErr } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .ilike('username', `%${query}%`)
+                .limit(20);
+
+            if (searchErr) throw searchErr;
+            return profiles || [];
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback de buscar usuários:', fallbackErr);
+            return [];
+        }
+    }
+
+    async function apiSendFriendRequest(receiverId) {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('send_friend_request', { p_receiver_id: receiverId });
+        if (!error && data) {
+            return data;
+        }
+        
+        console.warn('⚠️ RPC send_friend_request falhou, tentando fallback direto:', error?.message);
+
+        // FALLBACK: Inserir amizade diretamente
+        try {
+            const myId = currentUser?.id || (await supabase.auth.getUser()).data.user?.id;
+            if (!myId) return { success: false, error: 'Usuário não autenticado.' };
+            if (myId === receiverId) return { success: false, error: 'Você não pode adicionar a si mesmo.' };
+
+            // 1. Verificar se já existe relacionamento entre ambos
+            const { data: existing, error: existErr } = await supabase
+                .from('friendships')
+                .select('*')
+                .or(`and(requester_id.eq.${myId},receiver_id.eq.${receiverId}),and(requester_id.eq.${receiverId},receiver_id.eq.${myId})`)
+                .maybeSingle();
+
+            if (existing) {
+                if (existing.status === 'accepted') {
+                    return { success: false, error: 'Vocês já são amigos.' };
+                }
+                return { success: false, error: 'Já existe uma solicitação pendente entre vocês.' };
+            }
+
+            // 2. Inserir a nova solicitação
+            const { error: insertErr } = await supabase
+                .from('friendships')
+                .insert({
+                    requester_id: myId,
+                    receiver_id: receiverId,
+                    status: 'pending'
+                });
+
+            if (insertErr) throw insertErr;
+            return { success: true };
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback de enviar solicitação:', fallbackErr);
+            return { success: false, error: fallbackErr.message };
+        }
+    }
+
+    async function apiRespondFriendRequest(friendshipId, action) {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('respond_friend_request', {
+            p_friendship_id: friendshipId,
+            p_action: action
+        });
+        if (!error && data) {
+            return data;
+        }
+        
+        console.warn('⚠️ RPC respond_friend_request falhou, tentando fallback direto:', error?.message);
+
+        // FALLBACK: Atualizar ou deletar diretamente na tabela
+        try {
+            if (action === 'accept') {
+                const { error: updateErr } = await supabase
+                    .from('friendships')
+                    .update({ status: 'accepted' })
+                    .eq('id', friendshipId);
+
+                if (updateErr) throw updateErr;
+                return { success: true };
+            } else {
+                // rejeitar ou cancelar
+                const { error: deleteErr } = await supabase
+                    .from('friendships')
+                    .delete()
+                    .eq('id', friendshipId);
+
+                if (deleteErr) throw deleteErr;
+                return { success: true };
+            }
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback de responder solicitação:', fallbackErr);
+            return { success: false, error: fallbackErr.message };
+        }
+    }
+
+    async function apiGetFriends() {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('get_friends');
+        if (!error && data) {
+            return data;
+        }
+        
+        console.warn('⚠️ RPC get_friends falhou, tentando fallback direto:', error?.message);
+
+        // FALLBACK: Consultar tabelas directamente
+        try {
+            const myId = currentUser?.id || (await supabase.auth.getUser()).data.user?.id;
+            if (!myId) return [];
+
+            // 1. Buscar relacionamentos aceitos onde o usuário participa
+            const { data: friendships, error: friendErr } = await supabase
+                .from('friendships')
+                .select('*')
+                .eq('status', 'accepted')
+                .or(`user_id1.eq.${myId},user_id2.eq.${myId}`);
+
+            if (friendErr || !friendships || friendships.length === 0) {
+                return [];
+            }
+
+            // 2. Coletar IDs dos amigos
+            const friendIds = friendships.map(f => f.user_id1 === myId ? f.user_id2 : f.user_id1);
+
+            // 3. Buscar perfis dos amigos
+            const { data: profiles, error: profileErr } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .in('id', friendIds);
+
+            if (profileErr) throw profileErr;
+
+            // 4. Mapear resultados no formato esperado pela view
+            return friendships.map(f => {
+                const friendId = f.user_id1 === myId ? f.user_id2 : f.user_id1;
+                const profile = profiles?.find(p => p.id === friendId) || {};
+                return {
+                    friendship_id: f.id,
+                    friend_id: friendId,
+                    username: profile.username || 'Membro',
+                    avatar_url: profile.avatar_url || null
+                };
+            });
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback de carregar amigos:', fallbackErr);
+            return [];
+        }
+    }
+
+    async function apiGetPendingRequests() {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('get_pending_requests');
+        if (!error && data) {
+            return data;
+        }
+        
+        console.warn('⚠️ RPC get_pending_requests falhou, tentando fallback direto:', error?.message);
+
+        // FALLBACK: Consultar tabelas directamente
+        try {
+            const myId = currentUser?.id || (await supabase.auth.getUser()).data.user?.id;
+            if (!myId) return [];
+
+            // 1. Buscar relacionamentos pendentes enviados para mim (user_id2 é o destinatário)
+            const { data: requests, error: reqErr } = await supabase
+                .from('friendships')
+                .select('*')
+                .eq('status', 'pending')
+                .eq('user_id2', myId);
+
+            if (reqErr || !requests || requests.length === 0) {
+                return [];
+            }
+
+            // 2. Coletar IDs dos remetentes
+            const senderIds = requests.map(f => f.user_id1);
+
+            // 3. Buscar perfis dos remetentes
+            const { data: profiles, error: profileErr } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .in('id', senderIds);
+
+            if (profileErr) throw profileErr;
+
+            // 4. Mapear resultados no formato esperado pela view
+            return requests.map(f => {
+                const profile = profiles?.find(p => p.id === f.user_id1) || {};
+                return {
+                    friendship_id: f.id,
+                    sender_id: f.user_id1,
+                    username: profile.username || 'Membro',
+                    avatar_url: profile.avatar_url || null
+                };
+            });
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback de carregar pendentes:', fallbackErr);
+            return [];
+        }
+    }
+
+
+    async function apiAddFriendToGroup(friendId, groupId) {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('add_friend_to_group', {
+            p_friend_id: friendId,
+            p_group_id: groupId
+        });
+        if (!error && data) {
+            return data;
+        }
+        if (error) {
+            console.warn('⚠️ RPC add_friend_to_group falhou, tentando fallback direto:', error.message);
+        }
+
+        // FALLBACK: Inserir diretamente
+        try {
+            // 1. Verificar se o grupo existe e obter detalhes
+            const { data: group, error: groupErr } = await supabase
+                .from('groups')
+                .select('*')
+                .eq('id', groupId)
+                .single();
+
+            if (groupErr || !group) {
+                return { success: false, error: 'Grupo não encontrado.' };
+            }
+
+            // 2. Verificar se o usuário logado é o criador
+            if (group.created_by !== currentUser?.id) {
+                return { success: false, error: 'Apenas o criador do grupo pode adicionar membros.' };
+            }
+
+            // 3. Verificar se já é membro
+            const { data: alreadyMember, error: memberErr } = await supabase
+                .from('group_members')
+                .select('id')
+                .eq('group_id', groupId)
+                .eq('user_id', friendId)
+                .maybeSingle();
+
+            if (alreadyMember) {
+                return { success: false, error: 'Esta pessoa já é membro do grupo.' };
+            }
+
+            // 4. Adicionar à tabela group_members
+            const { error: insertMemberErr } = await supabase
+                .from('group_members')
+                .insert({
+                    group_id: groupId,
+                    user_id: friendId,
+                    joined_at: new Date().toISOString()
+                });
+
+            if (insertMemberErr) {
+                return { success: false, error: insertMemberErr.message };
+            }
+
+            // 5. Adicionar à conversa do grupo
+            await supabase
+                .from('conversation_participants')
+                .insert({
+                    conversation_id: groupId,
+                    user_id: friendId,
+                    joined_at: new Date().toISOString()
+                });
+
+            // 6. Incrementar contador de membros no grupo
+            await supabase
+                .from('groups')
+                .update({ members: (group.members || 0) + 1 })
+                .eq('id', groupId);
+
+            return { success: true, group_name: group.name };
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback de adicionar amigo:', fallbackErr);
+            return { success: false, error: fallbackErr.message };
+        }
+    }
+
+    async function apiGenerateGroupInvite(groupId) {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('generate_group_invite', { p_group_id: groupId });
+        if (!error && data && data.success) {
+            return data;
+        }
+        
+        let rpcErrorMsg = error ? error.message : (data ? data.error : 'Erro desconhecido');
+        console.warn('⚠️ RPC generate_group_invite falhou, tentando fallback direto:', rpcErrorMsg);
+
+        // FALLBACK: Inserir diretamente na tabela group_invites
+        try {
+            // Gerar código de 5 dígitos
+            const code = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+            const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+            // Desativar convites antigos
+            await supabase.from('group_invites')
+                .update({ active: false })
+                .eq('group_id', groupId);
+
+            const userId = currentUser?.id || (await supabase.auth.getUser()).data.user?.id;
+
+            // Inserir novo convite (tentar com o campo 'active', se falhar tentar sem ele)
+            let inviteData = null;
+            let insertError = null;
+
+            const insertResult = await supabase
+                .from('group_invites')
+                .insert({
+                    group_id: groupId,
+                    code: code,
+                    created_by: userId,
+                    active: true,
+                    expires_at: expiresAt
+                })
+                .select()
+                .single();
+
+            inviteData = insertResult.data;
+            insertError = insertResult.error;
+
+            // Se falhou por causa da coluna "active", tentar sem ela
+            if (insertError && insertError.message && insertError.message.includes('active')) {
+                console.warn('⚠️ Coluna "active" ausente, tentando inserir sem ela...');
+                const retryResult = await supabase
+                    .from('group_invites')
+                    .insert({
+                        group_id: groupId,
+                        code: code,
+                        created_by: userId,
+                        expires_at: expiresAt
+                    })
+                    .select()
+                    .single();
+
+                inviteData = retryResult.data;
+                insertError = retryResult.error;
+            }
+
+            if (insertError) {
+                console.error('❌ Fallback direto também falhou:', insertError.message);
+                showToast(`⚠️ Modo Local: Código gerado fora do banco (Outros não conseguirão entrar). Erro: ${insertError.message}`, 'warning', 7000);
+                // ÚLTIMO RECURSO: gerar código local sem persistir no banco
+                return { success: true, code: code, expires_at: expiresAt, local_only: true };
+            }
+
+            console.log('✅ Convite criado via fallback direto:', code);
+            return { success: true, code: inviteData.code, expires_at: inviteData.expires_at || expiresAt };
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback:', fallbackErr);
+            showToast(`⚠️ Modo Local: Falha ao persistir código. Erro: ${fallbackErr.message}`, 'warning', 7000);
+            // ÚLTIMO RECURSO: retornar código gerado localmente
+            const code = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+            const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+            return { success: true, code: code, expires_at: expiresAt, local_only: true };
+        }
+    }
+
+    async function apiUseInviteCode(code) {
+        // Tentar via RPC primeiro
+        const { data, error } = await supabase.rpc('use_invite_code', { p_code: code });
+        if (!error && data) {
+            return data;
+        }
+        
+        let rpcErrorMsg = error ? error.message : (data ? data.error : 'Erro desconhecido');
+        console.warn('⚠️ RPC use_invite_code falhou, tentando fallback direto:', rpcErrorMsg);
+
+        // FALLBACK: Utilizar convite diretamente via tabelas
+        try {
+            // 1. Buscar convite pelo código (sem filtrar active, pois coluna pode não existir)
+            const { data: invite, error: inviteErr } = await supabase
+                .from('group_invites')
+                .select('*')
+                .eq('code', code)
+                .maybeSingle();
+
+            if (inviteErr) {
+                console.error('❌ Erro ao buscar convite no banco:', inviteErr.message);
+                return { success: false, error: `Erro no banco de dados ao verificar código: ${inviteErr.message}` };
+            }
+
+            if (!invite) {
+                return { success: false, error: 'Código de convite não encontrado. Verifique se o código está correto.' };
+            }
+
+            // Verificar se está ativo (se a coluna existir)
+            if (invite.active === false) {
+                return { success: false, error: 'Este código de convite foi desativado.' };
+            }
+
+            // Verificar expiração localmente (se a coluna existir)
+            if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
+                return { success: false, error: 'Este código de convite já expirou (limite de 7 dias).' };
+            }
+
+            // 2. Buscar detalhes do grupo
+            const { data: group, error: groupErr } = await supabase
+                .from('groups')
+                .select('*')
+                .eq('id', invite.group_id)
+                .single();
+
+            if (groupErr || !group) {
+                return { success: false, error: 'Grupo não encontrado.' };
+            }
+
+            // 3. Verificar se já é membro
+            const { data: alreadyMember, error: memberErr } = await supabase
+                .from('group_members')
+                .select('id')
+                .eq('group_id', invite.group_id)
+                .eq('user_id', currentUser?.id)
+                .maybeSingle();
+
+            if (alreadyMember) {
+                return { success: false, error: 'Você já é membro deste grupo.' };
+            }
+
+            // 4. Adicionar ao grupo
+            const { error: insertMemberErr } = await supabase
+                .from('group_members')
+                .insert({
+                    group_id: invite.group_id,
+                    user_id: currentUser?.id,
+                    joined_at: new Date().toISOString()
+                });
+
+            if (insertMemberErr) {
+                return { success: false, error: insertMemberErr.message };
+            }
+
+            // 5. Adicionar à conversa do grupo
+            await supabase
+                .from('conversation_participants')
+                .insert({
+                    conversation_id: invite.group_id,
+                    user_id: currentUser?.id,
+                    joined_at: new Date().toISOString()
+                });
+
+            // 6. Incrementar contador de membros
+            await supabase
+                .from('groups')
+                .update({ members: (group.members || 0) + 1 })
+                .eq('id', invite.group_id);
+
+            return {
+                success: true,
+                group_id: invite.group_id,
+                group_name: group.name
+            };
+        } catch (fallbackErr) {
+            console.error('❌ Exceção no fallback de usar convite:', fallbackErr);
+            return { success: false, error: fallbackErr.message };
+        }
+    }
+
 
     // =============================================
     // 7. ESCAPE HTML E FORMATADORES
@@ -982,11 +1461,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                             `}
                         `}
                     </div>
+                    ${isAdmin ? `
+                    <div class="group-admin-actions">
+                        <button class="btn-group-admin" onclick="window.openAddFriendToGroupModal('${g.id}')">
+                            <i class="fa-solid fa-user-plus"></i> Adicionar amigo
+                        </button>
+                        <button class="btn-group-admin" onclick="window.openInviteCodeModal('${g.id}', '${escapeHtml(g.name)}')">
+                            <i class="fa-solid fa-key"></i> Código
+                        </button>
+                    </div>
+                    ` : ''}
                 </div>
             </div>`;
         }).join('');
 
         await renderChatChannels();
+        await renderFriendsList();
+        await renderFriendRequests();
     }
 
     // =============================================
@@ -1246,11 +1737,110 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById('createGroupModal')?.setAttribute('hidden', '');
             document.getElementById('createGroupForm')?.reset();
 
+            // Se grupo privado, gerar código de convite automaticamente
+            if (isPrivate) {
+                showToast('🔒 Grupo privado: Gerando código de convite...', 'info', 4000);
+                console.log('🔒 Grupo privado detectado, gerando código de convite...');
+
+                // PASSO 1: Gerar o código de convite
+                let inviteCode = null;
+                let expiresAt = null;
+                try {
+                    const inviteResult = await apiGenerateGroupInvite(group.id);
+                    console.log('📋 Resultado do convite:', inviteResult);
+                    if (inviteResult && inviteResult.success) {
+                        inviteCode = inviteResult.code;
+                        expiresAt = inviteResult.expires_at;
+                        console.log('✅ Código de convite gerado:', inviteCode);
+                        showToast(`🔑 Código de convite gerado com sucesso: ${inviteCode}`, 'success', 5000);
+                    } else {
+                        showToast('❌ Falha ao obter código de convite do banco.', 'error', 5000);
+                        console.error('❌ Falha ao gerar convite:', inviteResult);
+                    }
+                } catch (inviteErr) {
+                    showToast('❌ Erro de conexão ao tentar gerar código.', 'error', 5000);
+                    console.error('❌ Erro ao chamar apiGenerateGroupInvite:', inviteErr);
+                }
+
+                // PASSO 2: Inserir mensagem no chat do grupo (independente do passo 1)
+                if (inviteCode) {
+                    try {
+                        const systemMsg = `🔒 Grupo privado criado!\n\nEste é um grupo privado.\n\nPara convidar outras pessoas, compartilhe o código de convite:\n🔑 ${inviteCode}`;
+                        
+                        // Tentar via RPC insert_system_message primeiro
+                        const { data: msgData, error: msgError } = await supabase.rpc('insert_system_message', {
+                            p_conversation_id: group.id,
+                            p_content: systemMsg
+                        });
+
+                        if (msgError) {
+                            console.warn('⚠️ RPC insert_system_message falhou, tentando apiSendMessage...', msgError.message);
+                            
+                            // Tentar via apiSendMessage (RPC send_message)
+                            const sendResult = await apiSendMessage(group.id, systemMsg);
+                            if (sendResult) {
+                                console.log('✅ Mensagem de boas-vindas enviada via apiSendMessage.');
+                                showToast('💬 Mensagem inicial do grupo enviada no chat.', 'success', 4000);
+                            } else {
+                                console.warn('⚠️ apiSendMessage também falhou, tentando inserção direta...');
+                                
+                                // Tentar inserção direta no banco
+                                const { error: directErr } = await supabase.from('messages').insert({
+                                    conversation_id: group.id,
+                                    sender_id: currentUser.id,
+                                    sender_name: '🔒 Sistema',
+                                    content: systemMsg,
+                                    created_at: new Date().toISOString()
+                                });
+                                
+                                if (directErr) {
+                                    console.error('❌ Todos os métodos de envio de mensagem no chat falharam:', directErr.message);
+                                    showToast('⚠️ Não foi possível colocar a mensagem no chat do grupo.', 'warning', 4000);
+                                } else {
+                                    console.log('✅ Mensagem enviada via inserção direta.');
+                                    showToast('💬 Mensagem inicial enviada via inserção direta.', 'success', 4000);
+                                }
+                            }
+                        } else {
+                            console.log('✅ Mensagem de sistema inserida via RPC:', msgData);
+                            showToast('💬 Mensagem do sistema enviada para o chat do grupo!', 'success', 4000);
+                        }
+                    } catch (msgErr) {
+                        console.error('❌ Exceção ao inserir mensagem de sistema:', msgErr);
+                        showToast('⚠️ Exceção ao postar mensagem de boas-vindas no chat.', 'warning', 4000);
+                    }
+                }
+
+                // PASSO 3: Enviar notificação in-app ao criador
+                if (inviteCode) {
+                    try {
+                        let expiryStr = '7 dias';
+                        if (expiresAt) {
+                            try {
+                                expiryStr = new Date(expiresAt).toLocaleDateString('pt-BR');
+                            } catch(e) {}
+                        }
+                        const copyBtnHtml = `<button onclick="navigator.clipboard.writeText('${inviteCode}').then(function(){window.showToast && window.showToast('Código copiado! 📋','success',2000)}).catch(function(){prompt('Copie o código:','${inviteCode}')})" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Inter,sans-serif;margin-top:4px;"><i class='fa-regular fa-clipboard'></i> 📋 Copiar código</button>`;
+
+                        addInAppNotification(
+                            '🔒 Grupo privado criado!',
+                            `Seu grupo "${name}" foi criado com sucesso.\n\n🔑 Código de convite: ${inviteCode}\n\nCompartilhe esse código com quem você deseja convidar.\n\n⏳ Expira em: ${expiryStr}`,
+                            copyBtnHtml
+                        );
+                        console.log('✅ Notificação in-app disparada com código:', inviteCode);
+                        showToast('🔔 Código enviado para sua área de notificações (sino no topo)!', 'success', 5000);
+                    } catch (notifErr) {
+                        console.error('❌ Erro ao disparar notificação:', notifErr);
+                        showToast('❌ Erro ao registrar notificação na área de notificações.', 'error', 4000);
+                    }
+                }
+            }
+
             await renderGroups();
             switchTab('grupos');
 
         } catch (error) {
-            console.error('❌ Erro:', error);
+            console.error('❌ Erro ao criar grupo:', error);
             showToast('Erro ao criar grupo: ' + error.message, 'error');
         }
     });
@@ -1543,9 +2133,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     addMessageToChat(newMessage);
                 }
             )
-            .subscribe((status) => {
+            .subscribe((status, err) => {
                 if (status === 'SUBSCRIBED') {
                     console.log('✅ Chat em tempo real conectado! 🚀');
+                } else if (status === 'CHANNEL_ERROR' || err) {
+                    console.error('❌ Erro no canal de Realtime:', status, err);
+                    showToast('⚠️ Erro de conexão em tempo real. Verifique se o Realtime está ativo no Supabase.', 'warning', 6000);
                 } else {
                     console.log('📡 Status da conexão:', status);
                 }
@@ -1737,7 +2330,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                     await renderPosts();
                 }
             )
-            .subscribe();
+            .subscribe((status, err) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('✅ Inscrição de posts ativa! 🚀');
+                } else if (status === 'CHANNEL_ERROR' || err) {
+                    console.error('❌ Erro na inscrição de posts:', status, err);
+                    showToast('⚠️ Erro de sincronização do fórum. Ative o Realtime para a tabela "posts" no Supabase.', 'warning', 6000);
+                }
+            });
     }
 
     // =============================================
@@ -2042,6 +2642,62 @@ function filterGroupCards() {
     });
 }
 
+// 7. SISTEMA DE NOTIFICAÇÕES IN-APP
+var inMemoryNotifications = [];
+
+function addInAppNotification(title, body, extraHtml) {
+    inMemoryNotifications.unshift({
+        id: Date.now(),
+        title: title,
+        body: body,
+        extraHtml: extraHtml || '',
+        read: false,
+        time: new Date()
+    });
+
+    // Atualizar badge de notificação
+    var badge = document.getElementById('notifBadge');
+    if (badge) {
+        var unread = inMemoryNotifications.filter(function(n) { return !n.read; }).length;
+        badge.textContent = unread;
+        badge.style.display = unread > 0 ? 'block' : 'none';
+    }
+
+    // Se o painel estiver aberto, re-renderizar
+    var panel = document.getElementById('notificationPanel');
+    if (panel) {
+        renderNotificationsInPanel();
+    }
+}
+
+function renderNotificationsInPanel() {
+    var list = document.getElementById('notificationsList');
+    if (!list) return;
+
+    if (inMemoryNotifications.length === 0) {
+        list.innerHTML =
+            '<div style="text-align:center;padding:30px 20px;color:var(--text-muted,#94a3b8);">' +
+            '<i class="fa-regular fa-bell-slash" style="font-size:28px;display:block;margin-bottom:10px;opacity:0.3;"></i>' +
+            '<p style="font-size:14px;">Nenhuma notificação</p></div>';
+        return;
+    }
+
+    list.innerHTML = inMemoryNotifications.map(function(n) {
+        var timeStr = n.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        return '<div style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);' + (n.read ? 'opacity:0.6;' : '') + '">' +
+            '<div style="font-size:13px;font-weight:700;color:var(--text-primary,#1e293b);margin-bottom:4px;">' + n.title + '</div>' +
+            '<div style="font-size:12px;color:var(--text-secondary,#64748b);white-space:pre-line;line-height:1.5;">' + n.body + '</div>' +
+            (n.extraHtml ? '<div style="margin-top:8px;">' + n.extraHtml + '</div>' : '') +
+            '<div style="font-size:11px;color:var(--text-muted,#94a3b8);margin-top:4px;">' + timeStr + '</div>' +
+            '</div>';
+    }).join('');
+
+    // Marcar todas como lidas
+    inMemoryNotifications.forEach(function(n) { n.read = true; });
+    var badge = document.getElementById('notifBadge');
+    if (badge) badge.style.display = 'none';
+}
+
 // 7. BOTÃO DE NOTIFICAÇÕES
 function addNotificationButton() {
     if (document.getElementById('notificationsToggle')) return;
@@ -2081,16 +2737,16 @@ function showNotificationPanel() {
     panel.innerHTML = 
         '<div style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);display:flex;justify-content:space-between;align-items:center;">' +
         '<h4 style="font-size:15px;font-weight:700;color:var(--text-primary,#1e293b);"><i class="fa-regular fa-bell" style="color:#7c3aed;"></i> Notificações</h4>' +
-        '<button onclick="this.closest(\'div\').remove()" style="background:none;border:none;font-size:18px;color:var(--text-muted,#94a3b8);cursor:pointer;">✕</button>' +
+        '<button onclick="this.closest(\'#notificationPanel\').remove()" style="background:none;border:none;font-size:18px;color:var(--text-muted,#94a3b8);cursor:pointer;">✕</button>' +
         '</div>' +
-        '<div id="notificationsList" style="flex:1;overflow-y:auto;padding:8px 0;">' +
-        '<div style="text-align:center;padding:30px 20px;color:var(--text-muted,#94a3b8);">' +
-        '<i class="fa-regular fa-bell-slash" style="font-size:28px;display:block;margin-bottom:10px;opacity:0.3;"></i>' +
-        '<p style="font-size:14px;">Nenhuma notificação</p></div></div>' +
+        '<div id="notificationsList" style="flex:1;overflow-y:auto;padding:8px 0;"></div>' +
         '<div style="padding:8px 16px;border-top:1px solid var(--border-color,#e2e8f0);text-align:center;">' +
         '<button onclick="markAllRead()" style="background:none;border:none;color:#7c3aed;font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;">Marcar todas como lidas</button></div>';
     
     document.body.appendChild(panel);
+    
+    // Renderizar notificações em memória
+    renderNotificationsInPanel();
     
     setTimeout(function() {
         document.addEventListener('click', function closePanel(e) {
@@ -2171,38 +2827,544 @@ function addReactionsToPosts() {
     });
 }
 
-// 10. INICIALIZAR TUDO
-function initCommunityFeatures() {
-    console.log('🚀 Inicializando funcionalidades da comunidade...');
-    
-    addCategorySelectorToModal();
-    addHelpRequestLabel();
-    addRulesBanner();
-    addGroupSearch();
-    addNotificationButton();
-    
-    // Adicionar reações após os posts carregarem
-    setTimeout(addReactionsToPosts, 1000);
-    
-    // Observer para adicionar reações em novos posts
-    var feed = document.getElementById('postsFeed');
-    if (feed) {
-        var observer = new MutationObserver(function() {
-            addReactionsToPosts();
+    // =============================================
+    // 20. SISTEMA DE AMIZADES E CONVITES DE GRUPO (LOGICA)
+    // =============================================
+
+    // --- PESQUISA DE USUÁRIOS ---
+    let searchDebounceTimeout = null;
+    const userSearchInput = document.getElementById('userSearchInput');
+    const userSearchResults = document.getElementById('userSearchResults');
+
+    if (userSearchInput) {
+        userSearchInput.addEventListener('input', () => {
+            clearTimeout(searchDebounceTimeout);
+            const query = userSearchInput.value.trim();
+            if (query.length < 2) {
+                if (userSearchResults) {
+                    userSearchResults.innerHTML = '';
+                    userSearchResults.setAttribute('hidden', '');
+                }
+                return;
+            }
+            searchDebounceTimeout = setTimeout(() => handleUserSearch(query), 300); // 300ms debounce
         });
-        observer.observe(feed, { childList: true, subtree: true });
     }
-    
-    if (!sessionStorage.getItem('rulesShown')) {
-        setTimeout(function() {
-            window.showCommunityRules();
-            sessionStorage.setItem('rulesShown', 'true');
-        }, 3000);
+
+    // Fechar resultados ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (userSearchResults && !userSearchResults.contains(e.target) && e.target !== userSearchInput) {
+            userSearchResults.setAttribute('hidden', '');
+        }
+    });
+
+    async function handleUserSearch(query) {
+        if (!currentUser) return;
+        const results = await apiSearchUsers(query);
+        if (!userSearchResults) return;
+
+        userSearchResults.removeAttribute('hidden');
+        if (results.length === 0) {
+            userSearchResults.innerHTML = '<div class="user-search-empty">Nenhum usuário encontrado.</div>';
+            return;
+        }
+
+        userSearchResults.innerHTML = results.map(u => {
+            let actionBtn = '';
+            if (!u.friendship_status) {
+                actionBtn = `<button class="btn-add-friend add" onclick="window.sendFriendRequest('${u.id}')">Adicionar</button>`;
+            } else if (u.friendship_status === 'pending') {
+                if (u.is_requester) {
+                    actionBtn = `<button class="btn-add-friend pending" disabled>⏳ Pendente</button>`;
+                } else {
+                    actionBtn = `<button class="btn-add-friend accept" onclick="window.acceptFriendRequest('${u.friendship_id}')">Aceitar</button>`;
+                }
+            } else if (u.friendship_status === 'accepted') {
+                actionBtn = `<button class="btn-add-friend friends" disabled>✓ Amigos</button>`;
+            }
+
+            const initial = (u.username || 'U').charAt(0).toUpperCase();
+            const avatarColor = stringToColor(u.id);
+
+            const avatarHtml = u.avatar_url && u.avatar_url !== AVATAR_PADRAO
+                ? `<img src="${u.avatar_url}" alt="${u.username}" class="user-search-avatar" onerror="this.outerHTML='<div class=&quot;user-search-avatar-fallback&quot; style=&quot;background:${avatarColor}&quot;>${initial}</div>';">`
+                : `<div class="user-search-avatar-fallback" style="background:${avatarColor}">${initial}</div>`;
+
+            return `
+                <div class="user-search-result" onclick="window.openFriendProfile('${u.id}', '${escapeHtml(u.username)}', '${u.avatar_url || ''}')">
+                    ${avatarHtml}
+                    <div class="user-search-info">
+                        <span class="user-search-name">${escapeHtml(u.username)}</span>
+                        <span class="user-search-handle">@${escapeHtml(u.username.toLowerCase())}</span>
+                    </div>
+                    <div onclick="event.stopPropagation()">${actionBtn}</div>
+                </div>
+            `;
+        }).join('');
     }
-    
-    console.log('✅ Funcionalidades adicionadas com sucesso!');
-    console.log('📦 Categorias, Regras, Filtro de Grupos, Notificações, Reações');
-}
+
+    // --- SISTEMA DE AMIZADES ---
+    window.sendFriendRequest = async function(receiverId) {
+        if (!currentUser) return showToast('Faça login primeiro.', 'warning');
+        const res = await apiSendFriendRequest(receiverId);
+        if (res && res.success) {
+            showToast('Solicitação de amizade enviada! 🤝', 'success');
+            const query = userSearchInput?.value.trim() || '';
+            if (query) handleUserSearch(query);
+            await renderFriendRequests();
+        } else {
+            showToast(res?.error || 'Erro ao enviar solicitação.', 'error');
+        }
+    };
+
+    window.acceptFriendRequest = async function(friendshipId) {
+        const res = await apiRespondFriendRequest(friendshipId, 'accepted');
+        if (res && res.success) {
+            showToast('Solicitação aceita! Agora vocês são amigos. 🎉', 'success');
+            const query = userSearchInput?.value.trim() || '';
+            if (query) handleUserSearch(query);
+            await renderFriendsList();
+            await renderFriendRequests();
+            await renderChatChannels();
+        } else {
+            showToast(res?.error || 'Erro ao aceitar solicitação.', 'error');
+        }
+    };
+
+    window.rejectFriendRequest = async function(friendshipId) {
+        const res = await apiRespondFriendRequest(friendshipId, 'rejected');
+        if (res && res.success) {
+            showToast('Solicitação recusada.', 'info');
+            await renderFriendRequests();
+            const query = userSearchInput?.value.trim() || '';
+            if (query) handleUserSearch(query);
+        } else {
+            showToast(res?.error || 'Erro ao recusar solicitação.', 'error');
+        }
+    };
+
+    async function renderFriendRequests() {
+        if (!currentUser) return;
+        const requests = await apiGetPendingRequests();
+        const countBadge = document.getElementById('friendRequestCount');
+        const section = document.getElementById('friendRequestsSection');
+        const list = document.getElementById('friendRequestsList');
+
+        if (!list || !section) return;
+
+        if (requests.length === 0) {
+            section.setAttribute('hidden', '');
+            if (countBadge) countBadge.textContent = '0';
+            return;
+        }
+
+        section.removeAttribute('hidden');
+        if (countBadge) countBadge.textContent = requests.length;
+
+        list.innerHTML = requests.map(r => {
+            const initial = (r.username || 'U').charAt(0).toUpperCase();
+            const avatarColor = stringToColor(r.requester_id);
+            const avatarHtml = r.avatar_url && r.avatar_url !== AVATAR_PADRAO
+                ? `<img src="${r.avatar_url}" alt="${r.username}" class="user-search-avatar" onerror="this.outerHTML='<div class=&quot;user-search-avatar-fallback&quot; style=&quot;background:${avatarColor}&quot;>${initial}</div>';">`
+                : `<div class="user-search-avatar-fallback" style="background:${avatarColor}">${initial}</div>`;
+
+            return `
+                <div class="friend-request-card">
+                    ${avatarHtml}
+                    <div class="user-search-info">
+                        <span class="user-search-name">${escapeHtml(r.username)}</span>
+                        <span class="user-search-handle">Quer ser seu amigo</span>
+                    </div>
+                    <div class="friend-request-actions">
+                        <button class="btn-request-action btn-request-accept" onclick="window.acceptFriendRequest('${r.friendship_id}')" title="Aceitar"><i class="fa-solid fa-check"></i></button>
+                        <button class="btn-request-action btn-request-reject" onclick="window.rejectFriendRequest('${r.friendship_id}')" title="Recusar"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function renderFriendsList() {
+        if (!currentUser) return;
+        const friends = await apiGetFriends();
+        const list = document.getElementById('friendsList');
+        if (!list) return;
+
+        if (friends.length === 0) {
+            list.innerHTML = '<div class="empty-friends">Pesquise usuários acima para adicionar amigos</div>';
+            return;
+        }
+
+        list.innerHTML = friends.map(f => {
+            const initial = (f.username || 'U').charAt(0).toUpperCase();
+            const avatarColor = stringToColor(f.friend_id);
+            const avatarHtml = f.avatar_url && f.avatar_url !== AVATAR_PADRAO
+                ? `<img src="${f.avatar_url}" alt="${f.username}" class="friend-avatar" onerror="this.outerHTML='<div class=&quot;friend-avatar-fallback&quot; style=&quot;background:${avatarColor}&quot;>${initial}</div>';">`
+                : `<div class="friend-avatar-fallback" style="background:${avatarColor}">${initial}</div>`;
+
+            return `
+                <div class="friend-item" onclick="window.openFriendProfile('${f.friend_id}', '${escapeHtml(f.username)}', '${f.avatar_url || ''}')">
+                    ${avatarHtml}
+                    <div class="friend-info">
+                        <span class="friend-name">${escapeHtml(f.username)}</span>
+                        <span class="friend-handle">@${escapeHtml(f.username.toLowerCase())}</span>
+                    </div>
+                    ${f.conversation_id ? `
+                        <button class="friend-chat-btn" onclick="event.stopPropagation(); window.openFriendChat('${f.conversation_id}', '${escapeHtml(f.username)}')" title="Conversar">
+                            <i class="fa-regular fa-comment-dots"></i>
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    window.openFriendChat = function(conversationId, friendUsername) {
+        switchChat(conversationId, '@' + friendUsername);
+        switchTab('conversa');
+    };
+
+    // --- PERFIL DO AMIGO MODAL ---
+    let selectedFriendId = null;
+    let selectedFriendName = null;
+    let selectedFriendAvatar = null;
+
+    window.openFriendProfile = function(friendId, friendName, friendAvatar) {
+        selectedFriendId = friendId;
+        selectedFriendName = friendName;
+        selectedFriendAvatar = friendAvatar;
+
+        const modal = document.getElementById('friendProfileModal');
+        const nameEl = document.getElementById('friendProfileName');
+        const handleEl = document.getElementById('friendProfileHandle');
+        const avatarEl = document.getElementById('friendProfileAvatar');
+
+        if (nameEl) nameEl.textContent = friendName;
+        if (handleEl) handleEl.textContent = '@' + friendName.toLowerCase();
+        if (avatarEl) {
+            avatarEl.src = friendAvatar && friendAvatar !== AVATAR_PADRAO ? friendAvatar : AVATAR_PADRAO;
+        }
+
+        // Se eles já são amigos, o botão Conversar deve usar a conversa existente
+        apiGetFriends().then(friends => {
+            const friend = friends.find(f => f.friend_id === friendId);
+            const chatBtn = document.getElementById('friendProfileChatBtn');
+            if (chatBtn) {
+                if (friend && friend.conversation_id) {
+                    chatBtn.style.display = 'flex';
+                    chatBtn.onclick = () => {
+                        window.openFriendChat(friend.conversation_id, friendName);
+                        modal.setAttribute('hidden', '');
+                    };
+                } else {
+                    chatBtn.style.display = 'none';
+                }
+            }
+        });
+
+        modal?.removeAttribute('hidden');
+    };
+
+    document.getElementById('closeFriendProfileModal')?.addEventListener('click', () => {
+        document.getElementById('friendProfileModal')?.setAttribute('hidden', '');
+    });
+
+    document.getElementById('friendProfileAddToGroupBtn')?.addEventListener('click', () => {
+        document.getElementById('friendProfileModal')?.setAttribute('hidden', '');
+        if (selectedFriendId) {
+            window.openSelectGroupForFriendModal(selectedFriendId, selectedFriendName);
+        }
+    });
+
+    // --- MODAL: SELECIONAR GRUPO PARA AMIGO ---
+    window.openSelectGroupForFriendModal = async function(friendId, friendName) {
+        const modal = document.getElementById('selectGroupForFriendModal');
+        const subtitle = document.getElementById('selectGroupSubtitle');
+        const list = document.getElementById('groupsForFriendList');
+
+        if (subtitle) subtitle.textContent = `Adicionar ${friendName} a um de seus grupos`;
+        if (!list) return;
+
+        list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:12px;">Carregando seus grupos...</p>';
+        modal?.removeAttribute('hidden');
+
+        const groups = await apiGetGroups();
+        const myGroups = groups.filter(g => g.is_admin === true || g.created_by === currentUser?.id);
+
+        if (myGroups.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:12px;">Você não administra nenhum grupo.</p>';
+            return;
+        }
+
+        list.innerHTML = myGroups.map(g => {
+            return `
+                <div class="group-for-friend-item" onclick="window.addFriendToGroup('${friendId}', '${g.id}')">
+                    <div class="group-for-friend-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="group-for-friend-info">
+                        <span class="group-for-friend-name">${escapeHtml(g.name)}</span>
+                        <span class="group-for-friend-meta">${g.members || 0} membros</span>
+                    </div>
+                    <button class="btn-add-to-group">Adicionar</button>
+                </div>
+            `;
+        }).join('');
+    };
+
+    document.getElementById('closeSelectGroupModal')?.addEventListener('click', () => {
+        document.getElementById('selectGroupForFriendModal')?.setAttribute('hidden', '');
+    });
+
+    window.addFriendToGroup = async function(friendId, groupId) {
+        const res = await apiAddFriendToGroup(friendId, groupId);
+        if (res && res.success) {
+            showToast(`Adicionado com sucesso ao grupo! 🎉`, 'success');
+            document.getElementById('selectGroupForFriendModal')?.setAttribute('hidden', '');
+            await renderGroups();
+        } else {
+            showToast(res?.error || 'Erro ao adicionar ao grupo.', 'error');
+        }
+    };
+
+    // --- MODAL: ADICIONAR AMIGO A GRUPO ---
+    let activeGroupIdForAddFriend = null;
+
+    window.openAddFriendToGroupModal = async function(groupId) {
+        activeGroupIdForAddFriend = groupId;
+        const modal = document.getElementById('addFriendToGroupModal');
+        const list = document.getElementById('friendsForGroupList');
+        const input = document.getElementById('searchFriendForGroupInput');
+
+        if (input) input.value = '';
+        if (!list) return;
+
+        list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:12px;">Carregando amigos...</p>';
+        modal?.removeAttribute('hidden');
+
+        const friends = await apiGetFriends();
+        renderFriendsForGroupList(friends);
+
+        if (input) {
+            input.oninput = () => {
+                const query = input.value.toLowerCase().trim();
+                const filtered = friends.filter(f => f.username.toLowerCase().includes(query));
+                renderFriendsForGroupList(filtered);
+            };
+        }
+    };
+
+    function renderFriendsForGroupList(friendsList) {
+        const list = document.getElementById('friendsForGroupList');
+        if (!list) return;
+
+        if (friendsList.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:12px;">Nenhum amigo encontrado.</p>';
+            return;
+        }
+
+        list.innerHTML = friendsList.map(f => {
+            const initial = (f.username || 'U').charAt(0).toUpperCase();
+            const avatarColor = stringToColor(f.friend_id);
+            const avatarHtml = f.avatar_url && f.avatar_url !== AVATAR_PADRAO
+                ? `<img src="${f.avatar_url}" alt="${f.username}" class="friend-avatar" onerror="this.outerHTML='<div class=&quot;friend-avatar-fallback&quot; style=&quot;background:${avatarColor}&quot;>${initial}</div>';">`
+                : `<div class="friend-avatar-fallback" style="background:${avatarColor}">${initial}</div>`;
+
+            return `
+                <div class="friend-for-group-item">
+                    ${avatarHtml}
+                    <div class="friend-info">
+                        <span class="friend-name">${escapeHtml(f.username)}</span>
+                        <span class="friend-handle">@${escapeHtml(f.username.toLowerCase())}</span>
+                    </div>
+                    <button class="btn-add-to-group" onclick="window.executeAddFriendToGroup('${f.friend_id}')">Adicionar</button>
+                </div>
+            `;
+        }).join('');
+    }
+
+    window.executeAddFriendToGroup = async function(friendId) {
+        if (!activeGroupIdForAddFriend) return;
+        const res = await apiAddFriendToGroup(friendId, activeGroupIdForAddFriend);
+        if (res && res.success) {
+            showToast(`Adicionado ao grupo com sucesso! 🎉`, 'success');
+            document.getElementById('addFriendToGroupModal')?.setAttribute('hidden', '');
+            await renderGroups();
+        } else {
+            showToast(res?.error || 'Erro ao adicionar amigo.', 'error');
+        }
+    };
+
+    document.getElementById('closeAddFriendToGroupModal')?.addEventListener('click', () => {
+        document.getElementById('addFriendToGroupModal')?.setAttribute('hidden', '');
+    });
+
+    // --- MODAL: CODIGO DE CONVITE ---
+    let activeGroupIdForInvite = null;
+
+    window.openInviteCodeModal = async function(groupId, groupName) {
+        activeGroupIdForInvite = groupId;
+        const modal = document.getElementById('inviteCodeModal');
+        const title = document.getElementById('inviteCodeGroupName');
+        const codeVal = document.getElementById('inviteCodeValue');
+        const expiry = document.getElementById('inviteCodeExpiry');
+
+        if (title) title.textContent = `Grupo: ${groupName}`;
+        if (codeVal) codeVal.textContent = '-----';
+        if (expiry) expiry.textContent = 'Gerando código...';
+
+        modal?.removeAttribute('hidden');
+
+        const res = await apiGenerateGroupInvite(groupId);
+        if (res && res.success) {
+            if (codeVal) codeVal.textContent = res.code;
+            if (expiry) {
+                const expDate = new Date(res.expires_at);
+                expiry.textContent = `Válido até ${expDate.toLocaleDateString('pt-BR')} às ${expDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+            }
+        } else {
+            showToast(res?.error || 'Erro ao obter código de convite.', 'error');
+            modal?.setAttribute('hidden', '');
+        }
+    };
+
+    document.getElementById('closeInviteCodeModal')?.addEventListener('click', () => {
+        document.getElementById('inviteCodeModal')?.setAttribute('hidden', '');
+    });
+
+    document.getElementById('copyInviteCodeBtn')?.addEventListener('click', () => {
+        const codeVal = document.getElementById('inviteCodeValue')?.textContent;
+        if (codeVal && codeVal !== '-----') {
+            navigator.clipboard.writeText(codeVal)
+                .then(() => showToast('📋 Código copiado!', 'success'))
+                .catch(() => showToast('Erro ao copiar código.', 'error'));
+        }
+    });
+
+    document.getElementById('regenerateInviteCodeBtn')?.addEventListener('click', async () => {
+        if (!activeGroupIdForInvite) return;
+        const codeVal = document.getElementById('inviteCodeValue');
+        const expiry = document.getElementById('inviteCodeExpiry');
+
+        if (codeVal) codeVal.textContent = '-----';
+        if (expiry) expiry.textContent = 'Gerando novo código...';
+
+        await supabase.from('group_invites').update({ active: false }).eq('group_id', activeGroupIdForInvite);
+
+        const res = await apiGenerateGroupInvite(activeGroupIdForInvite);
+        if (res && res.success) {
+            if (codeVal) codeVal.textContent = res.code;
+            if (expiry) {
+                const expDate = new Date(res.expires_at);
+                expiry.textContent = `Novo código! Válido até ${expDate.toLocaleDateString('pt-BR')} às ${expDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+            }
+            showToast('🔄 Novo código gerado!', 'success');
+        } else {
+            showToast(res?.error || 'Erro ao gerar novo código.', 'error');
+        }
+    });
+
+    // --- MODAL: USAR CÓDIGO DE CONVITE ---
+    window.openUseInviteCodeModal = function() {
+        if (!currentUser) return showToast('Faça login primeiro.', 'warning');
+        const modal = document.getElementById('useInviteCodeModal');
+        const input = document.getElementById('inviteCodeInput');
+        if (input) input.value = '';
+        modal?.removeAttribute('hidden');
+    };
+
+    document.getElementById('useInviteCodeBtn')?.addEventListener('click', window.openUseInviteCodeModal);
+
+    document.getElementById('closeUseInviteCodeModal')?.addEventListener('click', () => {
+        document.getElementById('useInviteCodeModal')?.setAttribute('hidden', '');
+    });
+
+    document.getElementById('submitInviteCodeBtn')?.addEventListener('click', async () => {
+        const input = document.getElementById('inviteCodeInput');
+        const code = input?.value.trim();
+
+        if (!code || code.length !== 5 || isNaN(code)) {
+            showToast('Código de convite deve ter 5 dígitos numéricos.', 'warning');
+            return;
+        }
+
+        const res = await apiUseInviteCode(code);
+        if (res && res.success) {
+            showToast(`Sucesso! Você entrou no grupo "${res.group_name}"! 🎉`, 'success');
+            document.getElementById('useInviteCodeModal')?.setAttribute('hidden', '');
+            await renderGroups();
+            if (res.group_id) {
+                switchChat(res.group_id, res.group_name);
+                switchTab('conversa');
+            }
+        } else {
+            showToast(res?.error || 'Código inválido ou expirado.', 'error');
+        }
+    });
+
+    // --- REALTIME SUBSCRIPTION FOR FRIENDSHIPS ---
+    let friendshipSubscription = null;
+    function subscribeToFriendships() {
+        if (!currentUser) return;
+
+        if (friendshipSubscription) {
+            supabase.removeChannel(friendshipSubscription);
+        }
+
+        friendshipSubscription = supabase
+            .channel('public:friendships_changes')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'friendships',
+                filter: `or(requester_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id})`
+            }, async (payload) => {
+                console.log('🔄 Mudança em friendships realtime:', payload);
+                await renderFriendsList();
+                await renderFriendRequests();
+                await renderChatChannels();
+                const query = userSearchInput?.value.trim() || '';
+                if (query) handleUserSearch(query);
+            })
+            .subscribe();
+    }
+
+    // 10. INICIALIZAR TUDO
+    function initCommunityFeatures() {
+        console.log('🚀 Inicializando funcionalidades da comunidade...');
+        
+        addCategorySelectorToModal();
+        addHelpRequestLabel();
+        addRulesBanner();
+        addGroupSearch();
+        addNotificationButton();
+        
+        // Inicializar Amizades e Convites
+        renderFriendsList();
+        renderFriendRequests();
+        subscribeToFriendships();
+        
+        // Adicionar reações após os posts carregarem
+        setTimeout(addReactionsToPosts, 1000);
+        
+        // Observer para adicionar reações em novos posts
+        var feed = document.getElementById('postsFeed');
+        if (feed) {
+            var observer = new MutationObserver(function() {
+                addReactionsToPosts();
+            });
+            observer.observe(feed, { childList: true, subtree: true });
+        }
+        
+        if (!sessionStorage.getItem('rulesShown')) {
+            setTimeout(function() {
+                window.showCommunityRules();
+                sessionStorage.setItem('rulesShown', 'true');
+            }, 3000);
+        }
+        
+        console.log('✅ Funcionalidades adicionadas com sucesso!');
+        console.log('📦 Categorias, Regras, Filtro de Grupos, Notificações, Reações');
+    }
+
 
 // Executar quando o DOM estiver pronto
 if (document.readyState === 'loading') {
