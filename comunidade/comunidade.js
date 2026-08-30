@@ -216,17 +216,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 6. FUNÇÕES DA API (SEGURAS - CHAMAM SQL)
     // =============================================
     
-    async function apiCreatePost(content, videoUrl) {
+   // =============================================
+// apiCreatePost - VERSÃO CORRIGIDA
+// =============================================
+async function apiCreatePost(content, videoUrl) {
+    try {
+        // 🔥 TENTATIVA 1: Via RPC
         const { data, error } = await supabase.rpc('create_post', {
             p_content: content,
             p_video_url: videoUrl
         });
-        if (error) {
-            showToast('Erro: ' + error.message, 'error');
-            return null;
+        
+        if (!error && data) {
+            return data.post_id;
         }
-        return data;
+        
+        console.warn('⚠️ RPC create_post falhou, usando INSERT direto:', error);
+        
+        // 🔥 TENTATIVA 2: INSERT direto
+        const { data: post, error: insertError } = await supabase
+            .from('posts')
+            .insert({
+                content: content,
+                video_url: videoUrl,
+                author_id: currentUser.id,
+                is_active: true,
+                likes: 0,
+                comment_count: 0,
+                created_at: new Date().toISOString()
+            })
+            .select()
+            .single();
+        
+        if (insertError) throw insertError;
+        
+        return post.id;
+        
+    } catch (error) {
+        console.error('❌ Erro ao criar post:', error);
+        showToast('Erro ao criar post: ' + error.message, 'error');
+        return null;
     }
+}
 
     // ================================================================
 // API: CRIAR CONVERSA PRIVADA (COM FALLBACK)
@@ -996,106 +1027,134 @@ async function apiUseInviteCode(code) {
         });
     });
 
-    // =============================================
-    // 9. LOAD AND SHOW COMMENTS - CORRIGIDO
-    // =============================================
-    window.loadAndShowComments = async function(postId) {
-        console.log(`🔍 Carregando comentários para post: ${postId}`);
+   
+// =============================================
+// loadAndShowComments - VERSÃO DEFINITIVA
+// =============================================
+window.loadAndShowComments = async function(postId) {
+    console.log(`🔍 Carregando comentários para post: ${postId}`);
 
-        if (!postId) {
-            console.error('❌ postId é inválido!');
-            return;
-        }
+    if (!postId) {
+        console.error('❌ postId é inválido!');
+        return;
+    }
 
-        let section = document.getElementById(`comments-${postId}`);
+    // 🔥 BUSCAR OU CRIAR A SEÇÃO
+    let section = document.getElementById(`comments-${postId}`);
+    const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+    
+    if (!postCard) {
+        console.error(`❌ Post card não encontrado: ${postId}`);
+        return;
+    }
+
+    // Se a seção não existe, criar
+    if (!section) {
+        console.log(`📝 Criando seção de comentários para post ${postId}`);
         
-        if (!section) {
-            console.warn(`⚠️ Seção não encontrada, criando dinamicamente para post: ${postId}`);
-            
-            const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
-            if (!postCard) {
-                console.error(`❌ Post card não encontrado: ${postId}`);
-                return;
-            }
-            
-            section = document.createElement('div');
-            section.className = 'comments-section';
-            section.id = `comments-${postId}`;
-            section.style.display = 'block';
-            section.innerHTML = `
-                <div class="comments-list">
-                    <p style="color:#888;font-size:13px;padding:8px;">⏳ Carregando comentários...</p>
-                </div>
-                <div class="add-comment">
-                    <input placeholder="Escreva um comentário..." id="comment-input-${postId}">
-                    <button class="submit-comment-btn" data-post-id="${postId}">Enviar</button>
-                </div>
-            `;
-            
-            const postActions = postCard.querySelector('.post-actions');
-            if (postActions) {
-                postActions.after(section);
-            } else {
-                postCard.appendChild(section);
-            }
-            
-            const submitBtn = section.querySelector('.submit-comment-btn');
-            if (submitBtn) {
-                submitBtn.addEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
-            }
-            
-            console.log(`✅ Seção criada dinamicamente para post: ${postId}`);
+        section = document.createElement('div');
+        section.className = 'comments-section';
+        section.id = `comments-${postId}`;
+        section.style.display = 'block';
+        section.innerHTML = `
+            <div class="comments-list" id="comments-list-${postId}">
+                <p style="color:#888;font-size:13px;padding:8px;">⏳ Carregando comentários...</p>
+            </div>
+            <div class="add-comment">
+                <input placeholder="Escreva um comentário..." id="comment-input-${postId}">
+                <button class="submit-comment-btn" data-post-id="${postId}">Enviar</button>
+            </div>
+        `;
+        
+        const postActions = postCard.querySelector('.post-actions');
+        if (postActions) {
+            postActions.after(section);
+        } else {
+            postCard.appendChild(section);
         }
+        
+        // Configurar botão de enviar
+        const submitBtn = section.querySelector('.submit-comment-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', window.handleCommentSubmit);
+        }
+    }
 
-        const list = section.querySelector('.comments-list');
-        if (!list) {
-            console.error(`❌ Lista não encontrada em: comments-${postId}`);
+    // 🔥 BUSCAR A LISTA - TENTAR POR ID OU POR CLASSE
+    let list = document.getElementById(`comments-list-${postId}`);
+    
+    // Se não encontrar pelo ID, procurar dentro da seção
+    if (!list && section) {
+        list = section.querySelector('.comments-list');
+    }
+    
+    // Se ainda não encontrou, criar a lista
+    if (!list) {
+        console.warn(`⚠️ Lista não encontrada, recriando...`);
+        const newList = document.createElement('div');
+        newList.className = 'comments-list';
+        newList.id = `comments-list-${postId}`;
+        newList.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">⏳ Carregando comentários...</p>';
+        
+        // Inserir no início da seção
+        if (section) {
+            section.insertBefore(newList, section.firstChild);
+            list = newList;
+        } else {
+            console.error(`❌ Seção também não encontrada!`);
+            return;
+        }
+    }
+
+    // Mostrar loading
+    list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">⏳ Carregando comentários...</p>';
+
+    try {
+        // 🔥 BUSCAR COMENTÁRIOS DIRETO DO BANCO
+        const { data: comments, error } = await supabase
+            .from('comments')
+            .select('*')
+            .eq('post_id', postId)
+            .eq('is_active', true)
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error('❌ Erro ao carregar comentários:', error);
+            list.innerHTML = `<p style="color:#ef4444;font-size:13px;padding:8px;">❌ Erro: ${error.message}</p>`;
             return;
         }
 
-        list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">⏳ Carregando comentários...</p>';
+        const commentsList = comments || [];
+        console.log(`📨 ${commentsList.length} comentários encontrados`);
 
-        try {
-            const { data: comments, error } = await supabase
-                .from('comments')
-                .select('*')
-                .eq('post_id', postId)
-                .eq('is_active', true)
-                .order('created_at', { ascending: true });
-
-            if (error) {
-                console.error('❌ Erro ao carregar comentários:', error);
-                list.innerHTML = `<p style="color:#ef4444;font-size:13px;padding:8px;">❌ Erro: ${error.message}</p>`;
-                return;
-            }
-
-            console.log(`📨 ${comments?.length || 0} comentários encontrados para post ${postId}`);
-
-            if (!comments || comments.length === 0) {
-                list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">💬 Nenhum comentário ainda. Seja o primeiro!</p>';
-            } else {
-                list.innerHTML = comments.map(c => `
-                    <div class="comment-item" style="padding:10px 0;border-bottom:1px solid #eee;">
-                        <strong style="color:#7c3aed;">${escapeHtml(c.author_name || 'Usuário')}</strong>
-                        <p style="margin:4px 0 2px 0;font-size:14px;color:#333;">${escapeHtml(c.content)}</p>
-                        <small style="color:#999;font-size:11px;">${formatDate(c.created_at)}</small>
-                    </div>
-                `).join('');
-            }
-
-            section.style.display = 'block';
-
-            const countBtn = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .count`);
-            if (countBtn) {
-                countBtn.textContent = comments?.length || 0;
-            }
-
-        } catch (error) {
-            console.error('❌ Erro inesperado:', error);
-            list.innerHTML = '<p style="color:#ef4444;font-size:13px;padding:8px;">❌ Erro ao carregar comentários</p>';
+        if (commentsList.length === 0) {
+            list.innerHTML = '<p style="color:#888;font-size:13px;padding:8px;">💬 Nenhum comentário ainda. Seja o primeiro!</p>';
+        } else {
+            list.innerHTML = commentsList.map(c => `
+                <div class="comment-item" style="padding:10px 0;border-bottom:1px solid #eee;">
+                    <strong style="color:#7c3aed;">${escapeHtml(c.author_name || 'Usuário')}</strong>
+                    <p style="margin:4px 0 2px 0;font-size:14px;color:#333;">${escapeHtml(c.content)}</p>
+                    <small style="color:#999;font-size:11px;">${formatDate(c.created_at)}</small>
+                </div>
+            `).join('');
         }
-    };
 
+        // 🔥 ATUALIZAR CONTADOR NA UI
+        const countBtn = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .count`);
+        if (countBtn) {
+            countBtn.textContent = commentsList.length;
+        }
+
+        // Garantir que a seção está visível
+        if (section) {
+            section.style.display = 'block';
+        }
+
+    } catch (error) {
+        console.error('❌ Erro inesperado:', error);
+        list.innerHTML = '<p style="color:#ef4444;font-size:13px;padding:8px;">❌ Erro ao carregar comentários</p>';
+    }
+};
     // =============================================
     // SETUP POST EVENTS
     // =============================================
@@ -1126,131 +1185,241 @@ async function apiUseInviteCode(code) {
     // =============================================
     // HANDLERS
     // =============================================
-    async function handleLike(e) {
-        e.stopPropagation();
-        const btn = e.currentTarget;
-        const postId = btn.dataset.postId;
-        if (!currentUser) return showToast('Faça login', 'error');
+    // =============================================
+// handleLike - VERSÃO CORRIGIDA
+// =============================================
+async function handleLike(e) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const postId = btn.dataset.postId;
+    if (!currentUser) return showToast('Faça login', 'error');
+    
+    try {
+        // 🔥 TENTATIVA 1: Via RPC
+        let result = await supabase.rpc('toggle_like', { p_post_id: postId });
         
-        const result = await apiToggleLike(postId);
-        if (result) {
+        // 🔥 TENTATIVA 2: Se falhar, usar lógica manual
+        if (result.error) {
+            console.warn('⚠️ RPC toggle_like falhou, usando lógica manual:', result.error);
+            
+            // Verificar se já curtiu
+            const { data: existingLike } = await supabase
+                .from('likes')
+                .select('id')
+                .eq('post_id', postId)
+                .eq('user_id', currentUser.id)
+                .maybeSingle();
+
+            if (existingLike) {
+                // Remover like
+                await supabase
+                    .from('likes')
+                    .delete()
+                    .eq('id', existingLike.id);
+                
+                await supabase
+                    .from('posts')
+                    .update({ likes: supabase.rpc('decrement', { row_id: postId }) })
+                    .eq('id', postId);
+                
+                result = { data: { liked: false, likes: 0 } };
+            } else {
+                // Adicionar like
+                await supabase
+                    .from('likes')
+                    .insert({
+                        post_id: postId,
+                        user_id: currentUser.id,
+                        created_at: new Date().toISOString()
+                    });
+                
+                await supabase
+                    .from('posts')
+                    .update({ likes: supabase.rpc('increment', { row_id: postId }) })
+                    .eq('id', postId);
+                
+                result = { data: { liked: true, likes: 0 } };
+            }
+            
+            // Buscar contagem atualizada
+            const { data: postData } = await supabase
+                .from('posts')
+                .select('likes')
+                .eq('id', postId)
+                .single();
+            
+            result.data.likes = postData?.likes || 0;
+        }
+        
+        // Atualizar UI
+        if (result.data) {
             const countSpan = btn.querySelector('.count');
             const icon = btn.querySelector('i');
-            if (countSpan) countSpan.textContent = result.likes;
-            btn.classList.toggle('liked', result.liked);
+            if (countSpan) countSpan.textContent = result.data.likes;
+            btn.classList.toggle('liked', result.data.liked);
             if (icon) {
-                icon.className = result.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                icon.className = result.data.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
             }
         }
+        
+    } catch (error) {
+        console.error('❌ Erro ao curtir:', error);
+        showToast('Erro ao curtir', 'error');
+    }
+}
+    // =============================================
+// handleCommentToggle - VERSÃO CORRIGIDA
+// =============================================
+// =============================================
+// handleCommentToggle - VERSÃO DEFINITIVA
+// =============================================
+async function handleCommentToggle(e) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const postId = btn.dataset.postId;
+    
+    if (!postId) {
+        console.error('❌ postId não encontrado');
+        return;
     }
 
-    async function handleCommentToggle(e) {
-        e.stopPropagation();
-        const btn = e.currentTarget;
-        const postId = btn.dataset.postId;
-        
-        if (!postId) {
-            console.error('❌ postId não encontrado');
-            return;
-        }
+    console.log(`🔄 Toggle comentários para post: ${postId}`);
 
-        console.log(`🔄 Toggle comentários para post: ${postId}`);
-
-        const section = document.getElementById(`comments-${postId}`);
-        if (!section) {
-            console.error(`❌ Seção não encontrada: comments-${postId}`);
-            return;
-        }
-
-        const isHidden = section.style.display === 'none' || section.style.display === '';
-        
-        if (isHidden) {
-            console.log(`📂 Abrindo comentários do post ${postId}`);
-            section.style.display = 'block';
-            await window.loadAndShowComments(postId);
-        } else {
-            console.log(`📁 Fechando comentários do post ${postId}`);
-            section.style.display = 'none';
-        }
+    // 🔥 BUSCAR A SEÇÃO
+    let section = document.getElementById(`comments-${postId}`);
+    
+    // Se não existe, criar chamando loadAndShowComments
+    if (!section) {
+        console.log(`📝 Criando seção para post ${postId}`);
+        await window.loadAndShowComments(postId);
+        return;
     }
 
-    // =============================================
-    // handleCommentSubmit - VERSÃO FINAL
-    // =============================================
-    window.handleCommentSubmit = async function(e) {
-        e.stopPropagation();
-        const btn = e.currentTarget;
-        const postId = btn.dataset.postId;
-        
-        if (!postId) {
-            console.error('❌ postId não encontrado no botão');
-            return;
-        }
+    // 🔥 VERIFICAR SE ESTÁ VISÍVEL
+    const isHidden = section.style.display === 'none' || section.style.display === '';
+    
+    if (isHidden) {
+        console.log(`📂 Abrindo comentários do post ${postId}`);
+        section.style.display = 'block';
+        await window.loadAndShowComments(postId);
+    } else {
+        console.log(`📁 Fechando comentários do post ${postId}`);
+        section.style.display = 'none';
+    }
+}
 
-        const input = document.getElementById(`comment-input-${postId}`);
-        if (!input) {
-            console.error(`❌ Input não encontrado: comment-input-${postId}`);
-            return;
-        }
+   
+// =============================================
+// handleCommentSubmit - VERSÃO CORRIGIDA E OTIMIZADA
+// =============================================
+// =============================================
+// handleCommentSubmit - VERSÃO DEFINITIVA
+// =============================================
+window.handleCommentSubmit = async function(e) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const postId = btn.dataset.postId;
+    
+    if (!postId) {
+        console.error('❌ postId não encontrado no botão');
+        return;
+    }
 
-        const text = input?.value.trim();
-        
-        if (!text) {
-            showToast('Digite um comentário', 'error');
-            return;
-        }
-        
-        if (!currentUser) {
-            showToast('Faça login para comentar', 'error');
-            return;
-        }
+    const input = document.getElementById(`comment-input-${postId}`);
+    if (!input) {
+        console.error(`❌ Input não encontrado: comment-input-${postId}`);
+        return;
+    }
 
-        btn.disabled = true;
-        btn.textContent = 'Enviando...';
+    const text = input?.value.trim();
+    
+    if (!text) {
+        showToast('Digite um comentário', 'error');
+        return;
+    }
+    
+    if (!currentUser) {
+        showToast('Faça login para comentar', 'error');
+        return;
+    }
 
-        try {
-            console.log(`📤 Enviando comentário para post ${postId}: ${text}`);
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
 
-            const { data, error } = await supabase
-                .rpc('create_comment_direct', {
-                    p_post_id: postId,
-                    p_content: text
-                });
+    try {
+        console.log(`📤 Enviando comentário para post ${postId}: ${text}`);
 
-            if (error) {
-                console.error('❌ Erro ao enviar comentário:', error);
-                showToast('Erro ao enviar comentário: ' + error.message, 'error');
+        // 🔥 TENTAR RPC PRIMEIRO
+        const { data, error } = await supabase.rpc('create_comment_direct', {
+            p_post_id: postId,
+            p_content: text
+        });
+
+        if (error) {
+            console.error('❌ Erro na RPC:', error);
+            
+            // 🔥 FALLBACK: INSERT DIRETO
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('username, avatar_url')
+                .eq('id', currentUser.id)
+                .single();
+
+            const commentData = {
+                post_id: postId,
+                author_id: currentUser.id,
+                author_name: profile?.username || 'Usuário',
+                author_avatar: profile?.avatar_url || '/img/avatar-padrao.png',
+                content: text,
+                is_active: true,
+                created_at: new Date().toISOString()
+            };
+
+            const { error: insertError } = await supabase
+                .from('comments')
+                .insert(commentData);
+
+            if (insertError) {
+                console.error('❌ Fallback falhou:', insertError);
+                showToast('Erro ao enviar comentário: ' + insertError.message, 'error');
                 btn.disabled = false;
                 btn.textContent = 'Enviar';
                 return;
             }
-
-            console.log('✅ Comentário enviado! ID:', data);
-            
-            input.value = '';
-            showToast('💬 Comentário adicionado!', 'success');
-            
-            await window.loadAndShowComments(postId);
-            
-            const countBtn = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .count`);
-            if (countBtn) {
-                const { data: postData } = await supabase
-                    .from('posts')
-                    .select('comment_count')
-                    .eq('id', postId)
-                    .single();
-                
-                countBtn.textContent = postData?.comment_count || 0;
-            }
-
-        } catch (error) {
-            console.error('❌ Erro inesperado:', error);
-            showToast('Erro ao enviar comentário', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'Enviar';
+        } else {
+            console.log('✅ Comentário enviado via RPC!', data);
         }
-    };
+        
+        // Limpar input
+        input.value = '';
+        showToast('💬 Comentário adicionado!', 'success');
+        
+        // 🔥 RECARREGAR COMENTÁRIOS (FORÇADO)
+        await window.loadAndShowComments(postId);
+
+    } catch (error) {
+        console.error('❌ Erro inesperado:', error);
+        showToast('Erro ao enviar comentário: ' + error.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enviar';
+    }
+};
+
+// =============================================
+// FUNÇÃO AUXILIAR PARA ATUALIZAR CONTADOR
+// =============================================
+async function updateCommentCount(postId) {
+    try {
+        const { data, error } = await supabase.rpc('update_comment_count', {
+            p_post_id: postId
+        });
+        if (error) console.error('Erro ao atualizar contador:', error);
+        return data;
+    } catch (e) {
+        console.error('Erro:', e);
+    }
+}
 
     function handleVideoFullscreen(e) {
         e.stopPropagation();
