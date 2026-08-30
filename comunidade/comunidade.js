@@ -2,9 +2,9 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
     
-    // =============================================
+  
     // 0. SUPABASE - CONEXÃO REAL
-    // =============================================
+   
     const supabase = window.supabaseClient;
     
     if (!supabase) {
@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error('Erro ao verificar sessão:', e);
     }
 
-    // =============================================
+
     // AUXILIARES
-    // =============================================
+
     const body = document.body;
     const COMMUNITY_CHAT_ID = '00000000-0000-0000-0000-000000000001';
 
@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         return colors[Math.abs(hash) % colors.length];
     }
 
-    // =============================================
+    
     // 1. SIDEBAR TOGGLE
-    // =============================================
+  
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
