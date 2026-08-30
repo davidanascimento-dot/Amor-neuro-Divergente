@@ -228,6 +228,88 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data;
     }
 
+    // ================================================================
+// API: CRIAR CONVERSA PRIVADA (COM FALLBACK)
+// ================================================================
+
+async function apiCreatePrivateConversation(friendId) {
+    if (!currentUser) {
+        return { success: false, message: 'Usuário não autenticado' };
+    }
+
+    try {
+        // TENTATIVA 1: Via RPC
+        const { data, error } = await supabase.rpc('create_private_conversation', {
+            p_friend_id: friendId
+        });
+        
+        if (!error && data) {
+            console.log('✅ Conversa criada via RPC:', data);
+            return data;
+        }
+        
+        console.warn('⚠️ RPC falhou, usando fallback direto:', error?.message);
+
+        // =============================================
+        // FALLBACK: Inserção direta no banco
+        // =============================================
+        const myId = currentUser.id;
+        
+        // Buscar nome do amigo
+        const { data: friendProfile } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('id', friendId)
+            .single();
+
+        const friendName = friendProfile?.username || 'Amigo';
+
+        // Criar ID único
+        const newConvId = crypto.randomUUID ? crypto.randomUUID() : 
+            'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+
+        // Inserir conversa
+        const { error: convErr } = await supabase
+            .from('conversations')
+            .insert({
+                id: newConvId,
+                name: friendName,
+                type: 'private',
+                created_by: myId,
+                created_at: new Date().toISOString()
+            });
+
+        if (convErr) {
+            console.error('❌ Erro ao criar conversa:', convErr);
+            return { success: false, message: convErr.message };
+        }
+
+        // Adicionar participantes
+        await supabase
+            .from('conversation_participants')
+            .insert([
+                { conversation_id: newConvId, user_id: myId, joined_at: new Date().toISOString() },
+                { conversation_id: newConvId, user_id: friendId, joined_at: new Date().toISOString() }
+            ]);
+
+        console.log('✅ Conversa privada criada via fallback! ID:', newConvId);
+
+        return {
+            success: true,
+            conversation_id: newConvId,
+            existing: false,
+            message: 'Conversa criada com sucesso'
+        };
+
+    } catch (error) {
+        console.error('❌ Erro inesperado:', error);
+        return { success: false, message: error.message };
+    }
+}
+
     async function apiCreateComment(postId, content) {
         const { data, error } = await supabase.rpc('create_comment_direct', {
             p_post_id: postId,
@@ -2496,11 +2578,7 @@ function addMessageToChat(message) {
 // SUBSCRIBE TO MESSAGES - CORRIGIDO
 // =============================================
 function subscribeToMessages(chatId = null) {
-    // Validar chatId
-    if (!chatId) {
-        console.error('❌ chatId inválido para subscription');
-        return;
-    }
+    if (!chatId) return;
 
     // Verificar se é UUID válido
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -2512,17 +2590,13 @@ function subscribeToMessages(chatId = null) {
     // Remover subscription anterior
     if (chatSubscription) {
         try {
-            console.log('🔄 Removendo subscription anterior...');
             supabase.removeChannel(chatSubscription);
-        } catch(e) {
-            console.warn('⚠️ Erro ao remover canal:', e);
+        } catch (e) {
+            console.warn('Erro ao remover canal:', e);
         }
         chatSubscription = null;
     }
 
-    console.log(`📡 Inscrevendo no canal: messages:conversation_id=eq.${chatId}`);
-
-    // ✅ Criar subscription com timeout
     chatSubscription = supabase
         .channel(`messages:conversation_id=eq.${chatId}`)
         .on(
@@ -2535,48 +2609,21 @@ function subscribeToMessages(chatId = null) {
             },
             (payload) => {
                 const newMessage = payload.new;
-                console.log('📩 Nova mensagem recebida:', newMessage);
-                
-                // Ignorar mensagens próprias
-                if (newMessage.sender_id === currentUser?.id) {
-                    console.log('⏭️ Ignorando mensagem própria');
-                    return;
-                }
-                
-                // Verificar duplicação
+                if (newMessage.sender_id === currentUser?.id) return;
+
                 const existing = document.querySelector(`[data-message-id="${newMessage.id}"]`);
-                if (existing) {
-                    console.log('⏭️ Mensagem já existe');
-                    return;
-                }
-                
-                // Adicionar ao chat
+                if (existing) return;
+
                 addMessageToChat(newMessage);
                 scrollToBottom();
             }
         )
         .subscribe((status, err) => {
             if (status === 'SUBSCRIBED') {
-                console.log('✅ Chat em tempo real conectado! 🚀');
-                // Resetar contador de reconexão
-                if (window._reconnectAttempts) {
-                    window._reconnectAttempts = 0;
-                }
+                console.log('✅ Chat em tempo real conectado!');
             } else if (status === 'CHANNEL_ERROR' || err) {
-                console.error('❌ Erro no canal de Realtime:', status, err);
-                // ✅ Apenas tentar reconectar se não estiver em loop
-                if (!window._reconnecting) {
-                    window._reconnecting = true;
-                    setTimeout(() => {
-                        window._reconnecting = false;
-                        if (chatSubscription?.state !== 'SUBSCRIBED') {
-                            console.log('🔄 Tentando reconectar...');
-                            subscribeToMessages(chatId);
-                        }
-                    }, 5000); // ✅ Esperar 5 segundos antes de reconectar
-                }
-            } else {
-                console.log('📡 Status da conexão:', status);
+                console.warn('⚠️ Erro no canal de Realtime:', status);
+                // 🔥 REMOVER RECONEXÃO AUTOMÁTICA para evitar loop
             }
         });
 }
@@ -2674,16 +2721,7 @@ async function sendMessage() {
         subscribeToMessages(currentChatId);
     }
 
-    setInterval(() => {
-        if (chatSubscription) {
-            const status = chatSubscription.state;
-            if (status !== 'SUBSCRIBED') {
-                console.warn('⚠️ Conexão perdida, reconectando...');
-                reconnectChat();
-            }
-        }
-    }, 30000);
-
+   
     // =============================================
     // 19. EVENTOS
     // =============================================
@@ -3452,44 +3490,69 @@ function addReactionsToPosts() {
     }
 
     async function renderFriendsList() {
-        if (!currentUser) return;
-        const friends = await apiGetFriends();
-        const list = document.getElementById('friendsList');
-        if (!list) return;
+    if (!currentUser) return;
+    const friends = await apiGetFriends();
+    const list = document.getElementById('friendsList');
+    if (!list) return;
 
-        if (friends.length === 0) {
-            list.innerHTML = '<div class="empty-friends">Pesquise usuários acima para adicionar amigos</div>';
-            return;
-        }
-
-        list.innerHTML = friends.map(f => {
-            const initial = (f.username || 'U').charAt(0).toUpperCase();
-            const avatarColor = stringToColor(f.friend_id);
-            const avatarHtml = f.avatar_url && f.avatar_url !== AVATAR_PADRAO
-                ? `<img src="${f.avatar_url}" alt="${f.username}" class="friend-avatar" onerror="this.outerHTML='<div class=&quot;friend-avatar-fallback&quot; style=&quot;background:${avatarColor}&quot;>${initial}</div>';">`
-                : `<div class="friend-avatar-fallback" style="background:${avatarColor}">${initial}</div>`;
-
-            return `
-                <div class="friend-item" onclick="window.openFriendProfile('${f.friend_id}', '${escapeHtml(f.username)}', '${f.avatar_url || ''}')">
-                    ${avatarHtml}
-                    <div class="friend-info">
-                        <span class="friend-name">${escapeHtml(f.username)}</span>
-                        <span class="friend-handle">@${escapeHtml(f.username.toLowerCase())}</span>
-                    </div>
-                    ${f.conversation_id ? `
-                        <button class="friend-chat-btn" onclick="event.stopPropagation(); window.openFriendChat('${f.conversation_id}', '${escapeHtml(f.username)}')" title="Conversar">
-                            <i class="fa-regular fa-comment-dots"></i>
-                        </button>
-                    ` : ''}
-                </div>
-            `;
-        }).join('');
+    if (friends.length === 0) {
+        list.innerHTML = '<div class="empty-friends">Pesquise usuários acima para adicionar amigos</div>';
+        return;
     }
 
-    window.openFriendChat = function(conversationId, friendUsername) {
+    list.innerHTML = friends.map(f => {
+        const initial = (f.username || 'U').charAt(0).toUpperCase();
+        const avatarColor = stringToColor(f.friend_id);
+        const avatarHtml = f.avatar_url && f.avatar_url !== AVATAR_PADRAO
+            ? `<img src="${f.avatar_url}" alt="${f.username}" class="friend-avatar" onerror="this.outerHTML='<div class=&quot;friend-avatar-fallback&quot; style=&quot;background:${avatarColor}&quot;>${initial}</div>';">`
+            : `<div class="friend-avatar-fallback" style="background:${avatarColor}">${initial}</div>`;
+
+        return `
+            <div class="friend-item" onclick="window.openFriendProfile('${f.friend_id}', '${escapeHtml(f.username)}', '${f.avatar_url || ''}')">
+                ${avatarHtml}
+                <div class="friend-info">
+                    <span class="friend-name">${escapeHtml(f.username)}</span>
+                    <span class="friend-handle">@${escapeHtml(f.username.toLowerCase())}</span>
+                </div>
+                <!-- BOTÃO DE CONVERSA PRIVADA -->
+                <button class="friend-chat-btn" onclick="event.stopPropagation(); window.openFriendChat('${f.conversation_id || ''}', '${escapeHtml(f.username)}', '${f.friend_id}')" title="Conversar">
+                    <i class="fa-regular fa-comment-dots"></i>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+  
+    // ================================================================
+// CHAT — ABRIR CONVERSA PRIVADA COM AMIGO
+// ================================================================
+
+window.openFriendChat = async function(conversationId, friendUsername, friendId) {
+    // Se já tem conversationId, usa direto
+    if (conversationId) {
         switchChat(conversationId, '@' + friendUsername);
         switchTab('conversa');
-    };
+        return;
+    }
+    
+    // Se não tem, cria uma nova conversa privada
+    if (friendId) {
+        showToast('📨 Criando conversa com ' + friendUsername + '...', 'info', 2000);
+        
+        const result = await apiCreatePrivateConversation(friendId);
+        if (result && result.success) {
+            const chatId = result.conversation_id || result.id;
+            const chatName = '@' + friendUsername;
+            switchChat(chatId, chatName);
+            switchTab('conversa');
+            showToast('💬 Conversa com ' + friendUsername + ' iniciada!', 'success');
+        } else {
+            showToast(result?.message || 'Erro ao criar conversa.', 'error');
+        }
+    } else {
+        showToast('ID do amigo não fornecido.', 'error');
+    }
+};
 
     // --- PERFIL DO AMIGO MODAL ---
     let selectedFriendId = null;
@@ -3497,41 +3560,41 @@ function addReactionsToPosts() {
     let selectedFriendAvatar = null;
 
     window.openFriendProfile = function(friendId, friendName, friendAvatar) {
-        selectedFriendId = friendId;
-        selectedFriendName = friendName;
-        selectedFriendAvatar = friendAvatar;
+    selectedFriendId = friendId;
+    selectedFriendName = friendName;
+    selectedFriendAvatar = friendAvatar;
 
-        const modal = document.getElementById('friendProfileModal');
-        const nameEl = document.getElementById('friendProfileName');
-        const handleEl = document.getElementById('friendProfileHandle');
-        const avatarEl = document.getElementById('friendProfileAvatar');
+    const modal = document.getElementById('friendProfileModal');
+    const nameEl = document.getElementById('friendProfileName');
+    const handleEl = document.getElementById('friendProfileHandle');
+    const avatarEl = document.getElementById('friendProfileAvatar');
 
-        if (nameEl) nameEl.textContent = friendName;
-        if (handleEl) handleEl.textContent = '@' + friendName.toLowerCase();
-        if (avatarEl) {
-            avatarEl.src = friendAvatar && friendAvatar !== AVATAR_PADRAO ? friendAvatar : AVATAR_PADRAO;
-        }
+    if (nameEl) nameEl.textContent = friendName;
+    if (handleEl) handleEl.textContent = '@' + friendName.toLowerCase();
+    if (avatarEl) {
+        avatarEl.src = friendAvatar && friendAvatar !== AVATAR_PADRAO ? friendAvatar : AVATAR_PADRAO;
+    }
 
-        // Se eles já são amigos, o botão Conversar deve usar a conversa existente
-        apiGetFriends().then(friends => {
-            const friend = friends.find(f => f.friend_id === friendId);
-            const chatBtn = document.getElementById('friendProfileChatBtn');
-            if (chatBtn) {
-                if (friend && friend.conversation_id) {
-                    chatBtn.style.display = 'flex';
-                    chatBtn.onclick = () => {
-                        window.openFriendChat(friend.conversation_id, friendName);
-                        modal.setAttribute('hidden', '');
-                    };
-                } else {
-                    chatBtn.style.display = 'none';
-                }
-            }
-        });
+    // Botão "Conversar" - sempre disponível
+    const chatBtn = document.getElementById('friendProfileChatBtn');
+    if (chatBtn) {
+        chatBtn.style.display = 'flex';
+        chatBtn.onclick = () => {
+            // Buscar conversation_id se existir
+            apiGetFriends().then(friends => {
+                const friend = friends.find(f => f.friend_id === friendId);
+                window.openFriendChat(
+                    friend?.conversation_id || null, 
+                    friendName, 
+                    friendId
+                );
+                modal?.setAttribute('hidden', '');
+            });
+        };
+    }
 
-        modal?.removeAttribute('hidden');
-    };
-
+    modal?.removeAttribute('hidden');
+};
     document.getElementById('closeFriendProfileModal')?.addEventListener('click', () => {
         document.getElementById('friendProfileModal')?.setAttribute('hidden', '');
     });
