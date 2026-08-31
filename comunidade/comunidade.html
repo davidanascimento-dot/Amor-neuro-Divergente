@@ -158,9 +158,17 @@
                 </div>
             </section>
 
-           
 
             <section class="tab-screen" id="screen-conversa" role="tabpanel" aria-labelledby="tab-conversa">
+                           
+ <!-- Barra de pesquisa de usuários -->
+                        <div class="user-search-section">
+                            <div class="user-search-bar">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="userSearchInput" placeholder="Pesquisar usuário..." autocomplete="off">
+                            </div>
+                            <div id="userSearchResults" class="user-search-results" hidden></div>
+                        </div>
                 <div class="chat-full-layout">
                     <!-- Lista de canais (sidebar do chat) -->
                     <aside class="chat-channels">
@@ -171,14 +179,7 @@
                             </button>
                         </div>
 
-                        <!-- Barra de pesquisa de usuários -->
-                        <div class="user-search-section">
-                            <div class="user-search-bar">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" id="userSearchInput" placeholder="Pesquisar usuário..." autocomplete="off">
-                            </div>
-                            <div id="userSearchResults" class="user-search-results" hidden></div>
-                        </div>
+                       
 
                         <!-- Solicitações de amizade pendentes -->
                         <div id="friendRequestsSection" class="friends-section" hidden>
