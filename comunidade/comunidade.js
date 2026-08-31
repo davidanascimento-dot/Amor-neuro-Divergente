@@ -2170,21 +2170,22 @@ if (groupImageUploadArea) {
                     if (geralData) {
                         switchChat(geralData.id, geralData.name);
                         switchTab('conversa');
-                        showToast('🔁 Redirecionado para o chat Geral', 'info', 2000);
+                        showToast(' Redirecionado para o chat Geral', 'info', 2000);
                     }
                 }
             } else {
                 showToast(data?.message || 'Erro ao sair do grupo', 'error');
             }
         } catch (error) {
-            console.error('❌ Erro ao sair:', error);
+            console.error(' Erro ao sair:', error);
             showToast('Erro ao sair: ' + error.message, 'error');
         }
     };
 
-    // =============================================
+
+   
     // 15. ENTRAR NO GRUPO
-    // =============================================
+
     window.joinGroup = async function(groupId) {
         if (!currentUser) {
             showToast('Faça login para entrar', 'error');
