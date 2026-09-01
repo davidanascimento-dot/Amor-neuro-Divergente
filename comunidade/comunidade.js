@@ -3447,6 +3447,7 @@ window.REACTIONS = [
 ];
 
 // 9. ADICIONAR REAÇÕES AOS POSTS
+// 9. ADICIONAR REAÇÕES AOS POSTS (VERSÃO CORRIGIDA COM toggle_reaction_direct)
 function addReactionsToPosts() {
     var posts = document.querySelectorAll('.post-card');
     posts.forEach(function(post) {
@@ -3466,31 +3467,79 @@ function addReactionsToPosts() {
             btn.style.cssText = 'background:none;border:1px solid var(--border-color,#e2e8f0);border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;transition:all 0.2s;font-family:Inter,sans-serif;color:var(--text-secondary,#64748b);display:flex;align-items:center;gap:4px;';
             btn.innerHTML = '<i class="fa-regular ' + r.icon + '" style="color:' + r.color + ';"></i> <span class="reaction-count" data-reaction="' + r.id + '">0</span>';
             
+            // CARREGAR CONTAGEM INICIAL
+            carregarContagemInicial(post.dataset.postId, r.id, btn);
+            
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (!currentUser) return showToast('Faça login', 'error');
                 
                 var postId = this.dataset.postId;
                 var reactionType = this.dataset.reaction;
+                var countSpan = this.querySelector('.reaction-count');
                 
-                supabase.rpc('toggle_reaction', {
-                    p_post_id: postId,
-                    p_reaction_type: reactionType
-                }).then(function(result) {
-                    if (result.error) throw result.error;
+                // Desabilitar botão para evitar spam
+                this.disabled = true;
+                this.style.opacity = '0.6';
+                
+                // 🔥 OBTER ID DO USUÁRIO ATUAL
+                supabase.auth.getUser().then(function(userResult) {
+                    var userId = userResult.data.user?.id;
                     
-                    var countSpan = btn.querySelector('.reaction-count');
-                    supabase.from('reactions').select('reaction_type', { count: 'exact', head: true })
-                        .eq('post_id', postId).eq('reaction_type', reactionType)
-                        .then(function(res) {
-                            if (countSpan) countSpan.textContent = res.count || 0;
-                        });
+                    if (!userId) {
+                        showToast('Erro: usuário não identificado', 'error');
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        return;
+                    }
                     
-                    btn.style.borderColor = '#7c3aed';
-                    btn.style.background = 'rgba(124,58,237,0.08)';
+                    // 🔥 CHAMAR toggle_reaction_direct COM user_id
+                    supabase.rpc('toggle_reaction_direct', {
+                        p_post_id: postId,
+                        p_reaction_type: reactionType,
+                        p_user_id: userId
+                    }).then(function(result) {
+                        console.log('📥 Resposta toggle_reaction_direct:', result);
+                        
+                        if (result.error) {
+                            console.error('❌ Erro na RPC:', result.error);
+                            showToast('Erro: ' + (result.error.message || 'Erro ao reagir'), 'error');
+                            btn.disabled = false;
+                            btn.style.opacity = '1';
+                            return;
+                        }
+                        
+                        // ATUALIZA O CONTADOR COM O VALOR RETORNADO
+                        if (result.data && result.data.count !== undefined) {
+                            if (countSpan) {
+                                countSpan.textContent = result.data.count;
+                            }
+                            
+                            if (result.data.action === 'added') {
+                                btn.style.borderColor = '#7c3aed';
+                                btn.style.background = 'rgba(124,58,237,0.08)';
+                            } else if (result.data.action === 'removed') {
+                                btn.style.borderColor = 'var(--border-color,#e2e8f0)';
+                                btn.style.background = 'transparent';
+                            }
+                            
+                            console.log('✅ Reação ' + result.data.action + '! Total: ' + result.data.count);
+                        }
+                        
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        
+                    }).catch(function(error) {
+                        console.error('❌ Erro ao reagir:', error);
+                        showToast('Erro ao reagir: ' + error.message, 'error');
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    });
                 }).catch(function(error) {
-                    console.error('Erro ao reagir:', error);
-                    showToast('Erro ao reagir', 'error');
+                    console.error('❌ Erro ao obter usuário:', error);
+                    showToast('Erro ao obter usuário', 'error');
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
                 });
             });
             
@@ -3499,6 +3548,25 @@ function addReactionsToPosts() {
         
         actionsDiv.appendChild(container);
     });
+}
+
+// FUNÇÃO PARA CARREGAR CONTAGEM INICIAL
+function carregarContagemInicial(postId, reactionType, btn) {
+    var supabase = window.supabaseClient;
+    supabase
+        .from('reactions')
+        .select('*', { count: 'exact', head: true })
+        .eq('post_id', postId)
+        .eq('reaction_type', reactionType)
+        .then(function(res) {
+            var countSpan = btn.querySelector('.reaction-count');
+            if (countSpan && !res.error) {
+                countSpan.textContent = res.count || 0;
+            }
+        })
+        .catch(function(e) {
+            console.warn('Erro ao carregar contagem:', e);
+        });
 }
 
     // =============================================
