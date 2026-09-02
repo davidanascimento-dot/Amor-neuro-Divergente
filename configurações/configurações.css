@@ -1309,3 +1309,19 @@ body.a11y-small-text {
 .btn-voltar i {
     font-size: 16px;
 }
+
+
+
+.settings-content-modal{
+  
+    background-color: #fffdfd;
+    border-radius: 10px ;
+    padding: 20px;
+    width: 100%	;
+    border: 2px solid var(--border-color);
+    align-items: center;
+}
+.settings-container-center{
+text-align: center;
+}
+
