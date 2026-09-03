@@ -46,13 +46,13 @@ document.addEventListener('DOMContentLoaded', () => {
 Eu sou a assistente virtual do projeto **Amor NeuroDivergente** — uma comunidade dedicada a apoiar pessoas neurodivergentes (TDAH, autismo, dislexia, AHSD e outras variações neurológicas).
 
 **O que você pode perguntar:**
-🧠 TDAH e Autismo (TEA)
-⚖️ Direitos e legislação
-📋 Organização e produtividade
-🆘 Crises sensoriais e regulação
-🔍 Diagnóstico e avaliação
-🧘 Terapias e tratamentos
-🌈 Neurodiversidade em geral
+ TDAH e Autismo (TEA)
+ Direitos e legislação
+ Organização e produtividade
+ Crises sensoriais e regulação
+ Diagnóstico e avaliação
+ Terapias e tratamentos
+ Neurodiversidade em geral
 
 **Vamos conversar?** Me faça qualquer pergunta sobre neurodiversidade! 💜`;
     }
@@ -64,13 +64,13 @@ Eu sou a assistente virtual do projeto **Amor NeuroDivergente** — uma comunida
 Meu propósito é ajudar com informações sobre neurodivergência, TDAH, autismo, direitos, organização e bem-estar.
 
 **Posso te ajudar com:**
-🧠 TDAH e Autismo (TEA)
-⚖️ Direitos e legislação
-📋 Organização e produtividade
-🆘 Crises sensoriais e regulação
-🔍 Diagnóstico e avaliação
-🧘 Terapias e tratamentos
-🌈 Neurodiversidade em geral
+ TDAH e Autismo (TEA)
+ Direitos e legislação
+Organização e produtividade
+ Crises sensoriais e regulação
+ Diagnóstico e avaliação
+ Terapias e tratamentos
+Neurodiversidade em geral
 
 **Vamos conversar sobre algo que realmente importa?** 💜`;
     }
