@@ -1194,89 +1194,72 @@ border: 2px solid var(--bg-secondary);
 
 }
 
-/* =========================================
-   GUIAS E DOWNLOADS
-   ========================================= */
-.guides-downloads-section {
-    padding: 60px 20px;
-    background: var(--bg-white);
+/* Destaques */
+.realeases{
+padding: 0 0 100px 0;
+    background: var(--text-dark);
+}
+.releases-grid{
+margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+
+}
+.book-card{
+    transition:transform 0.3s;
+    cursor: pointer;
 }
 
-.guides-downloads-section .container {
-    max-width: 1100px;
-    margin: 0 auto;
+.book-card:hover{
+transform: translateY(-8px);
 }
 
-.guides-downloads-section .section-sub {
-    color: var(--text-muted);
-    font-size: 17px;
-    margin-bottom: 32px;
-}
-
-.guides-grid 
-
-.guide-card {
-    display: flex;
-    gap: 16px;
-    padding: 24px;
-    background: var(--bg-body);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-    transition: all var(--transition);
-    align-items: flex-start;
-}
-
-.guide-card:hover {
-
-
-    box-shadow: var(--shadow-md);
-}
-
-.guide-icon {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-  
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-}
-
-.guide-content h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 4px;
-}
-
-.guide-content p {
-    font-size: 14px;
-    color: var(--text-medium);
-    line-height: 1.5;
+.book-cover{
+    width:100%;
+    aspect-ratio: 2/3;
+    border-radius: 12px;
+    object-fit: cover;
     margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: #f3f4f6;
+
 }
 
-.btn-download {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 16px;
+.book-cover img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+    border-radius: 12px;
+    border:2px solid #a1a1aaa2;
+
+
+}
+.book-title{
+    font-size:16px;
+    font-weight:700;
+    line-height:1.4;
+    margin-bottom:4px;
+}
+.book-category{
+    font-size:14px;
+    color:var(--text-muted);
+
+}
+.book-card{
+    display: flex;
+    flex-direction: column;
+
     border-radius: 20px;
-    background: var(--primary);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    transition: all var(--transition);
-    text-decoration: none;
+    align-items: center;
+    margin: 10px;
+    padding: 20px;
+
 }
 
-.btn-download:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-}
+
+
 
 /* =========================================
    DEPOIMENTOS - SEM BLUR
