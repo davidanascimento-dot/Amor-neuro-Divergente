@@ -1312,77 +1312,117 @@ body.a11y-small-text {
 
 
 /* Modal de Configurações */
-.settings-content-modal{
-  
-    background-color: #fffdfd;
-    border-radius: 10px ;
-    padding: 20px;
-    width: 100%	;
-    border: 2px solid var(--border-color);
-    align-items: center;
+
+* {
+    box-sizing: border-box; 
 }
+
+.settings-content-modal{
+    display: none;
+    background-color: #fffdfd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    border: 2px solid var(--border-color);
+    max-width: 520px;
+    margin: 0 auto;
+    z-index: 1000;
+}
+
 .settings-container-center{
-text-align: center;
+    text-align: center;
 }
 
 .btn-salvar{
     background-color: #1f1c5c7a;
     color: #fff;
-  border: 2px solid #b4b4b448;
+    border: 2px solid #b4b4b448;
     padding: 10px 20px;
     border-radius: 8px;
     font-size: 14px;
 }
 
+.painel-mudar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0px 40px;
+}
+
 .bnt-x{
-display: flex;
-margin-bottom: 10px;
-padding-left: 750px;
-position: absolute;
+    position: absolute;
+    top: -10px;
+    right: -10px;
 }
 
 .senha-antiga-input{
     width: 100%;
-    padding: 10px;
+    padding: 10px 40px 10px 15px; 
     border-radius: 8px;
     border: 1px solid var(--border-color);
+    box-sizing: border-box;
 }
 
 .senha-antiga{
-   font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
+    position: relative;
     font-family: 'Inter', sans-serif;
-    margin-bottom: 4px;
-   font-family: 'Inter', sans-serif;
+    margin-bottom: 20px;
+}
 
+.senha-antiga i{
+    position: absolute;
+    right: 14px;
+    bottom: 13px;
+    cursor: pointer;
+}
+.senha-antiga span{
+color:#8b3e8f;
+    margin-top: 4px;
+    display: block;
 }
 .senha-nova-input{
     width: 100%;
-    padding: 10px;
+    padding: 10px 40px 10px 15px; 
     border-radius: 8px;
     border: 1px solid var(--border-color);
+    box-sizing: border-box;
 }
 
-.senha-nova{
-    text-align: left;
-    font-size: 20px;
+.senha-nova h2 {
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 4px;
-    font-family: 'Inter', sans-serif;
-   
-    
+    color: #1a1a2e;  
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.senha-nova {
+    position: relative;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.senha-nova i {  
+    position: absolute;
+    right: 14px;
+    bottom: 13px;
+    cursor: pointer;
 }
 
 .modal-title{
+    display: flex;
+    gap: 10px;
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 10px;
     font-family: 'Inter', sans-serif;
-    position: absolute;
     align-items: center;
-padding-left: 340px;
 }
+
+
 
 
 

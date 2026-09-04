@@ -173,31 +173,34 @@
                             <button class="btn-secondary-light" id="changePasswordBtn" style="margin-left:0;">Mudar senha</button>
                         </div>
 
-                        <!--modal mudar senha-->
-                        
-  <div class="settings-content-modal">
+                      <!-- Seu HTML - O MODAL INTEIRO -->
+<div class="settings-content-modal" id="modalSenha">
     <div class="settings-container-center">
-    <div class="painel-mudar">
-        <h3 class="modal-title"></h3><i class="fas fa-lock"></i> Mudar senha </h3>
+        <div class="painel-mudar">
+            <h1 class="modal-title">
+                <i class="fas fa-lock"></i> Senha
+            </h1>
+            <div class="bnt-x" id="closeModalBtn">✕</div>
+        </div>
+        <div class="senha-antiga">
+            <p>Escolha uma senha forte <span>Saiba Mais</span></p>
+            <div class="input-wrapper">
+                <input type="password" class="senha-antiga-input" placeholder="Digite a senha atual">
+                <i class="fas fa-eye-slash"></i>
+            </div>
+        </div>
+        <div class="senha-nova">
+            <h2><i class="fas fa-shield-alt"></i> Senha Nova</h2>
+            <div class="input-wrapper">
+                <input type="password" class="senha-nova-input" placeholder="Digite a nova senha">
+                <i class="fas fa-eye-slash"></i>
+            </div>
+        </div>
+        <button class="btn-salvar">
+            <h2>Salvar</h2>
+        </button>
     </div>
-    <div class="bnt-x" id="closeModalBtn">✕</div>
-    <div class="senha-antiga" class="senha-antiga">
-        <h2 class="senha-antiga"><i class="fas fa-shield-alt"></i>senha antiga</h2>
-       <input type="password" class="senha-antiga-input" placeholder="Digite a senha atual ">
-       <i class="fas fa-eye-slash"></i>
-    </div>
-    <div class="senha-nova">
-        <h2 class="senha-nova"><i class="fas fa-shield-alt"></i>senha nova</h2>
-     <input type="password" class="senha-nova-input" placeholder="Digite a nova senha ">
-     <i class="fas fa-eye-slash"></i>
-    </div>
-    <button class="btn-salvar">
-        <h2>salvar</h2>
-    </button>
-  
-    </div>
-  </div>
-
+</div>
 
 
                         <div class="settings-content-card">

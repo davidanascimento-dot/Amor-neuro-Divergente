@@ -595,6 +595,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    
+
     // Sincronização Local entre Abas abertas
     window.addEventListener('storage', (event) => {
         if (!event.key || !event.key.startsWith('user')) return;
@@ -609,6 +611,63 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateGlobalUI();
     });
 
+ const modalSenha = document.getElementById('modalSenha');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const changeBtn = document.getElementById('changePasswordBtn');
+    const registerBtn = document.getElementById('registerSecurityKeyBtn');
+    
+    console.log('Modal:', modalSenha);
+    console.log('CloseBtn:', closeBtn);
+    console.log('ChangeBtn:', changeBtn);
+    console.log('RegisterBtn:', registerBtn);
+    
+    function abrirModal() {
+        modalSenha.style.display = 'flex';
+        modalSenha.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function fecharModal() {
+       
+        modalSenha.style.display = 'none';
+        modalSenha.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    if (changeBtn) {
+        changeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            abrirModal();
+        });
+    }
+    
+    if (registerBtn) {
+        registerBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            abrirModal();
+        });
+    }
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fecharModal();
+        });
+    }
+    
+    if (modalSenha) {
+        window.addEventListener('click', function(e) {
+            if (e.target === modalSenha) {
+                fecharModal();
+            }
+        });
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            fecharModal();
+        }
+    });
     // =============================================
     // 9. INICIALIZAÇÃO
     // =============================================
@@ -616,4 +675,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     setLanguage(currentUser.lang || 'pt');
     console.log('⚙️ Configurações prontas, integradas ao banco de dados!');
     console.log('📦 Tabela profiles sincronizada com sucesso!');
+    
 });
