@@ -633,7 +633,9 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/supabase-cliente.js"></script>
+<script>
+    window.supabaseClient = supabase.createClient('%VITE_SUPABASE_URL%', '%VITE_SUPABASE_ANON_KEY%');
+</script>
 
 <script src="/comunidade/honeypot.js"></script>
 

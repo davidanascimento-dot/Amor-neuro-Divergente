@@ -1797,7 +1797,7 @@ if (groupImageUploadArea) {
                 
                 if (!groupBucket) {
                     // Criar bucket (pode ser feito manualmente no dashboard também)
-                    // Nota: criar bucket via API precisa de permissões de service_role
+                    // A criação do bucket exige permissões administrativas.
                     console.warn('⚠️ Bucket "group-images" não encontrado. Criando...');
                     // Como alternativa, vamos usar o bucket 'avatars' que já existe
                 }

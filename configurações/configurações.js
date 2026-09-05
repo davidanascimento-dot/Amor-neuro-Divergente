@@ -365,31 +365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // =============================================
-    // 7. MODAL DE AUTENTICAÇÃO
-    // =============================================
-    let modalCallback = null;
-    const modal = document.getElementById('modalOverlay');
-
-    if (modal) {
-        document.getElementById('modalConfirmBtn')?.addEventListener('click', () => {
-            const pwd = document.getElementById('modalInput').value;
-            if (pwd === "admin123") { 
-                if (modalCallback) modalCallback(true); 
-                showToast("Autenticação bem-sucedida!"); 
-            } else { 
-                showToast("Senha incorreta!", true); 
-                if (modalCallback) modalCallback(false); 
-            }
-            modal.classList.remove('active');
-        });
-        document.getElementById('modalCancelBtn')?.addEventListener('click', () => { 
-            modal.classList.remove('active'); 
-            modalCallback = null; 
-        });
-    }
-
-    // =============================================
-    // 8. EVENTOS DE PERFIL (UPLOAD REAL PARA SUPABASE STORAGE + BANCO)
+    // 7. EVENTOS DE PERFIL (UPLOAD REAL PARA SUPABASE STORAGE + BANCO)
     // =============================================
     
     // Upload de Avatar

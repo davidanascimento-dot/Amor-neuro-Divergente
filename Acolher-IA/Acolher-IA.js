@@ -4,12 +4,7 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =============================================
-    // CONFIGURAÇÃO DA API GROQ
-    // =============================================
-    const GROQ_API_KEY = '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';
-    const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-    
+    const ACOLHERIA_URL = 'https://qyixzontuhrxrrjrmzvy.supabase.co/functions/v1/acolheria';
 
     // =============================================
     // ELEMENTOS DO MODAL
@@ -152,48 +147,13 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
             return getBlockedTopicResponse();
         }
 
-        // System prompt para a IA
-        const systemPrompt = `Você é a AcolherIA, uma assistente virtual acolhedora e especializada em neurodivergência do projeto Amor NeuroDivergente. 
-        
-Seu objetivo é ajudar pessoas neurodivergentes (TDAH, autismo, dislexia, AHSD, entre outros) com informações, acolhimento e suporte.
-
-Diretrizes:
-- Seja sempre empática, acolhedora e respeitosa
-- Use linguagem clara, acessível e inclusiva
-- Forneça informações baseadas em evidências
-- Recomende buscar ajuda profissional quando necessário
-- Não dê diagnósticos médicos
-- Mantenha um tom positivo e encorajador
-- Se não souber algo, seja honesta e sugira buscar fontes confiáveis
-
-Áreas de conhecimento:
-- TDAH, Autismo (TEA), Dislexia, AHSD e outras neurodivergências
-- Direitos e legislação para pessoas neurodivergentes
-- Organização e produtividade
-- Crises sensoriais e regulação emocional
-- Processo de diagnóstico e avaliação
-- Terapias e tratamentos disponíveis
-- Inclusão e acessibilidade
-
-Responda sempre de forma acolhedora e informativa, mantendo o foco em apoiar a pessoa neurodivergente.`;
-
         try {
-            const response = await fetch(GROQ_URL, {
+            const response = await fetch(ACOLHERIA_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${GROQ_API_KEY}`
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    model: 'openai/gpt-oss-120b',
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: message }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 500,
-                    top_p: 0.9
-                })
+                body: JSON.stringify({ message })
             });
 
             if (!response.ok) {
@@ -203,7 +163,7 @@ Responda sempre de forma acolhedora e informativa, mantendo o foco em apoiar a p
             }
 
             const data = await response.json();
-            const resposta = data.choices?.[0]?.message?.content?.trim();
+            const resposta = data.answer?.trim();
 
             if (!resposta) {
                 throw new Error('Resposta vazia');

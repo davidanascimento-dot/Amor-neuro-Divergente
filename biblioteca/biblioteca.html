@@ -368,7 +368,9 @@
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
     <!-- JavaScript -->
-    <script src="/supabase-cliente.js"></script>
+    <script>
+        window.supabaseClient = supabase.createClient('%VITE_SUPABASE_URL%', '%VITE_SUPABASE_ANON_KEY%');
+    </script>
     <script src="biblioteca.js"></script>
     <script src="/Acolher-IA/Acolher-IA.js"></script>
     <!-- VLibras -->

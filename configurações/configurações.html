@@ -389,7 +389,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- 2. Configuração do Supabase -->
-    <script src="/supabase-cliente.js"></script>
+    <script>
+        window.supabaseClient = supabase.createClient('%VITE_SUPABASE_URL%', '%VITE_SUPABASE_ANON_KEY%');
+    </script>
     
     <!-- 3. Arquivos principais -->
     <script src="/inicio.js"></script>

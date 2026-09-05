@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 0. CAPTURA O CLIENTE DO SUPABASE (Configurado no supabase-cliente.js)
+    // 0. CAPTURA O CLIENTE DO SUPABASE (Configurado no HTML pelo Vite)
     const supabase = window.supabaseClient;
 
     // Função auxiliar para salvar a foto vinculada ao e-mail no histórico local
@@ -121,18 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
-            // Login rápido de teste para Admin comum
-            if (email === 'admin@amorneurodivergente.com' && password === 'admin123') {
-                showToast('Login como administrador! Preparando ambiente...', 'success');
-                localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('userName', 'Administrador');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userRole', 'admin');
-                
-                executarTransicaoCoracao('/painel-admin/painel.html');
-                return;
-            }
             
             if (!email || !password) {
                 showToast('Preencha todos os campos.', 'error');
