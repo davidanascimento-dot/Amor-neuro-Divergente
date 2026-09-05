@@ -92,42 +92,7 @@ body {
 /* ==========================================================================
    4. HEADER (Fixo)
    ========================================================================== */
-.header-glass {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--header-height);
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
-    z-index: 40;
-    transition: all 0.3s;
-}
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.logo-img {
-    height: 32px;
-    width: auto;
-}
-
-.logo-text {
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--primary-dark);
-}
 
 .header-links {
     display: flex;

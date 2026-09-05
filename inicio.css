@@ -300,12 +300,12 @@ ul, ol { list-style: none; }
 
 .header-links { 
     display: flex; 
-    gap: 24px; 
+    gap: 0px; 
     margin-left: auto;
 }
 
 .header-links a { 
-    padding: 8px 18px; 
+    padding: 10px 18px; 
     border-radius: 20px; 
     font-size: 14px; 
     font-weight: 500; 
