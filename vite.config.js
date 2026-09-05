@@ -24,6 +24,16 @@ function collectHtmlFiles(directory, root = directory) {
 }
 
 export default defineConfig({
+    plugins: [{
+        name: 'copy-static-assets',
+        closeBundle() {
+            for (const directory of ['img', 'Acolher-IA', 'comunidade', 'configurações', 'login', 'blog', 'Direitos', 'Explorar', 'ferramentas', 'Recursos', 'trilhas', 'apoiar', 'biblioteca', 'loja']) {
+                const source = path.join(process.cwd(), directory);
+                const destination = path.join(process.cwd(), 'dist', directory);
+                if (fs.existsSync(source)) fs.cpSync(source, destination, { recursive: true, force: true });
+            }
+        }
+    }],
     build: {
         rollupOptions: {
             input: collectHtmlFiles(process.cwd())
