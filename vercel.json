@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "/inicio.html"
+  "buildCommand": "",
+  "outputDirectory": "."
 }
