@@ -144,6 +144,18 @@
                     <button class="tab-button" data-target="privacidadePane">
                         <i class="fa-solid fa-shield-alt"></i> Privacidade e Segurança
                     </button>
+                    <button class="tab-button" data-target="aparenciaPane">
+                        <i class="fa-solid fa-palette"></i> Aparência
+                    </button>
+                    <button class="tab-button" data-target="acessibilidadePane">
+                        <i class="fa-solid fa-universal-access"></i> Acessibilidade
+                    </button>
+                    <button class="tab-button" data-target="notificacoesPane">
+                        <i class="fa-solid fa-bell"></i> Notificações
+                    </button>
+                    <button class="tab-button" data-target="acolheriaPane">
+                        <i class="fa-solid fa-robot"></i> AcolherIA
+                    </button>
                 </div>
 
                 <!-- Área de conteúdo -->
@@ -214,6 +226,100 @@
                             <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Desativar sua conta significa que você poderá recuperá-la quando quiser.</p>
                             <button class="btn-danger-red" id="deactivateAccountBtn">Desativar conta</button>
                             <button class="btn-danger-outline" id="deleteAccountBtn">Excluir conta</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-pane" id="aparenciaPane">
+                        <div class="settings-content-card">
+                            <div class="panel-title"><i class="fa-solid fa-palette"></i> Aparência</div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Modo escuro</h4>
+                                    <p>Reduz o brilho e adapta as cores da interface.</p>
+                                </div>
+                                <button class="a11y-option settings-action-button" data-a11y="darkMode" type="button">
+                                    <span id="darkModeSettingsStatus">Alternar</span>
+                                </button>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Movimento reduzido</h4>
+                                    <p>Limita transições e animações da interface.</p>
+                                </div>
+                                <button class="a11y-option settings-action-button" data-a11y="reduceMotion" type="button">
+                                    <span id="motionSettingsStatus">Alternar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-pane" id="acessibilidadePane">
+                        <div class="settings-content-card">
+                            <div class="panel-title"><i class="fa-solid fa-universal-access"></i> Acessibilidade</div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Tamanho do texto</h4>
+                                    <p>Escolha o tamanho mais confortável para ler.</p>
+                                </div>
+                                <div class="settings-action-group">
+                                    <button class="a11y-option settings-action-button" data-a11y="decreaseText" type="button" aria-label="Diminuir texto">A-</button>
+                                    <button class="a11y-option settings-action-button" data-a11y="increaseText" type="button" aria-label="Aumentar texto">A+</button>
+                                </div>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Fonte para dislexia</h4>
+                                    <p>Ativa uma tipografia mais confortável para leitura.</p>
+                                </div>
+                                <button class="a11y-option settings-action-button" data-a11y="dyslexiaFont" type="button">
+                                    <span id="dyslexiaSettingsStatus">Alternar</span>
+                                </button>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Destacar links</h4>
+                                    <p>Deixa os links mais fáceis de localizar na página.</p>
+                                </div>
+                                <button class="a11y-option settings-action-button" data-a11y="highlightLinks" type="button">
+                                    <span id="linksSettingsStatus">Alternar</span>
+                                </button>
+                            </div>
+                            <button class="a11y-reset settings-reset-button" data-a11y="reset" type="button">
+                                <i class="fa-solid fa-rotate-left"></i> Restaurar acessibilidade
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-pane" id="notificacoesPane">
+                        <div class="settings-content-card">
+                            <div class="panel-title"><i class="fa-solid fa-bell"></i> Notificações</div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Novos eventos</h4>
+                                    <p>Receber avisos sobre encontros e atividades.</p>
+                                </div>
+                                <label class="switch-toggle"><input type="checkbox" id="eventNotificationsToggle" checked><span class="slider-round"></span></label>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Atividade da comunidade</h4>
+                                    <p>Receber atualizações sobre suas interações.</p>
+                                </div>
+                                <label class="switch-toggle"><input type="checkbox" id="communityNotificationsToggle" checked><span class="slider-round"></span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-pane" id="acolheriaPane">
+                        <div class="settings-content-card">
+                            <div class="panel-title"><i class="fa-solid fa-robot"></i> AcolherIA</div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info">
+                                    <h4>Acolhimento e informação</h4>
+                                    <p>A AcolherIA oferece informação e apoio inicial, mas não substitui profissionais de saúde.</p>
+                                </div>
+                                <a class="btn-secondary-light" href="/inicio.html#acolheriaOverlay">Abrir AcolherIA</a>
+                            </div>
                         </div>
                     </div>
 

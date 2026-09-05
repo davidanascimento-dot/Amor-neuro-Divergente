@@ -571,6 +571,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    function updateSettingsAccessibilityLabels() {
+        const labels = {
+            darkMode: document.getElementById('darkModeSettingsStatus'),
+            dyslexiaFont: document.getElementById('dyslexiaSettingsStatus'),
+            highlightLinks: document.getElementById('linksSettingsStatus'),
+            reduceMotion: document.getElementById('motionSettingsStatus')
+        };
+
+        Object.entries(labels).forEach(([key, element]) => {
+            if (element) element.textContent = gs(key) === 'true' ? 'Ativo' : 'Inativo';
+        });
+    }
+
+    document.querySelectorAll('.settings-action-button, .settings-reset-button').forEach(button => {
+        button.addEventListener('click', () => setTimeout(updateSettingsAccessibilityLabels, 0));
+    });
+    updateSettingsAccessibilityLabels();
+
+    const settingsSearch = document.getElementById('searchSettings');
+    const settingsTabs = [...document.querySelectorAll('.tab-button')];
+    if (settingsSearch) {
+        settingsSearch.addEventListener('input', () => {
+            const query = settingsSearch.value.trim().toLowerCase();
+            settingsTabs.forEach(tab => {
+                const matches = !query || tab.textContent.toLowerCase().includes(query);
+                tab.hidden = !matches;
+            });
+
+            const firstMatch = settingsTabs.find(tab => !tab.hidden);
+            if (query && firstMatch) firstMatch.click();
+        });
+    }
+
+    document.querySelectorAll('#eventNotificationsToggle, #communityNotificationsToggle').forEach(toggle => {
+        const storageKey = `notifications_${toggle.id}`;
+        const savedValue = localStorage.getItem(storageKey);
+        if (savedValue !== null) toggle.checked = savedValue === 'true';
+        toggle.addEventListener('change', () => localStorage.setItem(storageKey, String(toggle.checked)));
+    });
+
     
 
     // Sincronização Local entre Abas abertas
