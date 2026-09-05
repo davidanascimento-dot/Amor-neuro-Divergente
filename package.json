@@ -6,6 +6,9 @@
     "build": "node node_modules/vite/bin/vite.js build",
     "preview": "vite preview"
   },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3"
   },
