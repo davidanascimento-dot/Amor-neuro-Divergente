@@ -11,68 +11,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="contate.css">
+    <link rel="stylesheet" href="/inicio.css">
 </head>
 <body>
 
     <!-- Barra de progresso -->
     <div class="reading-progress" id="readingProgress"></div>
 
-    <!-- =============================================
-    NAVBAR — Transparente, some ao descer
-    ============================================= -->
-    <header class="navbar" id="navbar">
-        <div class="navbar-inner">
-            <div class="navbar-left">
-                <a href="/explorar/explorar.html" class="navbar-back" title="Voltar para Explorar">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <span class="navbar-back-text">Explorar</span>
-                </a>
-            </div>
+     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 
-            <div class="navbar-center">
-                <a href="/inicio.html" class="navbar-brand">
-                    <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="navbar-logo">
-                    <span class="navbar-brand-text">Amor NeuroDivergente</span>
-                </a>
-            </div>
-
-            <div class="navbar-right">
-                <!-- Acessibilidade -->
-                <div class="navbar-a11y">
-                    <button class="a11y-icon-btn" id="a11yToggle" aria-label="Acessibilidade" aria-expanded="false">
-                        <i class="fa-solid fa-universal-access"></i>
-                    </button>
-                    <div class="a11y-dropdown" id="a11yDropdown" hidden>
-                        <button class="a11y-option" data-a11y="darkMode">
-                            <i class="fa-regular fa-moon"></i> Modo escuro
-                            <span class="a11y-status" id="darkModeStatus">Desligado</span>
-                        </button>
-                        <button class="a11y-option" data-a11y="increaseText">
-                            <i class="fa-solid fa-text-height"></i> Aumentar texto
-                        </button>
-                        <button class="a11y-option" data-a11y="decreaseText">
-                            <i class="fa-solid fa-text-slash"></i> Diminuir texto
-                        </button>
-                        <button class="a11y-option" data-a11y="highlightLinks">
-                            <i class="fa-solid fa-link"></i> Destacar links
-                            <span class="a11y-status" id="linksStatus">Desligado</span>
-                        </button>
-                        <button class="a11y-option" data-a11y="dyslexiaFont">
-                            <i class="fa-regular fa-eye"></i> Fonte para dislexia
-                            <span class="a11y-status" id="dyslexiaStatus">Desligado</span>
-                        </button>
-                        <button class="a11y-option" data-a11y="reduceMotion">
-                            <i class="fa-solid fa-person-walking"></i> Reduzir animações
-                            <span class="a11y-status" id="motionStatus">Desligado</span>
-                        </button>
-                        <button class="a11y-reset" data-a11y="reset">
-                            <i class="fa-solid fa-rotate-left"></i> Voltar ao padrão
-                        </button>
-                    </div>
-                </div>
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
             </div>
         </div>
-    </header>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="Explorar/Explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
+        </nav>
+
+        <div class="sidebar-secondary">
+            <a href="loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+   
+    <main class="main-content" id="mainContent">
+        
+        <!-- HEADER -->
+        <header class="header-glass" id="headerGlass">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/inicio.html"></a>
+                <span></span>
+            </nav>
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/Explorar/Explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="Chat-Ia/Chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
 
     <!-- =============================================
     CONTEÚDO PRINCIPAL
