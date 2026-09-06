@@ -488,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
             date: "05/02/2026",
             readTime: "1 min",
             image: "/img/blog-post-2-Dk5Jy2bJ.jpg",
-            link: "/blog/artigos-2/blog1.html"
+            link: "/blog/artigos - 2/blog1.html"
         },
         {
             id: 3,
@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
             date: "05/02/2026",
             readTime: "1 min",
             image: "/img/blog-post-3-EqM0ehGW.jpg",
-            link: "/blog/artigos-3/blog1.html"
+            link: "/blog/artigos -3/blog1.html"
         },
         {
             id: 4,
