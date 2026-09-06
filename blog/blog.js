@@ -638,6 +638,8 @@ document.addEventListener('DOMContentLoaded', () => {
             </article>
         `).join('');
 
+        if (window.enhanceReadingCards) window.enhanceReadingCards();
+
         // Atualiza o sentinel
         const sentinel = document.querySelector('.scroll-sentinel');
         if (sentinel) {

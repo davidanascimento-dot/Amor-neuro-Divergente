@@ -9,6 +9,7 @@ const track = document.getElementById('track');
         const progressBar = document.getElementById('progressBar');
         const carouselWrapper = document.getElementById('carouselWrapper');
 
+    if (track && prevBtn && nextBtn && currentSpan && progressBar && carouselWrapper) {
 
         const totalSlides = 6;
         let currentIndex = 0;
@@ -77,6 +78,7 @@ const track = document.getElementById('track');
 
         // Iniciar carrossel
         resetAutoPlay();
+    }
 document.addEventListener('DOMContentLoaded', () => {
 
     const body = document.body;

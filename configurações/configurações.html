@@ -119,17 +119,25 @@
         CONTEÚDO DE CONFIGURAÇÕES
         ============================================= -->
         <div class="settings-wrapper">
+
+            <input type="text" class="search-bar-settings" placeholder="Pesquisar nas configurações" id="searchSettings">
             
             <div class="page-header">
-                <h1>Configurações</h1>
-                <p>Gerencie sua conta e preferências</p>
+                <h1>Configurações do Aplicativo</h1>
+                <p>Conta</p>
             </div>
 
             <div class="settings-container">
                 
                 <!-- Menu lateral de abas -->
                 <div class="settings-nav-card">
-                    <h2>Configurações</h2>
+                    <div class="settings-account-summary">
+                        <img src="/img/foto-padrão.jpg" alt="Foto do perfil" id="settingsProfileAvatar">
+                        <div>
+                            <strong id="settingsProfileName">Utilizador</strong>
+                            <span id="settingsProfileEmail">utilizador@email.com</span>
+                        </div>
+                    </div>
                     <a href="#" class="view-profile-btn" id="viewProfileBtn">ver perfil</a>
                     
                     <button class="tab-button active" data-target="minhaContaPane">
@@ -156,28 +164,46 @@
                     <button class="tab-button" data-target="acolheriaPane">
                         <i class="fa-solid fa-robot"></i> AcolherIA
                     </button>
+                    <button class="tab-button" data-target="leituraPane">
+                        <i class="fa-solid fa-book-open-reader"></i> Leitura
+                    </button>
                 </div>
 
                 <!-- Área de conteúdo -->
                 <div class="settings-content-area">
-                    
-                    <input type="text" class="search-bar-settings" placeholder="🔍 Pesquise nas configurações" id="searchSettings">
-
                     <!-- ABA 1: MINHA CONTA -->
                     <div class="settings-pane active" id="minhaContaPane">
                         <div class="settings-content-card">
-                            <div class="card-header-purple">
-                                <h3 id="displayNameHeader">TonyEsterco</h3>
-                                <button class="btn-outline-edit" id="editProfileBtn">Editar Perfil</button>
+                            <div class="settings-section-heading">
+                                <h3>Informações Pessoais</h3>
+                                <button class="btn-outline-edit" id="editProfileBtn">Editar perfil</button>
                             </div>
-                            <div class="info-display-group">
-                                <label>Nome Exibido</label>
-                                <p id="displayNameInfo">TonyEsterco</p>
+                            <div class="settings-field-grid">
+                                <div class="settings-field"><label>Nome completo</label><p id="displayNameInfo">Utilizador</p></div>
+                                <div class="settings-field"><label>E-mail</label><p id="userEmail">utilizador@email.com</p></div>
+                                <div class="settings-field"><label>Telefone</label><p>+55 (11) 99999-9999</p></div>
                             </div>
-                            <div class="info-display-group">
-                                <label>E-mail</label>
-                                <p id="userEmail">david.araujo.admin@amorneurodivergente.com</p>
-                            </div>
+                        </div>
+
+                        <div class="profile-reading-dashboard">
+                            <section class="profile-reading-section">
+                                <h3>Artigos Favoritos</h3>
+                                <div class="profile-articles-carousel" id="articles-container" aria-live="polite">
+                                    <p class="reading-preview-status">Nenhum conteúdo salvo ainda.</p>
+                                </div>
+                            </section>
+                            <section class="profile-reading-section">
+                                <h3>Lendo Atualmente</h3>
+                                <div class="profile-reading-card" id="current-reading-card">
+                                    <div class="profile-reading-cover reading-preview-placeholder">📖</div>
+                                    <div class="profile-reading-details">
+                                        <h4 id="current-reading-title">Você ainda não começou uma leitura</h4>
+                                        <p id="current-reading-meta">Escolha um artigo, blog ou guia para acompanhar seu progresso.</p>
+                                        <div class="reading-progress-track"><span id="current-reading-progress"></span></div>
+                                        <div class="reading-progress-stats"><span id="current-reading-progress-text">Sem progresso salvo</span><strong id="current-reading-progress-percent">0%</strong></div>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
 
                         <div class="settings-content-card">
@@ -323,6 +349,40 @@
                         </div>
                     </div>
 
+                    <div class="settings-pane" id="leituraPane">
+                        <div class="settings-content-card reading-preferences-card">
+                            <div class="panel-title"><i class="fa-solid fa-book-open-reader"></i> Preferências de leitura</div>
+                            <p class="settings-card-intro">Personalize como você consome artigos, blogs e guias.</p>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info"><h4>Continuar de onde parei</h4><p>Retoma o último ponto salvo de cada conteúdo.</p></div>
+                                <label class="switch-toggle"><input type="checkbox" data-reading-setting="continueReading" checked><span class="slider-round"></span></label>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info"><h4>Modo leitura</h4><p>Abre conteúdos com uma apresentação mais limpa.</p></div>
+                                <label class="switch-toggle"><input type="checkbox" data-reading-setting="readingMode" checked><span class="slider-round"></span></label>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info"><h4>Salvar progresso automaticamente</h4><p>Registra seu avanço enquanto você lê.</p></div>
+                                <label class="switch-toggle"><input type="checkbox" data-reading-setting="saveProgress" checked><span class="slider-round"></span></label>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info"><h4>Mostrar autor e data</h4><p>Exibe contexto editorial nos cards de conteúdo.</p></div>
+                                <label class="switch-toggle"><input type="checkbox" data-reading-setting="metadata" checked><span class="slider-round"></span></label>
+                            </div>
+                            <div class="item-row-setting">
+                                <div class="item-setting-info"><h4>Índice e progresso por seção</h4><p>Mostra navegação adicional em guias.</p></div>
+                                <label class="switch-toggle"><input type="checkbox" data-reading-setting="guideIndex" checked><span class="slider-round"></span></label>
+                            </div>
+                        </div>
+                        <div class="settings-content-card">
+                            <div class="panel-title"><i class="fa-solid fa-images"></i> Conteúdos recentes</div>
+                            <p class="settings-card-intro">As capas abaixo vêm do conteúdo mais recente disponível.</p>
+                            <div class="reading-preview-grid" id="readingPreviewGrid" aria-live="polite">
+                                <p class="reading-preview-status">Carregando conteúdos recentes...</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- ABA 2: PERFIL -->
                     <div class="settings-pane" id="perfilPane">
                         <div class="settings-content-card">
@@ -463,6 +523,82 @@
             </div>
         </div>
     </div>
+
+    <div class="floating-hub" id="floatingHub">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Alternar modo claro ou escuro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Modo escuro/claro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="floating-hub-divider"></div>
+
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/inicio.html#acolheriaOverlay" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <!-- VLibras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 
 
 

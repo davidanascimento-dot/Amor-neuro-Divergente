@@ -221,67 +221,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         usl('motionStatus', gs('reduceMotion') === 'true');
     }
 
-    // Botões de acessibilidade (agora no header ou footer)
-    document.querySelectorAll('.a11y-option, .a11y-reset').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault(); e.stopPropagation();
-            const action = btn.getAttribute('data-a11y');
-            switch (action) {
-                case 'darkMode': 
-                    const dm = gs('darkMode') === 'true'; 
-                    ss('darkMode', dm ? 'false' : 'true'); 
-                    if (dm) body.classList.remove('a11y-dark-mode'); 
-                    else body.classList.add('a11y-dark-mode'); 
-                    usl('darkModeStatus', !dm); 
-                    break;
-                case 'increaseText': 
-                    body.classList.toggle('a11y-large-text');
-                    break;
-                case 'decreaseText': 
-                    body.classList.toggle('a11y-small-text');
-                    break;
-                case 'highlightLinks': 
-                    const hl = gs('highlightLinks') === 'true'; 
-                    ss('highlightLinks', hl ? 'false' : 'true'); 
-                    if (hl) body.classList.remove('a11y-highlight-links'); 
-                    else body.classList.add('a11y-highlight-links'); 
-                    usl('linksStatus', !hl); 
-                    break;
-                case 'dyslexiaFont': 
-                    const df = gs('dyslexiaFont') === 'true'; 
-                    ss('dyslexiaFont', df ? 'false' : 'true'); 
-                    if (df) body.classList.remove('a11y-dyslexia'); 
-                    else body.classList.add('a11y-dyslexia'); 
-                    usl('dyslexiaStatus', !df); 
-                    break;
-                case 'reduceMotion': 
-                    const rm = gs('reduceMotion') === 'true'; 
-                    ss('reduceMotion', rm ? 'false' : 'true'); 
-                    if (rm) body.classList.remove('a11y-reduce-motion'); 
-                    else body.classList.add('a11y-reduce-motion'); 
-                    usl('motionStatus', !rm); 
-                    break;
-                case 'reset': 
-                    ['darkMode', 'highlightLinks', 'dyslexiaFont', 'reduceMotion', 'textSize'].forEach(k => 
-                        localStorage.removeItem('a11y_' + k)
-                    ); 
-                    body.classList.remove(
-                        'a11y-dark-mode', 
-                        'a11y-highlight-links', 
-                        'a11y-dyslexia', 
-                        'a11y-reduce-motion',
-                        'a11y-large-text',
-                        'a11y-small-text'
-                    ); 
-                    usl('darkModeStatus', false);
-                    usl('linksStatus', false);
-                    usl('dyslexiaStatus', false);
-                    usl('motionStatus', false); 
-                    break;
-            }
-        });
-    });
-
     applySettings();
 
     // =============================================
@@ -292,6 +231,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userAvatar = document.getElementById('userAvatar');
         const userName = document.getElementById('userName');
         const userEmail = document.getElementById('userEmail');
+        const settingsProfileAvatar = document.getElementById('settingsProfileAvatar');
+        const settingsProfileName = document.getElementById('settingsProfileName');
+        const settingsProfileEmail = document.getElementById('settingsProfileEmail');
         
         if (userAvatar) { 
             userAvatar.src = currentUser.avatar || AVATAR_PADRAO; 
@@ -302,6 +244,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (userName) userName.textContent = currentUser.name;
         if (userEmail) userEmail.textContent = currentUser.email;
+        if (settingsProfileAvatar) settingsProfileAvatar.src = currentUser.avatar || AVATAR_PADRAO;
+        if (settingsProfileName) settingsProfileName.textContent = currentUser.name;
+        if (settingsProfileEmail) settingsProfileEmail.textContent = currentUser.email;
 
         // Header
         const displayNameHeader = document.getElementById('displayNameHeader');
@@ -610,6 +555,124 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (savedValue !== null) toggle.checked = savedValue === 'true';
         toggle.addEventListener('change', () => localStorage.setItem(storageKey, String(toggle.checked)));
     });
+
+    const readingSettingDefaults = {
+        continueReading: true,
+        readingMode: true,
+        saveProgress: true,
+        metadata: true,
+        guideIndex: true
+    };
+
+    document.querySelectorAll('[data-reading-setting]').forEach(toggle => {
+        const setting = toggle.dataset.readingSetting;
+        const savedValue = localStorage.getItem(`reading_${setting}`);
+        toggle.checked = savedValue === null ? readingSettingDefaults[setting] : savedValue === 'true';
+        toggle.addEventListener('change', () => localStorage.setItem(`reading_${setting}`, String(toggle.checked)));
+    });
+
+    async function fetchLatestContent(tableNames) {
+        if (!supabase) return null;
+
+        for (const tableName of tableNames) {
+            const queries = [
+                supabase.from(tableName).select('*').order('published_at', { ascending: false }).limit(1),
+                supabase.from(tableName).select('*').order('created_at', { ascending: false }).limit(1),
+                supabase.from(tableName).select('*').limit(1)
+            ];
+
+            for (const query of queries) {
+                const { data, error } = await query;
+                if (!error && data?.[0]) return data[0];
+            }
+        }
+        return null;
+    }
+
+    function contentValue(content, keys, fallback) {
+        for (const key of keys) {
+            if (content?.[key]) return content[key];
+        }
+        return fallback;
+    }
+
+    function escapeReadingText(value) {
+        return String(value).replace(/[&<>'"]/g, character => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[character]));
+    }
+
+    function renderReadingCard(type, icon, content) {
+        const title = contentValue(content, ['title', 'name', 'titulo'], `Nenhum ${type.toLowerCase()} publicado`);
+        const author = contentValue(content, ['author', 'author_name', 'autor'], 'Amor NeuroDivergente');
+        const date = contentValue(content, ['published_at', 'created_at', 'publication_date'], 'Conteúdo recente');
+        const image = contentValue(content, ['cover_url', 'thumbnail_url', 'image_url', 'featured_image', 'capa_url', 'imagem_url'], '');
+        const safeDate = date.includes('T') ? new Date(date).toLocaleDateString('pt-BR') : date;
+        const visual = image
+            ? `<img class="reading-preview-cover" src="${escapeReadingText(image)}" alt="Capa de ${escapeReadingText(title)}" loading="lazy">`
+            : `<div class="reading-preview-placeholder" aria-label="Sem capa cadastrada">${icon}</div>`;
+
+        return `<article class="reading-preview-card">
+            ${visual}
+            <div class="reading-preview-body">
+                <span class="reading-preview-type">${escapeReadingText(type)}</span>
+                <h4>${escapeReadingText(title)}</h4>
+                <p class="reading-preview-meta">${escapeReadingText(author)} · ${escapeReadingText(safeDate)}</p>
+                <div class="reading-preview-progress" aria-label="Progresso de leitura"><span></span></div>
+            </div>
+        </article>`;
+    }
+
+    async function loadReadingPreview() {
+        const previewGrid = document.getElementById('readingPreviewGrid');
+        if (!previewGrid) return;
+
+        const [article, blog, guide] = await Promise.all([
+            fetchLatestContent(['articles', 'artigos']),
+            fetchLatestContent(['blog_posts', 'blog', 'posts']),
+            fetchLatestContent(['guides', 'guias'])
+        ]);
+
+        previewGrid.innerHTML = [
+            renderReadingCard('Artigo', '📰', article),
+            renderReadingCard('Blog', '✍️', blog),
+            renderReadingCard('Guia', '📖', guide)
+        ].join('');
+
+        const articlesContainer = document.getElementById('articles-container');
+        if (articlesContainer) {
+            const favorites = JSON.parse(localStorage.getItem('favoriteContents') || '[]');
+            articlesContainer.innerHTML = favorites.length
+                ? favorites.slice(0, 8).map(item => `<article class="profile-article-card">
+                    ${item.image ? `<img class="profile-article-cover" src="${escapeReadingText(item.image)}" alt="Capa de ${escapeReadingText(item.title || 'Conteúdo salvo')}" loading="lazy">` : '<div class="profile-article-cover reading-preview-placeholder">📖</div>'}
+                    <div class="profile-article-body"><h4><a href="${escapeReadingText(item.url || '#')}">${escapeReadingText(item.title || 'Conteúdo salvo')}</a></h4><p>${escapeReadingText(item.author || 'Amor NeuroDivergente')}</p></div>
+                </article>`).join('')
+                : '<p class="reading-preview-status">Nenhum conteúdo salvo ainda.</p>';
+        }
+
+        const currentReading = JSON.parse(localStorage.getItem('currentReading') || 'null');
+        if (currentReading) {
+            const title = document.getElementById('current-reading-title');
+            const meta = document.getElementById('current-reading-meta');
+            const progress = document.getElementById('current-reading-progress');
+            const progressText = document.getElementById('current-reading-progress-text');
+            const progressPercent = document.getElementById('current-reading-progress-percent');
+            if (title) title.textContent = currentReading.title || 'Leitura atual';
+            if (meta) meta.textContent = currentReading.author || 'Conteúdo em andamento';
+            const percent = Math.max(0, Math.min(100, Number(currentReading.progress) || 0));
+            if (progress) progress.style.width = `${percent}%`;
+            if (progressText) progressText.textContent = currentReading.chapter || `${percent}% concluído`;
+            if (progressPercent) progressPercent.textContent = `${percent}%`;
+            const currentCover = document.querySelector('.profile-reading-cover');
+            if (currentCover && currentReading.image) {
+                currentCover.style.backgroundImage = `url("${currentReading.image}")`;
+                currentCover.textContent = '';
+                currentCover.classList.remove('reading-preview-placeholder');
+            }
+        }
+    }
+
+    loadReadingPreview();
 
     
 
