@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     
     let currentUser = null;
-    const AVATAR_PADRAO = '/img/avatar-padrao.png';
+    const AVATAR_PADRAO = '/img/foto-padrão.jpg';
     
     try {
         const { data: { session } } = await supabase.auth.getSession();
