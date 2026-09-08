@@ -368,27 +368,27 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTimerDisplay();
 
     // =============================================
-    // 9. SAFE SPACE CHECKLIST
+    // 9. SAFE SPACE CHECKLIST - ÍCONES PROFISSIONAIS
     // =============================================
     const checklistItems = [
-        { id: 1, text: 'Chaves', icon: '🔑' },
-        { id: 2, text: 'Celular', icon: '📱' },
-        { id: 3, text: 'Carteira', icon: '👛' },
-        { id: 4, text: 'Fones de ouvido', icon: '🎧' },
-        { id: 5, text: 'Garrafa de água', icon: '💧' },
-        { id: 6, text: 'Lanches/ snacks', icon: '🍎' },
-        { id: 7, text: 'Medicamentos', icon: '💊' },
-        { id: 8, text: 'Óculos de sol', icon: '🕶️' },
-        { id: 9, text: 'Carregador portátil', icon: '🔋' },
-        { id: 10, text: 'Objeto sensorial/ fidget', icon: '🧸' },
-        { id: 11, text: 'Documento de identidade', icon: '🪪' },
-        { id: 12, text: 'Máscara (se necessário)', icon: '😷' },
-        { id: 13, text: 'Guarda-chuva', icon: '☂️' },
-        { id: 14, text: 'Caderno/ planner', icon: '📓' },
-        { id: 15, text: 'Capa de chuva', icon: '🧥' },
-        { id: 16, text: 'Protetor solar', icon: '☀️' },
-        { id: 17, text: 'Cartão de transporte', icon: '🚌' },
-        { id: 18, text: 'Lenços de papel', icon: '🤧' }
+        { id: 1, text: 'Chaves', icon: 'fa-key' },
+        { id: 2, text: 'Celular', icon: 'fa-mobile-alt' },
+        { id: 3, text: 'Carteira', icon: 'fa-wallet' },
+        { id: 4, text: 'Fones de ouvido', icon: 'fa-headphones' },
+        { id: 5, text: 'Garrafa de água', icon: 'fa-tint' },
+        { id: 6, text: 'Lanches/ snacks', icon: 'fa-apple-alt' },
+        { id: 7, text: 'Medicamentos', icon: 'fa-pills' },
+        { id: 8, text: 'Óculos de sol', icon: 'fa-sunglasses' },
+        { id: 9, text: 'Carregador portátil', icon: 'fa-battery-full' },
+        { id: 10, text: 'Objeto sensorial/ fidget', icon: 'fa-hand-peace' },
+        { id: 11, text: 'Documento de identidade', icon: 'fa-id-card' },
+        { id: 12, text: 'Máscara (se necessário)', icon: 'fa-head-side-mask' },
+        { id: 13, text: 'Guarda-chuva', icon: 'fa-umbrella' },
+        { id: 14, text: 'Caderno/ planner', icon: 'fa-book' },
+        { id: 15, text: 'Capa de chuva', icon: 'fa-coat' },
+        { id: 16, text: 'Protetor solar', icon: 'fa-sun' },
+        { id: 17, text: 'Cartão de transporte', icon: 'fa-bus' },
+        { id: 18, text: 'Lenços de papel', icon: 'fa-tissue' }
     ];
 
     const checklistContainer = document.getElementById('checklistContainer');
@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
         itemRow.innerHTML = `
             <div class="item-left">
                 <input type="checkbox" class="checklist-checkbox" ${checked ? 'checked' : ''}>
-                <span class="checklist-icon">${itemData.icon || '📋'}</span>
+                <span class="checklist-icon"><i class="fas ${itemData.icon || 'fa-clipboard-list'}"></i></span>
                 <span class="checklist-text">${itemData.text}</span>
             </div>
             <button class="delete-btn" aria-label="Remover item"><i class="fa-solid fa-trash-can"></i></button>
@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
         addItemBtn.addEventListener('click', () => {
             const text = newItemInput.value.trim();
             if (text !== '') {
-                const customItem = { id: customItemCounter++, text: text, icon: '📋', checked: false };
+                const customItem = { id: customItemCounter++, text: text, icon: 'fa-clipboard-list', checked: false };
                 checklistContainer.appendChild(createChecklistItemElement(customItem, true));
                 newItemInput.value = '';
                 updateProgress();
@@ -514,14 +514,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // 10. DIÁRIO SENSORIAL
     // =============================================
     const moodButtons = document.querySelectorAll('.mood-btn');
-    const energySlider = document.getElementById('energySlider');
-    const energyDisplay = document.getElementById('energyDisplay');
+    const energySliderSensory = document.getElementById('energySliderSensory');
+    const energyDisplaySensory = document.getElementById('energyDisplaySensory');
     const stimuliButtons = document.querySelectorAll('.stimuli-btn');
     const sensoryNotes = document.getElementById('sensoryNotes');
     const btnSaveSensory = document.getElementById('btnSaveSensory');
     
-    if (energySlider && energyDisplay) {
-        energySlider.addEventListener('input', (e) => { energyDisplay.textContent = `${e.target.value}/5`; });
+    if (energySliderSensory && energyDisplaySensory) {
+        energySliderSensory.addEventListener('input', (e) => { energyDisplaySensory.textContent = `${e.target.value}/5`; });
     }
     
     moodButtons.forEach(btn => {
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btnSaveSensory.addEventListener('click', () => {
             const activeMood = document.querySelector('.mood-btn.active');
             const mood = activeMood ? activeMood.getAttribute('data-mood') : 'Neutro';
-            const energy = energySlider ? energySlider.value : 3;
+            const energy = energySliderSensory ? energySliderSensory.value : 3;
             const selectedStimuli = Array.from(document.querySelectorAll('.stimuli-btn.active')).map(btn => btn.getAttribute('data-stimulus'));
             const notes = sensoryNotes ? sensoryNotes.value : '';
             
@@ -562,8 +562,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.mood-btn[data-mood="Neutro"]')?.classList.add('active');
             
             // Resetar energia
-            if (energySlider) energySlider.value = 3;
-            if (energyDisplay) energyDisplay.textContent = '3/5';
+            if (energySliderSensory) energySliderSensory.value = 3;
+            if (energyDisplaySensory) energyDisplaySensory.textContent = '3/5';
         });
     }
     
@@ -708,7 +708,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const entryTitle = document.getElementById('entryTitle');
     const entryContent = document.getElementById('entryContent');
     const displayDate = document.getElementById('displayDate');
-    const energySlider = document.getElementById('energySlider');
+    const energySliderDiary = document.getElementById('energySliderDiary');
     const energyValue = document.getElementById('energyValue');
     const moodInput = document.getElementById('moodInput');
     const entriesHistory = document.getElementById('entriesHistory');
@@ -719,76 +719,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // Data atual formatada
     const today = new Date();
     const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-    displayDate.textContent = today.toLocaleDateString('pt-BR', dateOptions);
+    if (displayDate) displayDate.textContent = today.toLocaleDateString('pt-BR', dateOptions);
 
     /* --- CONTROLE DE ABERTURA DO DIÁRIO --- */
     function openDiary() {
-        diaryWrapper.classList.add('is-open');
+        if (diaryWrapper) diaryWrapper.classList.add('is-open');
     }
 
     function closeDiary() {
-        diaryWrapper.classList.remove('is-open');
+        if (diaryWrapper) diaryWrapper.classList.remove('is-open');
     }
 
-    diaryCover.addEventListener('click', openDiary);
-    btnCloseBook.addEventListener('click', closeDiary);
+    if (diaryCover) diaryCover.addEventListener('click', openDiary);
+    if (btnCloseBook) btnCloseBook.addEventListener('click', closeDiary);
 
     /* --- ENERGIA --- */
-    energySlider.addEventListener('input', (e) => {
-        energyValue.textContent = e.target.value;
-    });
+    if (energySliderDiary) {
+        energySliderDiary.addEventListener('input', (e) => {
+            if (energyValue) energyValue.textContent = e.target.value;
+        });
+    }
 
     /* --- GERENCIAMENTO DE REGISTROS --- */
     function resetForm() {
         currentEntryId = null;
-        entryTitle.value = '';
-        entryContent.value = '';
-        energySlider.value = 3;
-        energyValue.textContent = '3';
-        moodInput.value = '';
+        if (entryTitle) entryTitle.value = '';
+        if (entryContent) entryContent.value = '';
+        if (energySliderDiary) { energySliderDiary.value = 3; if (energyValue) energyValue.textContent = '3'; }
+        if (moodInput) moodInput.value = '';
     }
 
-    btnNewEntry.addEventListener('click', () => {
+    if (btnNewEntry) btnNewEntry.addEventListener('click', () => {
         resetForm();
         openDiary();
     });
 
     /* --- SALVAR REGISTRO --- */
-    btnSaveEntry.addEventListener('click', () => {
-        const title = entryTitle.value.trim() || 'Sem título';
-        const content = entryContent.value.trim();
+    if (btnSaveEntry) {
+        btnSaveEntry.addEventListener('click', () => {
+            const title = entryTitle ? entryTitle.value.trim() || 'Sem título' : 'Sem título';
+            const content = entryContent ? entryContent.value.trim() : '';
 
-        if (!content) {
-            showToast('Escreva algo no diário antes de salvar.');
-            return;
-        }
+            if (!content) {
+                showToast('Escreva algo no diário antes de salvar.');
+                return;
+            }
 
-        try {
-            const registroSalvo = salvarRegistroDiario({
-                id: currentEntryId,
-                title: title,
-                content: content,
-                mood: moodInput.value.trim(),
-                energy: parseInt(energySlider.value),
-                date: displayDate.textContent
-            });
+            try {
+                const registroSalvo = salvarRegistroDiario({
+                    id: currentEntryId,
+                    title: title,
+                    content: content,
+                    mood: moodInput ? moodInput.value.trim() : '',
+                    energy: energySliderDiary ? parseInt(energySliderDiary.value) : 3,
+                    date: displayDate ? displayDate.textContent : new Date().toLocaleDateString('pt-BR', dateOptions)
+                });
 
-            currentEntryId = registroSalvo.id;
-            renderSidebarHistory();
-            showToast('Página salva com sucesso!');
-        } catch (error) {
-            showToast('Erro ao salvar: ' + error.message);
-            console.error('Erro ao salvar registro:', error);
-        }
-    });
+                currentEntryId = registroSalvo.id;
+                renderSidebarHistory();
+                showToast('📖 Página salva com sucesso!');
+            } catch (error) {
+                showToast('Erro ao salvar: ' + error.message);
+                console.error('Erro ao salvar registro:', error);
+            }
+        });
+    }
 
     /* --- RENDERIZAR HISTÓRICO --- */
     function renderSidebarHistory(filterText = '') {
+        if (!entriesHistory) return;
+        
         const registros = carregarRegistrosDiario(filterText);
         entriesHistory.innerHTML = '';
 
         if (registros.length === 0) {
-            entriesHistory.innerHTML = `<p style="font-size:0.8rem; color: var(--text-muted); text-align:center; margin-top:20px;">Nenhuma página encontrada.</p>`;
+            entriesHistory.innerHTML = `<p style="font-size:0.8rem; color: var(--text-muted, #888); text-align:center; margin-top:20px;">Nenhuma página encontrada.</p>`;
             return;
         }
 
@@ -797,10 +802,10 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = `history-card ${entry.id === currentEntryId ? 'active' : ''}`;
             card.innerHTML = `
                 <div class="card-header-line">
-                    <span>${entry.date}</span>
-                    <span>⚡ ${entry.energy}/5</span>
+                    <span><i class="fa-regular fa-calendar"></i> ${entry.date}</span>
+                    <span><i class="fa-solid fa-bolt"></i> ${entry.energy}/5</span>
                 </div>
-                <div class="card-title-line">${entry.title}</div>
+                <div class="card-title-line"><i class="fa-regular fa-file-lines"></i> ${entry.title}</div>
                 <div class="card-preview">${entry.content.substring(0, 50)}${entry.content.length > 50 ? '...' : ''}</div>
             `;
 
@@ -815,24 +820,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadEntryIntoDiary(entry) {
         currentEntryId = entry.id;
-        entryTitle.value = entry.title;
-        entryContent.value = entry.content;
-        displayDate.textContent = entry.date;
-        energySlider.value = entry.energy || 3;
-        energyValue.textContent = entry.energy || 3;
-        moodInput.value = entry.mood || '';
+        if (entryTitle) entryTitle.value = entry.title;
+        if (entryContent) entryContent.value = entry.content;
+        if (displayDate) displayDate.textContent = entry.date;
+        if (energySliderDiary) { energySliderDiary.value = entry.energy || 3; if (energyValue) energyValue.textContent = entry.energy || 3; }
+        if (moodInput) moodInput.value = entry.mood || '';
 
         renderSidebarHistory();
     }
 
-    searchInput.addEventListener('input', (e) => {
-        renderSidebarHistory(e.target.value);
-    });
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            renderSidebarHistory(e.target.value);
+        });
+    }
 
     function showToast(msg) {
         const toast = document.getElementById('toast');
+        if (!toast) return;
         const textNode = toast.childNodes[2];
-        textNode.textContent = " " + msg;
+        if (textNode) textNode.textContent = " " + msg;
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
