@@ -6,9 +6,12 @@
    1. PÁGINA PRINCIPAL
    ========================================= */
 .biblioteca-page {
-    max-width: 1200vh;
+    width: 100%;
+    max-width: 1200px;
     padding: 0px 0px 60px;
-    min-width: 100vh;
+    min-width: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 /* =========================================
@@ -268,6 +271,33 @@
 
 .seta-direita {
     right: -35px;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        height: auto;
+        min-height: 620px;
+        padding: 80px 16px 56px;
+    }
+
+    .hero-conteudo {
+        width: 100%;
+        padding: 24px 16px;
+    }
+
+    .hero-conteudo h1 {
+        font-size: clamp(2.2rem, 12vw, 3.5rem);
+        letter-spacing: -1px;
+    }
+
+    .topo-destaques {
+        gap: 12px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .seta-esquerda { left: 0; }
+    .seta-direita { right: 0; }
 }
 
 /* 
@@ -969,7 +999,8 @@
     display: flex;
     position: relative;
     max-width: 400px;
-   margin: 0px 700px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .search-wrapper i {

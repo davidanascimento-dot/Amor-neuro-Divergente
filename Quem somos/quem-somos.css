@@ -59,8 +59,8 @@ button:focus-visible,
    SIDEBAR (BARRA LATERAL)
    ========================================= */
 .sidebar {
-    width: 260px;
-    min-width: 260px;
+    width: min(260px, 88vw);
+    min-width: 0;
     background-color: var(--bg-sidebar);
     color: #ffffff;
     display: flex;

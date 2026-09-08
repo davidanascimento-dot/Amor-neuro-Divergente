@@ -28,8 +28,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 280px;
-    min-width: 280px;
+    width: min(280px, 88vw);
+    min-width: 0;
     height: 100vh;
     max-height: 100vh;
     background: #1c1a22;

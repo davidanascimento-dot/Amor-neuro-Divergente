@@ -131,7 +131,7 @@ button:focus-visible,
 .nav-list-item .chevron { font-size: 11px; color: var(--text-muted); }
 
 /* --- CONTAINER PRINCIPAL --- */
-.main-wrapper { flex: 1; margin-left: 280px; display: flex; flex-direction: column; min-height: 100vh; transition: margin-left 0.3s ease; }
+.main-wrapper { flex: 1; min-width: 0; width: 100%; margin-left: 280px; display: flex; flex-direction: column; min-height: 100vh; transition: margin-left 0.3s ease; }
 .main-wrapper.expanded { margin-left: 0; }
 
 /* --- NAVBAR --- */
@@ -279,6 +279,56 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
     .accessibility-btn { top: auto; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; transform: none; padding-right: 0; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
     .accessibility-btn:hover { transform: scale(1.05); }
     .accessibility-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 16px; }
+}
+
+@media (max-width: 420px) {
+    .footer-main {
+        padding: 20px 12px;
+    }
+
+    .footer-links-row {
+        gap: 12px;
+    }
+
+    .footer-column-nav {
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .navbar {
+        padding: 0 12px;
+    }
+
+    .brand-link {
+        font-size: 15px;
+        gap: 4px;
+    }
+
+    .brand-link span {
+        display: none;
+    }
+
+    .nav-right-actions {
+        gap: 8px;
+    }
+
+    .user-avatar {
+        display: none;
+    }
+
+    .quick-actions-grid,
+    .management-row {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-manage-outline {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 12px;
+    }
 }
 
 /* BOTÃO DE PESQUISA ESTILIZADO */

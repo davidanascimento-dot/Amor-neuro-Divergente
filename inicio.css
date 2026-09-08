@@ -157,7 +157,7 @@ ul, ol { list-style: none; }
    ========================================= */
 .sidebar {
     position: fixed; top: 0; left: 0;
-    width: 280px; min-width: 280px;
+    width: min(280px, 88vw); min-width: 0;
     height: 100vh; max-height: 100vh;
     background: #1c1a22; color: #e8e3dd;
     display: flex; flex-direction: column;
@@ -1208,7 +1208,7 @@ padding: 0 0 100px 0;
 .releases-grid{
 margin-top: 32px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
 
 }
@@ -1815,8 +1815,8 @@ body.text-decreased { font-size: 0.9rem; }
 
     .floating-hub-menu {
         bottom: 72px;
-        width: 340px;
-        right: -8px;
+        width: min(340px, calc(100vw - 24px));
+        right: 0;
     }
 
     .floating-hub-menu-inner {
@@ -1854,8 +1854,8 @@ body.text-decreased { font-size: 0.9rem; }
     }
 
     .floating-hub-menu {
-        width: 300px;
-        right: -12px;
+        width: calc(100vw - 24px);
+        right: 0;
         bottom: 68px;
     }
 
@@ -1875,6 +1875,22 @@ body.text-decreased { font-size: 0.9rem; }
     .carousel-cta .btn-glow {
         width: 100%;
         justify-content: center;
+    }
+
+    .releases-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .book-card {
+        margin: 4px;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .releases-grid {
+        grid-template-columns: 1fr;
     }
 }
 
