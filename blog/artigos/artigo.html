@@ -126,14 +126,41 @@
             <p>Lembre-se: cada pessoa é única. O que funciona para uma pode não funcionar para outra. Observe, adapte e, acima de tudo, respeite o ritmo de cada um.</p>
         </div>
     </article>
-<div class="">
+<section class="area-comentarios">
+  <h2>Área de comentários</h2>
 
-</div>
-<div><h2>seu nome </h2></div>
-    <div class="container">
-        <input type="text" class="texto texto1" placeholder="texto">
+ 
+  <div class="novo-comentario-container">
+    <div class="usuario-info">
+       <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar" class="sidebarAvatar">
+      <span class="nome-usuario">Faça seu comentário:</span>
     </div>
 
+    <form class="form-comentario" onsubmit="return false;">
+      <textarea class="campo-texto" placeholder="Escreva seu comentário..."></textarea>
+      <button type="submit" class="btn-enviar">Publicar</button>
+    </form>
+  </div>
+
+  
+  <div class="lista-comentarios">
+    <div class="item-comentario">
+             <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar" class="sidebarAvatar">
+      
+      <div class="conteudo-comentario">
+        <div class="cabecalho-comentario">
+          <strong class="nome-autor">Visitante</strong>
+          <span class="tempo-comentario">(há 2 horas)</span>
+        </div>
+        
+        <p class="texto-comentario">Texto de comentário teste para o site.</p>
+        
+        <button type="button" class="btn-responder">Responder</button>
+      </div>
+    </div>
+  </div>
+</section>
     <script src="artigo.js"></script>
+    <script src="/inicio.js"></script>
 </body>
 </html>
