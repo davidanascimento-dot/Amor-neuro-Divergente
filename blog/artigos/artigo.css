@@ -407,3 +407,16 @@ body.a11y-reduce-motion * {
         border-radius: 16px;
     }
 }
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+.texto, .texto1 {
+border: 2px solid var(--primary);
+padding: 20px;
+border-radius: 10px;
+}
