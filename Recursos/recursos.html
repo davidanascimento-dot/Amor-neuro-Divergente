@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="recursos.css">
@@ -16,16 +16,12 @@
 </head>
 <body>
 
-    <!-- =============================================
-    BOTÃO TOGGLE DA SIDEBAR
-    ============================================= -->
+    <!-- SIDEBAR TOGGLE -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- =============================================
-    SIDEBAR
-    ============================================= -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
             <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
@@ -41,7 +37,7 @@
 
         <nav class="sidebar-nav" aria-label="Principal">
             <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/Explorar/Explorar.html" class="sidebar-link active"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/Explorar/Explorar.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-compass"></i> Explorar</a>
             <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
             <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
             <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
@@ -56,9 +52,7 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- =============================================
-    CONTEÚDO PRINCIPAL
-    ============================================= -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content" id="mainContent">
 
         <!-- HEADER GLASS -->
@@ -82,299 +76,325 @@
         </header>
 
         <!-- =============================================
-        HERO — Padrão Explorar (badge + título + busca)
-        ============================================= -->
-        <section class="page-hero">
-            <div class="page-hero__inner">
-                <span class="page-hero__badge"><i class="fa-solid fa-book-open"></i> Biblioteca de conteúdos</span>
-                <h1>Artigos e Guias</h1>
-                <p>Textos completos sobre autismo, TDAH, dislexia, altas habilidades e outras neurodivergências. Escritos com clareza, sem jargão desnecessário.</p>
+             BANNER EDITORIAL
+             ============================================= -->
+        <section class="recursos-banner">
+            <div class="recursos-banner__media">
+                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&h=900&fit=crop"
+                     alt="Livros e leitura em ambiente tranquilo" loading="eager">
+                <div class="recursos-banner__overlay"></div>
+            </div>
 
-                <div class="page-hero__search">
-                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input type="search" id="recursosSearch" placeholder="Buscar artigo, tema ou autor..." aria-label="Buscar artigos">
-                </div>
+            <div class="recursos-banner__content">
+                <span class="recursos-banner__eyebrow">
+                    <i class="fa-solid fa-book-open"></i> Biblioteca de conteúdos
+                </span>
+                <h1 class="recursos-banner__title">
+                    Artigos e Guias para <br>
+                    <span class="recursos-banner__title-accent">entender sem esforço</span>
+                </h1>
+                <p class="recursos-banner__sub">
+                    Textos completos sobre autismo, TDAH, dislexia e outras neurodivergências. Escritos com clareza, sem jargão desnecessário.
+                </p>
             </div>
         </section>
 
         <!-- =============================================
-        🆕 ESTATÍSTICAS RÁPIDAS
-        ============================================= -->
-        <section class="stats-strip">
-            <div class="stats-strip__container">
-                <div class="stat-block">
-                    <span class="stat-block__number">+50</span>
-                    <span class="stat-block__label">Artigos publicados</span>
-                </div>
-                <div class="stat-block">
-                    <span class="stat-block__number">6</span>
-                    <span class="stat-block__label">Categorias ativas</span>
-                </div>
-                <div class="stat-block">
-                    <span class="stat-block__number">+15</span>
-                    <span class="stat-block__label">Autores convidados</span>
-                </div>
-                <div class="stat-block">
-                    <span class="stat-block__number">5 min</span>
-                    <span class="stat-block__label">Tempo médio de leitura</span>
-                </div>
+             NAV DE CHIPS — Navegação rápida
+             ============================================= -->
+        <nav class="recursos-nav" aria-label="Categorias">
+            <div class="recursos-nav__container">
+                <a href="#artigos-externos" class="recursos-nav__chip is-active">
+                    <i class="fa-solid fa-globe"></i> Artigos de fora
+                </a>
+                <a href="#artigos-equipe" class="recursos-nav__chip">
+                    <i class="fa-solid fa-pen-nib"></i> Da nossa equipe
+                </a>
+                <a href="#categorias" class="recursos-nav__chip">
+                    <i class="fa-solid fa-layer-group"></i> Por categoria
+                </a>
+                <a href="#em-breve" class="recursos-nav__chip">
+                    <i class="fa-solid fa-sparkles"></i> Em breve
+                </a>
             </div>
-        </section>
+        </nav>
 
         <!-- =============================================
-        🆕 FILTRO DE CATEGORIAS
-        ============================================= -->
-        <section class="filter-bar">
-            <div class="filter-bar__container">
-                <span class="filter-bar__label"><i class="fa-solid fa-filter"></i> Filtrar por:</span>
-                <div class="filter-bar__chips">
-                    <a href="#autismo" class="filter-chip is-active">Todos</a>
-                    <a href="#autismo" class="filter-chip">Autismo</a>
-                    <a href="#tdah" class="filter-chip">TDAH</a>
-                    <a href="#altas-habilidades" class="filter-chip">Altas Habilidades</a>
-                    <a href="#dislexia" class="filter-chip">Dislexia</a>
-                    <a href="#saude-mental" class="filter-chip">Saúde Mental</a>
-                    <a href="#direitos" class="filter-chip">Direitos</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- =============================================
-        🆕 EM DESTAQUE — Artigo principal
-        ============================================= -->
-        <section class="featured-article">
-            <div class="featured-article__container">
-                <header class="section-head">
-                    <h2>Em destaque</h2>
-                    <a href="#" class="section-head__link">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+             ARTIGOS DE FORA — Curadoria externa
+             ============================================= -->
+        <section class="recursos-section" id="artigos-externos">
+            <div class="recursos-section__container">
+                <header class="recursos-head">
+                    <div>
+                        <span class="recursos-head__eyebrow">
+                            <i class="fa-solid fa-globe"></i> Curadoria
+                        </span>
+                        <h2 class="recursos-head__title">Artigos de fora</h2>
+                        <p class="recursos-head__sub">
+                            Textos selecionados de fontes externas que valem a leitura. Cada um com link direto para o original.
+                        </p>
+                    </div>
+                    <a href="#" class="recursos-head__link">
+                        Ver todos <i class="fa-solid fa-arrow-right"></i>
+                    </a>
                 </header>
 
-                <article class="featured-article__card">
-                    <div class="featured-article__media">
-                        <img src="/img/recursos-hero-DaGrMSNl - Copia.jpg" alt="Destaque - O dia em que você para de sobreviver e começa a viver" loading="lazy">
+                <div class="recursos-grid">
+
+                    <a href="#" class="externo-card" target="_blank" rel="noopener">
+                        <div class="externo-card__media">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
+                            <span class="externo-card__badge">Externo</span>
+                        </div>
+                        <div class="externo-card__body">
+                            <span class="externo-card__source">
+                                <i class="fa-solid fa-link"></i> Harvard Business Review
+                            </span>
+                            <h3>Por que empresas neurodiversas inovam mais</h3>
+                            <p>Estudo sobre como times neurodiversos trazem perspectivas únicas para resolver problemas complexos.</p>
+                            <span class="externo-card__link">
+                                Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </span>
+                        </div>
+                    </a>
+
+                    <a href="#" class="externo-card" target="_blank" rel="noopener">
+                        <div class="externo-card__media">
+                            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
+                            <span class="externo-card__badge">Externo</span>
+                        </div>
+                        <div class="externo-card__body">
+                            <span class="externo-card__source">
+                                <i class="fa-solid fa-link"></i> The Atlantic
+                            </span>
+                            <h3>O mito da "normalidade" no trabalho</h3>
+                            <p>Uma reflexão sobre como padrões de produtividade tradicionais excluem profissionais neurodivergentes.</p>
+                            <span class="externo-card__link">
+                                Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </span>
+                        </div>
+                    </a>
+
+                    <a href="#" class="externo-card" target="_blank" rel="noopener">
+                        <div class="externo-card__media">
+                            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
+                            <span class="externo-card__badge">Externo</span>
+                        </div>
+                        <div class="externo-card__body">
+                            <span class="externo-card__source">
+                                <i class="fa-solid fa-link"></i> Scientific American
+                            </span>
+                            <h3>Autismo e a ciência das diferenças neurológicas</h3>
+                            <p>Panorama científico sobre como o cérebro autista processa informações e emoções de forma única.</p>
+                            <span class="externo-card__link">
+                                Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </span>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             ARTIGOS DA EQUIPE — Feitos internamente
+             ============================================= -->
+        <section class="recursos-section recursos-section--alt" id="artigos-equipe">
+            <div class="recursos-section__container">
+                <header class="recursos-head">
+                    <div>
+                        <span class="recursos-head__eyebrow">
+                            <i class="fa-solid fa-pen-nib"></i> Nossa escrita
+                        </span>
+                        <h2 class="recursos-head__title">Da nossa equipe</h2>
+                        <p class="recursos-head__sub">
+                            Artigos escritos por profissionais, pessoas neurodivergentes e aliados que fazem parte do Amor NeuroDivergente.
+                        </p>
                     </div>
-                    <div class="featured-article__body">
-                        <span class="category-tag tag-autismo">Autismo</span>
-                        <h3 class="featured-article__title">O dia em que você para de sobreviver e começa a viver</h3>
-                        <p class="featured-article__excerpt">
+                    <a href="#" class="recursos-head__link">
+                        Ver todos <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </header>
+
+                <!-- Artigo em destaque -->
+                <article class="equipe-featured">
+                    <a href="/Recursos/recursos.html" class="equipe-featured__media">
+                        <img src="/img/recursos-hero-DaGrMSNl - Copia.jpg" alt="Artigo em destaque" loading="lazy">
+                    </a>
+                    <div class="equipe-featured__body">
+                        <span class="recursos-tag tag-autismo">Autismo</span>
+                        <h3 class="equipe-featured__title">
+                            <a href="/Recursos/recursos.html">O dia em que você para de sobreviver e começa a viver</a>
+                        </h3>
+                        <p class="equipe-featured__excerpt">
                             Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo.
                             Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda
                             assim sentir que não estamos de verdade presentes na nossa própria vida.
                         </p>
-                        <div class="featured-article__meta">
-                            <span class="author">
-                                <span class="author__avatar">L</span>
-                                <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
+                        <div class="equipe-featured__meta">
+                            <span class="equipe-author">
+                                <span class="equipe-author__avatar">L</span>
+                                <span class="equipe-author__name">Luti Christóforo <em>· Psicólogo</em></span>
                             </span>
-                            <span class="meta-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
+                            <span class="equipe-meta"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
                         </div>
-                        <a href="/blog/post-masking.html" class="btn-primary">
+                        <a href="/Recursos/recursos.html" class="recursos-btn">
                             Ler artigo <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
                 </article>
+
+                <!-- Grid de artigos da equipe -->
+                <div class="equipe-grid">
+
+                    <a href="#" class="equipe-card">
+                        <div class="equipe-card__media">
+                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=260&fit=crop" alt="Masking" loading="lazy">
+                        </div>
+                        <div class="equipe-card__body">
+                            <span class="recursos-tag recursos-tag--sm">Autismo</span>
+                            <h4>O que é Masking e por que ele exaure seu cérebro?</h4>
+                            <span class="equipe-card__meta"><i class="fa-regular fa-clock"></i> 3 min</span>
+                        </div>
+                    </a>
+
+                    <a href="#" class="equipe-card">
+                        <div class="equipe-card__media">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=260&fit=crop" alt="Procrastinação" loading="lazy">
+                        </div>
+                        <div class="equipe-card__body">
+                            <span class="recursos-tag recursos-tag--sm">TDAH</span>
+                            <h4>O método dos "5 minutos" para vencer a procrastinação</h4>
+                            <span class="equipe-card__meta"><i class="fa-regular fa-clock"></i> 5 min</span>
+                        </div>
+                    </a>
+
+                    <a href="#" class="equipe-card">
+                        <div class="equipe-card__media">
+                            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=260&fit=crop" alt="Ansiedade" loading="lazy">
+                        </div>
+                        <div class="equipe-card__body">
+                            <span class="recursos-tag recursos-tag--sm">Saúde Mental</span>
+                            <h4>Neurodivergência e Ansiedade: como o cérebro atípico processa o medo</h4>
+                            <span class="equipe-card__meta"><i class="fa-regular fa-clock"></i> 4 min</span>
+                        </div>
+                    </a>
+
+                    <a href="#" class="equipe-card">
+                        <div class="equipe-card__media">
+                            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=400&h=260&fit=crop" alt="Extraordinário" loading="lazy">
+                        </div>
+                        <div class="equipe-card__body">
+                            <span class="recursos-tag recursos-tag--sm">Reflexão</span>
+                            <h4>Descobrindo o extraordinário que existe no comum</h4>
+                            <span class="equipe-card__meta"><i class="fa-regular fa-clock"></i> 4 min</span>
+                        </div>
+                    </a>
+
+                </div>
             </div>
         </section>
 
         <!-- =============================================
-        CATEGORIAS — Blocos alternados (original mantido)
-        ============================================= -->
-        <section class="categories-wrapper">
-            <div class="section-head section-head--center">
-                <h2>Explore por categoria</h2>
-                <p class="section-head__sub">Escolha um tema e mergulhe nos conteúdos feitos com cuidado para você.</p>
-            </div>
-
-            <!-- AUTISMO -->
-            <section class="category-section" id="autismo">
-                <div class="category-image">
-                    <img src="/img/recursos-hero-DaGrMSNl - Copia.jpg" alt="Ilustração representando o espectro autista com cores suaves e formas diversas" loading="lazy">
-                </div>
-                <div class="category-text">
-                    <span class="category-tag tag-autismo">Autismo</span>
-                    <h2>Autismo (TEA)</h2>
-                    <p>Artigos sobre diagnóstico, stimming, comunicação, vida adulta, e tudo que envolve o universo autista. Escritos por pessoas autistas e profissionais aliados.</p>
-                    <a href="/Recursos/autismo/autismo.html" class="btn-primary">
-                        Ver artigos sobre Autismo <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </section>
-
-            <!-- TDAH -->
-            <section class="category-section category-section-reverse" id="tdah">
-                <div class="category-image">
-                    <img src="/img/blog-post-2-Dk5Jy2bJ - Copia.jpg" alt="Pessoa organizando lembretes coloridos em um quadro" loading="lazy">
-                </div>
-                <div class="category-text">
-                    <span class="category-tag tag-tdah">TDAH</span>
-                    <h2>TDAH</h2>
-                    <p>Estratégias práticas para rotina, funções executivas, organização, e tudo sobre viver com TDAH. Sem receitas mágicas — só o que funciona de verdade.</p>
-                    <a href="/Recursos/autismo/Tdah.html" class="btn-primary">
-                        Ver artigos sobre TDAH <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </section>
-
-            <!-- ALTAS HABILIDADES -->
-            <section class="category-section" id="altas-habilidades">
-                <div class="category-image">
-                    <img src="/img/blog-post-3-EqM0ehGW - Copia.jpg" alt="Jovem resolvendo um quebra-cabeça complexo" loading="lazy">
-                </div>
-                <div class="category-text">
-                    <span class="category-tag tag-altas-habilidades">Altas Habilidades</span>
-                    <h2>Altas Habilidades e Superdotação</h2>
-                    <p>Dupla excepcionalidade, desenvolvimento de talentos, desafios emocionais e como apoiar pessoas com altas habilidades em casa e na escola.</p>
-                    <a href="/Recursos/autismo/altas-abilidades.html" class="btn-primary">
-                        Ver artigos sobre Altas Habilidades <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </section>
-
-            <!-- DISLEXIA -->
-            <section class="category-section category-section-reverse" id="dislexia">
-                <div class="category-image">
-                    <img src="/img/community-hero-CbAAq485 (1) - Copia.jpg" alt="Livro aberto com letras coloridas" loading="lazy">
-                </div>
-                <div class="category-text">
-                    <span class="category-tag tag-dislexia">Dislexia</span>
-                    <h2>Dislexia e Outras Dificuldades de Aprendizagem</h2>
-                    <p>Guia para famílias, adaptações escolares, e métodos que respeitam o ritmo de cada pessoa. Porque dificuldade não é preguiça.</p>
-                    <a href="/Recursos/autismo/dislexia.html" class="btn-primary">
-                        Ver artigos sobre Dislexia <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </section>
-
-            <!-- SAÚDE MENTAL -->
-            <section class="category-section" id="saude-mental">
-                <div class="category-image">
-                    <img src="/img/hero-inicio-5eoimK6p.jpg" alt="Pessoa meditando em ambiente tranquilo" loading="lazy">
-                </div>
-                <div class="category-text">
-                    <span class="category-tag tag-saude-mental">Saúde Mental</span>
-                    <h2>Saúde Mental e Bem-estar</h2>
-                    <p>Burnout neurodivergente, ansiedade, autocuidado, e como cuidar da sua saúde emocional respeitando sua neurodivergência.</p>
-                    <a href="/Recursos/autismo/saúde.html" class="btn-primary">
-                        Ver artigos sobre Saúde Mental <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </section>
-
-            <!-- DIREITOS -->
-            <section class="category-section category-section-reverse" id="direitos">
-                <div class="category-image">
-                    <img src="/img/Documento com selo oficial e uma caneta, representando direitos legais.png" alt="Documento com selo oficial" loading="lazy">
-                </div>
-                <div class="category-text">
-                    <span class="category-tag tag-direitos">Direitos</span>
-                    <h2>Direitos e Legislação</h2>
-                    <p>Informação prática sobre leis, benefícios, inclusão escolar e direitos trabalhistas para pessoas neurodivergentes. Sem juridiquês.</p>
-                    <a href="/Direitos/direitos.html" class="btn-primary">
-                        Ver artigos sobre Direitos <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </section>
-        </section>
-
-        <!-- =============================================
-        🆕 ÚLTIMOS ARTIGOS — Grid compacto
-        ============================================= -->
-        <section class="latest-articles">
-            <div class="latest-articles__container">
-                <header class="section-head">
-                    <h2>Últimos artigos</h2>
-                    <a href="#" class="section-head__link">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+             CATEGORIAS — Blocos alternados
+             ============================================= -->
+        <section class="recursos-section" id="categorias">
+            <div class="recursos-section__container">
+                <header class="recursos-head recursos-head--center">
+                    <span class="recursos-head__eyebrow"><i class="fa-solid fa-layer-group"></i> Temas</span>
+                    <h2 class="recursos-head__title">Explore por categoria</h2>
+                    <p class="recursos-head__sub">Escolha um tema e mergulhe nos conteúdos feitos com cuidado para você.</p>
                 </header>
 
-                <div class="latest-articles__grid">
+                <div class="categorias-wrapper">
 
-                    <article class="article-card">
-                        <a href="/blog/post-masking.html" class="article-card__media">
-                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=260&fit=crop" alt="Masking" loading="lazy">
-                        </a>
-                        <div class="article-card__body">
-                            <span class="article-card__tag">Autismo</span>
-                            <h3><a href="/blog/post-masking.html">O que é Masking e por que ele exaure seu cérebro?</a></h3>
-                            <p>Entenda o hábito de "camuflar" traços neurodivergentes para se encaixar.</p>
-                            <div class="article-card__meta">
-                                <span><i class="fa-regular fa-clock"></i> 3 min</span>
-                                <span>· 12/09</span>
-                            </div>
+                    <!-- AUTISMO -->
+                    <article class="categoria-block" id="autismo">
+                        <div class="categoria-block__image">
+                            <img src="/img/recursos-hero-DaGrMSNl - Copia.jpg" alt="Autismo" loading="lazy">
+                        </div>
+                        <div class="categoria-block__text">
+                            <span class="recursos-tag tag-autismo">Autismo</span>
+                            <h2>Autismo (TEA)</h2>
+                            <p>Artigos sobre diagnóstico, stimming, comunicação, vida adulta, e tudo que envolve o universo autista. Escritos por pessoas autistas e profissionais aliados.</p>
+                            <a href="/Recursos/autismo/autismo.html" class="recursos-btn">
+                                Ver artigos sobre Autismo <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
-                    <article class="article-card">
-                        <a href="/blog/post-procrastinacao.html" class="article-card__media">
-                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=260&fit=crop" alt="Procrastinação" loading="lazy">
-                        </a>
-                        <div class="article-card__body">
-                            <span class="article-card__tag">TDAH</span>
-                            <h3><a href="/blog/post-procrastinacao.html">O método dos "5 minutos" para vencer a procrastinação</a></h3>
-                            <p>Uma estratégia prática para enganar a resistência do cérebro.</p>
-                            <div class="article-card__meta">
-                                <span><i class="fa-regular fa-clock"></i> 5 min</span>
-                                <span>· 10/09</span>
-                            </div>
+                    <!-- TDAH -->
+                    <article class="categoria-block categoria-block--reverse" id="tdah">
+                        <div class="categoria-block__image">
+                            <img src="/img/blog-post-2-Dk5Jy2bJ - Copia.jpg" alt="TDAH" loading="lazy">
+                        </div>
+                        <div class="categoria-block__text">
+                            <span class="recursos-tag tag-tdah">TDAH</span>
+                            <h2>TDAH</h2>
+                            <p>Estratégias práticas para rotina, funções executivas, organização, e tudo sobre viver com TDAH. Sem receitas mágicas — só o que funciona de verdade.</p>
+                            <a href="/Recursos/autismo/Tdah.html" class="recursos-btn">
+                                Ver artigos sobre TDAH <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
-                    <article class="article-card">
-                        <a href="/blog/post-ansiedade.html" class="article-card__media">
-                            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=260&fit=crop" alt="Ansiedade" loading="lazy">
-                        </a>
-                        <div class="article-card__body">
-                            <span class="article-card__tag">Saúde Mental</span>
-                            <h3><a href="/blog/post-ansiedade.html">Neurodivergência e Ansiedade: como o cérebro atípico processa o medo</a></h3>
-                            <p>Por que a ansiedade é tão comum em pessoas neurodivergentes.</p>
-                            <div class="article-card__meta">
-                                <span><i class="fa-regular fa-clock"></i> 4 min</span>
-                                <span>· 08/09</span>
-                            </div>
+                    <!-- ALTAS HABILIDADES -->
+                    <article class="categoria-block" id="altas-habilidades">
+                        <div class="categoria-block__image">
+                            <img src="/img/blog-post-3-EqM0ehGW - Copia.jpg" alt="Altas Habilidades" loading="lazy">
+                        </div>
+                        <div class="categoria-block__text">
+                            <span class="recursos-tag tag-altas-habilidades">Altas Habilidades</span>
+                            <h2>Altas Habilidades e Superdotação</h2>
+                            <p>Dupla excepcionalidade, desenvolvimento de talentos, desafios emocionais e como apoiar pessoas com altas habilidades em casa e na escola.</p>
+                            <a href="/Recursos/autismo/altas-abilidades.html" class="recursos-btn">
+                                Ver artigos <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
-                    <article class="article-card">
-                        <a href="/blog/blog.html" class="article-card__media">
-                            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=400&h=260&fit=crop" alt="Extraordinário" loading="lazy">
-                        </a>
-                        <div class="article-card__body">
-                            <span class="article-card__tag">Reflexão</span>
-                            <h3><a href="/blog/blog.html">Descobrindo o extraordinário que existe no comum</a></h3>
-                            <p>Talvez tenhamos aprendido a procurar a felicidade nos lugares errados.</p>
-                            <div class="article-card__meta">
-                                <span><i class="fa-regular fa-clock"></i> 4 min</span>
-                                <span>· 04/09</span>
-                            </div>
+                    <!-- DISLEXIA -->
+                    <article class="categoria-block categoria-block--reverse" id="dislexia">
+                        <div class="categoria-block__image">
+                            <img src="/img/community-hero-CbAAq485 (1) - Copia.jpg" alt="Dislexia" loading="lazy">
+                        </div>
+                        <div class="categoria-block__text">
+                            <span class="recursos-tag tag-dislexia">Dislexia</span>
+                            <h2>Dislexia e Outras Dificuldades de Aprendizagem</h2>
+                            <p>Guia para famílias, adaptações escolares, e métodos que respeitam o ritmo de cada pessoa. Porque dificuldade não é preguiça.</p>
+                            <a href="/Recursos/autismo/dislexia.html" class="recursos-btn">
+                                Ver artigos sobre Dislexia <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
-                    <article class="article-card">
-                        <a href="/blog/blog.html" class="article-card__media">
-                            <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=260&fit=crop" alt="Autismo e saúde mental" loading="lazy">
-                        </a>
-                        <div class="article-card__body">
-                            <span class="article-card__tag">Autismo</span>
-                            <h3><a href="/blog/blog.html">Autismo e Saúde Mental: olhando além do diagnóstico</a></h3>
-                            <p>Quando uma criança autista muda de comportamento, tudo é atribuído ao autismo?</p>
-                            <div class="article-card__meta">
-                                <span><i class="fa-regular fa-clock"></i> 3 min</span>
-                                <span>· 04/09</span>
-                            </div>
+                    <!-- SAÚDE MENTAL -->
+                    <article class="categoria-block" id="saude-mental">
+                        <div class="categoria-block__image">
+                            <img src="/img/hero-inicio-5eoimK6p.jpg" alt="Saúde Mental" loading="lazy">
+                        </div>
+                        <div class="categoria-block__text">
+                            <span class="recursos-tag tag-saude-mental">Saúde Mental</span>
+                            <h2>Saúde Mental e Bem-estar</h2>
+                            <p>Burnout neurodivergente, ansiedade, autocuidado, e como cuidar da sua saúde emocional respeitando sua neurodivergência.</p>
+                            <a href="/Recursos/autismo/saúde.html" class="recursos-btn">
+                                Ver artigos <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
-                    <article class="article-card">
-                        <a href="/blog/blog.html" class="article-card__media">
-                            <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=260&fit=crop" alt="Burnout materno" loading="lazy">
-                        </a>
-                        <div class="article-card__body">
-                            <span class="article-card__tag">Família</span>
-                            <h3><a href="/blog/blog.html">Burnout em mães atípicas: quem cuida de quem cuida?</a></h3>
-                            <p>Existe um cansaço que não aparece quando olhamos rapidamente.</p>
-                            <div class="article-card__meta">
-                                <span><i class="fa-regular fa-clock"></i> 3 min</span>
-                                <span>· 02/09</span>
-                            </div>
+                    <!-- DIREITOS -->
+                    <article class="categoria-block categoria-block--reverse" id="direitos">
+                        <div class="categoria-block__image">
+                            <img src="/img/Documento com selo oficial e uma caneta, representando direitos legais.png" alt="Direitos" loading="lazy">
+                        </div>
+                        <div class="categoria-block__text">
+                            <span class="recursos-tag tag-direitos">Direitos</span>
+                            <h2>Direitos e Legislação</h2>
+                            <p>Informação prática sobre leis, benefícios, inclusão escolar e direitos trabalhistas para pessoas neurodivergentes. Sem juridiquês.</p>
+                            <a href="/Direitos/direitos.html" class="recursos-btn">
+                                Ver artigos sobre Direitos <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
                     </article>
 
@@ -383,68 +403,65 @@
         </section>
 
         <!-- =============================================
-        EM BREVE — Novas categorias
-        ============================================= -->
-        <section class="coming-soon-section">
-            <div class="coming-soon-section__head">
-                <span class="section-badge"><i class="fa-solid fa-sparkles"></i> Em breve</span>
-                <h2 class="coming-soon-title">Novos temas chegando</h2>
-                <p class="coming-soon-text">
-                    Estamos preparando conteúdos sobre outras neurodivergências. Nossa equipe atualiza esta página periodicamente — <strong>volte sempre!</strong>
-                </p>
-            </div>
+             EM BREVE — Novos temas
+             ============================================= -->
+        <section class="recursos-section recursos-section--alt" id="em-breve">
+            <div class="recursos-section__container">
+                <header class="recursos-head recursos-head--center">
+                    <span class="recursos-head__eyebrow"><i class="fa-solid fa-sparkles"></i> Em breve</span>
+                    <h2 class="recursos-head__title">Novos temas chegando</h2>
+                    <p class="recursos-head__sub">
+                        Estamos preparando conteúdos sobre outras neurodivergências. Volte sempre!
+                    </p>
+                </header>
 
-            <div class="coming-soon-grid">
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-ear-listen"></i></span>
-                    <h4>Dispraxia</h4>
-                    <p>Coordenação motora e planejamento</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-calculator"></i></span>
-                    <h4>Discalculia</h4>
-                    <p>Processamento matemático e números</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-comment-slash"></i></span>
-                    <h4>Mutismo Seletivo</h4>
-                    <p>Comunicação e contextos sociais</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-                <div class="coming-soon-card">
-                    <span class="coming-soon-icon"><i class="fa-solid fa-hands"></i></span>
-                    <h4>Síndrome de Tourette</h4>
-                    <p>Tiques, impulsos e acolhimento</p>
-                    <span class="coming-soon-badge">Em breve</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- =============================================
-        🆕 NEWSLETTER — Inscrição
-        ============================================= -->
-        <section class="newsletter-section">
-            <div class="newsletter-card">
-                <div class="newsletter-content">
-                    <span class="newsletter-icon"><i class="fa-regular fa-envelope"></i></span>
-                    <h2>Receba novos artigos no seu e-mail</h2>
-                    <p>Um resumo quinzenal com os melhores conteúdos sobre neurodiversidade. Sem spam, prometido.</p>
-
-                    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Inscrição recebida! 💜');">
-                        <input type="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
-                        <button type="submit" class="btn-primary">
-                            Inscrever <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </form>
+                <div class="breve-grid">
+                    <div class="breve-card">
+                        <span class="breve-card__icon"><i class="fa-solid fa-ear-listen"></i></span>
+                        <h4>Dispraxia</h4>
+                        <p>Coordenação motora e planejamento</p>
+                        <span class="breve-card__badge">Em breve</span>
+                    </div>
+                    <div class="breve-card">
+                        <span class="breve-card__icon"><i class="fa-solid fa-calculator"></i></span>
+                        <h4>Discalculia</h4>
+                        <p>Processamento matemático e números</p>
+                        <span class="breve-card__badge">Em breve</span>
+                    </div>
+                    <div class="breve-card">
+                        <span class="breve-card__icon"><i class="fa-solid fa-comment-slash"></i></span>
+                        <h4>Mutismo Seletivo</h4>
+                        <p>Comunicação e contextos sociais</p>
+                        <span class="breve-card__badge">Em breve</span>
+                    </div>
+                    <div class="breve-card">
+                        <span class="breve-card__icon"><i class="fa-solid fa-hands"></i></span>
+                        <h4>Síndrome de Tourette</h4>
+                        <p>Tiques, impulsos e acolhimento</p>
+                        <span class="breve-card__badge">Em breve</span>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- =============================================
-        FOOTER
-        ============================================= -->
+             NEWSLETTER
+             ============================================= -->
+        <section class="recursos-newsletter">
+            <div class="recursos-newsletter__card">
+                <span class="recursos-newsletter__icon"><i class="fa-regular fa-envelope"></i></span>
+                <h2>Receba novos artigos no seu e-mail</h2>
+                <p>Um resumo quinzenal com os melhores conteúdos sobre neurodiversidade. Sem spam, prometido.</p>
+                <form class="recursos-newsletter__form" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML='<i class=\'fa-solid fa-check\'></i> Inscrito!'; this.querySelector('input').value='';">
+                    <input type="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
+                    <button type="submit" class="recursos-btn">
+                        Inscrever <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
         <footer class="footer">
             <div class="footer-main">
                 <div class="footer-col"><h4>Navegue</h4><a href="/inicio.html">Início</a><a href="/explorar/explorar.html">Explorar</a><a href="/comunidade/comunidade.html">Comunidade</a><a href="/direitos/direitos.html">Direitos</a><a href="/chat-Ia/chat-Ia.html">AcolherIA</a></div>
@@ -454,11 +471,10 @@
             </div>
             <div class="footer-bottom"><a href="#">Política de Privacidade</a><a href="#">Termos de Uso</a><p>© 2026 Amor NeuroDivergente</p></div>
         </footer>
+
     </main>
 
-    <!-- =============================================
-    HUB FLUTUANTE
-    ============================================= -->
+    <!-- HUB FLUTUANTE -->
     <div class="floating-hub" id="floatingHub">
         <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
@@ -494,9 +510,6 @@
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
-    <!-- =============================================
-    SCRIPTS
-    ============================================= -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         window.supabaseClient = supabase.createClient('https://qyixzontuhrxrrjrmzvy.supabase.co', 'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE');
@@ -504,7 +517,6 @@
     <script src="/reading-state.js"></script>
     <script src="recursos.js"></script>
 
-    <!-- VLibras -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>

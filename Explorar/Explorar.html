@@ -4,15 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Explore artigos, guias, ferramentas e eventos sobre neurodiversidade. Conteúdo organizado de forma clara e acessível.">
+    <meta name="description" content="Explore artigos, guias, ferramentas e eventos sobre neurodiversidade. Conteúdo organizado de forma clara e acessível.">
     <title>Explorar — Amor NeuroDivergente</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="Explorar.css">
@@ -20,9 +17,7 @@
 
 <body>
 
-    <!-- =============================================
-         MODAL ACOLHERIA
-         ============================================= -->
+    <!-- MODAL ACOLHERIA -->
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
             <div class="acolheria-modal-header">
@@ -46,8 +41,7 @@
             </div>
             <div class="acolheria-modal-footer">
                 <div class="acolheria-input-wrapper">
-                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..."
-                        rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
                     <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
@@ -60,20 +54,15 @@
     </div>
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
 
-    <!-- =============================================
-         SIDEBAR TOGGLE
-         ============================================= -->
+    <!-- SIDEBAR TOGGLE -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- =============================================
-         SIDEBAR
-         ============================================= -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
-            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil"
-                aria-expanded="false">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
                 <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
                 <span id="sidebarUserName">Visitante</span>
                 <i class="fa-solid fa-chevron-down"></i>
@@ -85,20 +74,15 @@
         </div>
         <nav class="sidebar-nav" aria-label="Principal">
             <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="Explorar.html" class="sidebar-link active" aria-current="page"><i
-                    class="fa-solid fa-compass"></i> Explorar</a>
-            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i>
-                Comunidade</a>
-            <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus
-                Direitos</a>
-            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i>
-                Biblioteca</a>
+            <a href="Explorar.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
         <div class="sidebar-secondary">
             <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
             <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
-            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i
-                    class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
         </div>
     </aside>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -107,19 +91,15 @@
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
-    <!-- =============================================
-         CONTEÚDO PRINCIPAL
-         ============================================= -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content" id="mainContent">
 
         <!-- HEADER GLASS -->
         <header class="header-glass" id="headerGlass">
-  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <a href="/inicio.html">Início</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <a href="/Explorar/Explorar.html"></a>
-                  <span>Explorar</span>
-          
+                <span>Explorar</span>
             </nav>
             <a href="/inicio.html" class="logo">
                 <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
@@ -133,26 +113,137 @@
         </header>
 
         <!-- =============================================
-             HERO
+             HERO EDITORIAL — Imagem full-width + título
              ============================================= -->
-        <section class="explore-hero">
-            <div class="explore-hero__inner">
-                <span class="explore-hero__badge"><i class="fa-solid fa-compass"></i> Explorar</span>
-                <h1 class="explore-hero__title">O que você quer explorar hoje?</h1>
-                <p class="explore-hero__sub">
-                    Artigos, guias, ferramentas e direitos — tudo organizado para você entender sem esforço.
+        <section class="explore-banner">
+            <div class="explore-banner__media">
+                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&h=900&fit=crop"
+                     alt="Pessoa lendo em ambiente tranquilo" loading="eager">
+                <div class="explore-banner__overlay"></div>
+            </div>
+
+            <div class="explore-banner__content">
+                <span class="explore-banner__eyebrow">
+                    <i class="fa-solid fa-compass"></i> Explorar
+                </span>
+                <h1 class="explore-banner__title">
+                    Identifique e aprimore <br>
+                    <span class="explore-banner__title-accent">suas habilidades</span>
+                </h1>
+                <p class="explore-banner__sub">
+                    Artigos, guias e recursos organizados com calma. Sem pressa, sem ruído.
                 </p>
-                <div class="explore-search">
-                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input type="search" id="exploreSearch"
-                        placeholder="Buscar artigos, diagnósticos, autores..."
-                        aria-label="Buscar no Explorar">
+            </div>
+        </section>
+
+        <!-- =============================================
+             NAV DE TÓPICOS — Chips de navegação
+             ============================================= -->
+        <nav class="explore-nav" aria-label="Categorias do Explorar">
+            <div class="explore-nav__container">
+                <a href="#destaques" class="explore-nav__chip is-active">
+                    <i class="fa-solid fa-star"></i> Destaques
+                </a>
+                <a href="#ultimas" class="explore-nav__chip">
+                    <i class="fa-solid fa-newspaper"></i> Recentes
+                </a>
+                <a href="#artigos" class="explore-nav__chip">
+                    <i class="fa-solid fa-book-open"></i> Artigos
+                </a>
+                <a href="#blog" class="explore-nav__chip">
+                    <i class="fa-solid fa-pen-nib"></i> Blog
+                </a>
+                <a href="#ferramentas" class="explore-nav__chip">
+                    <i class="fa-solid fa-wrench"></i> Ferramentas
+                </a>
+                <a href="#eventos" class="explore-nav__chip">
+                    <i class="fa-regular fa-calendar-days"></i> Eventos
+                </a>
+                <a href="#faq" class="explore-nav__chip">
+                    <i class="fa-regular fa-circle-question"></i> FAQ
+                </a>
+            </div>
+        </nav>
+
+        <!-- =============================================
+             INTRO — "Clique em um dos tópicos abaixo"
+             ============================================= -->
+        <section class="explore-intro">
+            <div class="explore-intro__container">
+                <h2 class="explore-intro__title">
+                    Clique em um dos tópicos abaixo para ir direto ao conteúdo:
+                </h2>
+                <p class="explore-intro__sub">
+                    Cada área foi pensada para você explorar no seu ritmo — sem precisar se explicar.
+                </p>
+            </div>
+        </section>
+
+        <!-- =============================================
+             3 CARDS PRINCIPAIS — Imagem + Texto
+             (Padrão "Neurodivergent Talent / Interest & Skill / Enhance Your Skills")
+             ============================================= -->
+        <section class="explore-topics" id="topicos">
+            <div class="explore-topics__container">
+                <div class="explore-topics__grid">
+
+                    <a href="#artigos" class="topic-card">
+                        <div class="topic-card__media">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=500&fit=crop"
+                                 alt="Pessoas colaborando em ambiente calmo" loading="lazy">
+                        </div>
+                        <div class="topic-card__body">
+                            <h3 class="topic-card__title">Talentos neurodivergentes</h3>
+                            <p class="topic-card__text">
+                                Explore recursos que ajudam a <strong>identificar pontos fortes</strong> e talentos
+                                únicos da neurodivergência. Autoconhecimento é o primeiro passo.
+                            </p>
+                            <span class="topic-card__cta">
+                                Acessar <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </a>
+
+                    <a href="#ferramentas" class="topic-card">
+                        <div class="topic-card__media">
+                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=500&fit=crop"
+                                 alt="Pessoa analisando gráficos" loading="lazy">
+                        </div>
+                        <div class="topic-card__body">
+                            <h3 class="topic-card__title">Avaliações de interesse e habilidade</h3>
+                            <p class="topic-card__text">
+                                Identifique suas <strong>habilidades específicas</strong> e interesses para apoiar
+                                sua exploração de carreiras, estudos e caminhos pessoais.
+                            </p>
+                            <span class="topic-card__cta">
+                                Acessar <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </a>
+
+                    <a href="#blog" class="topic-card">
+                        <div class="topic-card__media">
+                            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=500&fit=crop"
+                                 alt="Pessoa estudando" loading="lazy">
+                        </div>
+                        <div class="topic-card__body">
+                            <h3 class="topic-card__title">Aprimore suas habilidades</h3>
+                            <p class="topic-card__text">
+                                Continue seu <strong>desenvolvimento pessoal</strong> e profissional com recursos
+                                selecionados para expandir conhecimento e autonomia.
+                            </p>
+                            <span class="topic-card__cta">
+                                Acessar <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </a>
+
                 </div>
             </div>
         </section>
 
         <!-- =============================================
-             🆕 PUBLICAÇÕES EM DESTAQUE — Carrossel editorial
+             PUBLICAÇÕES EM DESTAQUE — Carrossel
              ============================================= -->
         <section class="explore-highlights" id="destaques">
             <div class="container">
@@ -166,64 +257,52 @@
                     </button>
 
                     <div class="hl-track" id="hlTrack">
-                        <!-- Card 1 -->
                         <a href="/blog/post-masking.html" class="hl-card">
                             <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop"
-                                    alt="Pessoa em ambiente calmo" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop" alt="Pessoa em ambiente calmo" loading="lazy">
                                 <div class="hl-card__overlay"></div>
                                 <h3 class="hl-card__title">O dia em que você para de sobreviver e começa a viver</h3>
                             </div>
                         </a>
 
-                        <!-- Card 2 -->
                         <a href="/blog/blog.html" class="hl-card">
                             <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=600&fit=crop"
-                                    alt="Comunicação inclusiva" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=600&fit=crop" alt="Comunicação inclusiva" loading="lazy">
                                 <div class="hl-card__overlay"></div>
                                 <button class="hl-card__play" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
                                 <h3 class="hl-card__title">Como tornar a comunicação mais inclusiva para profissionais neurodivergentes</h3>
                             </div>
                         </a>
 
-                        <!-- Card 3 -->
                         <a href="/blog/blog.html" class="hl-card">
                             <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=600&fit=crop"
-                                    alt="Neurodivergência na infância" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=600&fit=crop" alt="Neurodivergência na infância" loading="lazy">
                                 <div class="hl-card__overlay"></div>
                                 <button class="hl-card__play" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
                                 <h3 class="hl-card__title">Neurodivergência na infância e adolescência</h3>
                             </div>
                         </a>
 
-                        <!-- Card 4 -->
                         <a href="/blog/blog.html" class="hl-card">
                             <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&h=600&fit=crop"
-                                    alt="Descobrindo o extraordinário" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&h=600&fit=crop" alt="Descobrindo o extraordinário" loading="lazy">
                                 <div class="hl-card__overlay"></div>
                                 <h3 class="hl-card__title">Descobrindo o extraordinário que existe no comum</h3>
                             </div>
                         </a>
 
-                        <!-- Card 5 -->
                         <a href="/blog/blog.html" class="hl-card">
                             <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop"
-                                    alt="Autismo e saúde mental" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop" alt="Autismo e saúde mental" loading="lazy">
                                 <div class="hl-card__overlay"></div>
                                 <button class="hl-card__play" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
                                 <h3 class="hl-card__title">Autismo e Saúde Mental</h3>
                             </div>
                         </a>
 
-                        <!-- Card 6 -->
                         <a href="/blog/blog.html" class="hl-card">
                             <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop"
-                                    alt="Burnout em mães atípicas" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop" alt="Burnout em mães atípicas" loading="lazy">
                                 <div class="hl-card__overlay"></div>
                                 <h3 class="hl-card__title">Burnout em mães atípicas: quem cuida de quem cuida?</h3>
                             </div>
@@ -235,15 +314,12 @@
                     </button>
                 </div>
 
-                <!-- Paginação -->
                 <div class="explore-highlights__pagination" id="hlPagination">
                     <button class="hl-page" aria-label="Primeira página"><i class="fa-solid fa-angles-left"></i></button>
                     <button class="hl-page" aria-label="Anterior"><i class="fa-solid fa-angle-left"></i></button>
                     <button class="hl-page is-active" data-page="1">1</button>
                     <button class="hl-page" data-page="2">2</button>
                     <button class="hl-page" data-page="3">3</button>
-                    <button class="hl-page" data-page="4">4</button>
-                    <button class="hl-page" data-page="5">5</button>
                     <button class="hl-page" aria-label="Próxima"><i class="fa-solid fa-angle-right"></i></button>
                     <button class="hl-page" aria-label="Última página"><i class="fa-solid fa-angles-right"></i></button>
                 </div>
@@ -251,7 +327,7 @@
         </section>
 
         <!-- =============================================
-             🆕 ÚLTIMAS PUBLICAÇÕES — 1 grande + 3 pequenos
+             ÚLTIMAS PUBLICAÇÕES — 1 grande + 3 pequenos
              ============================================= -->
         <section class="explore-latest" id="ultimas">
             <div class="container">
@@ -261,12 +337,9 @@
                 </header>
 
                 <div class="explore-latest__grid">
-
-                    <!-- Card grande -->
                     <article class="latest-feature">
                         <a href="/blog/post-masking.html" class="latest-feature__media">
-                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop"
-                                alt="Pessoa em ambiente calmo" loading="lazy">
+                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop" alt="Pessoa em ambiente calmo" loading="lazy">
                         </a>
                         <div class="latest-feature__body">
                             <div class="latest-feature__meta">
@@ -282,17 +355,14 @@
                         </div>
                     </article>
 
-                    <!-- Lista pequena -->
                     <div class="latest-list">
-
                         <a href="/blog/blog.html" class="latest-item">
                             <div class="latest-item__text">
                                 <h4>Como tornar a comunicação mais inclusiva para profissionais neurodivergentes.</h4>
                                 <span class="latest-item__date">há 3 dias</span>
                             </div>
                             <div class="latest-item__thumb">
-                                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop"
-                                    alt="" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" alt="" loading="lazy">
                                 <span class="latest-item__play"><i class="fa-solid fa-play"></i></span>
                             </div>
                         </a>
@@ -303,8 +373,7 @@
                                 <span class="latest-item__date">há 3 dias</span>
                             </div>
                             <div class="latest-item__thumb">
-                                <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=200&h=200&fit=crop"
-                                    alt="" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=200&h=200&fit=crop" alt="" loading="lazy">
                                 <span class="latest-item__play"><i class="fa-solid fa-play"></i></span>
                             </div>
                         </a>
@@ -315,19 +384,17 @@
                                 <span class="latest-item__date">há 3 dias</span>
                             </div>
                             <div class="latest-item__thumb">
-                                <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=200&h=200&fit=crop"
-                                    alt="" loading="lazy">
+                                <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=200&h=200&fit=crop" alt="" loading="lazy">
                                 <span class="latest-item__play"><i class="fa-solid fa-play"></i></span>
                             </div>
                         </a>
-
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- =============================================
-             ARTIGOS E GUIAS — Destaque individual
+             ARTIGOS E GUIAS
              ============================================= -->
         <section class="explore-featured explore-section" id="artigos">
             <div class="container">
@@ -343,14 +410,11 @@
 
                 <article class="featured-card">
                     <div class="featured-card__media explore-section-image">
-                        <img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg"
-                            alt="Pessoa em ambiente calmo" loading="lazy">
+                        <img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa em ambiente calmo" loading="lazy">
                     </div>
                     <div class="featured-card__body explore-section-text">
                         <span class="tag tag--autismo">Autismo</span>
-                        <h3 class="featured-card__title">
-                            O dia em que você para de sobreviver e começa a viver
-                        </h3>
+                        <h3 class="featured-card__title">O dia em que você para de sobreviver e começa a viver</h3>
                         <p class="featured-card__excerpt">
                             Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo.
                             Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda
@@ -361,9 +425,7 @@
                                 <span class="author__avatar">L</span>
                                 <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
                             </span>
-                            <span class="meta-time">
-                                <i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura
-                            </span>
+                            <span class="meta-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
                         </div>
                         <a href="/Recursos/recursos.html" class="explore-btn">
                             Ler artigo <i class="fa-solid fa-arrow-right"></i>
@@ -390,8 +452,7 @@
 
                 <article class="featured-card">
                     <div class="featured-card__media explore-section-image">
-                        <img src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg"
-                            alt="Mãos digitando em um notebook" loading="lazy">
+                        <img src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg" alt="Mãos digitando em um notebook" loading="lazy">
                     </div>
                     <div class="featured-card__body explore-section-text">
                         <span class="tag tag--autismo">Comunidade</span>
@@ -405,9 +466,7 @@
                                 <span class="author__avatar">L</span>
                                 <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
                             </span>
-                            <span class="meta-time">
-                                <i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura
-                            </span>
+                            <span class="meta-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
                         </div>
                         <a href="/blog/blog.html" class="explore-btn">
                             Ler o Blog <i class="fa-solid fa-arrow-right"></i>
@@ -434,8 +493,7 @@
 
                 <article class="featured-card">
                     <div class="featured-card__media explore-section-image">
-                        <img src="/img/Mesa organizada com planners visuais, canetas coloridas e materiais de apoio impressos.jpg"
-                            alt="Mesa organizada com planners visuais" loading="lazy">
+                        <img src="/img/Mesa organizada com planners visuais, canetas coloridas e materiais de apoio impressos.jpg" alt="Mesa organizada com planners visuais" loading="lazy">
                     </div>
                     <div class="featured-card__body explore-section-text">
                         <span class="tag tag--autismo">Recursos</span>
@@ -449,9 +507,7 @@
                                 <span class="author__avatar">L</span>
                                 <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
                             </span>
-                            <span class="meta-time">
-                                <i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura
-                            </span>
+                            <span class="meta-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
                         </div>
                         <a href="/ferramentas/ferramentas.html" class="explore-btn">
                             Ver Ferramentas <i class="fa-solid fa-arrow-right"></i>
@@ -478,8 +534,7 @@
 
                 <article class="featured-card">
                     <div class="featured-card__media explore-section-image">
-                        <img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.avif"
-                            alt="Grupo de pessoas sentadas em círculo" loading="lazy">
+                        <img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.avif" alt="Grupo de pessoas sentadas em círculo" loading="lazy">
                     </div>
                     <div class="featured-card__body explore-section-text">
                         <span class="tag tag--autismo">Encontros</span>
@@ -493,9 +548,7 @@
                                 <span class="author__avatar">L</span>
                                 <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
                             </span>
-                            <span class="meta-time">
-                                <i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura
-                            </span>
+                            <span class="meta-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
                         </div>
                         <a href="/Recursos/eventos.html" class="explore-btn">
                             Ver Eventos <i class="fa-solid fa-arrow-right"></i>
@@ -517,74 +570,55 @@
 
             <div class="faq-search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="faqSearchInput" placeholder="Filtrar perguntas..."
-                    aria-label="Buscar nas perguntas frequentes">
+                <input type="text" id="faqSearchInput" placeholder="Filtrar perguntas..." aria-label="Buscar nas perguntas frequentes">
             </div>
 
             <div class="faq-list" id="faqList">
                 <details class="faq-item" data-keywords="neurodiversidade conceito definição o que é">
                     <summary><span>O que é neurodiversidade?</span><i class="fa-solid fa-chevron-down"></i></summary>
                     <div class="faq-answer">
-                        <p>Neurodiversidade é o conceito que reconhece que variações neurológicas — como autismo, TDAH,
-                            dislexia e outras — são <strong>diferenças naturais</strong> do cérebro humano, não doenças
-                            a serem curadas. O termo foi criado pela socióloga Judy Singer nos anos 90.</p>
+                        <p>Neurodiversidade é o conceito que reconhece que variações neurológicas — como autismo, TDAH, dislexia e outras — são <strong>diferenças naturais</strong> do cérebro humano, não doenças a serem curadas.</p>
                     </div>
                 </details>
                 <details class="faq-item" data-keywords="diagnóstico sus caps ubs obter conseguir laudo médico">
                     <summary><span>Como obter um diagnóstico pelo SUS?</span><i class="fa-solid fa-chevron-down"></i></summary>
                     <div class="faq-answer">
-                        <p>Procure a <strong>UBS (Unidade Básica de Saúde)</strong> mais próxima. O clínico geral pode
-                            encaminhar para um <strong>CAPS (Centro de Atenção Psicossocial)</strong> ou para avaliação
-                            neuropsicológica na rede pública. É um direito garantido por lei.</p>
+                        <p>Procure a <strong>UBS (Unidade Básica de Saúde)</strong> mais próxima. O clínico geral pode encaminhar para um <strong>CAPS</strong> ou avaliação neuropsicológica na rede pública.</p>
                     </div>
                 </details>
                 <details class="faq-item" data-keywords="stimming movimento repetitivo autorregulação balançar girar">
                     <summary><span>O que é stimming?</span><i class="fa-solid fa-chevron-down"></i></summary>
                     <div class="faq-answer">
-                        <p>Stimming (do inglês <em>self-stimulatory behavior</em>) são movimentos repetitivos como
-                            balançar as mãos, girar objetos ou fazer sons. É uma <strong>ferramenta de
-                                autorregulação</strong> — ajuda a processar estímulos e gerenciar emoções. <strong>Não
-                                deve ser reprimido.</strong></p>
+                        <p>Stimming são movimentos repetitivos como balançar as mãos, girar objetos ou fazer sons. É uma <strong>ferramenta de autorregulação</strong> — <strong>não deve ser reprimido.</strong></p>
                     </div>
                 </details>
                 <details class="faq-item" data-keywords="nível autismo suporte 1 2 3 diferença tea">
-                    <summary><span>Qual a diferença entre autismo nível 1, 2 e 3?</span><i
-                            class="fa-solid fa-chevron-down"></i></summary>
+                    <summary><span>Qual a diferença entre autismo nível 1, 2 e 3?</span><i class="fa-solid fa-chevron-down"></i></summary>
                     <div class="faq-answer">
-                        <p>Os níveis indicam a <strong>quantidade de suporte</strong> que a pessoa precisa no dia a dia.
-                            <strong>Nível 1:</strong> precisa de algum suporte. <strong>Nível 2:</strong> precisa de
-                            suporte substancial. <strong>Nível 3:</strong> precisa de suporte muito substancial. Uma
-                            pessoa pode mudar de nível ao longo da vida.</p>
+                        <p>Os níveis indicam a <strong>quantidade de suporte</strong> que a pessoa precisa. <strong>Nível 1:</strong> algum suporte. <strong>Nível 2:</strong> substancial. <strong>Nível 3:</strong> muito substancial.</p>
                     </div>
                 </details>
                 <details class="faq-item" data-keywords="gratuito site grátis pagar conteúdo acesso">
                     <summary><span>O site é gratuito?</span><i class="fa-solid fa-chevron-down"></i></summary>
                     <div class="faq-answer">
-                        <p><strong>Sim, todo o conteúdo é gratuito.</strong> Artigos, guias, ferramentas e a comunidade
-                            são acessíveis sem custo. Temos uma loja com produtos físicos e aceitamos doações para
-                            manter o projeto.</p>
+                        <p><strong>Sim, todo o conteúdo é gratuito.</strong> Temos uma loja com produtos físicos e aceitamos doações para manter o projeto.</p>
                     </div>
                 </details>
                 <details class="faq-item" data-keywords="acolheria terapeuta substitui profissional psicólogo ajuda crise">
                     <summary><span>A AcolherIA substitui um terapeuta?</span><i class="fa-solid fa-chevron-down"></i></summary>
                     <div class="faq-answer">
-                        <p><strong>Não.</strong> A AcolherIA é uma ferramenta de acolhimento e informação, mas não
-                            substitui atendimento profissional. Se você estiver em crise, procure o <strong>CVV
-                                (188)</strong> ou um serviço de emergência.</p>
+                        <p><strong>Não.</strong> A AcolherIA é uma ferramenta de acolhimento. Se estiver em crise, procure o <strong>CVV (188)</strong>.</p>
                     </div>
                 </details>
                 <details class="faq-item" data-keywords="ajudar doação voluntário contribuir projeto apoio">
                     <summary><span>Como posso ajudar o projeto?</span><i class="fa-solid fa-chevron-down"></i></summary>
                     <div class="faq-answer">
-                        <p>Você pode fazer uma <strong>doação</strong> de qualquer valor, comprar produtos na nossa
-                            <strong>loja</strong>, ou se voluntariar. Toda contribuição ajuda a manter este espaço
-                            seguro e acessível para todes. 💜</p>
+                        <p>Você pode fazer uma <strong>doação</strong>, comprar na <strong>loja</strong> ou se voluntariar. 💜</p>
                     </div>
                 </details>
             </div>
 
-            <p class="faq-no-results" id="faqNoResults" style="display:none;">Nenhuma pergunta encontrada para "<strong
-                    id="faqSearchTerm"></strong>". Tente outro termo.</p>
+            <p class="faq-no-results" id="faqNoResults" style="display:none;">Nenhuma pergunta encontrada para "<strong id="faqSearchTerm"></strong>". Tente outro termo.</p>
         </section>
 
         <!-- =============================================
@@ -597,8 +631,7 @@
             <div class="explore-section-text">
                 <span class="section-icon contact-icon"><i class="fa-solid fa-headset"></i></span>
                 <h2>Fale Conosco</h2>
-                <p>Precisa de ajuda, tem alguma sugestão ou quer compartilhar sua história? <strong>Estamos aqui para
-                        você 💜</strong></p>
+                <p>Precisa de ajuda, tem alguma sugestão ou quer compartilhar sua história? <strong>Estamos aqui para você 💜</strong></p>
                 <div class="contact-options">
                     <a href="/Quem somos/CONTATE-NOS/contate.html" class="explore-btn">
                         Ir para Contato <i class="fa-solid fa-arrow-right"></i>
@@ -610,9 +643,7 @@
             </div>
         </section>
 
-        <!-- =============================================
-             FOOTER
-             ============================================= -->
+        <!-- FOOTER -->
         <footer class="footer">
             <div class="footer-main">
                 <div class="footer-col">
@@ -652,74 +683,55 @@
 
     </main>
 
-    <!-- ========================================= -->
     <!-- HUB FLUTUANTE -->
-    <!-- ========================================= -->
     <div class="floating-hub" id="floatingHub">
-        <button class="floating-hub-toggle" id="floatingHubToggle"
-            aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
             <span class="floating-hub-label">Acessibilidade</span>
         </button>
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
                 <div class="floating-hub-group">
-                    <span class="floating-hub-group-label">
-                        <i class="fa-solid fa-universal-access"></i> Acessibilidade
-                    </span>
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
                     <div class="floating-hub-actions">
                         <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
-                            <i class="fa-regular fa-moon"></i>
-                            <span class="hub-action-label">Escuro</span>
+                            <i class="fa-regular fa-moon"></i><span class="hub-action-label">Escuro</span>
                         </button>
                         <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
-                            <i class="fa-solid fa-text-height"></i>
-                            <span class="hub-action-label">A+</span>
+                            <i class="fa-solid fa-text-height"></i><span class="hub-action-label">A+</span>
                         </button>
                         <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
-                            <i class="fa-solid fa-text-slash"></i>
-                            <span class="hub-action-label">A-</span>
+                            <i class="fa-solid fa-text-slash"></i><span class="hub-action-label">A-</span>
                         </button>
                         <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
-                            <i class="fa-regular fa-eye"></i>
-                            <span class="hub-action-label">Dislexia</span>
+                            <i class="fa-regular fa-eye"></i><span class="hub-action-label">Dislexia</span>
                         </button>
                         <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
-                            <i class="fa-solid fa-person-walking"></i>
-                            <span class="hub-action-label">Movimento</span>
+                            <i class="fa-solid fa-person-walking"></i><span class="hub-action-label">Movimento</span>
                         </button>
                         <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span class="hub-action-label">Reset</span>
+                            <i class="fa-solid fa-rotate-left"></i><span class="hub-action-label">Reset</span>
                         </button>
                     </div>
                 </div>
                 <div class="floating-hub-divider"></div>
                 <div class="floating-hub-group">
-                    <span class="floating-hub-group-label">
-                        <i class="fa-regular fa-circle-question"></i> Precisa de ajuda?
-                    </span>
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
                         <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="hub-action-label">AcolherIA</span>
+                            <i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span>
                         </a>
                         <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
-                            <i class="fa-regular fa-comments"></i>
-                            <span class="hub-action-label">Comunidade</span>
+                            <i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span>
                         </a>
                         <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
-                            <i class="fa-regular fa-circle-question"></i>
-                            <span class="hub-action-label">FAQ</span>
+                            <i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span>
                         </a>
                         <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
-                            <i class="fa-regular fa-envelope"></i>
-                            <span class="hub-action-label">E-mail</span>
+                            <i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span>
                         </a>
-                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank"
-                            title="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i>
-                            <span class="hub-action-label">WhatsApp</span>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span>
                         </a>
                     </div>
                 </div>
@@ -734,9 +746,7 @@
 
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
@@ -744,5 +754,4 @@
     </script>
 
 </body>
-
 </html>
