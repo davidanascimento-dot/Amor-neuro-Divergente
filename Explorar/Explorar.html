@@ -147,60 +147,199 @@
             <p>Escolha uma categoria e descubra conteúdos feitos com cuidado para você.</p>
         </section>
 
-        <!-- ARTIGOS E GUIAS -->
-        <section class="explore-section" id="artigos">
-            <div class="explore-section-image"><img
-                    src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg"
-                    alt="Pessoa lendo um artigo em um tablet" loading="lazy"></div>
-            <div class="explore-section-text">
+                
+        
+        <div class="container">
+                    <h1 class="explore-hero__title">Explorar</h1>
+                    <p class="explore-hero__sub">Artigos, guias, ferramentas e direitos — tudo em um lugar.</p>
+
+                    <div class="explore-search">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="search"
+                               id="exploreSearch"
+                               placeholder="Buscar artigos, diagnósticos, autores..."
+                               aria-label="Buscar no Explorar">
+                    </div>
+
+
+  <section class="explore-featured">
+                <div class="container">
+                    <header class="section-head">
+                        <h2>Em destaque</h2>
+                        <span class="section-head__count">1 artigo</span>
+                    </header>
+
+                    <article class="featured-card">
+                        <div class="featured-card__media">
+                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=800&fit=crop"
+                                 alt="Pessoa em ambiente calmo" loading="lazy">
+                        </div>
+                        <div class="featured-card__body">
+                            <span class="tag tag--autismo">Autismo</span>
+                            <h3 class="featured-card__title">O dia em que você para de sobreviver e começa a viver</h3>
+                            <p class="featured-card__excerpt">
+                                Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo.
+                                Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda
+                                assim sentir que não estamos de verdade presentes na nossa própria vida.
+                            </p>
+                            <div class="featured-card__meta">
+                                <span class="author">
+                                    <span class="author__avatar">L</span>
+                                    <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
+                                </span>
+                                <span class="meta-time"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura</span>
+                            </div>
+                            <a href="/blog/post-masking.html" class="btn explore-btn">
+                                Ler artigo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+
+
+<!-- ARTIGOS E GUIAS -->
+<section class="explore-featured explore-section" id="artigos">
+    <div class="container">
+        <header class="section-head">
+            <h2>Artigos e Guias</h2>
+            <span class="section-head__count">1 artigo</span>
+        </header>
+
+        <article class="featured-card">
+            <div class="featured-card__media explore-section-image">
+                <img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg"
+                     alt="Pessoa em ambiente calmo" loading="lazy">
+            </div>
+            <div class="featured-card__body explore-section-text">
                 <span class="section-icon"><i class="fa-solid fa-book-open"></i></span>
-                <h2>Artigos e Guias</h2>
-                <p>Textos completos sobre autismo, TDAH, dislexia, altas habilidades e muito mais.</p>
-                <a href="/Recursos/recursos.html" class="explore-btn">Acessar Artigos e Guias <i
-                        class="fa-solid fa-arrow-right"></i></a>
+                <span class="tag tag--autismo">Autismo</span>
+                <h3 class="featured-card__title">O dia em que você para de sobreviver e começa a viver</h3>
+                <p class="featured-card__excerpt">
+                    Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo.
+                    Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda
+                    assim sentir que não estamos de verdade presentes na nossa própria vida.
+                </p>
+                <div class="featured-card__meta">
+                    <span class="author">
+                        <span class="author__avatar">L</span>
+                        <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
+                    </span>
+                    <span class="meta-time"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura</span>
+                </div>
+                <a href="/blog/post-masking.html" class="btn explore-btn">
+                    Ler artigo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
             </div>
-        </section>
+        </article>
+    </div>
+</section>
 
-        <!-- BLOG -->
-        <section class="explore-section explore-section-reverse" id="blog">
-            <div class="explore-section-image"><img
-                    src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg"
-                    alt="Mãos digitando em um notebook" loading="lazy"></div>
-            <div class="explore-section-text">
+<!-- BLOG -->
+<section class="explore-featured explore-section explore-section-reverse" id="blog">
+    <div class="container">
+        <header class="section-head">
+            <h2>Blog</h2>
+            <span class="section-head__count">1 artigo</span>
+        </header>
+
+        <article class="featured-card">
+            <div class="featured-card__media explore-section-image">
+                <img src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg"
+                     alt="Mãos digitando em um notebook" loading="lazy">
+            </div>
+            <div class="featured-card__body explore-section-text">
                 <span class="section-icon"><i class="fa-solid fa-pen-nib"></i></span>
-                <h2>Blog</h2>
-                <p>Histórias reais, reflexões e experiências da nossa comunidade.</p>
-                <a href="/blog/blog.html" class="explore-btn">Ler o Blog <i class="fa-solid fa-arrow-right"></i></a>
+                <span class="tag tag--autismo">Comunidade</span>
+                <h3 class="featured-card__title">Histórias reais da nossa comunidade</h3>
+                <p class="featured-card__excerpt">
+                    Histórias reais, reflexões e experiências da nossa comunidade.
+                </p>
+                <div class="featured-card__meta">
+                    <span class="author">
+                        <span class="author__avatar">L</span>
+                        <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
+                    </span>
+                    <span class="meta-time"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura</span>
+                </div>
+                <a href="/blog/blog.html" class="btn explore-btn">
+                    Ler o Blog <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
             </div>
-        </section>
+        </article>
+    </div>
+</section>
 
-        <!-- FERRAMENTAS -->
-        <section class="explore-section" id="ferramentas">
-            <div class="explore-section-image"><img
-                    src="/img/Mesa organizada com planners visuais, canetas coloridas e materiais de apoio impressos.jpg"
-                    alt="Mesa organizada com planners visuais" loading="lazy"></div>
-            <div class="explore-section-text">
+<!-- FERRAMENTAS -->
+<section class="explore-featured explore-section" id="ferramentas">
+    <div class="container">
+        <header class="section-head">
+            <h2>Ferramentas</h2>
+            <span class="section-head__count">1 artigo</span>
+        </header>
+
+        <article class="featured-card">
+            <div class="featured-card__media explore-section-image">
+                <img src="/img/Mesa organizada com planners visuais, canetas coloridas e materiais de apoio impressos.jpg"
+                     alt="Mesa organizada com planners visuais" loading="lazy">
+            </div>
+            <div class="featured-card__body explore-section-text">
                 <span class="section-icon"><i class="fa-solid fa-wrench"></i></span>
-                <h2>Ferramentas</h2>
-                <p>Planners visuais, guias e recursos práticos para facilitar sua rotina.</p>
-                <a href="/ferramentas/ferramentas.html" class="explore-btn">Ver Ferramentas <i
-                        class="fa-solid fa-arrow-right"></i></a>
+                <span class="tag tag--autismo">Recursos</span>
+                <h3 class="featured-card__title">Planners visuais e recursos práticos</h3>
+                <p class="featured-card__excerpt">
+                    Planners visuais, guias e recursos práticos para facilitar sua rotina.
+                </p>
+                <div class="featured-card__meta">
+                    <span class="author">
+                        <span class="author__avatar">L</span>
+                        <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
+                    </span>
+                    <span class="meta-time"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura</span>
+                </div>
+                <a href="/ferramentas/ferramentas.html" class="btn explore-btn">
+                    Ver Ferramentas <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
             </div>
-        </section>
+        </article>
+    </div>
+</section>
 
-        <!-- EVENTOS -->
-        <section class="explore-section explore-section-reverse" id="eventos">
-            <div class="explore-section-image"><img
-                    src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.avif"
-                    alt="Grupo de pessoas sentadas em círculo" loading="lazy"></div>
-            <div class="explore-section-text">
-                <span class="section-icon"><i class="fa-regular fa-calendar-days"></i></span>
-                <h2>Eventos</h2>
-                <p>Grupos de apoio, workshops e encontros sobre neurodiversidade.</p>
-                <a href="/Recursos/eventos.html" class="explore-btn">Ver Eventos <i
-                        class="fa-solid fa-arrow-right"></i></a>
+<!-- EVENTOS -->
+<section class="explore-featured explore-section explore-section-reverse" id="eventos">
+    <div class="container">
+        <header class="section-head">
+            <h2>Eventos</h2>
+            <span class="section-head__count">1 artigo</span>
+        </header>
+
+        <article class="featured-card">
+            <div class="featured-card__media explore-section-image">
+                <img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.avif"
+                     alt="Grupo de pessoas sentadas em círculo" loading="lazy">
             </div>
-        </section>
+            <div class="featured-card__body explore-section-text">
+                <span class="section-icon"><i class="fa-regular fa-calendar-days"></i></span>
+                <span class="tag tag--autismo">Encontros</span>
+                <h3 class="featured-card__title">Grupos de apoio e workshops</h3>
+                <p class="featured-card__excerpt">
+                    Grupos de apoio, workshops e encontros sobre neurodiversidade.
+                </p>
+                <div class="featured-card__meta">
+                    <span class="author">
+                        <span class="author__avatar">L</span>
+                        <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
+                    </span>
+                    <span class="meta-time"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4 min de leitura</span>
+                </div>
+                <a href="/Recursos/eventos.html" class="btn explore-btn">
+                    Ver Eventos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </article>
+    </div>
+</section>
 
         <!-- PERGUNTAS FREQUENTES — ACCORDION COM BUSCA -->
         <section class="faq-section" id="faq">
