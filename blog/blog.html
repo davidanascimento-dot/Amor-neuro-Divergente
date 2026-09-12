@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blog Amor NeuroDivergente — artigos sobre autismo, TDAH, direitos e vivências neurodivergentes.">
     <title>Blog — Amor NeuroDivergente</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="blog.css">
@@ -16,14 +16,12 @@
 </head>
 <body>
 
-    <!-- Botão de toggle da sidebar (sempre visível) -->
+    <!-- SIDEBAR TOGGLE -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- =============================================
-    SIDEBAR — Começa fechada
-    ============================================= -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
             <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
@@ -39,13 +37,12 @@
 
         <nav class="sidebar-nav" aria-label="Principal">
             <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/Explorar/Explorar.html" class="sidebar-link active" ><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/Explorar/Explorar.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-compass"></i> Explorar</a>
             <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
             <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
-             <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
+            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
 
-       
         <div class="sidebar-secondary">
             <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
             <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
@@ -53,20 +50,17 @@
         </div>
     </aside>
 
-    <!-- Overlay para quando a sidebar estiver aberta -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  
     <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
-  
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content" id="mainContent">
-        
-        <!-- Header glass -->
+
+        <!-- HEADER GLASS -->
         <header class="header-glass" id="headerGlass">
-            <!-- Breadcrumb -->
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <a href="/inicio.html">Início</a>
                 <i class="fa-solid fa-chevron-right"></i>
@@ -85,247 +79,139 @@
             </nav>
         </header>
 
-        <!-- HERO BANNER -->
-        <section class="article-hero">
+        <!-- =============================================
+        HERO — Banner do artigo em destaque
+        ============================================= -->
+        <section class="article-hero" style="background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&h=900&fit=crop');">
             <div class="hero-overlay">
                 <div class="hero-content">
-                    <span class="hero-subtitle">Qualidade de vida no trabalho</span>
-                    <h1 class="hero-title">O que é Neurodivergente? Exemplos, sinais e principais dúvidas!</h1>
+                    <span class="hero-subtitle">Reflexão · Autismo</span>
+                    <h1 class="hero-title">O dia em que você para de sobreviver e começa a viver</h1>
+                    <p class="hero-description">
+                        Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo. Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda assim sentir que não estamos de verdade presentes na nossa própria vida.
+                    </p>
+                    <a href="/blog/post-masking.html" class="btn-primary">
+                        Ler artigo completo <i class="fa-solid fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- CONTEÚDO DO ARTIGO DESTAQUE -->
-        <section class="article-body">
-            <h2>O que é Neurodivergente? Exemplos, sinais e principais dúvidas!</h2>
-            <p>A pergunta "o que é neurodivergente" está presente nos mais diversos meios atualmente. Seja na internet, redes sociais, grupos sociais e, inclusive nas empresas, a atenção sobre o assunto começou a crescer. A partir dos esforços das comunidades, temas sociais, como a de neurodivergentes, estão tendo sua importância evidenciada e, assim, abrindo espaços para pessoas que, antes, não teriam acesso aos mesmos.</p>
-            <p>Neurodivergência é um termo que descreve pessoas cujo cérebro funciona de maneira diferente do que é considerado típico. Isso inclui condições como autismo, TDAH, dislexia, entre outras. A neurodiversidade celebra essas diferenças como variações naturais da experiência humana.</p>
-        </section>
-
-        <!-- SEÇÃO DO BLOG COM CARDS DINÂMICOS -->
-        <section class="blog-section">
+        <!-- =============================================
+        SEÇÃO DO BLOG COM CARDS
+        ============================================= -->
+        <section class="blog-section" id="todos-artigos">
             <div class="blog-header">
-                <h2 class="blog-title">Blog</h2>
+                <div>
+                    <span class="blog-eyebrow"><i class="fa-solid fa-pen-nib"></i> Blog</span>
+                    <h2 class="blog-title">Todos os artigos</h2>
+                    <p class="blog-subtitle">Histórias, reflexões e informação — no seu tempo.</p>
+                </div>
                 <div class="search-bar">
                     <i class="fa-solid fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Pesquisar no blog">
+                    <input type="text" id="searchInput" placeholder="Pesquisar no blog" aria-label="Pesquisar no blog">
                 </div>
             </div>
 
+            <!-- Filtros -->
             <div class="blog-filters" id="blogFilters">
-                <button class="filter-btn active" data-filter="Blog">Blog</button>
-                <button class="filter-btn" data-filter="Autismo">Autismo</button>
-                <button class="filter-btn" data-filter="Comunicação">Comunicação</button>
-                <button class="filter-btn" data-filter="Terapia">Terapia</button>
-                <button class="filter-btn" data-filter="Direitos">Direitos</button>
-                <button class="filter-btn" data-filter="SUS">SUS</button>
-                <button class="filter-btn" data-filter="ABA">ABA</button>
-                <button class="filter-btn" data-filter="Fonoaudiologia">Fonoaudiologia</button>
-                <button class="filter-btn" data-filter="TDAH">TDAH</button>
+                <button class="filter-btn active" data-filter="todos">Todos</button>
+                <button class="filter-btn" data-filter="autismo">Autismo</button>
+                <button class="filter-btn" data-filter="tdah">TDAH</button>
+                <button class="filter-btn" data-filter="comunicacao">Comunicação</button>
+                <button class="filter-btn" data-filter="terapia">Terapia</button>
+                <button class="filter-btn" data-filter="direitos">Direitos</button>
+                <button class="filter-btn" data-filter="saude-mental">Saúde Mental</button>
+                <button class="filter-btn" data-filter="familia">Família</button>
             </div>
 
+            <!-- Grid de cards -->
             <div class="blog-grid" id="blogGrid">
-                <!-- Cards serão inseridos dinamicamente pelo JavaScript -->
-                <!-- Exemplo de card para demonstração -->
+                <!-- Cards dinâmicos via blog.js -->
+                <!-- Fallback estático enquanto JS não roda: -->
                 <article class="blog-card">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80');">
                         <div class="card-badges">
                             <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 5 min</span>
                         </div>
                     </div>
                     <div class="card-content">
                         <div class="card-tags">
-                            <span><i class="fa-solid fa-tag"></i> Autismo</span>
-                            <span><i class="fa-solid fa-tag"></i> Inclusão</span>
+                            <span class="tag tag--autismo">Autismo</span>
+                            <span class="tag tag--trabalho">Trabalho</span>
                         </div>
-                        <h3>Neurodivergência no ambiente de trabalho: desafios e oportunidades</h3>
+                        <h3><a href="#">Neurodivergência no ambiente de trabalho: desafios e oportunidades</a></h3>
                         <p>Como empresas podem criar ambientes mais inclusivos para profissionais neurodivergentes, promovendo diversidade e inovação.</p>
                         <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </article>
 
                 <article class="blog-card">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80');">
                         <div class="card-badges">
                             <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 7 min</span>
                         </div>
                     </div>
                     <div class="card-content">
                         <div class="card-tags">
-                            <span><i class="fa-solid fa-tag"></i> TDAH</span>
-                            <span><i class="fa-solid fa-tag"></i> Produtividade</span>
+                            <span class="tag tag--tdah">TDAH</span>
+                            <span class="tag tag--rotina">Rotina</span>
                         </div>
-                        <h3>Estratégias para gerenciar o TDAH no dia a dia</h3>
+                        <h3><a href="#">Estratégias para gerenciar o TDAH no dia a dia</a></h3>
                         <p>Dicas práticas e ferramentas que ajudam na organização, foco e bem-estar para pessoas com TDAH.</p>
                         <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </article>
 
                 <article class="blog-card">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80');">
                         <div class="card-badges">
                             <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 4 min</span>
                         </div>
                     </div>
                     <div class="card-content">
                         <div class="card-tags">
-                            <span><i class="fa-solid fa-tag"></i> Autismo</span>
-                            <span><i class="fa-solid fa-tag"></i> Comunicação</span>
+                            <span class="tag tag--autismo">Autismo</span>
+                            <span class="tag tag--comunicacao">Comunicação</span>
                         </div>
-                        <h3>Comunicação alternativa e aumentativa: o que é e como usar</h3>
+                        <h3><a href="#">Comunicação alternativa e aumentativa: o que é e como usar</a></h3>
                         <p>Conheça os recursos de comunicação alternativa para pessoas autistas não-verbais e como eles funcionam.</p>
                         <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </article>
             </div>
 
-             <div class="blog-grid" id="blogGrid">
-                <!-- Cards serão inseridos dinamicamente pelo JavaScript -->
-                <!-- Exemplo de card para demonstração -->
-                <article class="blog-card">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
-                        <div class="card-badges">
-                            <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 5 min</span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tags">
-                            <span><i class="fa-solid fa-tag"></i> Autismo</span>
-                            <span><i class="fa-solid fa-tag"></i> Inclusão</span>
-                        </div>
-                        <h3>Neurodivergência no ambiente de trabalho: desafios e oportunidades</h3>
-                        <p>Como empresas podem criar ambientes mais inclusivos para profissionais neurodivergentes, promovendo diversidade e inovação.</p>
-                        <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
-                        <div class="card-badges">
-                            <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 7 min</span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tags">
-                            <span><i class="fa-solid fa-tag"></i> TDAH</span>
-                            <span><i class="fa-solid fa-tag"></i> Produtividade</span>
-                        </div>
-                        <h3>Estratégias para gerenciar o TDAH no dia a dia</h3>
-                        <p>Dicas práticas e ferramentas que ajudam na organização, foco e bem-estar para pessoas com TDAH.</p>
-                        <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
-                        <div class="card-badges">
-                            <span class="badge badge-purple"><i class="fa-regular fa-clock"></i> 4 min</span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tags">
-                            <span><i class="fa-solid fa-tag"></i> Autismo</span>
-                            <span><i class="fa-solid fa-tag"></i> Comunicação</span>
-                        </div>
-                        <h3>Comunicação alternativa e aumentativa: o que é e como usar</h3>
-                        <p>Conheça os recursos de comunicação alternativa para pessoas autistas não-verbais e como eles funcionam.</p>
-                        <a href="#" class="btn-outline">Leia mais <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </article>
+            <!-- Load more -->
+            <div class="blog-load-more">
+                <button class="btn-primary" id="loadMoreBtn">
+                    Carregar mais artigos <i class="fa-solid fa-arrow-down"></i>
+                </button>
             </div>
 
-            
-
-
-            <!-- Scroll Sentinel para carregamento infinito -->
-            <div class="scroll-sentinel" id="scrollSentinel">
-                <div class="loading-spinner" id="loadingSpinner" style="display: none;">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    Carregando mais artigos...
-                </div>
+            <!-- Estado vazio -->
+            <div class="blog-empty" id="blogEmpty" hidden>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <h3>Nenhum artigo encontrado</h3>
+                <p>Tente outro termo ou escolha uma categoria diferente.</p>
             </div>
         </section>
-        <!-- ========================================= -->
-    <!-- HUB FLUTUANTE - ACESSIBILIDADE + AJUDA    -->
-    <!-- ========================================= -->
 
-    <div class="floating-hub" id="floatingHub">
-        <!-- Botão principal que abre/fecha o hub -->
-        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
-            <i class="fa-solid fa-circle-plus"></i>
-            <span class="floating-hub-label">Acessibilidade</span>
-        </button>
-
-        <!-- Menu do hub (aparece ao clicar) -->
-        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
-            <div class="floating-hub-menu-inner">
-                <!-- Linha 1: Acessibilidade -->
-                <div class="floating-hub-group">
-                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
-                    <div class="floating-hub-actions">
-                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
-                            <i class="fa-regular fa-moon"></i>
-                            <span class="hub-action-label">Escuro</span>
-                        </button>
-                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
-                            <i class="fa-solid fa-text-height"></i>
-                            <span class="hub-action-label">A+</span>
-                        </button>
-                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
-                            <i class="fa-solid fa-text-slash"></i>
-                            <span class="hub-action-label">A-</span>
-                        </button>
-                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
-                            <i class="fa-regular fa-eye"></i>
-                            <span class="hub-action-label">Dislexia</span>
-                        </button>
-                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
-                            <i class="fa-solid fa-person-walking"></i>
-                            <span class="hub-action-label">Movimento</span>
-                        </button>
-                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span class="hub-action-label">Reset</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Divisória -->
-                <div class="floating-hub-divider"></div>
-
-                <!-- Linha 2: Ajuda/Atendimento -->
-                <div class="floating-hub-group">
-                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
-                    <div class="floating-hub-actions">
-                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="hub-action-label">AcolherIA</span>
-                        </a>
-                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
-                            <i class="fa-regular fa-comments"></i>
-                            <span class="hub-action-label">Comunidade</span>
-                        </a>
-                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
-                            <i class="fa-regular fa-circle-question"></i>
-                            <span class="hub-action-label">FAQ</span>
-                        </a>
-                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
-                            <i class="fa-regular fa-envelope"></i>
-                            <span class="hub-action-label">E-mail</span>
-                        </a>
-                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i>
-                            <span class="hub-action-label">WhatsApp</span>
-                        </a>
-                    </div>
-                </div>
+        <!-- =============================================
+        NEWSLETTER
+        ============================================= -->
+        <section class="blog-newsletter">
+            <div class="blog-newsletter__card">
+                <span class="blog-newsletter__icon"><i class="fa-regular fa-envelope"></i></span>
+                <h2>Receba novos artigos por e-mail</h2>
+                <p>Um resumo quinzenal com os melhores conteúdos. Sem spam, prometido.</p>
+                <form class="blog-newsletter__form" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML = '<i class=\'fa-solid fa-check\'></i> Inscrito!'; this.querySelector('input').value = '';">
+                    <input type="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
+                    <button type="submit" class="btn-primary">
+                        Inscrever <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Overlay para fechar o hub ao clicar fora -->
-    <div class="floating-overlay" id="floatingOverlay" hidden></div>
-
+        </section>
 
         <!-- FOOTER -->
         <footer class="footer">
@@ -367,28 +253,94 @@
 
     </main>
 
-    <!-- Toast -->
+    <!-- HUB FLUTUANTE -->
+    <div class="floating-hub" id="floatingHub">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i>
+                            <span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i>
+                            <span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i>
+                            <span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i>
+                            <span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="floating-hub-divider"></div>
+
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i>
+                            <span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i>
+                            <span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
     <div id="toastMsg" class="toast-msg-custom"></div>
 
     <script src="/reading-state.js"></script>
     <script src="blog.js"></script>
-   
-  
 
     <!-- VLibras -->
-<div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
     </div>
-</div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-
-<script>
-    new window.VLibras.Widget(
-        'https://vlibras.gov.br/app'
-    );
-</script>
 </body>
 </html>

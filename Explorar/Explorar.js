@@ -470,6 +470,121 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    // =============================================
+    // 13. CARROSSEL "PUBLICAÇÕES EM DESTAQUE"
+    // =============================================
+    const hlTrack = document.getElementById('hlTrack');
+    const hlPrev = document.querySelector('.hl-arrow--prev');
+    const hlNext = document.querySelector('.hl-arrow--next');
+    const hlPagination = document.getElementById('hlPagination');
 
+    if (hlTrack && hlPrev && hlNext) {
+
+        // Calcula quantos cards cabem na tela
+        function getVisibleCards() {
+            const cardWidth = hlTrack.querySelector('.hl-card')?.offsetWidth || 300;
+            const gap = 20;
+            const visible = Math.max(1, Math.floor(hlTrack.clientWidth / (cardWidth + gap)));
+            return visible;
+        }
+
+        // Rola para a esquerda
+        hlPrev.addEventListener('click', () => {
+            const card = hlTrack.querySelector('.hl-card');
+            const step = card ? card.offsetWidth + 20 : 320;
+            hlTrack.scrollBy({ left: -step, behavior: 'smooth' });
+        });
+
+        // Rola para a direita
+        hlNext.addEventListener('click', () => {
+            const card = hlTrack.querySelector('.hl-card');
+            const step = card ? card.offsetWidth + 20 : 320;
+            hlTrack.scrollBy({ left: step, behavior: 'smooth' });
+        });
+
+        // Sincroniza botões da paginação com a rolagem
+        const hlPages = hlPagination ? hlPagination.querySelectorAll('.hl-page[data-page]') : [];
+        const totalCards = hlTrack.querySelectorAll('.hl-card').length;
+
+        function updatePaginationUI() {
+            if (!hlPagination) return;
+
+            const card = hlTrack.querySelector('.hl-card');
+            if (!card) return;
+
+            const step = card.offsetWidth + 20;
+            const currentIndex = Math.round(hlTrack.scrollLeft / step);
+            const visible = getVisibleCards();
+            const totalPages = Math.max(1, Math.ceil(totalCards / visible));
+            const currentPage = Math.min(totalPages, Math.floor(currentIndex / visible) + 1);
+
+            hlPages.forEach(btn => {
+                const page = parseInt(btn.getAttribute('data-page'), 10);
+                btn.classList.toggle('is-active', page === currentPage);
+            });
+        }
+
+        // Detecta scroll e atualiza
+        let scrollTimeout;
+        hlTrack.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(updatePaginationUI, 80);
+        });
+
+        // Cliques nos números das páginas
+        hlPages.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const page = parseInt(btn.getAttribute('data-page'), 10);
+                const card = hlTrack.querySelector('.hl-card');
+                if (!card) return;
+
+                const step = card.offsetWidth + 20;
+                const visible = getVisibleCards();
+                const targetScroll = (page - 1) * visible * step;
+
+                hlTrack.scrollTo({ left: targetScroll, behavior: 'smooth' });
+            });
+        });
+
+        // Botões de primeira/última página
+        if (hlPagination) {
+            const firstBtn = hlPagination.querySelector('.hl-page[aria-label="Primeira página"]');
+            const lastBtn = hlPagination.querySelector('.hl-page[aria-label="Última página"]');
+            const prevPageBtn = hlPagination.querySelector('.hl-page[aria-label="Anterior"]');
+            const nextPageBtn = hlPagination.querySelector('.hl-page[aria-label="Próxima"]');
+
+            firstBtn?.addEventListener('click', () => {
+                hlTrack.scrollTo({ left: 0, behavior: 'smooth' });
+            });
+
+            lastBtn?.addEventListener('click', () => {
+                hlTrack.scrollTo({ left: hlTrack.scrollWidth, behavior: 'smooth' });
+            });
+
+            prevPageBtn?.addEventListener('click', () => {
+                const card = hlTrack.querySelector('.hl-card');
+                if (!card) return;
+                const step = card.offsetWidth + 20;
+                hlTrack.scrollBy({ left: -step * getVisibleCards(), behavior: 'smooth' });
+            });
+
+            nextPageBtn?.addEventListener('click', () => {
+                const card = hlTrack.querySelector('.hl-card');
+                if (!card) return;
+                const step = card.offsetWidth + 20;
+                hlTrack.scrollBy({ left: step * getVisibleCards(), behavior: 'smooth' });
+            });
+        }
+
+        // Atualiza ao redimensionar
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(updatePaginationUI, 150);
+        });
+
+        // Inicializa
+        updatePaginationUI();
+    }
     console.log('🧭 Explorar pronto! Sidebar + Acessibilidade + Hub + FAQ + Scroll Top');
 });

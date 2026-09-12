@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Seus direitos como pessoa neurodivergente explicados de forma simples. Leis, benefícios e como acessá-los.">
     <title>Seus Direitos — Amor NeuroDivergente</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -13,9 +13,14 @@
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="direitos.css">
 </head>
- <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
+
+<body>
+
+    <!-- =============================================
+    MODAL ACOLHERIA
+    ============================================= -->
+    <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
-         
             <div class="acolheria-modal-header">
                 <div class="acolheria-modal-title">
                     <i class="fa-solid fa-robot"></i>
@@ -26,23 +31,15 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
-           
-            <div class="acolheria-modal-body" id="acolheriaChatBody">
-               
-            </div>
-
-           
+            <div class="acolheria-modal-body" id="acolheriaChatBody"></div>
             <div class="acolheria-suggestions" id="acolheriaSuggestions">
-                <button class="acolheria-suggestion" data-prompt="O que é TDAH?"> TDAH</button>
-                <button class="acolheria-suggestion" data-prompt="O que é autismo?"> Autismo</button>
-                <button class="acolheria-suggestion" data-prompt="Dicas de organização"> Organização</button>
-                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?"> Crise sensorial</button>
-                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?"> Direitos</button>
-                <button class="acolheria-suggestion" data-prompt="Quero desabafar"> Desabafar</button>
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?">TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?">Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização">Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?">Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?">Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar">Desabafar</button>
             </div>
-
-           
             <div class="acolheria-modal-footer">
                 <div class="acolheria-input-wrapper">
                     <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
@@ -56,18 +53,17 @@
             </div>
         </div>
     </div>
-
-   
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
-<body>
 
-    <!-- Botão de toggle da sidebar (sempre visível) -->
+    <!-- =============================================
+    SIDEBAR TOGGLE
+    ============================================= -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
     <!-- =============================================
-    SIDEBAR — Começa fechada
+    SIDEBAR
     ============================================= -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
@@ -97,83 +93,194 @@
         </div>
     </aside>
 
-    <!-- Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
 
     <!-- =============================================
     CONTEÚDO PRINCIPAL
     ============================================= -->
     <main class="main-content" id="mainContent">
-        
-        <!-- Header glass -->
+
+        <!-- HEADER GLASS -->
         <header class="header-glass" id="headerGlass">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/inicio.html">Início</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="/Explorar/Explorar.html">Explorar</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>Seus Direitos</span>
+            </nav>
             <a href="/inicio.html" class="logo">
                 <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
                 <span class="logo-text">Amor NeuroDivergente</span>
             </a>
             <nav class="header-links">
-                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/Explorar/Explorar.html">Explorar</a>
                 <a href="/comunidade/comunidade.html">Comunidade</a>
                 <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
         </header>
 
         <!-- =============================================
-        HERO COM IMAGEM DE FUNDO
+        HERO
         ============================================= -->
         <section class="rights-hero">
-            <div class="rights-hero-bg">
-                <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&h=600&fit=crop" alt="Documentos jurídicos e justiça" class="rights-hero-img">
-                <div class="rights-hero-overlay"></div>
+            <div class="rights-hero__bg">
+                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1600&q=80"
+                    alt="Documentos e símbolo de justiça" class="rights-hero__img">
+                <div class="rights-hero__overlay"></div>
             </div>
-            <div class="rights-hero-content">
-                <span class="rights-hero-badge"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos Garantidos</span>
+            <div class="rights-hero__content">
+                <span class="rights-hero__badge">
+                    <i class="fa-solid fa-scale-balanced"></i> Seus Direitos Garantidos
+                </span>
                 <h1>Juridiquês? Aqui a gente traduz.</h1>
-                <p>Conheça as leis que protegem você e saiba como usá-las no dia a dia. <strong>Sem palavras difíceis.</strong></p>
-                
-              
+                <p>
+                    Conheça as leis que protegem você e saiba como usá-las no dia a dia. <strong>Sem palavras difíceis.</strong>
+                </p>
+
+                <div class="rights-hero__stats">
+                    <div class="rights-stat">
+                        <span class="rights-stat__number">12+</span>
+                        <span class="rights-stat__label">Leis traduzidas</span>
+                    </div>
+                    <div class="rights-stat">
+                        <span class="rights-stat__number">4</span>
+                        <span class="rights-stat__label">Áreas</span>
+                    </div>
+                    <div class="rights-stat">
+                        <span class="rights-stat__number">100%</span>
+                        <span class="rights-stat__label">Gratuito</span>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- =============================================
-        CARDS DE LEIS
+        GRID DE CATEGORIAS — Padrão Ministério
         ============================================= -->
-       <section class="laws-section">
-    <h2 class="laws-section-title">Leis que protegem você</h2>
-    
-    <!-- Tag semântica para indicar uma área de busca -->
-    <search class="laws-search-container">
-        <form onsubmit="event.preventDefault();">
-            <label for="lawsSearch" class="sr-only">Pesquisar leis:</label>
-            <input 
-                type="search" 
-                id="lawsSearch" 
-                placeholder="Ex: Código de Defesa do Consumidor..." 
-                aria-label="Pesquisar leis que protegem você"
-            >
-        </form>
-    </search>
+        <section class="categories-nav" id="categorias">
+            <div class="categories-nav__container">
+                <nav class="categories-nav__breadcrumb" aria-label="Trilha">
+                    <span>Conteúdo Seus Direitos</span>
+                </nav>
 
-    <div class="laws-grid" id="lawsGrid">
-        <!-- Os cards serão gerados pelo JS -->
-    </div>
-</section>
+                <h2 class="categories-nav__title">Explore por área</h2>
+                <p class="categories-nav__sub">Escolha uma categoria e encontre as leis que protegem você.</p>
 
+                <div class="categories-grid">
+                    <a href="#leis" class="category-tile" data-filter="educacional">
+                        <div class="category-tile__icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <span class="category-tile__title">Educação</span>
+                        <span class="category-tile__count">3 leis</span>
+                    </a>
+                    <a href="#leis" class="category-tile" data-filter="saude">
+                        <div class="category-tile__icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <span class="category-tile__title">Saúde</span>
+                        <span class="category-tile__count">2 leis</span>
+                    </a>
+                    <a href="#leis" class="category-tile" data-filter="social">
+                        <div class="category-tile__icon"><i class="fa-solid fa-handshake"></i></div>
+                        <span class="category-tile__title">Assistência Social</span>
+                        <span class="category-tile__count">5 leis</span>
+                    </a>
+                    <a href="#leis" class="category-tile" data-filter="acessibilidade">
+                        <div class="category-tile__icon"><i class="fa-solid fa-universal-access"></i></div>
+                        <span class="category-tile__title">Acessibilidade</span>
+                        <span class="category-tile__count">3 leis</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+        SEÇÃO DE LEIS COM BUSCA
+        ============================================= -->
+        <section class="laws-section" id="leis">
+            <header class="laws-section__head">
+                <span class="section-badge"><i class="fa-solid fa-book"></i> Biblioteca de Leis</span>
+                <h2 class="laws-section-title">Leis que protegem você</h2>
+                <p class="laws-section-sub">Busque por nome, número ou palavra-chave. Todas traduzidas para você.</p>
+            </header>
+
+            <search class="laws-search-container">
+                <form onsubmit="event.preventDefault();">
+                    <label for="lawsSearch" class="sr-only">Pesquisar leis:</label>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="lawsSearch" placeholder="Ex: Lei Berenice Piana, 12.764..." aria-label="Pesquisar leis">
+                </form>
+            </search>
+
+            <div class="laws-grid" id="lawsGrid"></div>
+
+            <p class="laws-no-results" id="lawsNoResults" hidden>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Nenhuma lei encontrada. Tente outro termo.
+            </p>
+        </section>
+
+        <!-- =============================================
+        EDITORIAL GRID — Aprenda + Conecte-se
+        ============================================= -->
+        <section class="editorial-grid">
+            <div class="editorial-grid__container">
+
+                <!-- Card APRENDA -->
+                <article class="editorial-card">
+                    <div class="editorial-card__media">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80"
+                            alt="Pessoa estudando com caderno" loading="lazy">
+                    </div>
+                    <div class="editorial-card__panel">
+                        <span class="editorial-card__eyebrow">Aprenda</span>
+                        <h3 class="editorial-card__title">Conheça seus direitos antes de precisar deles</h3>
+                        <p class="editorial-card__text">
+                            Identifique seus pontos fortes, entenda o que a lei garante e saiba como exigir seus direitos na escola, no trabalho ou na saúde.
+                        </p>
+                        <a href="#leis" class="btn-primary">
+                            Ver leis <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Card CONECTE-SE -->
+                <article class="editorial-card editorial-card--reverse">
+                    <div class="editorial-card__media">
+                        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80"
+                            alt="Pessoas em reunião online" loading="lazy">
+                    </div>
+                    <div class="editorial-card__panel">
+                        <span class="editorial-card__eyebrow">Conecte-se</span>
+                        <h3 class="editorial-card__title">Encontre quem já passou pelo mesmo</h3>
+                        <p class="editorial-card__text">
+                            Nossa comunidade reúne pessoas neurodivergentes, famílias e profissionais. Compartilhe sua história e aprenda com quem entende.
+                        </p>
+                        <a href="/comunidade/comunidade.html" class="btn-primary">
+                            Entrar na comunidade <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
 
         <!-- =============================================
         RECURSOS ÚTEIS + ENVIE SEU CASO
         ============================================= -->
         <section class="resources-section">
             <div class="resources-container">
-                
-                <!-- Coluna: Recursos Úteis -->
+
+                <!-- Recursos Úteis -->
                 <div class="resources-box">
                     <div class="resources-box-header">
                         <div class="resources-box-icon"><i class="fa-solid fa-circle-info"></i></div>
                         <h3>Recursos Úteis</h3>
                     </div>
                     <p class="resources-box-sub">Ferramentas e documentos para fazer valer seus direitos</p>
-                    
+
                     <div class="resources-list">
                         <a href="#" class="resource-item">
                             <span class="resource-item-icon"><i class="fa-solid fa-bullhorn"></i></span>
@@ -200,20 +307,20 @@
                             <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
-                    
+
                     <a href="/Direitos/arquivo3leis/arquivo.html" class="resources-download-btn">
                         <i class="fa-solid fa-cloud-arrow-down"></i> Baixar modelos de documentação
                     </a>
                 </div>
 
-                <!-- Coluna: Envie seu caso -->
+                <!-- Envie seu caso -->
                 <div class="case-box">
                     <div class="case-box-glow"></div>
                     <div class="case-box-content">
                         <div class="case-box-icon"><i class="fa-solid fa-pen-to-square"></i></div>
                         <h3>Conte-nos seu caso</h3>
                         <p>Descreva sua situação e nossa equipe vai analisar com base nas <strong>3 leis principais</strong> que protegem pessoas neurodivergentes.</p>
-                        
+
                         <form class="case-form" id="caseForm">
                             <div class="case-form-row">
                                 <input type="text" placeholder="Seu nome" required>
@@ -224,13 +331,107 @@
                                 <i class="fa-solid fa-file-pdf"></i> Enviar e receber análise gratuita
                             </button>
                         </form>
-                        
+
                         <p class="case-disclaimer">
                             <i class="fa-solid fa-shield-halved"></i> Seus dados estão seguros. Não compartilhamos com terceiros.
                         </p>
                     </div>
                 </div>
 
+            </div>
+        </section>
+
+        <!-- =============================================
+        🆕 FAQ DE DIREITOS
+        ============================================= -->
+        <section class="rights-faq">
+            <header class="rights-faq__head">
+                <span class="section-badge"><i class="fa-regular fa-circle-question"></i> Dúvidas frequentes</span>
+                <h2>Perguntas sobre direitos</h2>
+                <p>As dúvidas mais comuns de quem chega até aqui.</p>
+            </header>
+
+            <div class="rights-faq__list">
+                <details class="faq-item">
+                    <summary>
+                        <span>Preciso de laudo médico para exigir meus direitos?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Depende do direito. Para a Lei Brasileira de Inclusão (LBI), o laudo ajuda mas não é obrigatório — o que vale é a <strong>avaliação biopsicossocial</strong>. Já para benefícios como o BPC, o laudo é exigido.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Como pedir adaptações na escola ou faculdade?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Faça um <strong>requerimento por escrito</strong> à coordenação, citando a Lei Brasileira de Inclusão (13.146/2015) e a Lei Berenice Piana (12.764/2012). Descreva as adaptações que você precisa e peça resposta formal.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Empresa pode me demitir por ser neurodivergente?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p><strong>Não.</strong> Isso configura discriminação, crime previsto na Lei 7.716/1989 e na Lei Brasileira de Inclusão. Se acontecer, procure o Ministério Público do Trabalho ou um advogado trabalhista.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>O que é o BPC/LOAS e quem tem direito?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>É um <strong>salário mínimo mensal</strong> para pessoas com deficiência de baixa renda (renda por pessoa da família inferior a 1/4 do salário mínimo). Você solicita no CRAS ou pelo site do INSS.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Tenho direito a acompanhante terapêutico?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p><strong>Sim</strong>, quando houver indicação médica. A Lei 13.146/2015 garante o direito ao acompanhante especializado em instituições de ensino para pessoas com deficiência que precisam desse suporte.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Como denunciar discriminação?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Você pode registrar <strong>Boletim de Ocorrência</strong> em qualquer delegacia, procurar o <strong>Ministério Público</strong>, ou denunciar pelo <strong>Disque 100</strong> (Direitos Humanos). Guarde provas: prints, e-mails, testemunhas.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- =============================================
+        🆕 CTA — Fale com a AcolherIA
+        ============================================= -->
+        <section class="rights-cta">
+            <div class="rights-cta__card">
+                <div class="rights-cta__icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="rights-cta__content">
+                    <h2>Ainda com dúvidas sobre seus direitos?</h2>
+                    <p>Converse com a <strong>AcolherIA</strong>, nossa assistente especializada em neurodivergência. Ela pode te orientar sobre leis, benefícios e como agir em situações específicas.</p>
+                    <div class="rights-cta__actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="btn-primary">
+                            Conversar com AcolherIA <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="btn-secondary">
+                            Entrar na comunidade
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -245,77 +446,60 @@
             <div class="footer-bottom"><a href="#">Política de Privacidade</a><a href="#">Termos de Uso</a><p>© 2026 Amor NeuroDivergente</p></div>
         </footer>
 
-          <!-- ========================================= -->
-    <!-- HUB FLUTUANTE - ACESSIBILIDADE + AJUDA    -->
-    <!-- ========================================= -->
+    </main>
 
+    <!-- HUB FLUTUANTE -->
     <div class="floating-hub" id="floatingHub">
-        <!-- Botão principal que abre/fecha o hub -->
         <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
             <span class="floating-hub-label">Acessibilidade</span>
         </button>
 
-        <!-- Menu do hub (aparece ao clicar) -->
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
-                <!-- Linha 1: Acessibilidade -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
                     <div class="floating-hub-actions">
                         <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
-                            <i class="fa-regular fa-moon"></i>
-                            <span class="hub-action-label">Escuro</span>
+                            <i class="fa-regular fa-moon"></i><span class="hub-action-label">Escuro</span>
                         </button>
                         <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
-                            <i class="fa-solid fa-text-height"></i>
-                            <span class="hub-action-label">A+</span>
+                            <i class="fa-solid fa-text-height"></i><span class="hub-action-label">A+</span>
                         </button>
                         <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
-                            <i class="fa-solid fa-text-slash"></i>
-                            <span class="hub-action-label">A-</span>
+                            <i class="fa-solid fa-text-slash"></i><span class="hub-action-label">A-</span>
                         </button>
                         <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
-                            <i class="fa-regular fa-eye"></i>
-                            <span class="hub-action-label">Dislexia</span>
+                            <i class="fa-regular fa-eye"></i><span class="hub-action-label">Dislexia</span>
                         </button>
                         <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
-                            <i class="fa-solid fa-person-walking"></i>
-                            <span class="hub-action-label">Movimento</span>
+                            <i class="fa-solid fa-person-walking"></i><span class="hub-action-label">Movimento</span>
                         </button>
                         <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span class="hub-action-label">Reset</span>
+                            <i class="fa-solid fa-rotate-left"></i><span class="hub-action-label">Reset</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Divisória -->
                 <div class="floating-hub-divider"></div>
 
-                <!-- Linha 2: Ajuda/Atendimento -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
                         <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="hub-action-label">AcolherIA</span>
+                            <i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span>
                         </a>
                         <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
-                            <i class="fa-regular fa-comments"></i>
-                            <span class="hub-action-label">Comunidade</span>
+                            <i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span>
                         </a>
                         <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
-                            <i class="fa-regular fa-circle-question"></i>
-                            <span class="hub-action-label">FAQ</span>
+                            <i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span>
                         </a>
                         <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
-                            <i class="fa-regular fa-envelope"></i>
-                            <span class="hub-action-label">E-mail</span>
+                            <i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span>
                         </a>
                         <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i>
-                            <span class="hub-action-label">WhatsApp</span>
+                            <i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span>
                         </a>
                     </div>
                 </div>
@@ -323,27 +507,19 @@
         </div>
     </div>
 
-    <!-- Overlay para fechar o hub ao clicar fora -->
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
-
-    </main>
 
     <script src="direitos.js"></script>
     <script src="/Acolher-IA/Acolher-IA.js"></script>
-    <!-- VLibras -->
-<div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
     </div>
-</div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-
-<script>
-    new window.VLibras.Widget(
-        'https://vlibras.gov.br/app'
-    );
-</script>
 </body>
 </html>
