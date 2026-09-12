@@ -1,41 +1,40 @@
 // =========================================================================
 // BIBLIOTECA.JS — Amor NeuroDivergente
-// Sidebar responsiva + Perfil + Acessibilidade + Hub Flutuante + Biblioteca
+// Sidebar + Perfil + Acessibilidade + Hub + Biblioteca + Leitor PDF/Texto
 // =========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     const body = document.body;
 
     // =============================================
-    // 0. SINCRONIZAÇÃO DE PERFIL
+    // 0. PERFIL
     // =============================================
     function syncProfile() {
         const savedName = localStorage.getItem('userName');
         const savedEmail = localStorage.getItem('userEmail');
         const savedAvatar = localStorage.getItem('userAvatar');
-        
         const sidebarAvatar = document.getElementById('sidebarAvatar');
         const sidebarUserName = document.getElementById('sidebarUserName');
         const sidebarUserEmail = document.getElementById('sidebarUserEmail');
-        
-        if (sidebarAvatar && savedAvatar) {
+
+        if (savedAvatar && sidebarAvatar) {
             sidebarAvatar.src = savedAvatar;
             sidebarAvatar.onerror = () => { sidebarAvatar.src = '/img/avatar-padrao.png'; };
         }
-        if (sidebarUserName && savedName) sidebarUserName.textContent = savedName;
-        if (sidebarUserEmail && savedEmail) sidebarUserEmail.textContent = savedEmail;
+        if (savedName && sidebarUserName) sidebarUserName.textContent = savedName;
+        if (savedEmail && sidebarUserEmail) sidebarUserEmail.textContent = savedEmail;
     }
     syncProfile();
     window.addEventListener('storage', (e) => {
-        if (e.key === 'userAvatar' || e.key === 'userName' || e.key === 'userEmail') syncProfile();
+        if (['userAvatar', 'userName', 'userEmail'].includes(e.key)) syncProfile();
     });
 
     // =============================================
-    // 1. SIDEBAR RESPONSIVA
+    // 1. SIDEBAR
     // =============================================
-    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
     const sidebar = document.getElementById('sidebar');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
 
     function openSidebar() {
@@ -43,29 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.add('open');
         if (sidebarOverlay) sidebarOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
-        if (sidebarToggleBtn) {
-            sidebarToggleBtn.setAttribute('aria-label', 'Fechar menu lateral');
-            sidebarToggleBtn.setAttribute('aria-expanded', 'true');
-        }
     }
-
     function closeSidebar() {
         if (!sidebar) return;
         sidebar.classList.remove('open');
         if (sidebarOverlay) sidebarOverlay.classList.remove('active');
         document.body.style.overflow = '';
-        if (sidebarToggleBtn) {
-            sidebarToggleBtn.setAttribute('aria-label', 'Abrir menu lateral');
-            sidebarToggleBtn.setAttribute('aria-expanded', 'false');
-        }
     }
-
     function toggleSidebar() {
-        if (sidebar.classList.contains('open')) {
-            closeSidebar();
-        } else {
-            openSidebar();
-        }
+        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
     }
 
     if (sidebarToggleBtn && sidebar) {
@@ -74,15 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleSidebar();
         });
     }
-
-    if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', closeSidebar);
-    }
-
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
-            closeSidebar();
-        }
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) closeSidebar();
     });
 
     // =============================================
@@ -90,13 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     const profileToggle = document.getElementById('profileToggle');
     const profileDetail = document.getElementById('profileDetail');
-    
     if (profileToggle && profileDetail) {
         profileToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const hidden = profileDetail.hasAttribute('hidden');
-            if (hidden) {
+            e.preventDefault(); e.stopPropagation();
+            const isHidden = profileDetail.hasAttribute('hidden');
+            if (isHidden) {
                 profileDetail.removeAttribute('hidden');
                 profileToggle.setAttribute('aria-expanded', 'true');
             } else {
@@ -104,11 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 profileToggle.setAttribute('aria-expanded', 'false');
             }
         });
-
         document.addEventListener('click', (e) => {
-            if (!profileDetail.hasAttribute('hidden') && 
-                !profileDetail.contains(e.target) && 
-                e.target !== profileToggle && 
+            if (!profileDetail.hasAttribute('hidden') &&
+                !profileDetail.contains(e.target) &&
                 !profileToggle.contains(e.target)) {
                 profileDetail.setAttribute('hidden', '');
                 profileToggle.setAttribute('aria-expanded', 'false');
@@ -117,324 +92,135 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =============================================
-    // 3. ACESSIBILIDADE NA SIDEBAR
+    // 3. ACESSIBILIDADE
     // =============================================
-    const a11yToggle = document.getElementById('a11yToggle');
-    const a11yOptions = document.getElementById('a11yOptions');
+    function gs(k, fb) { return localStorage.getItem('a11y_' + k) || fb; }
+    function ss(k, v) { localStorage.setItem('a11y_' + k, v); }
+    function usl(id, active) { const el = document.getElementById(id); if (el) el.textContent = active ? 'Ligado' : 'Desligado'; }
 
-    if (a11yToggle && a11yOptions) {
-        a11yToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const hidden = a11yOptions.hasAttribute('hidden');
-            if (hidden) {
-                a11yOptions.removeAttribute('hidden');
-                a11yToggle.setAttribute('aria-expanded', 'true');
-            } else {
-                a11yOptions.setAttribute('hidden', '');
-                a11yToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
+    function applySettings() {
+        if (gs('darkMode') === 'true') body.classList.add('a11y-dark-mode');
+        if (gs('highlightLinks') === 'true') body.classList.add('a11y-highlight-links');
+        if (gs('dyslexiaFont') === 'true') body.classList.add('a11y-dyslexia');
+        if (gs('reduceMotion') === 'true') body.classList.add('a11y-reduce-motion');
 
-        document.addEventListener('click', (e) => {
-            if (!a11yOptions.hasAttribute('hidden') && 
-                !a11yOptions.contains(e.target) && 
-                e.target !== a11yToggle && 
-                !a11yToggle.contains(e.target)) {
-                a11yOptions.setAttribute('hidden', '');
-                a11yToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !a11yOptions.hasAttribute('hidden')) {
-                a11yOptions.setAttribute('hidden', '');
-                a11yToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-    }
-
-    // =============================================
-    // 4. FUNÇÕES DE ACESSIBILIDADE
-    // =============================================
-    function getA11y(key, defaultValue = 'false') {
-        return localStorage.getItem('a11y_' + key) || defaultValue;
-    }
-
-    function setA11y(key, value) {
-        localStorage.setItem('a11y_' + key, value);
-    }
-
-    function updateStatus(id, isActive) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = isActive ? 'Ligado' : 'Desligado';
-    }
-
-    function applyA11ySettings() {
-        // Modo escuro
-        const isDarkMode = getA11y('darkMode') === 'true';
-        body.classList.toggle('a11y-dark-mode', isDarkMode);
-        updateStatus('darkModeStatus', isDarkMode);
-
-        // Destacar links
-        const isHighlightLinks = getA11y('highlightLinks') === 'true';
-        body.classList.toggle('a11y-highlight-links', isHighlightLinks);
-        updateStatus('linksStatus', isHighlightLinks);
-
-        // Fonte para dislexia
-        const isDyslexia = getA11y('dyslexiaFont') === 'true';
-        body.classList.toggle('a11y-dyslexia', isDyslexia);
-        updateStatus('dyslexiaStatus', isDyslexia);
-
-        // Reduzir animações
-        const isReducedMotion = getA11y('reduceMotion') === 'true';
-        body.classList.toggle('a11y-reduce-motion', isReducedMotion);
-        updateStatus('motionStatus', isReducedMotion);
-
-        // Tamanho do texto
-        const textSize = getA11y('textSize', 'normal');
+        const ts = gs('textSize', 'normal');
         const main = document.getElementById('mainContent') || document.querySelector('.main-content');
         if (main) {
             main.classList.remove('a11y-large-text', 'a11y-small-text');
-            if (textSize === 'large') main.classList.add('a11y-large-text');
-            if (textSize === 'small') main.classList.add('a11y-small-text');
+            if (ts === 'large') main.classList.add('a11y-large-text');
+            if (ts === 'small') main.classList.add('a11y-small-text');
         }
     }
 
-    // Aplica configurações iniciais
-    applyA11ySettings();
+    function handleA11yAction(action) {
+        const main = document.getElementById('mainContent') || document.querySelector('.main-content');
+        switch (action) {
+            case 'darkMode': {
+                const dm = gs('darkMode') === 'true';
+                ss('darkMode', dm ? 'false' : 'true');
+                body.classList.toggle('a11y-dark-mode', !dm);
+                updateHubStatus();
+                break;
+            }
+            case 'increaseText': {
+                const cs = gs('textSize', 'normal');
+                if (cs === 'large') { ss('textSize', 'normal'); if (main) main.classList.remove('a11y-large-text'); }
+                else { ss('textSize', 'large'); if (main) { main.classList.remove('a11y-small-text'); main.classList.add('a11y-large-text'); } }
+                break;
+            }
+            case 'decreaseText': {
+                const cz = gs('textSize', 'normal');
+                if (cz === 'small') { ss('textSize', 'normal'); if (main) main.classList.remove('a11y-small-text'); }
+                else { ss('textSize', 'small'); if (main) { main.classList.remove('a11y-large-text'); main.classList.add('a11y-small-text'); } }
+                break;
+            }
+            case 'highlightLinks': {
+                const hl = gs('highlightLinks') === 'true';
+                ss('highlightLinks', hl ? 'false' : 'true');
+                body.classList.toggle('a11y-highlight-links', !hl);
+                break;
+            }
+            case 'dyslexiaFont': {
+                const df = gs('dyslexiaFont') === 'true';
+                ss('dyslexiaFont', df ? 'false' : 'true');
+                body.classList.toggle('a11y-dyslexia', !df);
+                updateHubStatus();
+                break;
+            }
+            case 'reduceMotion': {
+                const rm = gs('reduceMotion') === 'true';
+                ss('reduceMotion', rm ? 'false' : 'true');
+                body.classList.toggle('a11y-reduce-motion', !rm);
+                updateHubStatus();
+                break;
+            }
+            case 'reset': {
+                ['darkMode', 'highlightLinks', 'dyslexiaFont', 'reduceMotion', 'textSize'].forEach(k => localStorage.removeItem('a11y_' + k));
+                body.classList.remove('a11y-dark-mode', 'a11y-highlight-links', 'a11y-dyslexia', 'a11y-reduce-motion');
+                if (main) main.classList.remove('a11y-large-text', 'a11y-small-text');
+                updateHubStatus();
+                break;
+            }
+        }
+    }
 
-    // Botões de acessibilidade na sidebar (se existirem)
     document.querySelectorAll('.a11y-option, .a11y-reset').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const action = btn.getAttribute('data-a11y');
-            const main = document.getElementById('mainContent') || document.querySelector('.main-content');
-
-            switch (action) {
-                case 'darkMode': {
-                    const current = getA11y('darkMode') === 'true';
-                    setA11y('darkMode', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-dark-mode', !current);
-                    updateStatus('darkModeStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'increaseText': {
-                    const current = getA11y('textSize', 'normal');
-                    if (current === 'large') {
-                        setA11y('textSize', 'normal');
-                        if (main) main.classList.remove('a11y-large-text');
-                    } else {
-                        setA11y('textSize', 'large');
-                        if (main) {
-                            main.classList.remove('a11y-small-text');
-                            main.classList.add('a11y-large-text');
-                        }
-                    }
-                    break;
-                }
-                case 'decreaseText': {
-                    const current = getA11y('textSize', 'normal');
-                    if (current === 'small') {
-                        setA11y('textSize', 'normal');
-                        if (main) main.classList.remove('a11y-small-text');
-                    } else {
-                        setA11y('textSize', 'small');
-                        if (main) {
-                            main.classList.remove('a11y-large-text');
-                            main.classList.add('a11y-small-text');
-                        }
-                    }
-                    break;
-                }
-                case 'highlightLinks': {
-                    const current = getA11y('highlightLinks') === 'true';
-                    setA11y('highlightLinks', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-highlight-links', !current);
-                    updateStatus('linksStatus', !current);
-                    break;
-                }
-                case 'dyslexiaFont': {
-                    const current = getA11y('dyslexiaFont') === 'true';
-                    setA11y('dyslexiaFont', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-dyslexia', !current);
-                    updateStatus('dyslexiaStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'reduceMotion': {
-                    const current = getA11y('reduceMotion') === 'true';
-                    setA11y('reduceMotion', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-reduce-motion', !current);
-                    updateStatus('motionStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'reset': {
-                    ['darkMode', 'highlightLinks', 'dyslexiaFont', 'reduceMotion', 'textSize'].forEach(key => {
-                        localStorage.removeItem('a11y_' + key);
-                    });
-                    body.classList.remove('a11y-dark-mode', 'a11y-highlight-links', 'a11y-dyslexia', 'a11y-reduce-motion');
-                    if (main) main.classList.remove('a11y-large-text', 'a11y-small-text');
-                    updateStatus('darkModeStatus', false);
-                    updateStatus('linksStatus', false);
-                    updateStatus('dyslexiaStatus', false);
-                    updateStatus('motionStatus', false);
-                    updateHubStatus();
-                    break;
-                }
-            }
+            e.preventDefault(); e.stopPropagation();
+            handleA11yAction(btn.getAttribute('data-a11y'));
         });
     });
+    applySettings();
 
     // =============================================
-    // 5. HUB FLUTUANTE - ACESSIBILIDADE
+    // 4. HUB FLUTUANTE
     // =============================================
     const hubToggle = document.getElementById('floatingHubToggle');
     const hubMenu = document.getElementById('floatingHubMenu');
     const overlay = document.getElementById('floatingOverlay');
 
     function toggleHub() {
+        if (!hubMenu || !overlay) return;
         const isOpen = !hubMenu.hidden;
         hubMenu.hidden = isOpen;
         overlay.hidden = isOpen;
-        hubToggle.setAttribute('aria-expanded', !isOpen);
+        if (hubToggle) hubToggle.setAttribute('aria-expanded', !isOpen);
     }
-
     function closeHub() {
+        if (!hubMenu || !overlay) return;
         hubMenu.hidden = true;
         overlay.hidden = true;
-        hubToggle.setAttribute('aria-expanded', 'false');
+        if (hubToggle) hubToggle.setAttribute('aria-expanded', 'false');
     }
 
-    if (hubToggle && hubMenu && overlay) {
-        hubToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            toggleHub();
-        });
+    if (hubToggle) hubToggle.addEventListener('click', (e) => { e.stopPropagation(); toggleHub(); });
+    if (overlay) overlay.addEventListener('click', closeHub);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHub(); });
 
-        overlay.addEventListener('click', closeHub);
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeHub();
-            }
-        });
-    }
-
-    // =============================================
-    // 6. FUNÇÕES DO HUB - ATUALIZAR STATUS
-    // =============================================
     function updateHubStatus() {
         const darkLabel = document.querySelector('.hub-action[data-a11y="darkMode"] .hub-action-label');
-        if (darkLabel) {
-            darkLabel.textContent = document.body.classList.contains('a11y-dark-mode') ? 'Claro' : 'Escuro';
-        }
+        if (darkLabel) darkLabel.textContent = body.classList.contains('a11y-dark-mode') ? 'Claro' : 'Escuro';
 
         const dyslexiaLabel = document.querySelector('.hub-action[data-a11y="dyslexiaFont"] .hub-action-label');
-        if (dyslexiaLabel) {
-            dyslexiaLabel.textContent = document.body.classList.contains('a11y-dyslexia') ? 'Ativo' : 'Dislexia';
-        }
+        if (dyslexiaLabel) dyslexiaLabel.textContent = body.classList.contains('a11y-dyslexia') ? 'Ativo' : 'Dislexia';
 
         const motionLabel = document.querySelector('.hub-action[data-a11y="reduceMotion"] .hub-action-label');
-        if (motionLabel) {
-            motionLabel.textContent = document.body.classList.contains('a11y-reduce-motion') ? 'Ativo' : 'Movimento';
-        }
+        if (motionLabel) motionLabel.textContent = body.classList.contains('a11y-reduce-motion') ? 'Ativo' : 'Movimento';
     }
-
     updateHubStatus();
 
-    // =============================================
-    // 7. AÇÕES DO HUB - ACESSIBILIDADE
-    // =============================================
     document.querySelectorAll('.hub-action[data-a11y]').forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', (e) => {
             e.stopPropagation();
-            const action = this.getAttribute('data-a11y');
-            const main = document.getElementById('mainContent') || document.querySelector('.main-content');
-
-            switch (action) {
-                case 'darkMode': {
-                    const current = getA11y('darkMode') === 'true';
-                    setA11y('darkMode', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-dark-mode', !current);
-                    updateStatus('darkModeStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'increaseText': {
-                    const current = getA11y('textSize', 'normal');
-                    if (current === 'large') {
-                        setA11y('textSize', 'normal');
-                        if (main) main.classList.remove('a11y-large-text');
-                    } else {
-                        setA11y('textSize', 'large');
-                        if (main) {
-                            main.classList.remove('a11y-small-text');
-                            main.classList.add('a11y-large-text');
-                        }
-                    }
-                    break;
-                }
-                case 'decreaseText': {
-                    const current = getA11y('textSize', 'normal');
-                    if (current === 'small') {
-                        setA11y('textSize', 'normal');
-                        if (main) main.classList.remove('a11y-small-text');
-                    } else {
-                        setA11y('textSize', 'small');
-                        if (main) {
-                            main.classList.remove('a11y-large-text');
-                            main.classList.add('a11y-small-text');
-                        }
-                    }
-                    break;
-                }
-                case 'dyslexiaFont': {
-                    const current = getA11y('dyslexiaFont') === 'true';
-                    setA11y('dyslexiaFont', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-dyslexia', !current);
-                    updateStatus('dyslexiaStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'reduceMotion': {
-                    const current = getA11y('reduceMotion') === 'true';
-                    setA11y('reduceMotion', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-reduce-motion', !current);
-                    updateStatus('motionStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'reset': {
-                    ['darkMode', 'highlightLinks', 'dyslexiaFont', 'reduceMotion', 'textSize'].forEach(key => {
-                        localStorage.removeItem('a11y_' + key);
-                    });
-                    body.classList.remove('a11y-dark-mode', 'a11y-highlight-links', 'a11y-dyslexia', 'a11y-reduce-motion');
-                    if (main) main.classList.remove('a11y-large-text', 'a11y-small-text');
-                    updateStatus('darkModeStatus', false);
-                    updateStatus('linksStatus', false);
-                    updateStatus('dyslexiaStatus', false);
-                    updateStatus('motionStatus', false);
-                    updateHubStatus();
-                    break;
-                }
-            }
-
+            handleA11yAction(item.getAttribute('data-a11y'));
             closeHub();
         });
     });
-
-    document.querySelectorAll('.hub-action[href]').forEach(link => {
-        link.addEventListener('click', function() {
-            closeHub();
-        });
-    });
+    document.querySelectorAll('.hub-action[href]').forEach(link => link.addEventListener('click', closeHub));
 
     // =============================================
-    // 8. HEADER SCROLL EFFECT
+    // 5. HEADER / SCROLL TOP / LOGOUT
     // =============================================
     const headerGlass = document.getElementById('headerGlass');
     if (headerGlass) {
@@ -443,470 +229,281 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // =============================================
-    // 9. LOGOUT
-    // =============================================
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
         if (confirm('Tem certeza que deseja sair?')) {
-            localStorage.removeItem('userLoggedIn');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userAvatar');
+            ['userLoggedIn', 'userName', 'userEmail', 'userAvatar'].forEach(k => localStorage.removeItem(k));
             window.location.href = '/login/login.html';
         }
     });
 
-    // =============================================
-    // 10. BANCO DE DADOS (Carregado do JSON)
-    // =============================================
-    let booksDatabase = [];
-    let categoriasRecomendadas = [
-        'Ficção Brasileira',
-        'Romance',
-        'Clássicos',
-        'Psicologia',
-        'Autoajuda',
-        'Infantil',
-        'Ficção Histórica'
-    ];
-
-    // =============================================
-    // 11. CARREGAR LIVROS DO JSON
-    // =============================================
-    async function carregarLivrosDoJSON() {
-        try {
-            const response = await fetch('/data/livros.json');
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            booksDatabase = data.livros || [];
-            
-            console.log(`✅ ${booksDatabase.length} livros carregados do JSON!`);
-            
-            renderDestaques();
-            renderCategoriasRecomendadas();
-            renderBooks();
-            
-            return booksDatabase;
-            
-        } catch (error) {
-            console.error('❌ Erro ao carregar livros do JSON:', error);
-            
-            // Fallback: usa dados locais
-            booksDatabase = getLivrosFallback();
-            renderDestaques();
-            renderCategoriasRecomendadas();
-            renderBooks();
-            
-            return booksDatabase;
-        }
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    if (scrollTopBtn) {
+        window.addEventListener('scroll', () => {
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     }
 
     // =============================================
-    // 12. FALLBACK (caso o JSON não carregue)
+    // 6. BANCO DE LIVROS
     // =============================================
+    let booksDatabase = [];
+
+    async function carregarLivrosDoJSON() {
+        try {
+            const res = await fetch('/data/livros.json');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            booksDatabase = data.livros || [];
+            console.log(`✅ ${booksDatabase.length} livros carregados do JSON`);
+        } catch (err) {
+            console.warn('⚠️ JSON não encontrado. Usando fallback local.', err);
+            booksDatabase = getLivrosFallback();
+        }
+
+        renderDestaques();
+        renderContinueLendo();
+        renderBooks();
+        renderRecomendados();
+    }
+
+    // FALLBACK (mantido do seu arquivo original, resumido)
     function getLivrosFallback() {
         return [
             {
-                id: 1,
-                title: 'O Silêncio das Marés',
-                author: 'Mariana K. Alves',
-                cover: '/img/livro-1.png',
-                genre: ['Ficção', 'Drama', 'Realismo Mágico'],
-                age: 'adulto',
-                pages: 38,
-                year: 2024,
-                publisher: 'Edições Comunidade',
+                id: 1, title: 'O Silêncio das Marés', author: 'Mariana K. Alves',
+                cover: '/img/livro-1.png', genre: ['Ficção','Drama'],
+                age: 'adulto', pages: 38, year: 2024, publisher: 'Edições Comunidade',
                 sinopse: 'Em uma vila pesqueira esquecida pelo tempo, as marés trazem não apenas peixes, mas memórias de quem já se foi.',
-                category: 'ficcao',
-                destaque: true,
-                recomendado: 'Literatura Comunitária',
+                category: 'ficcao', destaque: true, recomendado: 'Literatura Comunitária',
                 isTexto: true,
                 textoCompleto: `### Prólogo — Quando o mar parou\n\nNaquela noite, o mar ficou em silêncio...`,
                 download: null
             },
             {
-                id: 2,
-                title: 'O Mapa das Almas Perdidas',
-                author: 'Thiago S. Mendes',
-                cover: '/img/livro-2.png',
-                genre: ['Filosofia', 'Poesia'],
-                age: 'adulto',
-                pages: 208,
-                year: 2023,
-                publisher: 'Coletivo Editorial',
-                sinopse: 'Uma coletânea de poemas e reflexões escritas por moradores de uma periferia, mapeando afetos, dores e resistências.',
-                category: 'autoajuda',
-                destaque: true,
-                recomendado: 'Poesia Marginal',
+                id: 2, title: 'O Mapa das Almas Perdidas', author: 'Thiago S. Mendes',
+                cover: '/img/livro-2.png', genre: ['Filosofia','Poesia'],
+                age: 'adulto', pages: 208, year: 2023, publisher: 'Coletivo Editorial',
+                sinopse: 'Uma coletânea de poemas e reflexões sobre afetos, dores e resistências.',
+                category: 'autoajuda', destaque: true, recomendado: 'Poesia Marginal',
                 isTexto: true,
                 textoCompleto: `### Poema 1 — O mapa\n\nNo papel rasgado,\na cidade inteira cabe...`,
                 download: null
             },
             {
-                id: 3,
-                title: 'O Jardim das Horas Quebradas',
-                author: 'Carla D. Rocha',
-                cover: '/img/livro-3.png',
-                genre: ['Romance', 'Fantasia'],
-                age: 'jovem',
-                pages: 352,
-                year: 2024,
-                publisher: 'Selva Urbana',
+                id: 3, title: 'O Jardim das Horas Quebradas', author: 'Carla D. Rocha',
+                cover: '/img/livro-3.png', genre: ['Romance','Fantasia'],
+                age: 'jovem', pages: 352, year: 2024, publisher: 'Selva Urbana',
                 sinopse: 'Uma jovem encontra um jardim abandonado onde as flores desabrocham apenas em horários específicos.',
-                category: 'romance',
-                destaque: true,
-                recomendado: 'Fantasia Jovem',
+                category: 'romance', destaque: true, recomendado: 'Fantasia Jovem',
                 isTexto: true,
                 textoCompleto: `### Capítulo 1 — O jardim escondido\n\nO vento carregava cheiro de terra molhada...`,
-                download: null
-            },
-            {
-                id: 4,
-                title: 'A Última Receita de Tinta',
-                author: 'Jorge L. Arantes',
-                cover: '/img/livro-4.png',
-                genre: ['Ficção', 'História'],
-                age: 'adulto',
-                pages: 276,
-                year: 2022,
-                publisher: 'Tinta & Papel Coletivo',
-                sinopse: 'Na década de 1940, um mestre tipógrafo guardava a receita de uma tinta indestrutível.',
-                category: 'ficcao',
-                destaque: false,
-                recomendado: 'Ficção Histórica',
-                isTexto: true,
-                textoCompleto: `### Prólogo — A tinta vermelha\n\nO velho mestre guardava o segredo...`,
-                download: null
-            },
-            {
-                id: 5,
-                title: 'Sete Luas sobre Cinza',
-                author: 'Eduarda F. Nunes',
-                cover: '/img/livro-5.png',
-                genre: ['Ficção', 'Distopia'],
-                age: 'adulto',
-                pages: 398,
-                year: 2025,
-                publisher: 'Nuvem Negra Edições',
-                sinopse: 'Em uma cidade coberta por cinzas vulcânicas, sete luas aparecem no céu uma vez por século.',
-                category: 'ficcao',
-                destaque: true,
-                recomendado: 'Distopia',
-                isTexto: true,
-                textoCompleto: `### Prólogo — A primeira lua\n\nO céu escureceu como nunca antes...`,
-                download: null
-            },
-            {
-                id: 6,
-                title: 'A Biblioteca dos Sonhos Esquecidos',
-                author: 'Lucas P. Moreira',
-                cover: '/img/livro-1.png',
-                genre: ['Romance', 'Clássico'],
-                age: 'adulto',
-                pages: 286,
-                year: 2021,
-                publisher: 'Acervo Popular',
-                sinopse: 'Uma biblioteca comunitária guarda livros que ninguém mais lembra.',
-                category: 'romance',
-                destaque: false,
-                recomendado: 'Romance Contemporâneo',
-                isTexto: true,
-                textoCompleto: `### Capítulo 1 — O livro esquecido\n\nO cheiro de papel velho dominava o ambiente...`,
-                download: null
-            },
-            {
-                id: 7,
-                title: 'O Eco do Nono Trovão',
-                author: 'Mônica C. Rios',
-                cover: '/img/livro-2.png',
-                genre: ['Ficção', 'Infantil'],
-                age: 'infantil',
-                pages: 68,
-                year: 2023,
-                publisher: 'Ciranda de Histórias',
-                sinopse: 'Numa aldeia onde os trovões têm nomes, o nono trovão nunca foi ouvido.',
-                category: 'ficcao',
-                destaque: false,
-                recomendado: 'Infantil',
-                isTexto: true,
-                textoCompleto: `### Era uma vez...\n\nEm uma aldeia bem no meio da floresta...`,
-                download: null
-            },
-            {
-                id: 8,
-                title: 'O Alfaiate de Estrelas',
-                author: 'Rafaela A. Souza',
-                cover: '/img/livro-3.png',
-                genre: ['Ficção', 'Fantasia'],
-                age: 'infantil',
-                pages: 112,
-                year: 2024,
-                publisher: 'Lunetas Editora',
-                sinopse: 'Um alfaiate que mora no topo da montanha mais alta costura estrelas que caem do céu.',
-                category: 'ficcao',
-                destaque: false,
-                recomendado: 'Fantasia Infantil',
-                isTexto: true,
-                textoCompleto: `### O primeiro fio\n\nLá no alto da montanha mais alta...`,
-                download: null
-            },
-            {
-                id: 9,
-                title: 'A Estrada sem Nome',
-                author: 'Sergio M. Lins',
-                cover: '/img/livro-4.png',
-                genre: ['Autoajuda', 'Filosofia'],
-                age: 'adulto',
-                pages: 224,
-                year: 2023,
-                publisher: 'Caminhos Coletivos',
-                sinopse: 'Moradores de uma comunidade rural escreveram coletivamente este livro sobre os desafios de viver sem endereço formal.',
-                category: 'autoajuda',
-                destaque: false,
-                recomendado: 'Autoajuda Social',
-                isTexto: true,
-                textoCompleto: `### O começo da estrada\n\nNão tinha placa. Não tinha nome...`,
-                download: null
-            },
-            {
-                id: 10,
-                title: 'Memórias do Fogo e da Névoa',
-                author: 'Fernanda T. Barros',
-                cover: '/img/livro-5.png',
-                genre: ['Romance', 'Clássico'],
-                age: 'jovem',
-                pages: 304,
-                year: 2022,
-                publisher: 'Fogaréu Edições',
-                sinopse: 'Duas famílias rivais em um vale coberto por névoa constante.',
-                category: 'romance',
-                destaque: false,
-                recomendado: 'Romance Juvenil',
-                isTexto: true,
-                textoCompleto: `### O vale da névoa\n\nO sol nunca alcançava o fundo do vale...`,
-                download: null
-            },
-            {
-                id: 11,
-                title: 'O Relógio de Areia Vermelha',
-                author: 'André C. Melo',
-                cover: '/img/livro-1.png',
-                genre: ['Romance', 'Drama'],
-                age: 'jovem',
-                pages: 256,
-                year: 2025,
-                publisher: 'Areia & Tempo',
-                sinopse: 'Um relógio de areia com grãos vermelhos é encontrado em uma garagem comunitária.',
-                category: 'romance',
-                destaque: false,
-                recomendado: 'Drama Juvenil',
-                isTexto: true,
-                textoCompleto: `### O encontro\n\nO relógio estava coberto de poeira...`,
-                download: null
-            },
-            {
-                id: 12,
-                title: 'Cartas para um Lugar Inexistente',
-                author: 'Beatriz L. Castro',
-                cover: '/img/livro-2.png',
-                genre: ['Romance', 'Clássico'],
-                age: 'adulto',
-                pages: 196,
-                year: 2020,
-                publisher: 'Correio Invisível',
-                sinopse: 'Uma coletânea de cartas trocadas entre moradores de uma comunidade que foi demolida.',
-                category: 'romance',
-                destaque: false,
-                recomendado: 'Clássicos Modernos',
-                isTexto: true,
-                textoCompleto: `### Carta I\n\nQuerido amigo...`,
                 download: null
             }
         ];
     }
 
     // =============================================
-    // 13. FUNÇÕES DE RENDERIZAÇÃO
+    // 7. RENDER — DESTAQUES (carrossel)
     // =============================================
-
-    // RENDERIZAR DESTAQUES (CARROSSEL)
     function renderDestaques() {
-        const pista = document.getElementById('carrosselPista');
-        if (!pista) return;
-        
-        const destaques = booksDatabase.filter(book => book.destaque === true);
-        
-        if (destaques.length === 0) {
-            pista.innerHTML = '<div class="no-books">Nenhum livro em destaque no momento.</div>';
+        const track = document.getElementById('carrosselPista');
+        if (!track) return;
+
+        const destaques = booksDatabase.filter(b => b.destaque);
+        if (!destaques.length) {
+            track.innerHTML = `<p style="color:var(--text-muted);padding:20px;">Nenhum livro em destaque no momento.</p>`;
             return;
         }
-        
-        pista.innerHTML = destaques.map(book => `
-            <div class="card-livro-destaque" onclick="openBookModal(${book.id})" role="button" aria-label="Ver detalhes de ${book.title}">
-                <div class="capa-livro">
-                    <img src="${book.cover}" alt="${book.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+        track.innerHTML = destaques.map(book => `
+            <div class="book-spine" onclick="openBookModal(${book.id})" role="button" tabindex="0" aria-label="Ver detalhes de ${book.title}">
+                <div class="book-spine__cover">
+                    <img src="${book.cover}" alt="${book.title}" loading="lazy"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                     <div class="book-placeholder" style="display:none;"><i class="fa-solid fa-book"></i></div>
                 </div>
+                <h3 class="book-spine__title">${escapeHtml(book.title)}</h3>
+                <p class="book-spine__author">${escapeHtml(book.author)}</p>
             </div>
         `).join('');
     }
 
-    // RENDERIZAR CATEGORIAS RECOMENDADAS
-    function renderCategoriasRecomendadas() {
-        const container = document.getElementById('containerCategorias');
-        if (!container) return;
+    // =============================================
+    // 8. RENDER — CONTINUE LENDO
+    // =============================================
+    function renderContinueLendo() {
+        const grid = document.getElementById('continueGrid');
+        if (!grid) return;
 
-        let html = '';
-        
-        categoriasRecomendadas.forEach(categoria => {
-            const livrosCategoria = booksDatabase.filter(book => book.recomendado === categoria);
-            
-            if (livrosCategoria.length === 0) return;
+        // Simula histórico de leitura (idealmente viria do localStorage)
+        let historico = [];
+        try {
+            historico = JSON.parse(localStorage.getItem('biblioteca_historico') || '[]');
+        } catch { historico = []; }
 
-            html += `
-                <div class="categoria-recomendada">
-                    <div class="categoria-header">
-                        <h2><i class="fa-solid fa-star" style="color: #fbbf24; margin-right: 10px;"></i> ${categoria}</h2>
-                        <span class="categoria-count">${livrosCategoria.length} livro${livrosCategoria.length !== 1 ? 's' : ''}</span>
+        if (!historico.length) {
+            grid.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:32px 20px;">
+                    <i class="fa-solid fa-bookmark" style="font-size:32px;color:var(--text-muted);opacity:0.5;display:block;margin-bottom:12px;"></i>
+                    <p style="color:var(--text-muted);font-size:14px;">Você ainda não começou nenhum livro.<br>Escolha um da biblioteca para começar!</p>
+                </div>`;
+            return;
+        }
+
+        grid.innerHTML = historico.slice(0, 3).map(item => {
+            const book = booksDatabase.find(b => b.id === item.id);
+            if (!book) return '';
+            return `
+                <article class="continue-card">
+                    <div class="continue-card__cover">
+                        <img src="${book.cover}" alt="${book.title}" loading="lazy">
                     </div>
-                    <div class="categoria-grid">
-                        ${livrosCategoria.map(book => `
-                            <div class="book-card" onclick="openBookModal(${book.id})" role="button" aria-label="Ver livro ${book.title}">
-                                <div class="book-card-image">
-                                    <img src="${book.cover}" alt="${book.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="book-placeholder" style="display:none; font-size:32px; color:var(--text-muted);"><i class="fa-solid fa-book"></i></div>
-                                    <span class="book-card-badge">${book.age === 'infantil' ? '🧒' : book.age === 'jovem' ? '🧑‍🎓' : '👨‍💼'}</span>
-                                </div>
-                                <div class="book-card-title">${book.title}</div>
-                                <div class="book-card-author">${book.author}</div>
+                    <div class="continue-card__body">
+                        <h3>${escapeHtml(book.title)}</h3>
+                        <p class="continue-card__author">${escapeHtml(book.author)}</p>
+                        <div class="continue-card__progress">
+                            <div class="continue-progress-bar">
+                                <div class="continue-progress-fill" style="width: ${item.percent || 0}%;"></div>
                             </div>
-                        `).join('')}
+                            <span class="continue-card__percent">${item.percent || 0}% concluído</span>
+                        </div>
+                        <a href="#" onclick="event.preventDefault();abrirLeitor(${book.id});" class="btn-primary btn-small">
+                            Continuar <i class="fa-solid fa-arrow-right"></i>
+                        </a>
                     </div>
-                </div>
+                </article>
             `;
-        });
-
-        container.innerHTML = html;
+        }).join('');
     }
 
-    // RENDERIZAR TODOS OS LIVROS (GRID)
+    // =============================================
+    // 9. RENDER — TODOS OS LIVROS
+    // =============================================
     function renderBooks() {
-        const booksGrid = document.getElementById('booksGrid');
-        if (!booksGrid) return;
+        const grid = document.getElementById('booksGrid');
+        const counter = document.getElementById('booksCounter');
+        if (!grid) return;
 
         let filtered = [...booksDatabase];
-        
-        // Filtro de idade
-        const activeFilter = document.querySelector('.filter-btn.active');
-        if (activeFilter) {
-            const filter = activeFilter.getAttribute('data-filter');
+
+        const activeTab = document.querySelector('.filter-tab.active');
+        if (activeTab) {
+            const filter = activeTab.getAttribute('data-filter');
             if (filter !== 'todos') {
-                filtered = filtered.filter(book => book.age === filter || book.category === filter);
+                filtered = filtered.filter(b => b.category === filter || b.age === filter);
             }
         }
 
-        // Filtro de busca
-        const searchInput = document.getElementById('bookSearch');
-        if (searchInput && searchInput.value.trim()) {
-            const term = searchInput.value.toLowerCase().trim();
-            filtered = filtered.filter(book =>
-                book.title.toLowerCase().includes(term) ||
-                book.author.toLowerCase().includes(term) ||
-                book.genre.some(g => g.toLowerCase().includes(term))
+        const search = document.getElementById('bookSearch');
+        if (search && search.value.trim()) {
+            const term = search.value.toLowerCase().trim();
+            filtered = filtered.filter(b =>
+                b.title.toLowerCase().includes(term) ||
+                b.author.toLowerCase().includes(term) ||
+                (b.genre || []).some(g => g.toLowerCase().includes(term))
             );
         }
 
-        // Atualização do contador
-        const booksCounter = document.getElementById('booksCounter');
-        if (booksCounter) {
-            booksCounter.textContent = `${filtered.length} livro${filtered.length !== 1 ? 's' : ''} encontrado${filtered.length !== 1 ? 's' : ''}`;
-        }
+        if (counter) counter.textContent = `${filtered.length} livro${filtered.length !== 1 ? 's' : ''} encontrado${filtered.length !== 1 ? 's' : ''}`;
 
-        if (filtered.length === 0) {
-            booksGrid.innerHTML = `
-                <div class="no-books" style="grid-column:1/-1; text-align:center; padding:40px 20px;">
-                    <i class="fa-solid fa-book-open" style="font-size:40px; color:var(--text-muted); display:block; margin-bottom:12px;"></i>
-                    <h3 style="font-size:18px; font-weight:700; color:var(--text-dark); margin-bottom:4px;">Nenhum livro encontrado</h3>
-                    <p style="color:var(--text-muted);">Tente outro filtro ou termo de busca.</p>
-                </div>
-            `;
+        if (!filtered.length) {
+            grid.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                    <i class="fa-solid fa-book-open" style="font-size:48px;color:var(--text-muted);opacity:0.5;display:block;margin-bottom:16px;"></i>
+                    <h3 style="font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">Nenhum livro encontrado</h3>
+                    <p style="color:var(--text-muted);font-size:14px;">Tente outro filtro ou termo de busca.</p>
+                </div>`;
             return;
         }
 
-        booksGrid.innerHTML = filtered.map(book => `
-            <div class="book-card" onclick="openBookModal(${book.id})" role="button" aria-label="Ver livro ${book.title}">
-                <div class="book-card-image">
-                    <img src="${book.cover}" alt="${book.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="book-placeholder" style="display:none; font-size:32px; color:var(--text-muted);"><i class="fa-solid fa-book"></i></div>
-                    <span class="book-card-badge">${book.age === 'infantil' ? '🧒' : book.age === 'jovem' ? '🧑‍🎓' : '👨‍💼'}</span>
+        grid.innerHTML = filtered.map(book => `
+            <article class="book-card" onclick="openBookModal(${book.id})" role="button" tabindex="0" aria-label="Ver livro ${book.title}">
+                <div class="book-card__cover">
+                    <img src="${book.cover}" alt="${book.title}" loading="lazy"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="book-placeholder" style="display:none;"><i class="fa-solid fa-book"></i></div>
+                    <span class="book-card__badge">${book.age === 'infantil' ? '🧒' : book.age === 'jovem' ? '🧑‍🎓' : '👨‍💼'}</span>
                 </div>
-                <div class="book-card-title">${book.title}</div>
-                <div class="book-card-author">${book.author}</div>
-            </div>
+                <h3 class="book-card__title">${escapeHtml(book.title)}</h3>
+                <p class="book-card__author">${escapeHtml(book.author)}</p>
+            </article>
         `).join('');
     }
 
     // =============================================
-    // 14. FILTROS E BUSCA
+    // 10. RENDER — RECOMENDADOS
     // =============================================
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    function renderRecomendados() {
+        const grid = document.getElementById('recommendedGrid');
+        if (!grid) return;
+
+        const recomendados = booksDatabase.filter(b => b.recomendado).slice(0, 4);
+        if (!recomendados.length) {
+            grid.innerHTML = `<p style="color:var(--text-muted);text-align:center;grid-column:1/-1;">Em breve teremos recomendações personalizadas.</p>`;
+            return;
+        }
+
+        grid.innerHTML = recomendados.map(book => `
+            <article class="book-card" onclick="openBookModal(${book.id})" role="button" tabindex="0">
+                <div class="book-card__cover">
+                    <img src="${book.cover}" alt="${book.title}" loading="lazy">
+                    <div class="book-placeholder" style="display:none;"><i class="fa-solid fa-book"></i></div>
+                </div>
+                <h3 class="book-card__title">${escapeHtml(book.title)}</h3>
+                <p class="book-card__author">${escapeHtml(book.author)}</p>
+            </article>
+        `).join('');
+    }
+
+    // =============================================
+    // 11. FILTROS E BUSCA
+    // =============================================
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.filter-tab').forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
             renderBooks();
         });
     });
 
     const searchInput = document.getElementById('bookSearch');
     if (searchInput) {
-        let debounceTimeout;
+        let debounce;
         searchInput.addEventListener('input', () => {
-            clearTimeout(debounceTimeout);
-            debounceTimeout = setTimeout(() => {
-                renderBooks();
-            }, 300);
+            clearTimeout(debounce);
+            debounce = setTimeout(renderBooks, 300);
         });
     }
 
     // =============================================
-    // 15. CARROSSEL
+    // 12. CARROSSEL DE DESTAQUES
     // =============================================
-    let currentSlide = 0;
-    const carrosselPista = document.getElementById('carrosselPista');
-
-    function moverCarrossel(direcao) {
-        if (!carrosselPista) return;
-        const slides = carrosselPista.children;
-        const totalSlides = slides.length;
-        if (totalSlides === 0) return;
-
-        currentSlide = (currentSlide + direcao + totalSlides) % totalSlides;
-        const slideWidth = slides[0]?.offsetWidth || 200;
-        const gap = 16;
-        const offset = currentSlide * (slideWidth + gap);
-        carrosselPista.style.transform = `translateX(-${offset}px)`;
-    }
-
-    document.getElementById('setaEsquerda')?.addEventListener('click', () => moverCarrossel(-1));
-    document.getElementById('setaDireita')?.addEventListener('click', () => moverCarrossel(1));
+    const track = document.getElementById('carrosselPista');
+    document.getElementById('setaEsquerda')?.addEventListener('click', () => {
+        track?.scrollBy({ left: -240, behavior: 'smooth' });
+    });
+    document.getElementById('setaDireita')?.addEventListener('click', () => {
+        track?.scrollBy({ left: 240, behavior: 'smooth' });
+    });
 
     // =============================================
-    // 16. MODAL DO LIVRO (openBookModal)
+    // 13. MODAL DO LIVRO
     // =============================================
-    window.openBookModal = function(bookId) {
+    window.openBookModal = function (bookId) {
         const book = booksDatabase.find(b => b.id == bookId);
         if (!book) return;
 
-        const overlay = document.getElementById('bookModalOverlay');
+        const modalOverlay = document.getElementById('bookModalOverlay');
         const content = document.getElementById('bookModalContent');
-
-        if (!overlay || !content) return;
+        if (!modalOverlay || !content) return;
 
         const temTexto = book.isTexto && book.textoCompleto;
         const temPDF = book.download;
@@ -914,36 +511,36 @@ document.addEventListener('DOMContentLoaded', () => {
         content.innerHTML = `
             <div class="book-modal-top">
                 <div class="book-modal-cover">
-                    <img src="${book.cover}" alt="${book.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="book-placeholder" style="display:none; font-size:40px; color:var(--text-muted);"><i class="fa-solid fa-book"></i></div>
+                    <img src="${book.cover}" alt="${book.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="book-placeholder" style="display:none;font-size:40px;color:var(--text-muted);"><i class="fa-solid fa-book"></i></div>
                 </div>
                 <div class="book-modal-details">
-                    <h2>${book.title}</h2>
-                    <div class="book-modal-author">${book.author}</div>
+                    <h2>${escapeHtml(book.title)}</h2>
+                    <p class="book-modal-author">${escapeHtml(book.author)}</p>
                     <div class="book-modal-tags">
-                        ${book.genre.map(g => `<span>${g}</span>`).join('')}
+                        ${(book.genre || []).map(g => `<span>${escapeHtml(g)}</span>`).join('')}
                         <span>${book.age === 'infantil' ? '🧒 Infantil' : book.age === 'jovem' ? '🧑‍🎓 Jovem' : '👨‍💼 Adulto'}</span>
-                        ${book.recomendado ? `<span>⭐ ${book.recomendado}</span>` : ''}
+                        ${book.recomendado ? `<span>⭐ ${escapeHtml(book.recomendado)}</span>` : ''}
                     </div>
                     <div class="book-modal-meta">
                         <span><i class="fa-regular fa-clock"></i> ${book.pages} páginas</span>
                         <span><i class="fa-regular fa-calendar"></i> ${book.year}</span>
-                        <span><i class="fa-regular fa-building"></i> ${book.publisher}</span>
+                        <span><i class="fa-regular fa-building"></i> ${escapeHtml(book.publisher || '—')}</span>
                     </div>
-                    <div class="book-modal-sinopse">${book.sinopse}</div>
+                    <p class="book-modal-sinopse">${escapeHtml(book.sinopse)}</p>
                     <div class="book-modal-actions">
                         ${(temTexto || temPDF) ? `
-                            <button class="book-modal-btn book-modal-btn-download" onclick="abrirLeitor(${book.id})" style="background: #7c3aed; color: #fff;">
-                                <i class="fa-solid fa-book-open"></i> Ler Livro
+                            <button class="book-modal-btn book-modal-btn-download" onclick="abrirLeitor(${book.id})">
+                                <i class="fa-solid fa-book-open"></i> Ler livro
                             </button>
                         ` : ''}
                         ${temPDF ? `
-                            <a href="${book.download}" target="_blank" rel="noopener" class="book-modal-btn book-modal-btn-secondary" style="border-color: #10b981; color: #10b981;">
+                            <a href="${book.download}" target="_blank" rel="noopener" class="book-modal-btn book-modal-btn-secondary">
                                 <i class="fa-solid fa-download"></i> Baixar PDF
                             </a>
                         ` : ''}
                         ${(!temTexto && !temPDF) ? `
-                            <span style="font-size:13px; color:var(--text-muted); font-style:italic;">📖 Livro disponível em breve</span>
+                            <span style="font-size:13px;color:var(--text-muted);font-style:italic;">📖 Disponível em breve</span>
                         ` : ''}
                         <button class="book-modal-btn book-modal-btn-secondary" onclick="closeBookModal()">
                             <i class="fa-solid fa-xmark"></i> Fechar
@@ -953,11 +550,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        overlay.hidden = false;
+        modalOverlay.hidden = false;
         document.body.style.overflow = 'hidden';
     };
 
-    window.closeBookModal = function() {
+    window.closeBookModal = function () {
         const overlay = document.getElementById('bookModalOverlay');
         if (overlay) {
             overlay.hidden = true;
@@ -965,422 +562,308 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    document.getElementById('bookModalClose')?.addEventListener('click', closeBookModal);
-    document.getElementById('bookModalBg')?.addEventListener('click', closeBookModal);
+    document.getElementById('bookModalClose')?.addEventListener('click', window.closeBookModal);
+    document.getElementById('bookModalBg')?.addEventListener('click', window.closeBookModal);
 
     // =============================================
-    // 17. LEITOR DE PDF E TEXTO
+    // 14. LEITOR (PDF + Texto)
     // =============================================
-
-    function carregarPdfJs() {
-        return new Promise((resolve) => {
-            if (typeof pdfjsLib !== 'undefined') {
-                resolve(pdfjsLib);
-                return;
-            }
-            
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
-            script.onload = () => {
-                const workerScript = document.createElement('script');
-                workerScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-                workerScript.onload = () => resolve(pdfjsLib);
-                document.head.appendChild(workerScript);
-            };
-            document.head.appendChild(script);
-        });
-    }
-
     const leitorEstado = {
         pdfDoc: null,
         paginaAtual: 1,
         totalPaginas: 0,
         escala: 1.0,
         darkMode: false,
-        fullscreen: false,
-        livroAtual: null,
-        pdfUrl: null,
         isTexto: false,
         textoPaginas: [],
-        palavrasPorPagina: 300
+        palavrasPorPagina: 300,
+        livroAtual: null
     };
 
-    const leitorElements = {
-        overlay: document.getElementById('leituraModalOverlay'),
-        bg: document.getElementById('leituraModalBg'),
-        modal: document.querySelector('.leitura-modal'),
-        titulo: document.getElementById('leituraTitulo'),
-        autor: document.getElementById('leituraAutor'),
-        canvas: document.getElementById('leituraPdfCanvas'),
-        container: document.getElementById('leituraPdfContainer'),
-        pageNum: document.getElementById('leituraPageNum'),
-        pageCount: document.getElementById('leituraPageCount'),
-        prevBtn: document.getElementById('leituraPrevPage'),
-        nextBtn: document.getElementById('leituraNextPage'),
-        zoomIn: document.getElementById('leituraZoomIn'),
-        zoomOut: document.getElementById('leituraZoomOut'),
-        zoomLevel: document.getElementById('leituraZoomLevel'),
-        fullscreenBtn: document.getElementById('leituraFullscreen'),
-        darkModeBtn: document.getElementById('leituraDarkMode'),
-        fecharBtn: document.getElementById('leituraFechar'),
-        progressoBar: document.getElementById('leituraProgressoPreenchido'),
-        progressoTexto: document.getElementById('leituraProgressoTexto')
+    // ATENÇÃO: IDs atualizados para o novo HTML (reading-* em vez de leitura-*)
+    const leitorEl = {
+        overlay: document.getElementById('readingModalOverlay'),
+        bg: document.getElementById('readingModalBg'),
+        modal: document.getElementById('readingModal'),
+        titulo: document.getElementById('readingTitle'),
+        autor: document.getElementById('readingAuthor'),
+        canvas: document.getElementById('readingPdfCanvas'),
+        container: document.getElementById('readingPdfContainer'),
+        pageNum: document.getElementById('readingPageNum'),
+        pageCount: document.getElementById('readingPageCount'),
+        prevBtn: document.getElementById('readingPrevPage'),
+        nextBtn: document.getElementById('readingNextPage'),
+        zoomIn: document.getElementById('readingZoomIn'),
+        zoomOut: document.getElementById('readingZoomOut'),
+        zoomLevel: document.getElementById('readingZoomLevel'),
+        fullscreenBtn: document.getElementById('readingFullscreen'),
+        darkModeBtn: document.getElementById('readingDarkMode'),
+        fecharBtn: document.getElementById('readingClose'),
+        progressoBar: document.getElementById('readingProgressFill'),
+        progressoTexto: document.getElementById('readingProgressText')
     };
 
-    // =============================================
-    // ABRIR LEITOR
-    // =============================================
-    window.abrirLeitor = async function(bookId) {
+    function carregarPdfJs() {
+        return new Promise((resolve) => {
+            if (typeof pdfjsLib !== 'undefined') { resolve(pdfjsLib); return; }
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
+            script.onload = () => {
+                const worker = document.createElement('script');
+                worker.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+                worker.onload = () => resolve(pdfjsLib);
+                document.head.appendChild(worker);
+            };
+            document.head.appendChild(script);
+        });
+    }
+
+    window.abrirLeitor = async function (bookId) {
         const book = booksDatabase.find(b => b.id == bookId);
-        if (!book) {
-            console.error('❌ Livro não encontrado!');
-            alert('Livro não encontrado.');
-            return;
-        }
-
-        console.log('📖 Abrindo livro:', book.title);
+        if (!book) return;
 
         leitorEstado.livroAtual = book;
-        leitorElements.titulo.textContent = book.title;
-        leitorElements.autor.textContent = `por ${book.author}`;
+        if (leitorEl.titulo) leitorEl.titulo.textContent = book.title;
+        if (leitorEl.autor) leitorEl.autor.textContent = `por ${book.author}`;
 
-        leitorElements.overlay.hidden = false;
+        if (leitorEl.overlay) leitorEl.overlay.hidden = false;
         document.body.style.overflow = 'hidden';
 
+        // Registra no histórico
+        salvarHistorico(book.id);
+
         if (book.isTexto && book.textoCompleto) {
-            console.log('📝 MODO TEXTO detectado!');
             abrirLeitorTexto(book);
         } else if (book.download) {
-            console.log('📄 MODO PDF detectado!');
             await abrirLeitorPDF(book);
         } else {
             alert('Este livro não está disponível para leitura.');
-            fecharLeitor();
+            window.fecharLeitor();
         }
     };
 
-    // =============================================
-    // LEITOR DE TEXTO
-    // =============================================
+    function salvarHistorico(bookId) {
+        let historico = [];
+        try { historico = JSON.parse(localStorage.getItem('biblioteca_historico') || '[]'); } catch {}
+        const idx = historico.findIndex(h => h.id === bookId);
+        if (idx >= 0) {
+            historico[idx].ultimaLeitura = Date.now();
+        } else {
+            historico.unshift({ id: bookId, percent: 0, ultimaLeitura: Date.now() });
+        }
+        localStorage.setItem('biblioteca_historico', JSON.stringify(historico.slice(0, 10)));
+    }
+
     function abrirLeitorTexto(book) {
-        console.log('📝 Iniciando leitor de texto para:', book.title);
-        
-        if (!book.textoCompleto || book.textoCompleto.length === 0) {
-            console.error('❌ Texto vazio!');
-            alert('Este livro não tem conteúdo.');
-            fecharLeitor();
-            return;
-        }
-
         leitorEstado.isTexto = true;
-        leitorEstado.palavrasPorPagina = 300;
 
-        const texto = book.textoCompleto;
-        const palavras = texto.split(/\s+/);
+        const palavras = book.textoCompleto.split(/\s+/);
         const paginas = [];
-        
-        console.log(`📊 Total de palavras: ${palavras.length}`);
-        
         for (let i = 0; i < palavras.length; i += leitorEstado.palavrasPorPagina) {
-            const pagina = palavras.slice(i, i + leitorEstado.palavrasPorPagina).join(' ');
-            paginas.push(pagina);
+            paginas.push(palavras.slice(i, i + leitorEstado.palavrasPorPagina).join(' '));
         }
-
-        if (paginas.length === 0) {
-            paginas.push('(Texto vazio)');
-        }
+        if (!paginas.length) paginas.push('(Texto vazio)');
 
         leitorEstado.textoPaginas = paginas;
         leitorEstado.totalPaginas = paginas.length;
         leitorEstado.paginaAtual = 1;
 
-        console.log(`📖 ${paginas.length} páginas criadas`);
+        if (leitorEl.pageCount) leitorEl.pageCount.textContent = paginas.length;
+        if (leitorEl.pageNum) leitorEl.pageNum.textContent = 1;
+        if (leitorEl.canvas) leitorEl.canvas.style.display = 'none';
 
-        leitorElements.pageCount.textContent = paginas.length;
-        leitorElements.pageNum.textContent = 1;
-
-        atualizarBotoesNavegacao();
-
-        leitorElements.canvas.style.display = 'none';
-        
-        let textContainer = document.getElementById('leituraTextoContainer');
+        // Container de texto
+        let textContainer = document.getElementById('readingTextoContainer');
         if (!textContainer) {
             textContainer = document.createElement('div');
-            textContainer.id = 'leituraTextoContainer';
-            textContainer.className = 'leitura-texto-container';
-            leitorElements.container.appendChild(textContainer);
-            console.log('✅ Container de texto criado');
+            textContainer.id = 'readingTextoContainer';
+            textContainer.className = 'reading-text-container';
+            leitorEl.container?.appendChild(textContainer);
         }
         textContainer.style.display = 'block';
 
         renderizarPaginaTexto(1);
-        atualizarProgresso(1);
-
-        console.log(`✅ Leitor de texto aberto: ${paginas.length} páginas`);
     }
 
-    // =============================================
-    // RENDERIZAR PÁGINA DE TEXTO
-    // =============================================
     function renderizarPaginaTexto(numPagina) {
-        console.log(`📄 Renderizando página ${numPagina}`);
-        
-        if (!leitorEstado.isTexto) return;
+        const textContainer = document.getElementById('readingTextoContainer');
+        if (!textContainer) return;
         if (numPagina < 1 || numPagina > leitorEstado.textoPaginas.length) return;
 
-        const textContainer = document.getElementById('leituraTextoContainer');
-        if (!textContainer) return;
-
         const conteudo = leitorEstado.textoPaginas[numPagina - 1];
-        
-        let textoFormatado = conteudo
+        const formatado = conteudo
             .replace(/\n/g, '<br>')
-            .replace(/(#{1,3})\s*(.+)/g, (match, hashes, titulo) => {
-                const nivel = hashes.length;
-                const tag = nivel === 1 ? 'h1' : nivel === 2 ? 'h2' : 'h3';
-                return `<${tag}>${titulo.trim()}</${tag}>`;
+            .replace(/(#{1,3})\s*(.+)/g, (_, h, t) => {
+                const tag = h.length === 1 ? 'h1' : h.length === 2 ? 'h2' : 'h3';
+                return `<${tag}>${t.trim()}</${tag}>`;
             })
             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.+?)\*/g, '<em>$1</em>')
             .replace(/---/g, '<hr>');
-        
+
         textContainer.innerHTML = `
-            <div class="leitura-texto-pagina">
-                <div class="leitura-texto-conteudo">
-                    ${textoFormatado}
-                </div>
-                <div class="leitura-texto-numero">Página ${numPagina} de ${leitorEstado.textoPaginas.length}</div>
+            <div class="reading-text-page">
+                <div class="reading-text-content">${formatado}</div>
+                <div class="reading-text-number">Página ${numPagina} de ${leitorEstado.textoPaginas.length}</div>
             </div>
         `;
-
         textContainer.scrollTop = 0;
 
-        leitorElements.pageNum.textContent = numPagina;
+        if (leitorEl.pageNum) leitorEl.pageNum.textContent = numPagina;
         leitorEstado.paginaAtual = numPagina;
 
         atualizarBotoesNavegacao();
         atualizarProgresso(numPagina);
     }
 
-    // =============================================
-    // LEITOR DE PDF
-    // =============================================
     async function abrirLeitorPDF(book) {
         leitorEstado.isTexto = false;
-        leitorEstado.pdfUrl = book.download;
-
-        const ctx = leitorElements.canvas.getContext('2d');
-        ctx.clearRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
-        ctx.fillStyle = '#f0ede8';
-        ctx.fillRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
-        ctx.fillStyle = '#7c3aed';
-        ctx.font = '16px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('📖 Carregando PDF...', leitorElements.canvas.width / 2, leitorElements.canvas.height / 2);
-
-        leitorElements.canvas.style.display = 'block';
-        const textContainer = document.getElementById('leituraTextoContainer');
+        if (leitorEl.canvas) leitorEl.canvas.style.display = 'block';
+        const textContainer = document.getElementById('readingTextoContainer');
         if (textContainer) textContainer.style.display = 'none';
 
         try {
             const pdfjs = await carregarPdfJs();
-            const loadingTask = pdfjs.getDocument(book.download);
-            const pdf = await loadingTask.promise;
-            
+            const pdf = await pdfjs.getDocument(book.download).promise;
             leitorEstado.pdfDoc = pdf;
             leitorEstado.totalPaginas = pdf.numPages;
             leitorEstado.paginaAtual = 1;
 
-            leitorElements.pageCount.textContent = pdf.numPages;
-            leitorElements.pageNum.textContent = 1;
+            if (leitorEl.pageCount) leitorEl.pageCount.textContent = pdf.numPages;
+            if (leitorEl.pageNum) leitorEl.pageNum.textContent = 1;
 
             atualizarBotoesNavegacao();
             await renderizarPaginaPDF(1);
-            atualizarProgresso(1);
-
-        } catch (error) {
-            console.error('Erro ao carregar PDF:', error);
-            const ctx = leitorElements.canvas.getContext('2d');
-            ctx.clearRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
-            ctx.fillStyle = '#fef2f2';
-            ctx.fillRect(0, 0, leitorElements.canvas.width, leitorElements.canvas.height);
-            ctx.fillStyle = '#ef4444';
-            ctx.font = '16px Inter, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('❌ Erro ao carregar o PDF.', leitorElements.canvas.width / 2, leitorElements.canvas.height / 2);
+        } catch (err) {
+            console.error('Erro ao carregar PDF:', err);
+            alert('Não foi possível carregar o PDF.');
+            window.fecharLeitor();
         }
     }
 
     async function renderizarPaginaPDF(numPagina) {
         if (!leitorEstado.pdfDoc) return;
+        const page = await leitorEstado.pdfDoc.getPage(numPagina);
+        const viewport = page.getViewport({ scale: leitorEstado.escala });
+        const canvas = leitorEl.canvas;
+        const ctx = canvas.getContext('2d');
 
-        try {
-            const page = await leitorEstado.pdfDoc.getPage(numPagina);
-            const viewport = page.getViewport({ scale: leitorEstado.escala });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-            const canvas = leitorElements.canvas;
-            const context = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
 
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+        if (leitorEl.pageNum) leitorEl.pageNum.textContent = numPagina;
+        leitorEstado.paginaAtual = numPagina;
+        if (leitorEl.zoomLevel) leitorEl.zoomLevel.textContent = `${Math.round(leitorEstado.escala * 100)}%`;
 
-            await page.render({ canvasContext: context, viewport: viewport }).promise;
-
-            leitorElements.pageNum.textContent = numPagina;
-            leitorEstado.paginaAtual = numPagina;
-
-            atualizarBotoesNavegacao();
-            atualizarProgresso(numPagina);
-            leitorElements.zoomLevel.textContent = `${Math.round(leitorEstado.escala * 100)}%`;
-
-        } catch (error) {
-            console.error('Erro ao renderizar página PDF:', error);
-        }
+        atualizarBotoesNavegacao();
+        atualizarProgresso(numPagina);
     }
 
-    // =============================================
-    // NAVEGAÇÃO
-    // =============================================
     function paginaAnterior() {
         if (leitorEstado.paginaAtual > 1) {
-            if (leitorEstado.isTexto) {
-                renderizarPaginaTexto(leitorEstado.paginaAtual - 1);
-            } else {
-                renderizarPaginaPDF(leitorEstado.paginaAtual - 1);
-            }
+            leitorEstado.isTexto
+                ? renderizarPaginaTexto(leitorEstado.paginaAtual - 1)
+                : renderizarPaginaPDF(leitorEstado.paginaAtual - 1);
         }
     }
-
     function proximaPagina() {
-        const total = leitorEstado.isTexto 
-            ? leitorEstado.textoPaginas.length 
-            : leitorEstado.totalPaginas;
-        
+        const total = leitorEstado.isTexto ? leitorEstado.textoPaginas.length : leitorEstado.totalPaginas;
         if (leitorEstado.paginaAtual < total) {
-            if (leitorEstado.isTexto) {
-                renderizarPaginaTexto(leitorEstado.paginaAtual + 1);
-            } else {
-                renderizarPaginaPDF(leitorEstado.paginaAtual + 1);
-            }
+            leitorEstado.isTexto
+                ? renderizarPaginaTexto(leitorEstado.paginaAtual + 1)
+                : renderizarPaginaPDF(leitorEstado.paginaAtual + 1);
         }
     }
 
     function atualizarBotoesNavegacao() {
-        const total = leitorEstado.isTexto 
-            ? leitorEstado.textoPaginas.length 
-            : leitorEstado.totalPaginas;
-        
-        leitorElements.prevBtn.disabled = leitorEstado.paginaAtual <= 1;
-        leitorElements.nextBtn.disabled = leitorEstado.paginaAtual >= total;
+        const total = leitorEstado.isTexto ? leitorEstado.textoPaginas.length : leitorEstado.totalPaginas;
+        if (leitorEl.prevBtn) leitorEl.prevBtn.disabled = leitorEstado.paginaAtual <= 1;
+        if (leitorEl.nextBtn) leitorEl.nextBtn.disabled = leitorEstado.paginaAtual >= total;
     }
 
     function atualizarProgresso(pagina) {
-        const total = leitorEstado.isTexto 
-            ? leitorEstado.textoPaginas.length 
-            : leitorEstado.totalPaginas;
-        
-        if (total === 0) return;
-        const percentual = Math.round((pagina / total) * 100);
-        leitorElements.progressoBar.style.width = `${percentual}%`;
-        leitorElements.progressoTexto.textContent = `${percentual}% lido`;
+        const total = leitorEstado.isTexto ? leitorEstado.textoPaginas.length : leitorEstado.totalPaginas;
+        if (!total) return;
+        const pct = Math.round((pagina / total) * 100);
+        if (leitorEl.progressoBar) leitorEl.progressoBar.style.width = `${pct}%`;
+        if (leitorEl.progressoTexto) leitorEl.progressoTexto.textContent = `${pct}% lido`;
+
+        // Persiste progresso
+        if (leitorEstado.livroAtual) {
+            let hist = [];
+            try { hist = JSON.parse(localStorage.getItem('biblioteca_historico') || '[]'); } catch {}
+            const idx = hist.findIndex(h => h.id === leitorEstado.livroAtual.id);
+            if (idx >= 0) { hist[idx].percent = pct; hist[idx].ultimaLeitura = Date.now(); }
+            else hist.unshift({ id: leitorEstado.livroAtual.id, percent: pct, ultimaLeitura: Date.now() });
+            localStorage.setItem('biblioteca_historico', JSON.stringify(hist.slice(0, 10)));
+        }
     }
 
-    // =============================================
-    // ZOOM
-    // =============================================
     function aumentarZoom() {
         if (leitorEstado.isTexto) return;
         leitorEstado.escala = Math.min(leitorEstado.escala + 0.1, 3.0);
-        if (leitorEstado.pdfDoc) {
-            renderizarPaginaPDF(leitorEstado.paginaAtual);
-        }
+        if (leitorEstado.pdfDoc) renderizarPaginaPDF(leitorEstado.paginaAtual);
     }
-
     function diminuirZoom() {
         if (leitorEstado.isTexto) return;
         leitorEstado.escala = Math.max(leitorEstado.escala - 0.1, 0.3);
-        if (leitorEstado.pdfDoc) {
-            renderizarPaginaPDF(leitorEstado.paginaAtual);
+        if (leitorEstado.pdfDoc) renderizarPaginaPDF(leitorEstado.paginaAtual);
+    }
+
+    function alternarModoEscuro() {
+        leitorEstado.darkMode = !leitorEstado.darkMode;
+        leitorEl.modal?.classList.toggle('dark-mode', leitorEstado.darkMode);
+        if (leitorEl.darkModeBtn) {
+            leitorEl.darkModeBtn.innerHTML = leitorEstado.darkMode
+                ? '<i class="fa-regular fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
         }
     }
 
-    // =============================================
-    // MODO ESCURO E TELA CHEIA
-    // =============================================
-    function alternarModoEscuro() {
-        leitorEstado.darkMode = !leitorEstado.darkMode;
-        leitorElements.modal.classList.toggle('dark-mode', leitorEstado.darkMode);
-        leitorElements.darkModeBtn.innerHTML = leitorEstado.darkMode 
-            ? '<i class="fa-regular fa-sun"></i>' 
-            : '<i class="fa-solid fa-moon"></i>';
-    }
-
     function alternarTelaCheia() {
-        const modal = leitorElements.modal;
+        const modal = leitorEl.modal;
         if (!document.fullscreenElement) {
-            modal.requestFullscreen?.() || modal.webkitRequestFullscreen?.();
+            modal?.requestFullscreen?.() || modal?.webkitRequestFullscreen?.();
         } else {
             document.exitFullscreen?.() || document.webkitExitFullscreen?.();
         }
     }
 
-    // =============================================
-    // FECHAR LEITOR
-    // =============================================
-    window.fecharLeitor = function() {
-        leitorElements.overlay.hidden = true;
+    window.fecharLeitor = function () {
+        if (leitorEl.overlay) leitorEl.overlay.hidden = true;
         document.body.style.overflow = '';
-        
         leitorEstado.pdfDoc = null;
         leitorEstado.paginaAtual = 1;
         leitorEstado.totalPaginas = 0;
         leitorEstado.isTexto = false;
         leitorEstado.textoPaginas = [];
-        
-        const canvas = leitorElements.canvas;
-        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-        canvas.style.display = 'block';
-        
-        const textContainer = document.getElementById('leituraTextoContainer');
-        if (textContainer) {
-            textContainer.style.display = 'none';
-            textContainer.innerHTML = '';
-        }
-        
-        leitorElements.progressoBar.style.width = '0%';
-        leitorElements.progressoTexto.textContent = '0% lido';
+
+        const tc = document.getElementById('readingTextoContainer');
+        if (tc) { tc.style.display = 'none'; tc.innerHTML = ''; }
+
+        if (leitorEl.progressoBar) leitorEl.progressoBar.style.width = '0%';
+        if (leitorEl.progressoTexto) leitorEl.progressoTexto.textContent = '0% lido';
     };
 
-    // =============================================
-    // 18. EVENTOS DO LEITOR
-    // =============================================
+    // Eventos do leitor
+    leitorEl.prevBtn?.addEventListener('click', paginaAnterior);
+    leitorEl.nextBtn?.addEventListener('click', proximaPagina);
+    leitorEl.zoomIn?.addEventListener('click', aumentarZoom);
+    leitorEl.zoomOut?.addEventListener('click', diminuirZoom);
+    leitorEl.darkModeBtn?.addEventListener('click', alternarModoEscuro);
+    leitorEl.fullscreenBtn?.addEventListener('click', alternarTelaCheia);
+    leitorEl.fecharBtn?.addEventListener('click', window.fecharLeitor);
+    leitorEl.bg?.addEventListener('click', (e) => { if (e.target === leitorEl.bg) window.fecharLeitor(); });
 
-    leitorElements.prevBtn?.addEventListener('click', paginaAnterior);
-    leitorElements.nextBtn?.addEventListener('click', proximaPagina);
-    leitorElements.zoomIn?.addEventListener('click', aumentarZoom);
-    leitorElements.zoomOut?.addEventListener('click', diminuirZoom);
-    leitorElements.darkModeBtn?.addEventListener('click', alternarModoEscuro);
-    leitorElements.fullscreenBtn?.addEventListener('click', alternarTelaCheia);
-    leitorElements.fecharBtn?.addEventListener('click', window.fecharLeitor);
-    leitorElements.bg?.addEventListener('click', (e) => {
-        if (e.target === leitorElements.bg) window.fecharLeitor();
-    });
-
-    // Teclas de atalho
     document.addEventListener('keydown', (e) => {
-        if (leitorElements.overlay?.hidden) return;
-
+        if (leitorEl.overlay?.hidden) return;
         switch (e.key) {
             case 'Escape': window.fecharLeitor(); break;
-            case 'ArrowRight': 
-            case ' ': 
-                e.preventDefault(); 
-                proximaPagina(); 
-                break;
-            case 'ArrowLeft': 
-                e.preventDefault(); 
-                paginaAnterior(); 
-                break;
+            case 'ArrowRight':
+            case ' ': e.preventDefault(); proximaPagina(); break;
+            case 'ArrowLeft': e.preventDefault(); paginaAnterior(); break;
             case '+': aumentarZoom(); break;
             case '-': diminuirZoom(); break;
             case 'f': alternarTelaCheia(); break;
@@ -1389,113 +872,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =============================================
-    // 19. EXPOR FUNÇÕES GLOBAIS
+    // 15. HELPERS
     // =============================================
-    window.booksDatabase = booksDatabase;
-    window.adicionarLivro = adicionarLivro;
-    window.baixarJSON = baixarJSON;
-    window.importarJSON = importarJSON;
-    window.abrirLeitor = window.abrirLeitor;
-    window.fecharLeitor = window.fecharLeitor;
-    window.openBookModal = window.openBookModal;
-    window.closeBookModal = window.closeBookModal;
-
-    // =============================================
-    // 20. FUNÇÕES ADICIONAIS (para compatibilidade)
-    // =============================================
-    function adicionarLivro(livro) {
-        const novoId = booksDatabase.length > 0 
-            ? Math.max(...booksDatabase.map(b => b.id)) + 1 
-            : 1;
-
-        const novoLivro = {
-            id: novoId,
-            title: livro.title || 'Título não informado',
-            author: livro.author || 'Autor não informado',
-            cover: livro.cover || '/img/livro-padrao.png',
-            genre: livro.genre || ['Geral'],
-            age: livro.age || 'adulto',
-            pages: livro.pages || 0,
-            year: livro.year || new Date().getFullYear(),
-            publisher: livro.publisher || 'Comunidade',
-            sinopse: livro.sinopse || 'Este livro foi adicionado pela comunidade.',
-            category: livro.category || 'geral',
-            destaque: livro.destaque || false,
-            recomendado: livro.recomendado || 'Comunidade',
-            isTexto: livro.isTexto || false,
-            textoCompleto: livro.textoCompleto || null,
-            download: livro.download || null
-        };
-
-        booksDatabase.push(novoLivro);
-        
-        renderDestaques();
-        renderCategoriasRecomendadas();
-        renderBooks();
-
-        console.log(`✅ Livro adicionado: "${novoLivro.title}" (ID: ${novoId})`);
-        salvarBackupJSON();
-        
-        return novoLivro;
-    }
-
-    function salvarBackupJSON() {
-        const data = JSON.stringify({ livros: booksDatabase }, null, 2);
-        localStorage.setItem('biblioteca_backup', data);
-        console.log('💾 Backup salvo no localStorage');
-    }
-
-    function baixarJSON() {
-        const data = JSON.stringify({ livros: booksDatabase }, null, 2);
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `livros_backup_${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        console.log('📥 JSON baixado!');
-    }
-
-    function importarJSON(file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const data = JSON.parse(e.target.result);
-                const livros = data.livros || [];
-                
-                if (livros.length === 0) {
-                    alert('❌ Nenhum livro encontrado no arquivo.');
-                    return;
-                }
-                
-                booksDatabase = livros;
-                
-                renderDestaques();
-                renderCategoriasRecomendadas();
-                renderBooks();
-                
-                salvarBackupJSON();
-                
-                alert(`✅ ${livros.length} livros importados com sucesso!`);
-                console.log(`📚 ${livros.length} livros importados do JSON`);
-                
-            } catch (error) {
-                console.error('❌ Erro ao importar:', error);
-                alert('❌ Erro ao importar. Verifique o arquivo JSON.');
-            }
-        };
-        reader.readAsText(file);
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     // =============================================
-    // 21. INICIALIZAÇÃO
+    // 16. INICIALIZAÇÃO
     // =============================================
     carregarLivrosDoJSON();
 
     console.log('📚 Biblioteca inicializada!');
-    console.log('   ♿ Acessibilidade integrada (hub flutuante + sidebar)');
-    console.log('   🔍 Filtros e busca');
+    console.log('   ♿ Acessibilidade + Sidebar + Hub');
+    console.log('   🔍 Filtros por gênero + busca');
     console.log('   📖 Leitor de PDF e texto');
-    console.log('   👤 Perfil:', localStorage.getItem('userName') || 'Visitante');
 });

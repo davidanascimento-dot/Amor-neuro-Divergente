@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Biblioteca virtual com livros gratuitos para neurodivergentes — baixe PDFs e compartilhe na comunidade.">
     <title>Biblioteca — Amor NeuroDivergente</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="biblioteca.css">
 </head>
 
+<body>
 
+    <!-- MODAL ACOLHERIA -->
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
-         
             <div class="acolheria-modal-header">
                 <div class="acolheria-modal-title">
                     <i class="fa-solid fa-robot"></i>
@@ -28,23 +29,15 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
-           
-            <div class="acolheria-modal-body" id="acolheriaChatBody">
-               
-            </div>
-
-           
+            <div class="acolheria-modal-body" id="acolheriaChatBody"></div>
             <div class="acolheria-suggestions" id="acolheriaSuggestions">
-                <button class="acolheria-suggestion" data-prompt="O que é TDAH?"> TDAH</button>
-                <button class="acolheria-suggestion" data-prompt="O que é autismo?"> Autismo</button>
-                <button class="acolheria-suggestion" data-prompt="Dicas de organização"> Organização</button>
-                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?"> Crise sensorial</button>
-                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?"> Direitos</button>
-                <button class="acolheria-suggestion" data-prompt="Quero desabafar"> Desabafar</button>
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?">TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?">Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização">Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?">Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?">Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar">Desabafar</button>
             </div>
-
-           
             <div class="acolheria-modal-footer">
                 <div class="acolheria-input-wrapper">
                     <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
@@ -58,15 +51,14 @@
             </div>
         </div>
     </div>
-
-   
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
-<body>
 
-  <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+    <!-- SIDEBAR TOGGLE -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
             <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
@@ -81,11 +73,11 @@
         </div>
 
         <nav class="sidebar-nav" aria-label="Principal">
-            <a href="/inicio.html" class="sidebar-link "><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
             <a href="/Explorar/Explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
             <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
             <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
-            <a href="/biblioteca/biblioteca.html" class="sidebar-link active"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
+            <a href="/biblioteca/biblioteca.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
 
         <div class="sidebar-secondary">
@@ -97,118 +89,232 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-   
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content" id="mainContent">
-        
-        <!-- HEADER -->
+
+        <!-- HEADER GLASS -->
         <header class="header-glass" id="headerGlass">
             <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                <a href="/inicio.html"></a>
-                <span></span>
+                <a href="/inicio.html">Início</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="/Explorar/Explorar.html">Explorar</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>Biblioteca</span>
             </nav>
             <a href="/inicio.html" class="logo">
                 <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
                 <span class="logo-text">Amor NeuroDivergente</span>
             </a>
             <nav class="header-links">
-                <a href="/explorar/explorar.html">Explorar</a>
+                <a href="/Explorar/Explorar.html">Explorar</a>
                 <a href="/comunidade/comunidade.html">Comunidade</a>
                 <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
             </nav>
         </header>
 
-
-       
-        <section class="biblioteca-page">
-            
-           
-            <!-- HERO SECTION - FULLSCREEN -->
-          
-            <section class="hero-section">
-                <div class="hero-conteudo">
-                    <span class="hero-badge"><i class="fa-regular fa-circle-check"></i> Gratuito</span>
-                    <h1>Biblio<span class="hero-destaque">N</span></h1>
-                    <p class="hero-subtitulo">A BIBLIOTECA DIGITAL GRATUITA<br>DO AMOR NEURODIVERGENTE</p>
-                    <div class="hero-botoes">
-                        <a href="#biblioteca-livros" class="btn-principal"> ACESSE</a>
+        <!-- =============================================
+        HERO — Estante digital
+        ============================================= -->
+        <section class="library-hero">
+            <div class="library-hero__bg">
+                <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600&q=80"
+                    alt="Estante de livros" class="library-hero__img">
+                <div class="library-hero__overlay"></div>
+            </div>
+            <div class="library-hero__content">
+                <span class="library-hero__badge">
+                    <i class="fa-solid fa-book-open"></i> Biblioteca Digital Gratuita
+                </span>
+                <h1>Biblio<span class="library-hero__highlight">N</span></h1>
+                <p>
+                    Livros, guias e materiais selecionados sobre neurodiversidade.
+                    <strong>Baixe, leia e compartilhe.</strong>
+                </p>
+                <div class="library-hero__stats">
+                    <div class="library-stat">
+                        <span class="library-stat__number">+40</span>
+                        <span class="library-stat__label">Livros</span>
+                    </div>
+                    <div class="library-stat">
+                        <span class="library-stat__number">8</span>
+                        <span class="library-stat__label">Gêneros</span>
+                    </div>
+                    <div class="library-stat">
+                        <span class="library-stat__number">100%</span>
+                        <span class="library-stat__label">Gratuito</span>
                     </div>
                 </div>
-            </section>
+                <a href="#todos-livros" class="btn-primary">
+                    Explorar biblioteca <i class="fa-solid fa-arrow-down"></i>
+                </a>
+            </div>
+        </section>
 
-           
-            <!-- DESTAQUES DO MÊS (CARROSSEL)-->
-           
-            <div class="sessao-destaques" id="biblioteca-livros">
-                <div class="topo-destaques">
-                    <h2 class="titulo-destaques">⭐ Destaques do mês</h2>
-                    <a href="/destaques.html" class="botao-ver-destaques">VER DESTAQUES</a>
+        <!-- =============================================
+        🆕 CONTINUE SUA LEITURA
+        ============================================= -->
+        <section class="continue-reading" id="continuar">
+            <div class="continue-reading__container">
+                <header class="section-head">
+                    <div>
+                        <span class="section-head__eyebrow"><i class="fa-solid fa-bookmark"></i> Retome</span>
+                        <h2>Continue sua leitura</h2>
+                    </div>
+                    <a href="#" class="section-head__link">Ver histórico <i class="fa-solid fa-arrow-right"></i></a>
+                </header>
+
+                <div class="continue-grid" id="continueGrid">
+                    <!-- Cards injetados pelo JS (biblioteca.js) -->
+                    <!-- Fallback estático: -->
+                    <article class="continue-card">
+                        <div class="continue-card__cover">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80" alt="Capa" loading="lazy">
+                        </div>
+                        <div class="continue-card__body">
+                            <h3>Guia prático de rotina para TDAH</h3>
+                            <p class="continue-card__author">Camila Rocha</p>
+                            <div class="continue-card__progress">
+                                <div class="continue-progress-bar">
+                                    <div class="continue-progress-fill" style="width: 42%;"></div>
+                                </div>
+                                <span class="continue-card__percent">42% concluído</span>
+                            </div>
+                            <a href="#" class="btn-primary btn-small">
+                                Continuar <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
                 </div>
-                
-                <div class="carrossel-container">
-                    <button class="seta-carrossel seta-esquerda" id="setaEsquerda" aria-label="Anterior">
+            </div>
+        </section>
+
+        <!-- =============================================
+        DESTAQUES DO MÊS
+        ============================================= -->
+        <section class="featured-shelf" id="destaques">
+            <div class="featured-shelf__container">
+                <header class="section-head">
+                    <div>
+                        <span class="section-head__eyebrow"><i class="fa-solid fa-star"></i> Curadoria</span>
+                        <h2>Destaques do mês</h2>
+                    </div>
+                    <a href="#" class="section-head__link">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+                </header>
+
+                <div class="shelf">
+                    <div class="shelf__track" id="carrosselPista">
+                        <!-- Cards injetados pelo JS (biblioteca.js) -->
+                    </div>
+                    <button class="shelf__arrow shelf__arrow--left" id="setaEsquerda" aria-label="Anterior">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
-
-                    <div class="carrossel-pista" id="carrosselPista">
-                        <!-- Renderizado via JavaScript -->
-                    </div>
-
-                    <button class="seta-carrossel seta-direita" id="setaDireita" aria-label="Próximo">
+                    <button class="shelf__arrow shelf__arrow--right" id="setaDireita" aria-label="Próximo">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
-
-          
-            <!-- TODOS OS LIVROS-->
-           
-            <div class="todos-livros-section">
-                <div class="todos-livros-header">
-                    <h2 class="todos"> Todos os <span class="todos-title">livros</span> </h2>
-                    <div class="biblioteca-filters">
-                        <div class="search-wrapper">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="bookSearch" placeholder="Buscar livro, autor ou gênero..." aria-label="Buscar livros">
-                        </div>
-                        <div class="filter-buttons">
-                            <button class="filter-btn active" data-filter="todos">Todos</button>
-                            <button class="filter-btn" data-filter="infantil"> Infantil</button>
-                            <button class="filter-btn" data-filter="jovem"> Jovem</button>
-                            <button class="filter-btn" data-filter="adulto"> Adulto</button>
-                            <button class="filter-btn" data-filter="autoajuda"> Autoajuda</button>
-                            <button class="filter-btn" data-filter="romance"> Romance</button>
-                            <button class="filter-btn" data-filter="ficcao">Ficção</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="books-grid" id="booksGrid">
-                    <!-- Renderizado via JavaScript -->
-                </div>
-                <div class="books-counter" id="booksCounter">0 livros encontrados</div>
-            </div>
-
-         
-            <!-- CHAMADA PARA COMUNIDADE-->
-            
-            <div class="biblioteca-chamada">
-                <div class="chamada-content">
-                    <div class="chamada-texto">
-                        <span class="chamada-badge"><i class="fa-regular fa-comments"></i> Compartilhe</span>
-                        <h3>Leu um livro e quer discutir?</h3>
-                        <p>Entre na nossa comunidade e compartilhe suas impressões, recomendações e reflexões sobre os livros da biblioteca.</p>
-                        <a href="/comunidade/comunidade.html" class="chamada-btn">
-                            <i class="fa-regular fa-comments"></i> Ir para Comunidade
-                        </a>
-                    </div>
-                    <div class="chamada-icone">
-                        <i class="fa-solid fa-people-group"></i>
-                    </div>
-                </div>
-            </div>
-
         </section>
 
-      <footer class="footer">
+        <!-- =============================================
+        TODOS OS LIVROS
+        ============================================= -->
+        <section class="all-books" id="todos-livros">
+            <div class="all-books__container">
+                <header class="all-books__head">
+                    <div>
+                        <span class="section-head__eyebrow"><i class="fa-solid fa-books"></i> Acervo completo</span>
+                        <h2>Todos os <span class="all-books__title-highlight">livros</span></h2>
+                        <p class="all-books__sub">Busque por título, autor ou gênero.</p>
+                    </div>
+                </header>
+
+                <div class="library-filters">
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="bookSearch" placeholder="Buscar livro, autor ou gênero..." aria-label="Buscar livros">
+                    </div>
+                    <div class="filter-tabs" role="tablist">
+                        <button class="filter-tab active" data-filter="todos" role="tab" aria-selected="true">
+                            <i class="fa-solid fa-border-all"></i> Todos
+                        </button>
+                        <button class="filter-tab" data-filter="infantil" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-child"></i> Infantil
+                        </button>
+                        <button class="filter-tab" data-filter="jovem" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-user-graduate"></i> Jovem
+                        </button>
+                        <button class="filter-tab" data-filter="adulto" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-user-tie"></i> Adulto
+                        </button>
+                        <button class="filter-tab" data-filter="autoajuda" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-seedling"></i> Autoajuda
+                        </button>
+                        <button class="filter-tab" data-filter="romance" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-heart"></i> Romance
+                        </button>
+                        <button class="filter-tab" data-filter="ficcao" role="tab" aria-selected="false">
+                            <i class="fa-solid fa-dragon"></i> Ficção
+                        </button>
+                    </div>
+                </div>
+
+                <div class="books-grid" id="booksGrid">
+                    <!-- Cards injetados pelo biblioteca.js -->
+                </div>
+
+                <p class="books-counter" id="booksCounter">0 livros encontrados</p>
+            </div>
+        </section>
+
+        <!-- =============================================
+        🆕 ESCOLHIDO PARA VOCÊ
+        ============================================= -->
+        <section class="recommended" id="recomendados">
+            <div class="recommended__container">
+                <header class="section-head section-head--center">
+                    <span class="section-head__eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> Recomendação</span>
+                    <h2>Escolhido para você</h2>
+                    <p class="section-head__sub">Baseado nos temas que você tem explorado.</p>
+                </header>
+
+                <div class="recommended-grid" id="recommendedGrid">
+                    <!-- Cards injetados pelo JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+        CTA COMUNIDADE
+        ============================================= -->
+        <section class="library-cta">
+            <div class="library-cta__card">
+                <div class="library-cta__content">
+                    <span class="library-cta__badge">
+                        <i class="fa-regular fa-comments"></i> Clube de leitura
+                    </span>
+                    <h2>Leu um livro e quer discutir?</h2>
+                    <p>Entre na nossa comunidade e compartilhe impressões, recomendações e reflexões sobre os livros da biblioteca. Toda voz importa. 💜</p>
+                    <div class="library-cta__actions">
+                        <a href="/comunidade/comunidade.html" class="btn-primary">
+                            Ir para Comunidade <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="/chat-Ia/chat-Ia.html" class="btn-secondary">
+                            Sugerir um livro
+                        </a>
+                    </div>
+                </div>
+                <div class="library-cta__icon">
+                    <i class="fa-solid fa-people-group"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
             <div class="footer-main">
                 <div class="footer-col"><h4>Navegue</h4><a href="/inicio.html">Início</a><a href="/explorar/explorar.html">Explorar</a><a href="/comunidade/comunidade.html">Comunidade</a><a href="/direitos/direitos.html">Direitos</a><a href="/chat-Ia/chat-Ia.html">AcolherIA</a></div>
                 <div class="footer-col"><h4>Sobre</h4><a href="/Quem somos/quem-somos.html">Quem somos</a><a href="/blog/blog.html">Blog</a><a href="/contato/contato.html">Contato</a></div>
@@ -220,85 +326,80 @@
 
     </main>
 
- 
-<!-- MODAL DE DETALHES DO LIVRO -->
-<div class="book-modal-overlay" id="bookModalOverlay" hidden>
-    <div class="book-modal-overlay-bg" id="bookModalBg"></div>
-    <div class="book-modal">
-        <button class="book-modal-close" id="bookModalClose"><i class="fa-solid fa-xmark"></i></button>
-        <div class="book-modal-content" id="bookModalContent">
-            <!-- Conteúdo dinâmico via JavaScript -->
+    <!-- =============================================
+    MODAL DE DETALHES DO LIVRO
+    ============================================= -->
+    <div class="book-modal-overlay" id="bookModalOverlay" hidden>
+        <div class="book-modal-overlay-bg" id="bookModalBg"></div>
+        <div class="book-modal">
+            <button class="book-modal-close" id="bookModalClose" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="book-modal-content" id="bookModalContent"></div>
         </div>
     </div>
-</div>
 
-  
-
-<!-- MODAL DE LEITURA COM PDF.JS              -->
-
-<div class="leitura-modal-overlay" id="leituraModalOverlay" hidden>
-    <div class="leitura-modal-bg" id="leituraModalBg"></div>
-    <div class="leitura-modal">
-        <!-- Cabeçalho -->
-        <div class="leitura-modal-header">
-            <div class="leitura-modal-title">
-                <i class="fa-solid fa-book-open"></i>
-                <span id="leituraTitulo">Carregando...</span>
-                <span class="leitura-badge" id="leituraAutor">por Autor</span>
-            </div>
-            <div class="leitura-toolbar">
-                <button class="leitura-toolbar-btn" id="leituraZoomIn" title="Aumentar zoom">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i>
-                </button>
-                <button class="leitura-toolbar-btn" id="leituraZoomOut" title="Diminuir zoom">
-                    <i class="fa-solid fa-magnifying-glass-minus"></i>
-                </button>
-                <span class="leitura-zoom-level" id="leituraZoomLevel">100%</span>
-                <button class="leitura-toolbar-btn" id="leituraFullscreen" title="Tela cheia">
-                    <i class="fa-solid fa-expand"></i>
-                </button>
-                <button class="leitura-toolbar-btn" id="leituraDarkMode" title="Modo escuro">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                <button class="leitura-toolbar-btn leitura-btn-fechar" id="leituraFechar" title="Fechar">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Corpo do visualizador -->
-        <div class="leitura-modal-body" id="leituraModalBody">
-            <div class="leitura-pdf-container" id="leituraPdfContainer">
-                <canvas id="leituraPdfCanvas"></canvas>
-            </div>
-        </div>
-
-        <!-- Rodapé com controles de navegação -->
-        <div class="leitura-modal-footer">
-            <div class="leitura-navegacao">
-                <button class="leitura-nav-btn" id="leituraPrevPage" title="Página anterior">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <span class="leitura-page-info">
-                    Página <span id="leituraPageNum">1</span> de <span id="leituraPageCount">0</span>
-                </span>
-                <button class="leitura-nav-btn" id="leituraNextPage" title="Próxima página">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-            <div class="leitura-progresso">
-                <div class="leitura-progresso-bar" id="leituraProgressoBar">
-                    <div class="leitura-progresso-preenchido" id="leituraProgressoPreenchido" style="width: 0%;"></div>
+    <!-- =============================================
+    MODAL DE LEITURA (PDF.js)
+    ============================================= -->
+    <div class="reading-modal-overlay" id="readingModalOverlay" hidden>
+        <div class="reading-modal-bg" id="readingModalBg"></div>
+        <div class="reading-modal" id="readingModal">
+            <div class="reading-modal__header">
+                <div class="reading-modal__title">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span id="readingTitle">Carregando...</span>
+                    <span class="reading-modal__badge" id="readingAuthor">por Autor</span>
                 </div>
-                <span class="leitura-progresso-texto" id="leituraProgressoTexto">0% lido</span>
+                <div class="reading-toolbar">
+                    <button class="reading-toolbar__btn" id="readingZoomIn" title="Aumentar zoom">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </button>
+                    <button class="reading-toolbar__btn" id="readingZoomOut" title="Diminuir zoom">
+                        <i class="fa-solid fa-magnifying-glass-minus"></i>
+                    </button>
+                    <span class="reading-zoom-level" id="readingZoomLevel">100%</span>
+                    <button class="reading-toolbar__btn" id="readingFullscreen" title="Tela cheia">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
+                    <button class="reading-toolbar__btn" id="readingDarkMode" title="Modo escuro">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="reading-toolbar__btn reading-btn-close" id="readingClose" title="Fechar">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="reading-modal__body" id="readingModalBody">
+                <div class="reading-pdf-container" id="readingPdfContainer">
+                    <canvas id="readingPdfCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="reading-modal__footer">
+                <div class="reading-navigation">
+                    <button class="reading-nav-btn" id="readingPrevPage" title="Página anterior">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <span class="reading-page-info">
+                        Página <span id="readingPageNum">1</span> de <span id="readingPageCount">0</span>
+                    </span>
+                    <button class="reading-nav-btn" id="readingNextPage" title="Próxima página">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="reading-progress">
+                    <div class="reading-progress__bar" id="readingProgressBar">
+                        <div class="reading-progress__fill" id="readingProgressFill" style="width: 0%;"></div>
+                    </div>
+                    <span class="reading-progress__text" id="readingProgressText">0% lido</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-    <!-- ========================================= -->
-    <!-- HUB FLUTUANTE                             -->
-    <!-- ========================================= -->
+    <!-- HUB FLUTUANTE -->
     <div class="floating-hub" id="floatingHub">
         <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
             <i class="fa-solid fa-circle-plus"></i>
@@ -310,28 +411,22 @@
                     <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
                     <div class="floating-hub-actions">
                         <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
-                            <i class="fa-regular fa-moon"></i>
-                            <span class="hub-action-label">Escuro</span>
+                            <i class="fa-regular fa-moon"></i><span class="hub-action-label">Escuro</span>
                         </button>
                         <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
-                            <i class="fa-solid fa-text-height"></i>
-                            <span class="hub-action-label">A+</span>
+                            <i class="fa-solid fa-text-height"></i><span class="hub-action-label">A+</span>
                         </button>
                         <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
-                            <i class="fa-solid fa-text-slash"></i>
-                            <span class="hub-action-label">A-</span>
+                            <i class="fa-solid fa-text-slash"></i><span class="hub-action-label">A-</span>
                         </button>
                         <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
-                            <i class="fa-regular fa-eye"></i>
-                            <span class="hub-action-label">Dislexia</span>
+                            <i class="fa-regular fa-eye"></i><span class="hub-action-label">Dislexia</span>
                         </button>
                         <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
-                            <i class="fa-solid fa-person-walking"></i>
-                            <span class="hub-action-label">Movimento</span>
+                            <i class="fa-solid fa-person-walking"></i><span class="hub-action-label">Movimento</span>
                         </button>
                         <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span class="hub-action-label">Reset</span>
+                            <i class="fa-solid fa-rotate-left"></i><span class="hub-action-label">Reset</span>
                         </button>
                     </div>
                 </div>
@@ -340,24 +435,19 @@
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
                         <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="hub-action-label">AcolherIA</span>
+                            <i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span>
                         </a>
                         <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
-                            <i class="fa-regular fa-comments"></i>
-                            <span class="hub-action-label">Comunidade</span>
+                            <i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span>
                         </a>
-                        <a href="/faq/faq.html" class="hub-action" title="Perguntas Frequentes">
-                            <i class="fa-regular fa-circle-question"></i>
-                            <span class="hub-action-label">FAQ</span>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span>
                         </a>
                         <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
-                            <i class="fa-regular fa-envelope"></i>
-                            <span class="hub-action-label">E-mail</span>
+                            <i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span>
                         </a>
                         <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i>
-                            <span class="hub-action-label">WhatsApp</span>
+                            <i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span>
                         </a>
                     </div>
                 </div>
@@ -367,26 +457,17 @@
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
-    <!-- JavaScript -->
-    <script>
-        window.supabaseClient = supabase.createClient('https://qyixzontuhrxrrjrmzvy.supabase.co', 'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE');
-    </script>
     <script src="biblioteca.js"></script>
     <script src="/Acolher-IA/Acolher-IA.js"></script>
-    <!-- VLibras -->
-<div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
     </div>
-</div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-
-<script>
-    new window.VLibras.Widget(
-        'https://vlibras.gov.br/app'
-    );
-</script>
 </body>
 </html>
