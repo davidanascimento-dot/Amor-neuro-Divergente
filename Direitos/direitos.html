@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="direitos.css">
@@ -16,9 +16,7 @@
 
 <body>
 
-    <!-- =============================================
-    MODAL ACOLHERIA
-    ============================================= -->
+    <!-- MODAL ACOLHERIA -->
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
             <div class="acolheria-modal-header">
@@ -55,16 +53,12 @@
     </div>
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
 
-    <!-- =============================================
-    SIDEBAR TOGGLE
-    ============================================= -->
+    <!-- SIDEBAR TOGGLE -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- =============================================
-    SIDEBAR
-    ============================================= -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
             <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
@@ -77,7 +71,6 @@
                 <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
             </div>
         </div>
-
         <nav class="sidebar-nav" aria-label="Principal">
             <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
             <a href="/Explorar/Explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
@@ -85,23 +78,19 @@
             <a href="/Direitos/direitos.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
             <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
-
         <div class="sidebar-secondary">
             <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
             <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
             <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
         </div>
     </aside>
-
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
-    <!-- =============================================
-    CONTEÚDO PRINCIPAL
-    ============================================= -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content" id="mainContent">
 
         <!-- HEADER GLASS -->
@@ -125,51 +114,86 @@
         </header>
 
         <!-- =============================================
-        HERO
-        ============================================= -->
-        <section class="rights-hero">
-            <div class="rights-hero__bg">
-                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1600&q=80"
-                    alt="Documentos e símbolo de justiça" class="rights-hero__img">
-                <div class="rights-hero__overlay"></div>
+             HERO EDITORIAL — Imagem full-width + título
+             ============================================= -->
+        <section class="rights-banner">
+            <div class="rights-banner__media">
+                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1920&h=900&fit=crop"
+                     alt="Documentos e símbolo de justiça" loading="eager">
+                <div class="rights-banner__overlay"></div>
             </div>
-            <div class="rights-hero__content">
-                <span class="rights-hero__badge">
-                    <i class="fa-solid fa-scale-balanced"></i> Seus Direitos Garantidos
-                </span>
-                <h1>Juridiquês? Aqui a gente traduz.</h1>
-                <p>
-                    Conheça as leis que protegem você e saiba como usá-las no dia a dia. <strong>Sem palavras difíceis.</strong>
-                </p>
 
-                <div class="rights-hero__stats">
-                    <div class="rights-stat">
-                        <span class="rights-stat__number">12+</span>
-                        <span class="rights-stat__label">Leis traduzidas</span>
-                    </div>
-                    <div class="rights-stat">
-                        <span class="rights-stat__number">4</span>
-                        <span class="rights-stat__label">Áreas</span>
-                    </div>
-                    <div class="rights-stat">
-                        <span class="rights-stat__number">100%</span>
-                        <span class="rights-stat__label">Gratuito</span>
-                    </div>
-                </div>
+            <div class="rights-banner__content">
+                <span class="rights-banner__eyebrow">
+                    <i class="fa-solid fa-scale-balanced"></i> Seus Direitos
+                </span>
+                <h1 class="rights-banner__title">
+                    Juridiquês? <br>
+                    <span class="rights-banner__title-accent">Aqui a gente traduz.</span>
+                </h1>
+                <p class="rights-banner__sub">
+                    Conheça as leis que protegem você e saiba como usá-las no dia a dia. Sem palavras difíceis.
+                </p>
             </div>
         </section>
 
         <!-- =============================================
-        GRID DE CATEGORIAS — Padrão Ministério
-        ============================================= -->
+             NAV DE TÓPICOS — Chips de navegação
+             ============================================= -->
+        <nav class="rights-nav" aria-label="Categorias dos Direitos">
+            <div class="rights-nav__container">
+                <a href="#categorias" class="rights-nav__chip is-active">
+                    <i class="fa-solid fa-layer-group"></i> Categorias
+                </a>
+                <a href="#leis" class="rights-nav__chip">
+                    <i class="fa-solid fa-book"></i> Leis
+                </a>
+                <a href="#editorial" class="rights-nav__chip">
+                    <i class="fa-solid fa-lightbulb"></i> Aprenda
+                </a>
+                <a href="#recursos" class="rights-nav__chip">
+                    <i class="fa-solid fa-toolbox"></i> Recursos
+                </a>
+                <a href="#faq" class="rights-nav__chip">
+                    <i class="fa-regular fa-circle-question"></i> FAQ
+                </a>
+                <a href="#contato" class="rights-nav__chip">
+                    <i class="fa-solid fa-headset"></i> Contato
+                </a>
+            </div>
+        </nav>
+
+        <!-- =============================================
+             INTRO — Frase-guia
+             ============================================= -->
+        <section class="rights-intro">
+            <div class="rights-intro__container">
+                <h2 class="rights-intro__title">
+                    Direitos não se limitam a um site.
+                </h2>
+                <p class="rights-intro__sub">
+                    Além do nosso conteúdo, reunimos fontes oficiais e organizações sérias para você se aprofundar.
+                </p>
+                <ul class="rights-intro__links">
+                    <li><a href="https://www.gov.br" target="_blank" rel="noopener">Gov.br</a></li>
+                    <li><a href="https://www.defensoria.sp.def.br" target="_blank" rel="noopener">Defensoria Pública</a></li>
+                    <li><a href="https://www.mpf.mp.br" target="_blank" rel="noopener">Ministério Público</a></li>
+                    <li><a href="https://www.gov.br/inss/pt-br" target="_blank" rel="noopener">INSS</a></li>
+                    <li><a href="https://www.planalto.gov.br" target="_blank" rel="noopener">Planalto</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- =============================================
+             GRID DE CATEGORIAS — Padrão Ministério
+             ============================================= -->
         <section class="categories-nav" id="categorias">
             <div class="categories-nav__container">
-                <nav class="categories-nav__breadcrumb" aria-label="Trilha">
-                    <span>Conteúdo Seus Direitos</span>
-                </nav>
-
-                <h2 class="categories-nav__title">Explore por área</h2>
-                <p class="categories-nav__sub">Escolha uma categoria e encontre as leis que protegem você.</p>
+                <header class="categories-nav__head">
+                    <span class="section-badge"><i class="fa-solid fa-layer-group"></i> Explore por área</span>
+                    <h2 class="categories-nav__title">Escolha uma categoria</h2>
+                    <p class="categories-nav__sub">Encontre as leis que protegem você em cada área.</p>
+                </header>
 
                 <div class="categories-grid">
                     <a href="#leis" class="category-tile" data-filter="educacional">
@@ -197,42 +221,65 @@
         </section>
 
         <!-- =============================================
-        SEÇÃO DE LEIS COM BUSCA
-        ============================================= -->
+             SEÇÃO DE LEIS — Sem busca, card padrão
+             ============================================= -->
         <section class="laws-section" id="leis">
             <header class="laws-section__head">
                 <span class="section-badge"><i class="fa-solid fa-book"></i> Biblioteca de Leis</span>
                 <h2 class="laws-section-title">Leis que protegem você</h2>
-                <p class="laws-section-sub">Busque por nome, número ou palavra-chave. Todas traduzidas para você.</p>
+                <p class="laws-section-sub">Todas traduzidas para você — sem palavras difíceis.</p>
             </header>
-
-            <search class="laws-search-container">
-                <form onsubmit="event.preventDefault();">
-                    <label for="lawsSearch" class="sr-only">Pesquisar leis:</label>
-                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input type="search" id="lawsSearch" placeholder="Ex: Lei Berenice Piana, 12.764..." aria-label="Pesquisar leis">
-                </form>
-            </search>
 
             <div class="laws-grid" id="lawsGrid"></div>
 
             <p class="laws-no-results" id="lawsNoResults" hidden>
                 <i class="fa-solid fa-magnifying-glass"></i>
-                Nenhuma lei encontrada. Tente outro termo.
+                Nenhuma lei encontrada. Tente outra categoria.
             </p>
         </section>
 
         <!-- =============================================
-        EDITORIAL GRID — Aprenda + Conecte-se
-        ============================================= -->
-        <section class="editorial-grid">
-            <div class="editorial-grid__container">
+             FONTES PARA SE APROFUNDAR
+             ============================================= -->
+        <section class="sources-banner">
+            <div class="sources-banner__container">
+                <h3 class="sources-banner__title">
+                    <i class="fa-solid fa-book-open-reader"></i> Quer se aprofundar?
+                </h3>
+                <p class="sources-banner__text">
+                    Sites oficiais e organizações sérias que tratam de direitos de pessoas neurodivergentes e PCD.
+                </p>
+                <div class="sources-banner__list">
+                    <a href="https://www.gov.br/mdh/pt-br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-landmark"></i> Ministério dos Direitos Humanos
+                    </a>
+                    <a href="https://www.gov.br/mec/pt-br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-graduation-cap"></i> MEC — Educação Inclusiva
+                    </a>
+                    <a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-heart-pulse"></i> Ministério da Saúde
+                    </a>
+                    <a href="https://www.ipea.gov.br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-chart-line"></i> IPEA — Estudos e Pesquisas
+                    </a>
+                    <a href="https://www.apaebrasil.org.br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-people-group"></i> APAE Brasil
+                    </a>
+                    <a href="https://www.abda.org.br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-hand-holding-heart"></i> ABDA — Autismo
+                    </a>
+                </div>
+            </div>
+        </section>
 
-                <!-- Card APRENDA -->
+        <!-- =============================================
+             EDITORIAL GRID — Aprenda + Conecte-se
+             ============================================= -->
+        <section class="editorial-grid" id="editorial">
+            <div class="editorial-grid__container">
                 <article class="editorial-card">
                     <div class="editorial-card__media">
-                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80"
-                            alt="Pessoa estudando com caderno" loading="lazy">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80" alt="Pessoa estudando" loading="lazy">
                     </div>
                     <div class="editorial-card__panel">
                         <span class="editorial-card__eyebrow">Aprenda</span>
@@ -246,11 +293,9 @@
                     </div>
                 </article>
 
-                <!-- Card CONECTE-SE -->
                 <article class="editorial-card editorial-card--reverse">
                     <div class="editorial-card__media">
-                        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80"
-                            alt="Pessoas em reunião online" loading="lazy">
+                        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80" alt="Pessoas em reunião online" loading="lazy">
                     </div>
                     <div class="editorial-card__panel">
                         <span class="editorial-card__eyebrow">Conecte-se</span>
@@ -263,17 +308,14 @@
                         </a>
                     </div>
                 </article>
-
             </div>
         </section>
 
         <!-- =============================================
-        RECURSOS ÚTEIS + ENVIE SEU CASO
-        ============================================= -->
-        <section class="resources-section">
+             RECURSOS ÚTEIS + ENVIE SEU CASO
+             ============================================= -->
+        <section class="resources-section" id="recursos">
             <div class="resources-container">
-
-                <!-- Recursos Úteis -->
                 <div class="resources-box">
                     <div class="resources-box-header">
                         <div class="resources-box-icon"><i class="fa-solid fa-circle-info"></i></div>
@@ -313,7 +355,6 @@
                     </a>
                 </div>
 
-                <!-- Envie seu caso -->
                 <div class="case-box">
                     <div class="case-box-glow"></div>
                     <div class="case-box-content">
@@ -337,14 +378,13 @@
                         </p>
                     </div>
                 </div>
-
             </div>
         </section>
 
         <!-- =============================================
-        🆕 FAQ DE DIREITOS
-        ============================================= -->
-        <section class="rights-faq">
+             FAQ DE DIREITOS
+             ============================================= -->
+        <section class="rights-faq" id="faq">
             <header class="rights-faq__head">
                 <span class="section-badge"><i class="fa-regular fa-circle-question"></i> Dúvidas frequentes</span>
                 <h2>Perguntas sobre direitos</h2>
@@ -361,7 +401,6 @@
                         <p>Depende do direito. Para a Lei Brasileira de Inclusão (LBI), o laudo ajuda mas não é obrigatório — o que vale é a <strong>avaliação biopsicossocial</strong>. Já para benefícios como o BPC, o laudo é exigido.</p>
                     </div>
                 </details>
-
                 <details class="faq-item">
                     <summary>
                         <span>Como pedir adaptações na escola ou faculdade?</span>
@@ -371,7 +410,6 @@
                         <p>Faça um <strong>requerimento por escrito</strong> à coordenação, citando a Lei Brasileira de Inclusão (13.146/2015) e a Lei Berenice Piana (12.764/2012). Descreva as adaptações que você precisa e peça resposta formal.</p>
                     </div>
                 </details>
-
                 <details class="faq-item">
                     <summary>
                         <span>Empresa pode me demitir por ser neurodivergente?</span>
@@ -381,7 +419,6 @@
                         <p><strong>Não.</strong> Isso configura discriminação, crime previsto na Lei 7.716/1989 e na Lei Brasileira de Inclusão. Se acontecer, procure o Ministério Público do Trabalho ou um advogado trabalhista.</p>
                     </div>
                 </details>
-
                 <details class="faq-item">
                     <summary>
                         <span>O que é o BPC/LOAS e quem tem direito?</span>
@@ -391,7 +428,6 @@
                         <p>É um <strong>salário mínimo mensal</strong> para pessoas com deficiência de baixa renda (renda por pessoa da família inferior a 1/4 do salário mínimo). Você solicita no CRAS ou pelo site do INSS.</p>
                     </div>
                 </details>
-
                 <details class="faq-item">
                     <summary>
                         <span>Tenho direito a acompanhante terapêutico?</span>
@@ -401,7 +437,6 @@
                         <p><strong>Sim</strong>, quando houver indicação médica. A Lei 13.146/2015 garante o direito ao acompanhante especializado em instituições de ensino para pessoas com deficiência que precisam desse suporte.</p>
                     </div>
                 </details>
-
                 <details class="faq-item">
                     <summary>
                         <span>Como denunciar discriminação?</span>
@@ -415,15 +450,15 @@
         </section>
 
         <!-- =============================================
-        🆕 CTA — Fale com a AcolherIA
-        ============================================= -->
-        <section class="rights-cta">
-            <div class="rights-cta__card">
-                <div class="rights-cta__icon"><i class="fa-solid fa-robot"></i></div>
-                <div class="rights-cta__content">
+             CONTATO
+             ============================================= -->
+        <section class="rights-contact" id="contato">
+            <div class="rights-contact__card">
+                <div class="rights-contact__icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="rights-contact__content">
                     <h2>Ainda com dúvidas sobre seus direitos?</h2>
                     <p>Converse com a <strong>AcolherIA</strong>, nossa assistente especializada em neurodivergência. Ela pode te orientar sobre leis, benefícios e como agir em situações específicas.</p>
-                    <div class="rights-cta__actions">
+                    <div class="rights-contact__actions">
                         <a href="/chat-Ia/chat-Ia.html" class="btn-primary">
                             Conversar com AcolherIA <i class="fa-solid fa-arrow-right"></i>
                         </a>
@@ -454,7 +489,6 @@
             <i class="fa-solid fa-circle-plus"></i>
             <span class="floating-hub-label">Acessibilidade</span>
         </button>
-
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
                 <div class="floating-hub-group">
@@ -480,9 +514,7 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="floating-hub-divider"></div>
-
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">

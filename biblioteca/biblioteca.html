@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Biblioteca virtual com livros gratuitos para neurodivergentes — baixe PDFs e compartilhe na comunidade.">
+    <meta name="description" content="Biblioteca virtual com livros gratuitos para neurodivergentes — baixe PDFs, leia online e compartilhe na comunidade.">
     <title>Biblioteca — Amor NeuroDivergente</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,7 +71,6 @@
                 <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
             </div>
         </div>
-
         <nav class="sidebar-nav" aria-label="Principal">
             <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
             <a href="/Explorar/Explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
@@ -79,14 +78,12 @@
             <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
             <a href="/biblioteca/biblioteca.html" class="sidebar-link active" aria-current="page"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
         </nav>
-
         <div class="sidebar-secondary">
             <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
             <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
             <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
         </div>
     </aside>
-
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
@@ -117,24 +114,25 @@
         </header>
 
         <!-- =============================================
-        HERO — Estante digital
-        ============================================= -->
-        <section class="library-hero">
-            <div class="library-hero__bg">
-                <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600&q=80"
-                    alt="Estante de livros" class="library-hero__img">
-                <div class="library-hero__overlay"></div>
+             HERO/BANNER EDITORIAL — Estante digital
+             ============================================= -->
+        <section class="library-banner">
+            <div class="library-banner__media">
+                <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1920&q=80"
+                    alt="Estante de livros" loading="eager">
+                <div class="library-banner__overlay"></div>
             </div>
-            <div class="library-hero__content">
-                <span class="library-hero__badge">
+            <div class="library-banner__content">
+                <span class="library-banner__eyebrow">
                     <i class="fa-solid fa-book-open"></i> Biblioteca Digital Gratuita
                 </span>
-                <h1>Biblio<span class="library-hero__highlight">N</span></h1>
-                <p>
-                    Livros, guias e materiais selecionados sobre neurodiversidade.
-                    <strong>Baixe, leia e compartilhe.</strong>
+                <h1 class="library-banner__title">
+                    Biblio<span class="library-banner__highlight">N</span>
+                </h1>
+                <p class="library-banner__sub">
+                    Livros, guias e materiais selecionados sobre neurodiversidade. <strong>Baixe, leia e compartilhe.</strong>
                 </p>
-                <div class="library-hero__stats">
+                <div class="library-banner__stats">
                     <div class="library-stat">
                         <span class="library-stat__number">+40</span>
                         <span class="library-stat__label">Livros</span>
@@ -148,15 +146,38 @@
                         <span class="library-stat__label">Gratuito</span>
                     </div>
                 </div>
-                <a href="#todos-livros" class="btn-primary">
-                    Explorar biblioteca <i class="fa-solid fa-arrow-down"></i>
-                </a>
             </div>
         </section>
 
         <!-- =============================================
-        🆕 CONTINUE SUA LEITURA
-        ============================================= -->
+             NAV DE CHIPS — Navegação interna
+             ============================================= -->
+        <nav class="library-nav" aria-label="Categorias da Biblioteca">
+            <div class="library-nav__container">
+                <a href="#continuar" class="library-nav__chip is-active">
+                    <i class="fa-solid fa-bookmark"></i> Continue lendo
+                </a>
+                <a href="#destaques" class="library-nav__chip">
+                    <i class="fa-solid fa-star"></i> Destaques
+                </a>
+                <a href="#todos-livros" class="library-nav__chip">
+                    <i class="fa-solid fa-books"></i> Acervo
+                </a>
+                <a href="#fontes-externas" class="library-nav__chip">
+                    <i class="fa-solid fa-globe"></i> Fontes externas
+                </a>
+                <a href="#recomendados" class="library-nav__chip">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Recomendados
+                </a>
+                <a href="#faq" class="library-nav__chip">
+                    <i class="fa-regular fa-circle-question"></i> FAQ
+                </a>
+            </div>
+        </nav>
+
+        <!-- =============================================
+             CONTINUE SUA LEITURA
+             ============================================= -->
         <section class="continue-reading" id="continuar">
             <div class="continue-reading__container">
                 <header class="section-head">
@@ -168,8 +189,6 @@
                 </header>
 
                 <div class="continue-grid" id="continueGrid">
-                    <!-- Cards injetados pelo JS (biblioteca.js) -->
-                    <!-- Fallback estático: -->
                     <article class="continue-card">
                         <div class="continue-card__cover">
                             <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&q=80" alt="Capa" loading="lazy">
@@ -193,8 +212,8 @@
         </section>
 
         <!-- =============================================
-        DESTAQUES DO MÊS
-        ============================================= -->
+             DESTAQUES DO MÊS
+             ============================================= -->
         <section class="featured-shelf" id="destaques">
             <div class="featured-shelf__container">
                 <header class="section-head">
@@ -206,9 +225,7 @@
                 </header>
 
                 <div class="shelf">
-                    <div class="shelf__track" id="carrosselPista">
-                        <!-- Cards injetados pelo JS (biblioteca.js) -->
-                    </div>
+                    <div class="shelf__track" id="carrosselPista"></div>
                     <button class="shelf__arrow shelf__arrow--left" id="setaEsquerda" aria-label="Anterior">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
@@ -220,15 +237,15 @@
         </section>
 
         <!-- =============================================
-        TODOS OS LIVROS
-        ============================================= -->
+             TODOS OS LIVROS — Acervo interno
+             ============================================= -->
         <section class="all-books" id="todos-livros">
             <div class="all-books__container">
                 <header class="all-books__head">
                     <div>
-                        <span class="section-head__eyebrow"><i class="fa-solid fa-books"></i> Acervo completo</span>
+                        <span class="section-head__eyebrow"><i class="fa-solid fa-books"></i> Acervo do site</span>
                         <h2>Todos os <span class="all-books__title-highlight">livros</span></h2>
-                        <p class="all-books__sub">Busque por título, autor ou gênero.</p>
+                        <p class="all-books__sub">Livros e materiais que você pode ler aqui mesmo. Sem sair do site.</p>
                     </div>
                 </header>
 
@@ -262,17 +279,149 @@
                     </div>
                 </div>
 
-                <div class="books-grid" id="booksGrid">
-                    <!-- Cards injetados pelo biblioteca.js -->
-                </div>
+                <div class="books-grid" id="booksGrid"></div>
 
                 <p class="books-counter" id="booksCounter">0 livros encontrados</p>
             </div>
         </section>
 
         <!-- =============================================
-        🆕 ESCOLHIDO PARA VOCÊ
-        ============================================= -->
+             🆕 FONTES EXTERNAS — Curadoria de obras reais
+             ============================================= -->
+        <section class="external-sources" id="fontes-externas">
+            <div class="external-sources__container">
+
+                <header class="external-sources__head">
+                    <span class="section-head__eyebrow"><i class="fa-solid fa-globe"></i> Você pode ler aqui também</span>
+                    <h2>Sites com livros gratuitos</h2>
+                    <p class="external-sources__sub">
+                        Não se limite ao nosso acervo. Estas são obras reais, com licença aberta ou distribuição gratuita oficial, que você pode ler, citar e compartilhar direto na fonte.
+                    </p>
+                </header>
+
+                <div class="external-grid">
+
+                    <!-- LIVRO 1 -->
+                    <article class="external-card external-card--highlight">
+                        <div class="external-card__cover">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80"
+                                alt="Capa Oi, eu sou Carlos!" loading="lazy">
+                            <span class="external-card__license">CC BY-NC-ND</span>
+                        </div>
+                        <div class="external-card__body">
+                            <span class="external-card__source">
+                                <i class="fa-solid fa-graduation-cap"></i> Editora IFES
+                            </span>
+                            <h3 class="external-card__title">Oi, eu sou Carlos!</h3>
+                            <p class="external-card__author">por Adonai José Lacruz</p>
+                            <p class="external-card__desc">
+                                Narrativa em primeira pessoa que conta a perspectiva de uma criança autista de 7 anos. Uma contribuição valiosa para a literatura sobre a experiência neurodivergente.
+                            </p>
+                            <a href="https://repositorio.ifes.edu.br" target="_blank" rel="noopener" class="external-card__link">
+                                Ler no site oficial <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- LIVRO 2 -->
+                    <article class="external-card">
+                        <div class="external-card__cover">
+                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80"
+                                alt="Capa TEA curso aberto" loading="lazy">
+                            <span class="external-card__license">Acesso Aberto</span>
+                        </div>
+                        <div class="external-card__body">
+                            <span class="external-card__source">
+                                <i class="fa-solid fa-landmark"></i> IFRN
+                            </span>
+                            <h3 class="external-card__title">TEA: curso aberto sobre Transtorno do Espectro Autista</h3>
+                            <p class="external-card__author">por Thalita Motta, Elaine Macedo e Ângela Rocha</p>
+                            <p class="external-card__desc">
+                                Curso aberto que aborda história do autismo, critérios diagnósticos, legislação e muito mais. Atualizado em 2024.
+                            </p>
+                            <a href="https://memoria.ifrn.edu.br" target="_blank" rel="noopener" class="external-card__link">
+                                Acessar material <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- LIVRO 3 -->
+                    <article class="external-card">
+                        <div class="external-card__cover">
+                            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&q=80"
+                                alt="Capa Todo Mundo é Diferente" loading="lazy">
+                            <span class="external-card__license">Gratuito</span>
+                        </div>
+                        <div class="external-card__body">
+                            <span class="external-card__source">
+                                <i class="fa-solid fa-heart"></i> Bahiana + Instituto Monster
+                            </span>
+                            <h3 class="external-card__title">Todo Mundo é Diferente</h3>
+                            <p class="external-card__author">por Vanessa Maggitti e Maria Clara Souto</p>
+                            <p class="external-card__desc">
+                                Livro de divulgação infantil sobre o espectro autista. Conteúdo revisado por neuropsicólogos, oferecido gratuitamente para leitura e impressão.
+                            </p>
+                            <a href="https://www.bahiana.edu.br" target="_blank" rel="noopener" class="external-card__link">
+                                Ler no site oficial <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- LIVRO 4 -->
+                    <article class="external-card">
+                        <div class="external-card__cover">
+                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=80"
+                                alt="Capa Entendendo o Autismo" loading="lazy">
+                            <span class="external-card__license">Gratuito</span>
+                        </div>
+                        <div class="external-card__body">
+                            <span class="external-card__source">
+                                <i class="fa-solid fa-book"></i> Publicação Independente
+                            </span>
+                            <h3 class="external-card__title">Entendendo o Autismo: Guia Completo</h3>
+                            <p class="external-card__author">por Vitor Zindacta</p>
+                            <p class="external-card__desc">
+                                Guia completo para diagnóstico, tratamento e inclusão. Baseado no DSM-5-TR e em dados da OMS, com a perspectiva de quem tem um irmão autista.
+                            </p>
+                            <a href="https://www.amazon.com.br" target="_blank" rel="noopener" class="external-card__link">
+                                Ver na Amazon <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+
+                <!-- Fontes complementares em formato pill -->
+                <div class="external-pills">
+                    <span class="external-pills__label">
+                        <i class="fa-solid fa-circle-info"></i> Outras fontes de leitura gratuita:
+                    </span>
+                    <a href="https://www.dominiopublico.gov.br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-landmark"></i> Domínio Público
+                    </a>
+                    <a href="https://www.gutenberg.org" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-globe"></i> Project Gutenberg
+                    </a>
+                    <a href="https://openlibrary.org" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-book-open"></i> Open Library
+                    </a>
+                    <a href="https://www.scielo.br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-flask"></i> SciELO
+                    </a>
+                    <a href="https://repositorio.ifes.edu.br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-graduation-cap"></i> Repositório IFES
+                    </a>
+                    <a href="https://memoria.ifrn.edu.br" target="_blank" rel="noopener" class="source-pill">
+                        <i class="fa-solid fa-graduation-cap"></i> Memória IFRN
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =============================================
+             ESCOLHIDO PARA VOCÊ
+             ============================================= -->
         <section class="recommended" id="recomendados">
             <div class="recommended__container">
                 <header class="section-head section-head--center">
@@ -281,15 +430,72 @@
                     <p class="section-head__sub">Baseado nos temas que você tem explorado.</p>
                 </header>
 
-                <div class="recommended-grid" id="recommendedGrid">
-                    <!-- Cards injetados pelo JS -->
-                </div>
+                <div class="recommended-grid" id="recommendedGrid"></div>
             </div>
         </section>
 
         <!-- =============================================
-        CTA COMUNIDADE
-        ============================================= -->
+             FAQ DA BIBLIOTECA
+             ============================================= -->
+        <section class="library-faq" id="faq">
+            <header class="library-faq__head">
+                <span class="section-badge"><i class="fa-regular fa-circle-question"></i> Dúvidas frequentes</span>
+                <h2>Perguntas sobre a Biblioteca</h2>
+                <p>Como usar, o que está disponível e como aproveitar melhor.</p>
+            </header>
+
+            <div class="library-faq__list">
+                <details class="faq-item">
+                    <summary>
+                        <span>Os livros são realmente gratuitos?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p><strong>Sim.</strong> Todo o material do nosso acervo é gratuito. Alguns livros de fontes externas também são gratuitos, mas têm licenças específicas (Creative Commons, Acesso Aberto) que explicamos em cada card.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>
+                        <span>Posso baixar os PDFs para o meu computador?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Para livros com licença <strong>CC BY-NC-ND</strong>, sim. Para os de "Acesso Aberto" ou "Gratuito", recomendamos ler direto no site oficial, para respeitar os termos de cada editora.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>
+                        <span>Como funciona o "Continue lendo"?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Quando você começa um livro, o site salva seu progresso automaticamente no seu navegador. Você pode retomar de onde parou a qualquer momento, sem precisar fazer login.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>
+                        <span>Posso citar esses livros em trabalhos acadêmicos?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p><strong>Sim</strong>, desde que respeite a licença. Livros com <strong>CC BY-NC-ND</strong> exigem crédito ao autor. Livros de "Acesso Aberto" geralmente permitem citação com atribuição. Sempre confira a licença antes.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>
+                        <span>Tem como sugerir um livro para o acervo?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Claro! Vá até o final da página e clique em <strong>"Sugerir um livro"</strong> na seção de comunidade. Sua indicação passa pela curadoria da equipe.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- =============================================
+             CTA COMUNIDADE
+             ============================================= -->
         <section class="library-cta">
             <div class="library-cta__card">
                 <div class="library-cta__content">
@@ -313,6 +519,23 @@
             </div>
         </section>
 
+        <!-- =============================================
+             NEWSLETTER
+             ============================================= -->
+        <section class="library-newsletter">
+            <div class="library-newsletter__card">
+                <span class="library-newsletter__icon"><i class="fa-regular fa-envelope"></i></span>
+                <h2>Receba novos livros por e-mail</h2>
+                <p>Um resumo quinzenal com novidades do acervo e recomendações de leitura. Sem spam.</p>
+                <form class="library-newsletter__form" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML='<i class=\'fa-solid fa-check\'></i> Inscrito!'; this.querySelector('input').value='';">
+                    <input type="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
+                    <button type="submit" class="btn-primary">
+                        Inscrever <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
         <!-- FOOTER -->
         <footer class="footer">
             <div class="footer-main">
@@ -326,9 +549,7 @@
 
     </main>
 
-    <!-- =============================================
-    MODAL DE DETALHES DO LIVRO
-    ============================================= -->
+    <!-- MODAL DE DETALHES DO LIVRO -->
     <div class="book-modal-overlay" id="bookModalOverlay" hidden>
         <div class="book-modal-overlay-bg" id="bookModalBg"></div>
         <div class="book-modal">
@@ -339,9 +560,7 @@
         </div>
     </div>
 
-    <!-- =============================================
-    MODAL DE LEITURA (PDF.js)
-    ============================================= -->
+    <!-- MODAL DE LEITURA -->
     <div class="reading-modal-overlay" id="readingModalOverlay" hidden>
         <div class="reading-modal-bg" id="readingModalBg"></div>
         <div class="reading-modal" id="readingModal">
@@ -370,13 +589,11 @@
                     </button>
                 </div>
             </div>
-
             <div class="reading-modal__body" id="readingModalBody">
                 <div class="reading-pdf-container" id="readingPdfContainer">
                     <canvas id="readingPdfCanvas"></canvas>
                 </div>
             </div>
-
             <div class="reading-modal__footer">
                 <div class="reading-navigation">
                     <button class="reading-nav-btn" id="readingPrevPage" title="Página anterior">
