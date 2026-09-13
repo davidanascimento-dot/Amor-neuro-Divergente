@@ -16,6 +16,46 @@
 </head>
 <body>
 
+    
+    <!-- =============================================
+         MODAL ACOLHERIA
+         ============================================= -->
+    <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
+        <div class="acolheria-modal">
+            <div class="acolheria-modal-header">
+                <div class="acolheria-modal-title">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>AcolherIA</span>
+                    <span class="acolheria-badge">Online</span>
+                </div>
+                <button class="acolheria-modal-close" id="acolheriaClose" aria-label="Fechar AcolherIA">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="acolheria-modal-body" id="acolheriaChatBody"></div>
+            <div class="acolheria-suggestions" id="acolheriaSuggestions">
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?">TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?">Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização">Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?">Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?">Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar">Desabafar</button>
+            </div>
+            <div class="acolheria-modal-footer">
+                <div class="acolheria-input-wrapper">
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="acolheria-footer-note">
+                    <i class="fa-regular fa-circle-check"></i> AcolherIA • Especialista em neurodivergência
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
+
     <!-- SIDEBAR TOGGLE -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
@@ -515,7 +555,8 @@
         window.supabaseClient = supabase.createClient('https://qyixzontuhrxrrjrmzvy.supabase.co', 'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE');
     </script>
     <script src="/reading-state.js"></script>
-    <script src="recursos.js"></script>
+    <script src="recursos.js"></script> 
+    <script src="/Acolher-IA/Acolher-IA.js"></script>
 
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
