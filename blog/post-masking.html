@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="O dia em que você para de sobreviver e começa a viver — reflexão sobre masking, exaustão neurodivergente e o direito de existir sem se camuflar.">
+    <link rel="icon" type="image/x-icon" href="/img/logo-LHN9gCw1.png">
+    <title>O dia em que você para de sobreviver e começa a viver — Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="post-masking.css">
+    <link rel="stylesheet" href="/Explorar/Explorar.css">
+</head>
+<body>
+
+    <!-- Barra de progresso de leitura -->
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- SIDEBAR TOGGLE -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-profile" id="sidebarProfile">
+            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
+                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <span id="sidebarUserName">Visitante</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-detail" id="profileDetail" hidden>
+                <p id="sidebarUserEmail">carregando@email.com</p>
+                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
+            </div>
+        </div>
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a href="/inicio.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/Explorar/Explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
+            <a href="/comunidade/comunidade.html" class="sidebar-link"><i class="fa-regular fa-comments"></i> Comunidade</a>
+            <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
+            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
+        </nav>
+        <div class="sidebar-secondary">
+            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
+            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
+            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content" id="mainContent">
+
+        <!-- HEADER GLASS -->
+        <header class="header-glass" id="headerGlass">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/inicio.html">Início</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="/Explorar/Explorar.html">Explorar</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="/blog/blog.html">Blog</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>O dia em que você para de sobreviver</span>
+            </nav>
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <nav class="header-links">
+                <a href="/Explorar/Explorar.html">Explorar</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+                <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+            </nav>
+        </header>
+
+        <!-- =============================================
+             HERO EDITORIAL — Banner do artigo
+             ============================================= -->
+        <section class="article-hero">
+            <div class="article-hero__media">
+                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920&h=900&fit=crop"
+                     alt="Pessoa em ambiente calmo, tomando café" loading="eager">
+                <div class="article-hero__overlay"></div>
+            </div>
+
+            <div class="article-hero__content">
+                <span class="article-hero__eyebrow">
+                    <i class="fa-solid fa-pen-nib"></i> Blog • Reflexão
+                </span>
+                <h1 class="article-hero__title">
+                    O dia em que você para de sobreviver <br>
+                    <span class="article-hero__title-accent">e começa a viver</span>
+                </h1>
+                <p class="article-hero__sub">
+                    Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo. E às vezes a gente só percebe quando já está exausto demais.
+                </p>
+            </div>
+        </section>
+
+        <!-- =============================================
+             META BAR — Autor + Data + Tempo
+             ============================================= -->
+        <section class="article-meta-bar">
+            <div class="article-meta-bar__container">
+                <div class="article-meta-bar__left">
+                    <span class="article-meta-bar__author">
+                        <span class="article-meta-bar__avatar">L</span>
+                        <span class="article-meta-bar__author-info">
+                            <strong>Luti Christóforo</strong>
+                            <em>· Psicólogo e colunista</em>
+                        </span>
+                    </span>
+                </div>
+                <div class="article-meta-bar__right">
+                    <span><i class="fa-regular fa-calendar"></i> 05 de fevereiro, 2026</span>
+                    <span><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             CONTEÚDO DO ARTIGO — Área de leitura
+             ============================================= -->
+        <article class="article-container">
+            <div class="article-content" id="articleContent">
+                <p class="article-lead">
+                    Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo. Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda assim sentir que não estamos de verdade presentes na nossa própria vida.
+                </p>
+
+                <p>Muitas pessoas neurodivergentes vivem anos em modo de sobrevivência sem perceber. O <strong>masking</strong> — o hábito de camuflar traços autistas ou de TDAH para se encaixar — consome uma energia enorme. E quando essa energia acaba, a vida vira uma sequência de tarefas cumpridas no automático.</p>
+
+                <p>A gente sorri na hora certa. Responde o que esperam ouvir. Aguenta o barulho, a luz, o cheiro. Aguenta a reunião que poderia ser um e-mail. Aguenta o "você está tão quieto hoje" e responde "só cansado". E vai acumulando um cansaço que dormir não resolve.</p>
+
+                <h2>O que sobreviver parece por dentro</h2>
+
+                <p>Sobreviver, para muita gente neurodivergente, tem uma textura específica:</p>
+
+                <ul>
+                    <li>Acordar já contando as horas para poder voltar a deitar</li>
+                    <li>Fazer o mínimo necessário para não chamar atenção</li>
+                    <li>Rir de piadas que não fazem sentido, para não parecer "estranho"</li>
+                    <li>Ensaiar conversas antes de tê-las — e revisar depois, procurando erros</li>
+                    <li>Sentir que a vida está passando enquanto você só tenta chegar ao fim do dia</li>
+                </ul>
+
+                <p>Nada disso costuma ser dramático. Não tem um evento grande que marque o início. É um acúmulo silencioso. Até que um dia, uma coisa pequena — uma música, uma frase, uma conversa — faz o peito doer de um jeito que você não sabia nomear.</p>
+
+                <blockquote>
+                    "Sobreviver é esperar. Viver é escolher. E a gente só consegue escolher quando para de se explicar."
+                </blockquote>
+
+                <h2>O que muda quando a gente começa a viver</h2>
+
+                <p>Viver não é fazer mais coisas. Não é ser mais produtivo. Não é "ter uma vida social ativa". Viver é outra coisa — é a experiência de estar dentro da própria vida, mesmo nos dias difíceis.</p>
+
+                <p>Quando a gente para de se explicar, algumas coisas pequenas começam a acontecer:</p>
+
+                <ul>
+                    <li>A gente diz "não" sem se justificar por dez minutos</li>
+                    <li>A gente sai da festa quando o corpo pede, não quando a etiqueta permite</li>
+                    <li>A gente usa as roupas que cabem no corpo, não as que "caem bem"</li>
+                    <li>A gente escolhe o restaurante pelo cheiro, não pela opinião do grupo</li>
+                    <li>A gente dorme sem culpa de ter dormido demais</li>
+                    <li>A gente se permite gostar de coisas "sem graça" sem se justificar</li>
+                </ul>
+
+                <p>Cada uma dessas coisas é uma vitória silenciosa. Nenhuma delas cabe num story. Nenhuma delas vai fazer ninguém aplaudir. Mas todas juntas mudam a textura dos dias.</p>
+
+                <h2>O papel do apoio</h2>
+
+                <p>Ninguém sai do modo de sobrevivência sozinho. Não porque sejamos fracos, mas porque a gente vive em um mundo que foi desenhado para corpos e mentes neurotípicas. Sair do modo de sobrevivência exige <strong>espaço</strong> — e o espaço, muitas vezes, é construído por outras pessoas.</p>
+
+                <p>Um amigo que não pergunta "por que você não veio?". Um terapeuta que não te trata como sintoma. Uma comunidade onde você não precisa ensaiar antes de falar. Uma família que aceita o seu silêncio na mesa. Um trabalho que deixa você fazer as coisas do seu jeito.</p>
+
+                <p>Isso não é luxo. Isso é o mínimo.</p>
+
+                <h2>Nem todo dia é o dia</h2>
+
+                <p>É importante dizer: nem todo dia é <em>o dia</em>. Tem dias em que sobreviver é o máximo que a gente consegue — e está tudo bem. Recair no masking por algumas semanas não significa que você perdeu o progresso. Significa que você é humano.</p>
+
+                <p>A transição não é linear. É um vaivém. Tem dia de dizer "não" com firmeza, tem dia de dizer "sim" e passar dois dias na cama. Tem dia de tirar a máscara por completo, tem dia de colocar ela de novo só pra atravessar uma reunião.</p>
+
+                <p>O importante é não perder de vista o horizonte: <strong>você não foi feito para sobreviver. Você foi feito para viver.</strong> E se hoje você ainda está na parte difícil, saiba que tem gente do outro lado, segurando a lanterna.</p>
+
+                <h2>Um convite</h2>
+
+                <p>Se você leu até aqui e se reconheceu em alguma parte, isso já é alguma coisa. Reconhecer é o primeiro passo. O segundo é se permitir ser cuidado.</p>
+
+                <p>Fala com alguém. Escreve. Descansa. Faz uma coisa que te faz bem sem pedir licença. E, quando puder, procura a nossa comunidade — tem gente aqui que entende o que você está sentindo.</p>
+
+                <p>Você não precisa se explicar. Você só precisa chegar.</p>
+            </div>
+
+            <!-- Tags -->
+            <div class="article-tags">
+                <span class="article-tag">Reflexão</span>
+                <span class="article-tag">Masking</span>
+                <span class="article-tag">Saúde Mental</span>
+                <span class="article-tag">Neurodivergência</span>
+            </div>
+
+            <!-- Compartilhar -->
+            <div class="article-share">
+                <span class="article-share__label">Compartilhar:</span>
+                <a href="#" class="article-share__btn" aria-label="Compartilhar no WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="article-share__btn" aria-label="Compartilhar no X"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="article-share__btn" aria-label="Copiar link"><i class="fa-solid fa-link"></i></a>
+            </div>
+        </article>
+
+        <!-- =============================================
+             ÁREA DE COMENTÁRIOS
+             ============================================= -->
+        <section class="area-comentarios">
+            <header class="area-comentarios__head">
+                <h2>Área de comentários</h2>
+                <p>Se esse texto tocou em algo, conta pra gente. Toda voz importa. 💜</p>
+            </header>
+
+            <div class="novo-comentario-container">
+                <div class="usuario-info">
+                    <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="commentAvatar" class="sidebarAvatar">
+                    <span class="nome-usuario">Faça seu comentário:</span>
+                </div>
+
+                <form class="form-comentario" onsubmit="return false;">
+                    <textarea class="campo-texto" placeholder="Escreva seu comentário..." aria-label="Escreva seu comentário"></textarea>
+                    <button type="submit" class="btn-enviar">Publicar</button>
+                </form>
+            </div>
+
+            <div class="lista-comentarios">
+                <div class="item-comentario">
+                    <img src="/img/foto-padrão.jpg" alt="Visitante" class="sidebarAvatar">
+                    <div class="conteudo-comentario">
+                        <div class="cabecalho-comentario">
+                            <strong class="nome-autor">Visitante</strong>
+                            <span class="tempo-comentario">há 2 horas</span>
+                        </div>
+                        <p class="texto-comentario">Esse texto me pegou de um jeito. Li duas vezes e chorei nas duas. Obrigado por escrever isso.</p>
+                        <button type="button" class="btn-responder">Responder</button>
+                    </div>
+                </div>
+
+                <div class="item-comentario">
+                    <img src="/img/foto-padrão.jpg" alt="Visitante" class="sidebarAvatar">
+                    <div class="conteudo-comentario">
+                        <div class="cabecalho-comentario">
+                            <strong class="nome-autor">Visitante</strong>
+                            <span class="tempo-comentario">há 5 horas</span>
+                        </div>
+                        <p class="texto-comentario">A parte do "acordar contando as horas para voltar a deitar" me descreveu. Não sabia que isso tinha nome.</p>
+                        <button type="button" class="btn-responder">Responder</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-main">
+                <div class="footer-col">
+                    <h4>Navegue</h4>
+                    <a href="/inicio.html">Início</a>
+                    <a href="/Explorar/Explorar.html">Explorar</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                    <a href="/direitos/direitos.html">Direitos</a>
+                    <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Sobre</h4>
+                    <a href="/Quem somos/quem-somos.html">Quem somos</a>
+                    <a href="/blog/blog.html">Blog</a>
+                    <a href="/contato/contato.html">Contato</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Apoie</h4>
+                    <a href="/loja/loja.html">Loja</a>
+                    <a href="/doações/doações.html">Doações</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <p>© 2026 Amor NeuroDivergente</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- HUB FLUTUANTE -->
+    <div class="floating-hub" id="floatingHub">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span class="floating-hub-label">Acessibilidade</span>
+        </button>
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
+                    <div class="floating-hub-actions">
+                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
+                            <i class="fa-regular fa-moon"></i><span class="hub-action-label">Escuro</span>
+                        </button>
+                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
+                            <i class="fa-solid fa-text-height"></i><span class="hub-action-label">A+</span>
+                        </button>
+                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
+                            <i class="fa-solid fa-text-slash"></i><span class="hub-action-label">A-</span>
+                        </button>
+                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
+                            <i class="fa-regular fa-eye"></i><span class="hub-action-label">Dislexia</span>
+                        </button>
+                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
+                            <i class="fa-solid fa-person-walking"></i><span class="hub-action-label">Movimento</span>
+                        </button>
+                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
+                            <i class="fa-solid fa-rotate-left"></i><span class="hub-action-label">Reset</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="floating-hub-divider"></div>
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
+                            <i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span>
+                        </a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
+                            <i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span>
+                        </a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
+                            <i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span>
+                        </a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
+                            <i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
+    <script src="artigo.js"></script>
+    <script src="/inicio.js"></script>
+    <script src="/Acolher-IA/Acolher-IA.js"></script>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+</body>
+</html>
