@@ -195,25 +195,37 @@
 }
 
 /* =========================================
-   NAV DE CHIPS — sticky
+   NAV — Chips FIXA NA PARTE INFERIOR
    ========================================= */
 .rights-nav {
-    padding: 24px 20px;
-    background: #ffffff;
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 75px;
-    z-index: 30;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    z-index: 50;
+    /* Safe area para iPhone (notch) */
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
+
 .rights-nav__container {
     max-width: 1100px;
     margin: 0 auto;
     display: flex;
-    flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px 4px;
 }
+
+.rights-nav__container::-webkit-scrollbar {
+    display: none;
+}
+
 .rights-nav__chip {
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -225,21 +237,162 @@
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
+    white-space: nowrap;
     transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
-.rights-nav__chip i { font-size: 13px; color: #8a827c; }
+
+.rights-nav__chip i {
+    font-size: 13px;
+    color: #8a827c;
+    transition: color 0.15s ease;
+}
+
 .rights-nav__chip:hover {
-    border-color: var(--azul-editorial);
-    color: var(--azul-editorial);
+    border-color: var(--azul-editorial, #0ea5e9);
+    color: var(--azul-editorial, #0ea5e9);
     background: #f0f9ff;
 }
-.rights-nav__chip:hover i { color: var(--azul-editorial); }
+.rights-nav__chip:hover i {
+    color: var(--azul-editorial, #0ea5e9);
+}
+
 .rights-nav__chip.is-active {
     background: var(--primary);
     border-color: var(--primary);
     color: #ffffff;
 }
-.rights-nav__chip.is-active i { color: #ffffff; }
+.rights-nav__chip.is-active i {
+    color: #ffffff;
+}
+
+/* =========================================
+   COMPENSAÇÃO — body/main para não cobrir conteúdo
+   ========================================= */
+body,
+.main-content {
+    padding-bottom: 90px;
+}
+
+/* Ajuste do botão voltar ao topo */
+.scroll-top-btn {
+    bottom: 100px;
+    right: 24px;
+    z-index: 60;
+}
+
+/* Ajuste do hub flutuante */
+.floating-hub {
+    bottom: 110px;
+    right: 24px;
+}
+
+/* Scroll padding para os anchors */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+    scroll-padding-bottom: 100px;
+}
+
+/* =========================================
+   DARK MODE — Nav fixa
+   ========================================= */
+body.a11y-dark-mode .rights-nav {
+    background: #1a1a2e;
+    border-top-color: #2d2d44;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.a11y-dark-mode .rights-nav__chip {
+    background: #1a1a2e;
+    border-color: #2d2d44;
+    color: #b8b0a8;
+}
+body.a11y-dark-mode .rights-nav__chip i {
+    color: #94a3b8;
+}
+body.a11y-dark-mode .rights-nav__chip:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
+    background: rgba(14, 165, 233, 0.1);
+}
+body.a11y-dark-mode .rights-nav__chip:hover i {
+    color: #38bdf8;
+}
+body.a11y-dark-mode .rights-nav__chip.is-active {
+    background: #6d28d9;
+    border-color: #6d28d9;
+    color: #ffffff;
+}
+body.a11y-dark-mode .rights-nav__chip.is-active i {
+    color: #ffffff;
+}
+
+/* =========================================
+   REDUZIR MOVIMENTO
+   ========================================= */
+body.a11y-reduce-motion .rights-nav__chip,
+body.a11y-reduce-motion .rights-nav__chip i {
+    transition: none !important;
+}
+
+/* =========================================
+   RESPONSIVO — Nav fixa em baixo
+   ========================================= */
+@media (max-width: 900px) {
+    .rights-nav {
+        padding: 10px 16px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+
+    .rights-nav__container {
+        justify-content: flex-start;
+        padding: 2px 0;
+    }
+
+    .rights-nav__chip {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 768px) {
+    body,
+    .main-content {
+        padding-bottom: 80px;
+    }
+
+    .scroll-top-btn {
+        bottom: 90px;
+        right: 16px;
+    }
+
+    .floating-hub {
+        bottom: 96px;
+        right: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .rights-nav {
+        padding: 8px 12px;
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+
+    .rights-nav__chip {
+        padding: 7px 14px;
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    .rights-nav__chip i {
+        font-size: 12px;
+    }
+
+    body,
+    .main-content {
+        padding-bottom: 76px;
+    }
+}
 
 /* =========================================
    INTRO — "Direitos não se limitam a um site"

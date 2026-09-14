@@ -127,25 +127,38 @@
 }
 
 /* =========================================
-   NAV — Chips sticky
+   NAV — Chips FIXA NA PARTE INFERIOR
    ========================================= */
 .explore-nav {
-    padding: 28px 20px;
-    background: #ffffff;
-    border-bottom: 1px solid #e8e3dd;
-    position: sticky;
-    top: 75px;
-    z-index: 30;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    z-index: 50;
+    /* Safe area para iPhone (notch) */
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
+
 .explore-nav__container {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* Espaçamento lateral para scroll suave */
+    padding: 2px 4px;
 }
+
+.explore-nav__container::-webkit-scrollbar {
+    display: none;
+}
+
 .explore-nav__chip {
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -157,12 +170,15 @@
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
+    white-space: nowrap;
     transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
+
 .explore-nav__chip i {
     font-size: 13px;
     color: #8a827c;
 }
+
 .explore-nav__chip:hover {
     border-color: #0ea5e9;
     color: #0ea5e9;
@@ -171,6 +187,7 @@
 .explore-nav__chip:hover i {
     color: #0ea5e9;
 }
+
 .explore-nav__chip.is-active {
     background: #7c3aed;
     border-color: #7c3aed;
