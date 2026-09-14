@@ -312,11 +312,8 @@ body,
     z-index: 60;
 }
 
-/* Ajuste do hub flutuante */
-.floating-hub {
-    bottom: 110px;
-    right: 24px;
-}
+
+
 
 /* Scroll padding para os anchors */
 html {
