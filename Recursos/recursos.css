@@ -412,17 +412,13 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     flex-direction: column;
     background: #ffffff;
     border: 1px solid var(--border-light);
-    border-radius: 20px;
+    border-radius: 5px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
 }
-.externo-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.08);
-    border-color: rgba(14, 165, 233, 0.3);
-}
+
 .externo-card__media {
     position: relative;
     aspect-ratio: 16 / 10;
@@ -434,9 +430,9 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
 }
-.externo-card:hover .externo-card__media img { transform: scale(1.05); }
+
+
 .externo-card__badge {
     position: absolute;
     top: 14px;
@@ -501,25 +497,19 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     color: var(--azul-editorial-dark);
 }
 
-/* =========================================
-   DA NOSSA EQUIPE — Featured
-   ========================================= */
+
 .equipe-featured {
     display: flex;
     align-items: stretch;
     gap: 44px;
     background: #ffffff;
     border: 1px solid var(--border-light);
-    border-radius: 24px;
+    border-radius: 5px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin-bottom: 40px;
 }
-.equipe-featured:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.08);
-}
+
+
 .equipe-featured__media {
     flex: 0 0 48%;
     overflow: hidden;
@@ -531,9 +521,9 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+
 }
-.equipe-featured:hover .equipe-featured__media img { transform: scale(1.04); }
+
 
 .equipe-featured__body {
     flex: 1;
@@ -616,17 +606,13 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     flex-direction: column;
     background: #ffffff;
     border: 1px solid var(--border-light);
-    border-radius: 16px;
+    border-radius: 5px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
 }
-.equipe-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(124,58,237,0.25);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
+
 .equipe-card__media {
     aspect-ratio: 16 / 10;
     overflow: hidden;
@@ -639,7 +625,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     display: block;
     transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
 }
-.equipe-card:hover .equipe-card__media img { transform: scale(1.05); }
+
 .equipe-card__body {
     padding: 16px 18px 18px;
     display: flex;
@@ -652,7 +638,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     font-weight: 700;
     line-height: 1.35;
     margin: 0;
-    color: var(--text-dark);
+    color: var(--azul-editorial-dark);
     letter-spacing: -0.01em;
 }
 .equipe-card__meta {
@@ -663,7 +649,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     gap: 5px;
     margin-top: auto;
     padding-top: 8px;
-    border-top: 1px solid var(--border-light);
+
 }
 
 /* =========================================
@@ -687,9 +673,8 @@ body.a11y-reduce-motion .recursos-nav__chip i {
 .tag-saude-mental { background: #f3e5f5; color: #6a1b9a; }
 .tag-direitos { background: #e0f2f1; color: #00695c; }
 
-/* =========================================
-   CATEGORIAS — Blocos alternados
-   ========================================= */
+
+
 .categorias-wrapper {
     display: flex;
     flex-direction: column;
@@ -709,19 +694,20 @@ body.a11y-reduce-motion .recursos-nav__chip i {
 .categoria-block__image {
     flex: 1;
     min-width: 0;
-    border-radius: 20px;
+    border-radius: 5% 0%  0% 5%;
     overflow: hidden;
 }
 .categoria-block__image img {
     width: 100%;
-    border-radius: 20px;
+    border-radius: 2px;
     object-fit: cover;
     aspect-ratio: 4/3;
     background: var(--bg-warm);
     display: block;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+   
+
 }
-.categoria-block:hover .categoria-block__image img { transform: scale(1.02); }
+
 
 .categoria-block__text {
     flex: 1;
@@ -743,9 +729,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     max-width: 480px;
 }
 
-/* =========================================
-   BOTÃO UNIFICADO
-   ========================================= */
+
 .recursos-btn,
 .btn-primary {
     display: inline-flex;
@@ -758,28 +742,20 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     font-size: 15px;
     font-weight: 600;
     text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: var(--btn-shadow);
     border: none;
     cursor: pointer;
     font-family: inherit;
 }
-.recursos-btn:hover,
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--btn-shadow-hover);
-}
+
 .recursos-btn i,
 .btn-primary i {
     font-size: 14px;
-    transition: transform 0.2s ease;
+   
 }
-.recursos-btn:hover i,
-.btn-primary:hover i { transform: translateX(4px); }
 
-/* =========================================
-   EM BREVE
-   ========================================= */
+
+
+
 .breve-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -831,9 +807,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     color: #b45309;
 }
 
-/* =========================================
-   NEWSLETTER
-   ========================================= */
+
 .recursos-newsletter {
     padding: 20px 48px 80px;
 }
