@@ -610,7 +610,7 @@
     overflow: hidden;
     transition: color 0.25s ease;
 }
-.latest-item:hover .latest-item__text h4 { color: var(--explore-accent); }
+
 .latest-item__date { font-size: 12px; color: var(--explore-muted); font-weight: 500; }
 .latest-item__thumb {
     position: relative;
