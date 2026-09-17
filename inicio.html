@@ -250,104 +250,125 @@
             </div>
         </section>
 
+
         <!-- =============================================
-             CARROSSEL TRIPLO
-             ============================================= -->
-        <section class="carousel-triple-section">
-            <h2>O que você encontra por aqui</h2>
-            <p class="features-sub">Espaços, ferramentas e acolhimento feitos para você</p>
-            
-            <div class="carousel-triple-container">
-                <button class="carousel-arrow carousel-arrow-left" id="carouselPrev" aria-label="Anterior">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                
-                <div class="carousel-triple-track" id="carouselTripleTrack">
-                    <div class="carousel-triple-card">
-                        <span class="card-badge">Destaque</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=500&fit=crop" alt="Estratégias Reais" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-lightbulb"></i></span>
-                            <h3> leitura prática para o dia a dia</h3>
-                            <p>Aprenda a lidar com procrastinação, organizar a rotina e reduzir a ansiedade.</p>
-                            <a href="/blog/blog.html" class="triple-card-btn">Explorar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
+     DESTAQUE + FEED — Visual novo (ct-*)
+     ============================================= -->
+<section class="ct-section">
+    <div class="ct-container">
 
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #db2777, #ec4899);">Seguro</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=500&fit=crop" alt="Acolhimento" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-regular fa-heart"></i></span>
-                            <h3> Comunidade segura para compartilhar</h3>
-                            <p>Compartilhe experiências em um espaço seguro e sem julgamentos.</p>
-                            <a href="/comunidade/comunidade.html" class="triple-card-btn">Participar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #10b981, #34d399);">Novo</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=500&fit=crop" alt="Trilhas" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-road"></i></span>
-                            <h3> Conteúdos sobre TDAH, Autismo e mais</h3>
-                            <p>Conteúdos claros sobre TDAH, autismo adulto, autoestima e regulação emocional.</p>
-                            <a href="/trilhas/trilha.html" class="triple-card-btn">Explorar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">Direitos</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=500&fit=crop" alt="Direitos" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-scale-balanced"></i></span>
-                            <h3> Leis e benefícios traduzidos</h3>
-                            <p>Informação prática sobre leis e benefícios. Sem juridiquês — a gente traduz.</p>
-                            <a href="/direitos/direitos.html" class="triple-card-btn">Consultar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #8b5cf6, #c084fc);">Ao Vivo</span>
-                        <div class="triple-card-image">
-                            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=500&fit=crop" alt="Encontros" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-regular fa-calendar-days"></i></span>
-                            <h3>Eventos e grupos de apoio</h3>
-                            <p>Aulas, rodas de acolhimento e grupos de partilha com especialistas.</p>
-                            <a href="/Recursos/eventos.html" class="triple-card-btn">Ver agenda <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-triple-card">
-                        <span class="card-badge" style="background: linear-gradient(135deg, #f43f5e, #fb7185);">Desafio</span>
-                        <div class="triple-card-image">
-                            <img src="/img/blog-post-1-DvwhQAY4 - Copia.jpg" alt="Missões" loading="lazy">
-                        </div>
-                        <div class="triple-card-overlay">
-                            <span class="triple-card-icon"><i class="fa-solid fa-flag-checkered"></i></span>
-                            <h3> Ferramentas que transformar o seu dia </h3>
-                            <p>Pequenos passos mensais para transformar sua vida de forma leve.</p>
-                            <a href="/ferramentas/ferramentas.html" class="triple-card-btn">Começar <i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
-                    </div>
+        <!-- Header -->
+        <div class="ct-header">
+            <div>
+                <div class="ct-eyebrow">
+                    <i class="fa-solid fa-star"></i> Destaques
                 </div>
-                
-                <button class="carousel-arrow carousel-arrow-right" id="carouselNext" aria-label="Próximo">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
+                <h2 class="ct-title">O que você encontra por aqui</h2>
+                <p class="ct-sub">Espaços, ferramentas e acolhimento feitos para você</p>
             </div>
 
-            <div class="carousel-dots" id="carouselTripleDots"></div>
+            <!-- Controles -->
+            <div class="ct-controls">
+                <button id="autoplayBtn" onclick="toggleAutoplay()" class="ct-autoplay-btn">
+                    <i class="fa-solid fa-play" id="autoplayIcon" style="color:#7c3aed;"></i>
+                    <span id="autoplayText">Autoplay Off</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============ DESTAQUE + FEED ============ -->
+        <div class="ct-hero-view">
+
+            <!-- Banner Principal -->
+            <div class="ct-hero">
+                <img id="heroImage" src="" alt="Destaque" class="ct-hero__image">
+                <div class="ct-hero__overlay"></div>
+
+                <div class="ct-hero__body">
+                    <div class="ct-hero__meta">
+                        <span id="heroBadgeTop" class="ct-hero__badge" style="background:#7c3aed;">Destaque</span>
+                        <span id="heroBadge" class="ct-hero__date">
+                            <i class="fa-regular fa-clock"></i> há 3 dias
+                        </span>
+                    </div>
+
+                    <span id="heroIcon" class="ct-hero__icon"></span>
+
+                    <h3 id="heroTitle" class="ct-hero__title"></h3>
+                    <p id="heroDesc" class="ct-hero__desc"></p>
+
+                    <a id="heroBtn" href="#" class="ct-hero__btn">
+                        <span id="heroBtnText">Explorar</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Playlist Lateral -->
+            <div class="ct-playlist-wrapper">
+                <div class="ct-playlist-header">
+                    <span class="ct-playlist-label">Trilha de Conteúdos</span>
+                    <div class="ct-playlist-nav">
+                        <button onclick="prevHeroItem()" aria-label="Anterior">
+                            <i class="fa-solid fa-chevron-up"></i>
+                        </button>
+                        <button onclick="nextHeroItem()" aria-label="Próximo">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="sidePlaylist" class="ct-playlist"></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ============ MODAL ============ -->
+<div id="contentModal" class="ct-modal">
+    <div class="ct-modal__box">
+        <div class="ct-modal__header">
+            <div class="ct-modal__header-left">
+                <span class="ct-modal__dot"></span>
+                <span class="ct-modal__header-label">Conteúdo</span>
+            </div>
+            <button onclick="closeModal()" class="ct-modal__close" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="ct-modal__media">
+            <img id="modalImage" src="" alt="Thumbnail">
+            <span id="modalIcon" class="ct-modal__icon"></span>
+        </div>
+
+        <div class="ct-modal__body">
+            <div class="ct-modal__meta">
+                <span id="modalCategory">Destaque</span>
+                <span>•</span>
+                <span id="modalDate">há 3 dias</span>
+            </div>
+            <h3 id="modalTitle" class="ct-modal__title"></h3>
+            <p id="modalDescription" class="ct-modal__desc"></p>
+
+            <div class="ct-modal__footer">
+                <button onclick="copyShareLink()" class="ct-modal__share">
+                    <i class="fa-regular fa-share-from-square"></i> Compartilhar
+                </button>
+                <a id="modalLink" href="#" class="ct-modal__link">
+                    Ir para o conteúdo <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="ct-toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMsg">Ação realizada com sucesso</span>
+</div>
 
             <div class="carousel-cta">
                 <a href="/login/login.html" class="btn-glow">Quero fazer parte <i class="fa-solid fa-arrow-right"></i></a>
