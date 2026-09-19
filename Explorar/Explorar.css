@@ -1,7 +1,4 @@
-/* =========================================
-   EXPLORAR.CSS — Amor NeuroDivergente
-   Design editorial + acessível
-   ========================================= */
+
 
 /* =========================================
    VARIÁVEIS LOCAIS
@@ -226,9 +223,8 @@
     line-height: 1.6;
 }
 
-/* =========================================
-   TOPICS — 3 cards grandes (imagem + texto)
-   ========================================= */
+
+
 .explore-topics {
     padding: 60px 48px 80px;
     background: #faf9fe;

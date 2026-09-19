@@ -20,7 +20,10 @@
 
     --azul-editorial: #0ea5e9;
     --azul-editorial-dark: #0284c7;
+ --explore-editorial: #c0392b;
 }
+
+
 
 /* =========================================
    BREADCRUMB
@@ -200,29 +203,8 @@
     color: #ffffff;
 }
 
-/* =========================================
-   COMPENSAÇÃO — body/main para não cobrir conteúdo
-   ========================================= */
-body,
-.main-content {
-    padding-bottom: 90px;
-}
-
-/* Ajuste do botão voltar ao topo */
-.scroll-top-btn {
-    bottom: 100px;
-    right: 24px;
-    z-index: 60;
-}
 
 
-
-/* Scroll padding para os anchors */
-html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 90px;
-    scroll-padding-bottom: 100px;
-}
 
 /* =========================================
    DARK MODE — Nav fixa
@@ -593,64 +575,86 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     gap: 6px;
 }
 
-/* =========================================
-   DA NOSSA EQUIPE — Grid compacto
-   ========================================= */
-.equipe-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 22px;
+
+.explore-topics {
+    padding: 60px 48px 80px;
+    background: #faf9fe;
 }
-.equipe-card {
+.explore-topics__container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.explore-topics__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+.topic-card {
     display: flex;
     flex-direction: column;
     background: #ffffff;
-    border: 1px solid var(--border-light);
-    border-radius: 5px;
+    border: 1px solid #e8e3dd;
+    border-radius: 8px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-
+  
 }
 
-.equipe-card__media {
+.topic-card__media {
+    width: 100%;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: var(--bg-warm);
+    background: #f3f4f6;
 }
-.equipe-card__media img {
+.topic-card__media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
 }
 
-.equipe-card__body {
-    padding: 16px 18px 18px;
+
+.topic-card__body {
+    padding: 28px 26px 26px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     flex: 1;
 }
-.equipe-card h4 {
-    font-size: 0.95rem;
+.topic-card__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
     font-weight: 700;
-    line-height: 1.35;
+    line-height: 1.2;
+    color: var(--explore-editorial);
     margin: 0;
-    color: var(--azul-editorial-dark);
     letter-spacing: -0.01em;
+    transition: color 0.25s ease;
 }
-.equipe-card__meta {
-    font-size: 12px;
-    color: var(--text-muted);
+
+.topic-card__text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #5c5652;
+    margin: 0;
+    flex: 1;
+}
+.topic-card__text strong { color: #1a1a2e; font-weight: 700; }
+
+.topic-card__cta {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    margin-top: auto;
-    padding-top: 8px;
-
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--explore-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 6px;
+    transition: gap 0.25s ease;
 }
+.topic-card:hover .topic-card__cta { gap: 14px; }
 
 /* =========================================
    TAGS (categorias)
@@ -887,69 +891,8 @@ body.a11y-reduce-motion .recursos-nav__chip i {
 }
 .recursos-newsletter__form input:focus { border-color: #7c3aed; }
 
-/* =========================================
-   FOOTER
-   ========================================= */
-.footer {
-    background: #f0f4f8;
-    color: #4a6a8a;
-    padding: 60px 48px 32px;
-    border-top: 1px solid #d0dce8;
-}
-.footer-main {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-    max-width: 1100px;
-    margin: 0 auto 48px;
-}
-.footer-col h4 {
-    color: #2c4a6a;
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-.footer-col a {
-    display: block;
-    color: #5a7a9a;
-    font-size: 14px;
-    padding: 6px 0;
-    transition: color 0.15s;
-}
-.footer-col a:hover { color: #1a3a5a; }
-.social-links { display: flex; gap: 12px; }
-.social-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #d0dce8;
-    border-radius: 50%;
-    color: #2c4a6a;
-    font-size: 16px;
-    transition: all 0.15s;
-}
-.social-links a:hover {
-    background: #8ab4d6;
-    color: #ffffff;
-    transform: translateY(-2px);
-}
-.footer-bottom {
-    border-top: 1px solid #d0dce8;
-    padding-top: 24px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    font-size: 13px;
-    color: #6a8aaa;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-.footer-bottom a { color: #6a8aaa; margin-right: 20px; }
-.footer-bottom a:hover { color: #2c4a6a; }
-.footer-bottom p { width: 100%; text-align: center; margin-top: 8px; }
+
+
 
 /* =========================================
    DARK MODE
