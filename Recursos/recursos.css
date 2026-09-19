@@ -1,8 +1,4 @@
 
-
-/* =========================================
-   VARIÁVEIS LOCAIS
-   ========================================= */
 :root {
     --bg-warm: #f5f0eb;
     --primary-purple-light: #f4f0fa;
@@ -20,14 +16,11 @@
 
     --azul-editorial: #0ea5e9;
     --azul-editorial-dark: #0284c7;
- --explore-editorial: #c0392b;
+    --explore-editorial: #c0392b;
 }
 
 
 
-/* =========================================
-   BREADCRUMB
-   ========================================= */
 .breadcrumb-nav {
     display: flex;
     align-items: center;
@@ -48,9 +41,7 @@
 .breadcrumb-nav i { font-size: 10px; color: #c4b5e8; }
 .breadcrumb-nav span { color: var(--text-dark); font-weight: 600; }
 
-/* =========================================
-   BANNER EDITORIAL
-   ========================================= */
+/*BANNER EDITORIAL*/
 .recursos-banner {
     position: relative;
     min-height: 500px;
@@ -131,18 +122,14 @@
     margin: 0 auto;
 }
 
-
-/* =========================================
-   NAV — Chips FIXA NA PARTE INFERIOR
-   ========================================= */
+/* NAV — Chips FIXA NA PARTE INFERIOR*/
 .recursos-nav {
-     position: fixed;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 12px 20px;
     z-index: 50;
-    /* Safe area para iPhone (notch) */
     padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
 
@@ -203,12 +190,7 @@
     color: #ffffff;
 }
 
-
-
-
-/* =========================================
-   DARK MODE — Nav fixa
-   ========================================= */
+/*  DARK MODE — Nav fixa*/
 body.a11y-dark-mode .recursos-nav {
     background: #1a1a2e;
     border-top-color: #2d2d44;
@@ -398,7 +380,6 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-
 }
 
 .externo-card__media {
@@ -413,7 +394,6 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     object-fit: cover;
     display: block;
 }
-
 
 .externo-card__badge {
     position: absolute;
@@ -479,7 +459,9 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     color: var(--azul-editorial-dark);
 }
 
-
+/* =========================================
+   EQUIPE — Destaque
+   ========================================= */
 .equipe-featured {
     display: flex;
     align-items: stretch;
@@ -490,7 +472,6 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     overflow: hidden;
     margin-bottom: 40px;
 }
-
 
 .equipe-featured__media {
     flex: 0 0 48%;
@@ -503,9 +484,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     height: 100%;
     object-fit: cover;
     display: block;
-
 }
-
 
 .equipe-featured__body {
     flex: 1;
@@ -575,7 +554,9 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     gap: 6px;
 }
 
-
+/* =========================================
+   EXPLORE TOPICS
+   ========================================= */
 .explore-topics {
     padding: 60px 48px 80px;
     background: #faf9fe;
@@ -598,7 +579,6 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-  
 }
 
 .topic-card__media {
@@ -613,7 +593,6 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     object-fit: cover;
     display: block;
 }
-
 
 .topic-card__body {
     padding: 28px 26px 26px;
@@ -648,7 +627,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     gap: 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--explore-accent);
+    color: var(--explore-editorial);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-top: 6px;
@@ -677,63 +656,119 @@ body.a11y-reduce-motion .recursos-nav__chip i {
 .tag-saude-mental { background: #f3e5f5; color: #6a1b9a; }
 .tag-direitos { background: #e0f2f1; color: #00695c; }
 
+/* =========================================
+   CATEGORIAS — Grid de cards (mesmo estilo de "Artigos de fora")
+   ========================================= */
 
-
+/* Wrapper opcional — mantém a classe para compatibilidade */
 .categorias-wrapper {
-    display: flex;
-    flex-direction: column;
+    display: block;
 }
+
+/* O bloco de categoria agora é um card vertical, igual ao .externo-card */
 .categoria-block {
     display: flex;
-    align-items: center;
-    gap: 72px;
-    padding: 56px 0;
-}
-.categoria-block--reverse {
-    flex-direction: row-reverse;
-}
-.categoria-block + .categoria-block {
-    border-top: 1px solid var(--border-light);
-}
-.categoria-block__image {
-    flex: 1;
-    min-width: 0;
-    border-radius: 5% 0%  0% 5%;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
 }
+
+.categoria-block--reverse {
+    /* Sem inversão: cards são verticais */
+    flex-direction: column;
+}
+
+.categoria-block + .categoria-block {
+    /* Sem borda superior: o grid já separa com gap */
+    border-top: none;
+}
+
+.categoria-block__image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg-warm);
+    border-radius: 0;
+}
+
 .categoria-block__image img {
     width: 100%;
-    border-radius: 2px;
+    height: 100%;
     object-fit: cover;
-    aspect-ratio: 4/3;
-    background: var(--bg-warm);
     display: block;
-   
-
+    border-radius: 0;
 }
-
 
 .categoria-block__text {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     flex: 1;
-    min-width: 0;
 }
+
 .categoria-block__text h2 {
-    font-size: 1.7rem;
-    font-weight: 800;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.35;
     color: var(--text-dark);
-    margin-bottom: 14px;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 0;
 }
+
 .categoria-block__text p {
-    font-size: 16px;
+    font-size: 0.9rem;
     color: var(--text-medium);
-    line-height: 1.7;
-    margin-bottom: 26px;
-    max-width: 480px;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+    max-width: none;
 }
 
+/* Botão dentro do card de categoria — vira link discreto igual .externo-card__link */
+.categoria-block .recursos-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    color: var(--azul-editorial);
+    padding: 14px 0 0;
+    margin-top: 6px;
+    border-top: 1px solid var(--border-light);
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: gap 0.25s ease;
+}
 
+.categoria-block .recursos-btn:hover {
+    gap: 12px;
+    color: var(--azul-editorial-dark);
+}
+
+/* Wrapper que agrupa os cards de categoria em grid de 3 colunas */
+.categorias-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+/* A seção #categorias usa a mesma largura das outras seções */
+#categorias .recursos-section__container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   BOTÃO UNIFICADO
+   ========================================= */
 .recursos-btn,
 .btn-primary {
     display: inline-flex;
@@ -754,12 +789,11 @@ body.a11y-reduce-motion .recursos-nav__chip i {
 .recursos-btn i,
 .btn-primary i {
     font-size: 14px;
-   
 }
 
-
-
-
+/* =========================================
+   EM BREVE
+   ========================================= */
 .breve-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -811,7 +845,9 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     color: #b45309;
 }
 
-
+/* =========================================
+   NEWSLETTER
+   ========================================= */
 .recursos-newsletter {
     padding: 20px 48px 80px;
 }
@@ -890,9 +926,6 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     transition: border-color 0.2s ease;
 }
 .recursos-newsletter__form input:focus { border-color: #7c3aed; }
-
-
-
 
 /* =========================================
    DARK MODE
@@ -973,6 +1006,28 @@ body.a11y-dark-mode .externo-card__link {
 }
 body.a11y-dark-mode .externo-card:hover .externo-card__link { color: #7dd3fc; }
 
+/* Categorias dark — mesmo tratamento dos cards externos */
+body.a11y-dark-mode .categoria-block {
+    background: #1a1a2e;
+    border-color: #2d2d44;
+}
+body.a11y-dark-mode .categoria-block:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+}
+body.a11y-dark-mode .categoria-block__image img {
+    box-shadow: none;
+    filter: brightness(0.85);
+}
+body.a11y-dark-mode .categoria-block__text h2 { color: #e8e3dd; }
+body.a11y-dark-mode .categoria-block__text p { color: #94a3b8; }
+body.a11y-dark-mode .categoria-block .recursos-btn {
+    color: #38bdf8;
+    border-top-color: #2d2d44;
+}
+body.a11y-dark-mode .categoria-block .recursos-btn:hover {
+    color: #7dd3fc;
+}
+
 /* Equipe cards dark */
 body.a11y-dark-mode .equipe-featured {
     background: #1a1a2e;
@@ -996,15 +1051,6 @@ body.a11y-dark-mode .equipe-card__meta {
     border-top-color: #2d2d44;
     color: #94a3b8;
 }
-
-/* Categorias dark */
-body.a11y-dark-mode .categoria-block + .categoria-block { border-top-color: #2d2d44; }
-body.a11y-dark-mode .categoria-block__image img {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    filter: brightness(0.85);
-}
-body.a11y-dark-mode .categoria-block__text h2 { color: #f1f5f9 !important; }
-body.a11y-dark-mode .categoria-block__text p { color: #b8b0a8 !important; }
 
 /* Tags dark */
 body.a11y-dark-mode .tag-autismo { background: rgba(46, 125, 50, 0.2); color: #81c784; }
@@ -1082,7 +1128,9 @@ body.a11y-reduce-motion .equipe-featured,
 body.a11y-reduce-motion .equipe-featured__media img,
 body.a11y-reduce-motion .equipe-card,
 body.a11y-reduce-motion .equipe-card__media img,
+body.a11y-reduce-motion .categoria-block,
 body.a11y-reduce-motion .categoria-block__image img,
+body.a11y-reduce-motion .categoria-block .recursos-btn,
 body.a11y-reduce-motion .recursos-nav__chip,
 body.a11y-reduce-motion .recursos-head__link,
 body.a11y-reduce-motion .recursos-btn,
@@ -1095,6 +1143,7 @@ body.a11y-reduce-motion .btn-primary {
    ========================================= */
 @media (max-width: 1024px) {
     .recursos-grid { grid-template-columns: repeat(2, 1fr); }
+    .categorias-wrapper { grid-template-columns: repeat(2, 1fr); }
     .equipe-grid { grid-template-columns: repeat(2, 1fr); }
     .breve-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -1134,16 +1183,6 @@ body.a11y-reduce-motion .btn-primary {
     .equipe-featured__body { padding: 28px 24px 32px; }
     .equipe-featured__title { font-size: 1.4rem; }
 
-    .categoria-block,
-    .categoria-block--reverse {
-        flex-direction: column;
-        gap: 28px;
-        padding: 44px 0;
-    }
-    .categoria-block__text { text-align: center; }
-    .categoria-block__text p { max-width: 100%; }
-    .categoria-block__text h2 { font-size: 22px; }
-
     .recursos-newsletter { padding: 10px 24px 60px; }
     .recursos-newsletter__card { padding: 36px 24px; }
 
@@ -1152,6 +1191,7 @@ body.a11y-reduce-motion .btn-primary {
 
 @media (max-width: 768px) {
     .recursos-grid { grid-template-columns: 1fr; }
+    .categorias-wrapper { grid-template-columns: 1fr; }
     .equipe-grid { grid-template-columns: 1fr; }
     .breve-grid { grid-template-columns: 1fr; }
 
@@ -1174,10 +1214,6 @@ body.a11y-reduce-motion .btn-primary {
 
     .equipe-featured__body { padding: 22px 18px 26px; }
     .equipe-featured__title { font-size: 1.2rem; }
-
-    .categoria-block { padding: 32px 0; }
-    .categoria-block__text h2 { font-size: 20px; }
-    .categoria-block__text p { font-size: 15px; }
 
     .recursos-newsletter { padding: 10px 16px 48px; }
     .recursos-newsletter__card { padding: 28px 18px; }
