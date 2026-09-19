@@ -1710,10 +1710,6 @@ transform: translateY(-8px);
     position: relative;
 }
 
-.floating-hub-toggle:hover {
-    transform: scale(1.04);
-    box-shadow: 0 4px 24px rgba(124, 58, 237, 0.4);
-}
 
 .floating-hub-toggle:active {
     transform: scale(0.95);

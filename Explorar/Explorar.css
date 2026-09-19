@@ -1129,13 +1129,14 @@
    CONTATO
    ========================================= */
 .contact-section {
-    background: linear-gradient(135deg, #faf8ff 0%, #fff5f8 100%);
-    border-radius: var(--explore-radius);
-    margin: 0 48px 80px;
-    padding: 56px 48px;
-    border: 1px solid #f0e8ff;
+    padding: 44px 48px;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    max-width: 1100px;
+    margin: 0 auto 60px;
 }
 .contact-section::before {
     content: '';
@@ -1144,21 +1145,66 @@
     right: -50px;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%);
     border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Imagem */
+.contact-section .explore-section-image {
+    flex: 0 0 50%;
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+
 }
 .contact-section .explore-section-image img {
-    border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(139,92,246,0.1);
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+    border-radius: 2px;
+
 }
+
+/* Texto */
+.contact-section .explore-section-text {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Ícone do contato */
 .contact-icon {
-    background: linear-gradient(135deg, #7c3aed, #db2777) !important;
-    color: #ffffff !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;  
+    font-size: 18px;
+background-color: rgba(76, 143, 243, 0.589);
+color: #053161;
+    margin-bottom: 14px;
 }
+
+/* Título e texto */
+.contact-section .explore-section-text h2 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+}
+.contact-section .explore-section-text p {
+    font-size: 15px;
+    color: var(--explore-muted);
+    line-height: 1.65;
+    margin: 0 0 22px;
+    max-width: 480px;
+}
+
+/* Opções */
 .contact-options {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     align-items: flex-start;
 }
 .contact-link-secondary {
@@ -1170,13 +1216,18 @@
     font-weight: 500;
     text-decoration: none;
     transition: all 0.2s ease;
-    padding: 10px 0;
+    padding: 4px 0;
 }
-.contact-link-secondary:hover {
-    color: #6d28d9;
-    transform: translateX(4px);
+
+
+.contact-link-secondary i { font-size: 15px; }
+
+/* Botão dentro do contato */
+.contact-section .explore-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 10px;
 }
-.contact-link-secondary i { font-size: 16px; }
 
 /* =========================================
    FOOTER
