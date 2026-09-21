@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     // 0. SUPABASE - CONEXÃO REAL
    
-    const supabase = window.supabaseClient;
+    const  supabase =  window.supabaseClient;
     
     if (!supabase) {
         console.error('❌ Supabase não inicializado!');
