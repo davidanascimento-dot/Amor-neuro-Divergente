@@ -1489,7 +1489,7 @@ body.a11y-reduce-motion .section-head__link {
     .explore-banner__title { font-size: 1.8rem; }
     .explore-banner__sub { font-size: 15px; }
 
-    .explore-nav { top: 65px; padding: 20px 16px; }
+    .explore-nav { top: 65px; padding: 20px 16px;  bottom: auto;}
     .explore-nav__container {
         gap: 6px;
         justify-content: flex-start;

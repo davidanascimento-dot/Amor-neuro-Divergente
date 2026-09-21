@@ -222,9 +222,7 @@ body.a11y-dark-mode .recursos-nav__chip.is-active i {
     color: #ffffff;
 }
 
-/* =========================================
-   REDUZIR MOVIMENTO
-   ========================================= */
+
 body.a11y-reduce-motion .recursos-nav__chip,
 body.a11y-reduce-motion .recursos-nav__chip i {
     transition: none !important;
@@ -237,6 +235,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     .recursos-nav {
         padding: 10px 16px;
         padding-bottom: max(10px, env(safe-area-inset-bottom));
+         bottom: auto;
     }
 
     .recursos-nav__container {

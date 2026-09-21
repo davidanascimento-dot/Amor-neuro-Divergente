@@ -298,9 +298,9 @@
 }
 
 
-/* =========================================
+/* 
    DARK MODE — Nav fixa
-   ========================================= */
+  */
 body.a11y-dark-mode .library-nav {
     background: #1a1a2e;
     border-top-color: #2d2d44;
@@ -347,6 +347,7 @@ body.a11y-reduce-motion .library-nav__chip i {
     .library-nav {
         padding: 10px 16px;
         padding-bottom: max(10px, env(safe-area-inset-bottom));
+        bottom: auto;
     }
 
     .library-nav__container {

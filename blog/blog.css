@@ -250,6 +250,7 @@ body.a11y-reduce-motion .blog-nav__chip i {
     .blog-nav {
         padding: 10px 16px;
         padding-bottom: max(10px, env(safe-area-inset-bottom));
+        bottom: auto;
     }
 
     .blog-nav__container {

@@ -301,21 +301,22 @@ body.a11y-dark-mode .rights-nav__chip.is-active i {
     color: #ffffff;
 }
 
-/* =========================================
+/* 
    REDUZIR MOVIMENTO
-   ========================================= */
+   */
 body.a11y-reduce-motion .rights-nav__chip,
 body.a11y-reduce-motion .rights-nav__chip i {
     transition: none !important;
 }
 
-/* =========================================
+/* 
    RESPONSIVO — Nav fixa em baixo
-   ========================================= */
+    */
 @media (max-width: 900px) {
     .rights-nav {
         padding: 10px 16px;
         padding-bottom: max(10px, env(safe-area-inset-bottom));
+        bottom: auto;
     }
 
     .rights-nav__container {
@@ -368,9 +369,9 @@ body.a11y-reduce-motion .rights-nav__chip i {
     }
 }
 
-/* =========================================
+/* 
    INTRO — "Direitos não se limitam a um site"
-   ========================================= */
+   */
 .rights-intro {
     padding: 60px 48px 30px;
     background: #ffffff;

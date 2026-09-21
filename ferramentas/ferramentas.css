@@ -258,6 +258,7 @@ body.a11y-reduce-motion .tools-nav__chip i {
     .tools-nav {
         padding: 10px 16px;
         padding-bottom: max(10px, env(safe-area-inset-bottom));
+        bottom: auto;
     }
 
     .tools-nav__container {
