@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let state = {
             name: read('userName', 'Convidado'),
             email: read('userEmail', 'convidado@amorneurodivergente.com'),
-            avatar: read('userAvatar', '/img/avatar-1776703979307.png'),
+            avatar: read('userAvatar', '/img/padrao.png'),
             lang: read('userLang', 'pt'),
             logged: localStorage.getItem('userLoggedIn') === 'true'
         };
