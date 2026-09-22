@@ -509,99 +509,277 @@
             })
             .subscribe();
     }
-
     // ============================================================
-    // 12. MODAL DE LOGIN OBRIGATÓRIO
+    // 12. MODAL DE LOGIN OBRIGATÓRIO (formal, minimalista)
     // ============================================================
     function requireLogin(message) {
         if (currentUser) return true;
-
         showLoginRequiredModal(message);
         return false;
     }
 
     function showLoginRequiredModal(customMessage) {
         document.getElementById('loginRequiredModal')?.remove();
+        injectLoginModalStyles();
 
         const modal = document.createElement('div');
         modal.id = 'loginRequiredModal';
-        modal.style.cssText = `
-            position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
-            z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;
-            animation:fadeIn 0.25s ease;
-        `;
+        modal.className = 'lrm-overlay';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'lrmTitle');
 
         modal.innerHTML = `
-            <div style="
-                background:linear-gradient(135deg,#ffffff 0%,#faf5ff 100%);
-                border-radius:24px;max-width:440px;width:100%;padding:36px 32px;
-                box-shadow:0 25px 80px rgba(124,58,237,0.25);
-                border:1px solid rgba(124,58,237,0.1);
-                animation:slideUp 0.35s ease;
-                text-align:center;position:relative;
-            ">
-                <div style="
-                    width:80px;height:80px;margin:0 auto 20px;
-                    background:linear-gradient(135deg,#7c3aed,#a855f7);
-                    border-radius:50%;display:flex;align-items:center;justify-content:center;
-                    box-shadow:0 8px 24px rgba(124,58,237,0.35);
-                ">
-                    <i class="fa-solid fa-lock" style="font-size:36px;color:#fff;"></i>
-                </div>
+            <div class="lrm-card" role="document">
+                <button class="lrm-close" id="lrmCloseBtn" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
 
-                <h2 style="
-                    font-family:Inter,sans-serif;font-size:24px;font-weight:800;
-                    color:#1e293b;margin:0 0 8px 0;
-                ">Faça login para continuar</h2>
+                <h2 class="lrm-title" id="lrmTitle">Autenticação necessária</h2>
 
-                <p style="
-                    font-family:Inter,sans-serif;font-size:14px;color:#64748b;
-                    line-height:1.6;margin:0 0 28px 0;
-                ">
-                    ${customMessage || 'Você precisa estar logado para realizar esta ação.'}
-                    <br>Junte-se à nossa comunidade acolhedora 💜
+                <p class="lrm-desc">
+                    ${customMessage || 'É necessário estar autenticado para realizar esta ação.'}
                 </p>
 
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                    <a href="/login/login.html" style="
-                        display:flex;align-items:center;justify-content:center;gap:8px;
-                        padding:14px 24px;background:linear-gradient(135deg,#7c3aed,#a855f7);
-                        color:#fff;text-decoration:none;border-radius:30px;
-                        font-family:Inter,sans-serif;font-weight:700;font-size:15px;
-                        box-shadow:0 6px 20px rgba(124,58,237,0.35);
-                        transition:transform 0.2s;
-                    " onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-                        <i class="fa-solid fa-right-to-bracket"></i> Entrar
+                <div class="lrm-actions">
+                    <a href="/login/login.html" class="lrm-btn lrm-btn--primary">
+                        Entrar
                     </a>
-
-                    <a href="/cadastro/cadastro.html" style="
-                        display:flex;align-items:center;justify-content:center;gap:8px;
-                        padding:14px 24px;background:transparent;
-                        border:2px solid #7c3aed;color:#7c3aed;text-decoration:none;
-                        border-radius:30px;font-family:Inter,sans-serif;
-                        font-weight:700;font-size:15px;
-                        transition:all 0.2s;
-                    " onmouseover="this.style.background='#7c3aed';this.style.color='#fff'"
-                       onmouseout="this.style.background='transparent';this.style.color='#7c3aed'">
-                        <i class="fa-solid fa-user-plus"></i> Criar conta
+                    <a href="/cadastro/cadastro.html" class="lrm-btn lrm-btn--secondary">
+                        Criar conta
                     </a>
-
-                    <button id="closeLoginModal" style="
-                        background:none;border:none;color:#94a3b8;cursor:pointer;
-                        font-family:Inter,sans-serif;font-size:13px;padding:8px;
-                        text-decoration:underline;
-                    ">Continuar navegando sem fazer login</button>
                 </div>
+
+                <button class="lrm-link" id="lrmContinueBtn">
+                    Continuar navegando
+                </button>
             </div>
         `;
 
         document.body.appendChild(modal);
 
-        document.getElementById('closeLoginModal').addEventListener('click', () => modal.remove());
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-        document.addEventListener('keydown', function esc(e) {
-            if (e.key === 'Escape') { modal.remove(); document.removeEventListener('keydown', esc); }
+        const closeModal = () => {
+            modal.remove();
+            document.removeEventListener('keydown', onEsc);
+            document.body.style.overflow = '';
+        };
+
+        const onEsc = (e) => {
+            if (e.key === 'Escape') closeModal();
+        };
+
+        document.getElementById('lrmCloseBtn').addEventListener('click', closeModal);
+        document.getElementById('lrmContinueBtn').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', onEsc);
+
+        // Focus trap
+        const focusables = modal.querySelectorAll(
+            'a[href], button:not([disabled])'
+        );
+        const firstFocus = focusables[0];
+        const lastFocus = focusables[focusables.length - 1];
+
+        modal.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab') return;
+            if (e.shiftKey && document.activeElement === firstFocus) {
+                e.preventDefault();
+                lastFocus.focus();
+            } else if (!e.shiftKey && document.activeElement === lastFocus) {
+                e.preventDefault();
+                firstFocus.focus();
+            }
         });
+
+        setTimeout(() => firstFocus?.focus(), 60);
+        document.body.style.overflow = 'hidden';
+    }
+
+    // ---------- CSS injetado (uma única vez) ----------
+    function injectLoginModalStyles() {
+        if (document.getElementById('lrmStyles')) return;
+
+        const style = document.createElement('style');
+        style.id = 'lrmStyles';
+        style.textContent = `
+            /* =========================================
+               MODAL LOGIN — Formal / Minimalista
+               ========================================= */
+            .lrm-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 100000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .lrm-card {
+                position: relative;
+                width: 100%;
+                max-width: 400px;
+                background: #ffffff;
+                padding: 44px 36px 32px;
+                text-align: center;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            }
+
+            /* ---------- Botão fechar ---------- */
+            .lrm-close {
+                position: absolute;
+                top: 14px;
+                right: 14px;
+                width: 32px;
+                height: 32px;
+                background: transparent;
+                border: none;
+                color: #94a3b8;
+                font-size: 15px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: color 0.15s ease;
+            }
+            .lrm-close:hover { color: #1a1a2e; }
+            .lrm-close:focus-visible {
+                outline: 2px solid #7c3aed;
+                outline-offset: 2px;
+            }
+
+            /* ---------- Título ---------- */
+            .lrm-title {
+                font-family: 'Inter', system-ui, sans-serif;
+                font-size: 1.25rem;
+                font-weight: 700;
+                line-height: 1.3;
+                color: #1a1a2e;
+                margin: 0 0 14px;
+                letter-spacing: -0.01em;
+            }
+
+            /* ---------- Descrição ---------- */
+            .lrm-desc {
+                font-family: 'Inter', system-ui, sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+                color: #64748b;
+                margin: 0 0 28px;
+            }
+
+            /* ---------- Ações ---------- */
+            .lrm-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .lrm-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 13px 22px;
+                font-family: 'Inter', system-ui, sans-serif;
+                font-size: 14.5px;
+                font-weight: 600;
+                border-radius: 6px;
+                text-decoration: none;
+                cursor: pointer;
+                border: none;
+                transition: background 0.18s ease, color 0.18s ease;
+            }
+            .lrm-btn:focus-visible {
+                outline: 2px solid #7c3aed;
+                outline-offset: 2px;
+            }
+
+            .lrm-btn--primary {
+                background: #7c3aed;
+                color: #ffffff;
+            }
+            .lrm-btn--primary:hover {
+                background: #6d28d9;
+            }
+
+            .lrm-btn--secondary {
+                background: #f1f5f9;
+                color: #1a1a2e;
+            }
+            .lrm-btn--secondary:hover {
+                background: #e2e8f0;
+            }
+
+            /* ---------- Link inferior ---------- */
+            .lrm-link {
+                background: none;
+                border: none;
+                color: #64748b;
+                font-family: 'Inter', system-ui, sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                padding: 6px 10px;
+                transition: color 0.15s ease;
+            }
+            .lrm-link:hover {
+                color: #7c3aed;
+                text-decoration: underline;
+            }
+
+            /* =========================================
+               DARK MODE
+               ========================================= */
+            body.a11y-dark-mode .lrm-card {
+                background: #1a1a2e;
+            }
+            body.a11y-dark-mode .lrm-title {
+                color: #e8e3dd;
+            }
+            body.a11y-dark-mode .lrm-desc {
+                color: #94a3b8;
+            }
+            body.a11y-dark-mode .lrm-close {
+                color: #64748b;
+            }
+            body.a11y-dark-mode .lrm-close:hover {
+                color: #e8e3dd;
+            }
+            body.a11y-dark-mode .lrm-btn--primary {
+                background: #7c3aed;
+            }
+            body.a11y-dark-mode .lrm-btn--primary:hover {
+                background: #8b5cf6;
+            }
+            body.a11y-dark-mode .lrm-btn--secondary {
+                background: #2d2d44;
+                color: #e8e3dd;
+            }
+            body.a11y-dark-mode .lrm-btn--secondary:hover {
+                background: #3d3d5c;
+            }
+            body.a11y-dark-mode .lrm-link {
+                color: #94a3b8;
+            }
+            body.a11y-dark-mode .lrm-link:hover {
+                color: #c4b5e8;
+            }
+
+            /* =========================================
+               RESPONSIVO
+               ========================================= */
+            @media (max-width: 480px) {
+                .lrm-card {
+                    padding: 36px 24px 26px;
+                }
+                .lrm-title { font-size: 1.15rem; }
+                .lrm-desc  { font-size: 13.5px; }
+                .lrm-btn   { padding: 12px 18px; font-size: 14px; }
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     // ============================================================
