@@ -614,3 +614,23 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
     .accessibility-btn:hover { transform: scale(1.05); }
     .accessibility-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 16px; }
 }
+
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.btn-accept {
+    background: #16a34a; color: #fff;
+    border: none; padding: 8px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-accept:hover { background: #15803d; }
+.btn-accept[hidden] { display: none; }
+
+.btn-reject {
+    background: #fef2f2; color: #dc2626;
+    border: 1px solid #fecaca; padding: 8px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-reject:hover { background: #fee2e2; }
+.btn-reject[hidden] { display: none; }

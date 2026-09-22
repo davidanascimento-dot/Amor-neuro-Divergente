@@ -123,6 +123,20 @@
         </div>
     </div>
 
-    <script src="moderação.js"></script>
+    <!-- 1️⃣ PRIMEIRO: carregar a biblioteca do Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- 2️⃣ DEPOIS: inicializar o cliente -->
+<script>
+    window.supabaseClient = supabase.createClient(
+        'https://qyixzontuhrxrrjrmzvy.supabase.co',
+        'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+    );
+    console.log('✅ Supabase client pronto:', !!window.supabaseClient);
+</script>
+
+<!-- 3️⃣ POR ÚLTIMO: seu JS do painel -->
+<script src="moderação.js"></script>
+
 </body>
 </html>

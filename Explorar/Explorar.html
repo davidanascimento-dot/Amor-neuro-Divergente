@@ -609,28 +609,145 @@
             <p class="faq-no-results" id="faqNoResults" style="display:none;">Nenhuma pergunta encontrada para "<strong id="faqSearchTerm"></strong>". Tente outro termo.</p>
         </section>
 
-        <!-- =============================================
-             CONTATO
-             ============================================= -->
-        <section class="explore-section explore-section-reverse contact-section" id="contato">
-            <div class="explore-section-image">
-                <img src="/img/blog-post-1-DvwhQAY4.jpg" alt="Pessoa segurando um telefone" loading="lazy">
-            </div>
-            <div class="explore-section-text">
-                <span class="section-icon contact-icon"><i class="fa-solid fa-headset"></i></span>
-                <h2>Fale Conosco</h2>
-                <p>Precisa de ajuda, tem alguma sugestão ou quer compartilhar sua história? <strong>Estamos aqui para você 💜</strong></p>
-                <div class="contact-options">
-                    <a href="/Quem somos/CONTATE-NOS/contate.html" class="explore-btn">
-                        Ir para Contato <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <a href="mailto:contato@amorneurodivergente.com" class="contact-link-secondary">
-                        <i class="fa-regular fa-envelope"></i> contato@amorneurodivergente.com
-                    </a>
+<div class="form-card">
+
+    <!-- ========================================= -->
+    <!-- ESTADO 1 — FORMULÁRIO                     -->
+    <!-- ========================================= -->
+    <div id="estado-formulario">
+        <form id="support-form">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="form-nome">Nome *</label>
+                    <input type="text" id="form-nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="form-email">E-mail *</label>
+                    <input type="email" id="form-email" required>
                 </div>
             </div>
-        </section>
 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="form-phone">Telefone / WhatsApp</label>
+                    <input type="tel" id="form-phone">
+                </div>
+                <div class="form-group">
+                    <label for="form-cidade">Cidade</label>
+                    <input type="text" id="form-cidade">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="form-canal">Canal preferido</label>
+                    <div class="select-wrapper">
+                        <select id="form-canal">
+                            <option value="site">Resposta pelo site</option>
+                            <option value="whatsapp">WhatsApp</option>
+                            <option value="email">E-mail</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="form-depto">Departamento</label>
+                    <div class="select-wrapper">
+                        <select id="form-depto">
+                            <option value="suporte">Suporte geral</option>
+                            <option value="financeiro">Financeiro</option>
+                            <option value="parcerias">Parcerias</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="form-assunto">Assunto *</label>
+                <input type="text" id="form-assunto" placeholder="Ex.: Dúvida sobre laudo, denúncia, sugestão..." required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="form-caso">Conte-nos seu caso *</label>
+                <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa 🌱" required></textarea>
+                <div class="char-counter"><span id="current-chars">0</span>/4000</div>
+            </div>
+
+            <button type="submit" class="primary-btn submit-form-btn">
+                Abrir atendimento
+            </button>
+
+            <p class="privacy-notice">
+                Ao enviar, você concorda com nossa política de privacidade. Seus dados são tratados com sigilo.
+            </p>
+        </form>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- ESTADO 2 — ESPERANDO RESPOSTA             -->
+    <!-- ========================================= -->
+    <div id="estado-espera" hidden>
+        <div class="espera-card">
+            <div class="espera-icone">
+                <i class="fa-regular fa-hourglass-half"></i>
+            </div>
+            <h2 class="espera-titulo">Atendimento aberto!</h2>
+            <p class="espera-sub">Guarde este protocolo. Vamos te responder em até <strong>48h úteis</strong>.</p>
+
+            <div class="protocolo-box">
+                <span class="protocolo-label">Seu protocolo</span>
+                <strong class="protocolo-valor" id="protocoloExibido">—</strong>
+                <button class="protocolo-copiar" id="btnCopiarProtocolo" title="Copiar protocolo">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+
+          <div class="espera-status espera-status--aguardando">
+    <span class="status-dot"></span>
+    <span id="statusEsperaTexto">Aguardando a equipe aceitar seu atendimento…</span>
+</div>
+
+            <p class="espera-nota">
+                Esta página atualiza sozinha quando chegar uma resposta.
+                Você também pode fechar e voltar depois usando o protocolo + e-mail.
+            </p>
+
+            <button class="link-simples" id="btnVerificarAgora">
+                <i class="fa-solid fa-rotate"></i> Verificar agora
+            </button>
+            <button class="link-simples link-simples--muted" id="btnNovoAtendimento">
+                Abrir outro atendimento
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- ESTADO 3 — CHAT AO VIVO                   -->
+    <!-- ========================================= -->
+    <div id="estado-chat" hidden>
+        <div class="chat-header">
+            <div>
+                <h3 class="chat-titulo" id="chatProtocolo">Protocolo —</h3>
+                <p class="chat-sub" id="chatAssunto">—</p>
+            </div>
+            <span class="badge badge-status badge-green" id="chatStatus">Ativo</span>
+        </div>
+
+        <div class="chat-mensagens" id="chatMensagens">
+            <!-- preenchido dinamicamente -->
+        </div>
+
+        <form class="chat-resposta" id="chatForm">
+            <textarea id="chatTexto" placeholder="Escreva sua mensagem..." rows="2"></textarea>
+            <button type="submit" class="chat-enviar">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+</div>
+
+        
         <!-- FOOTER -->
         <footer class="footer">
             <div class="footer-main">
@@ -728,10 +845,24 @@
     </div>
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
+    <!-- 1. SDK do Supabase (CDN) — PRIMEIRO -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- 2. Cria o cliente global — DEPOIS do SDK -->
+    <script>
+        window.supabaseClient = window.supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+
+    <!-- 3. Script principal -->
     <script src="Explorar.js"></script>
+
+    <!-- 4. Outros scripts -->
     <script src="/Acolher-IA/Acolher-IA.js"></script>
 
+    <!-- VLibras -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
@@ -740,6 +871,10 @@
     <script>
         new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
+
+</body>
+</html>
+
 
 </body>
 </html>

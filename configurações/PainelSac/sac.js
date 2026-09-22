@@ -1,94 +1,118 @@
+// ============================================
+// sac.js — Painel SAC (admin)
+// Usa window.supabaseClient (definido no HTML)
+// Com aprovação de atendimentos
+// ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     const body = document.body;
+    const sb   = window.supabaseClient;
+
+    if (!sb) {
+        console.error(
+            '❌ window.supabaseClient não encontrado.\n' +
+            'Verifique se o <script> com createClient está ANTES do sac.js no HTML.'
+        );
+    }
 
     // ============================================
-    // BANCO DE DADOS DOS TICKETS
+    // CACHE LOCAL DOS TICKETS
     // ============================================
-    const tickets = [
-        {
-            id: 3,
-            protocolo: '#3',
-            cliente: 'David de araujo',
-            email: 'davidbrendanascimento@gmail.com',
-            telefone: '71991408679',
-            local: 'bahia/Brasil',
-            departamento: 'suporte',
-            status: 'finalizado',
-            data: '11/05, 08:38',
-            assunto: 'estou com dúvida tal tal tal tal',
-            mensagens: [
-                { autor: 'David de araujo', texto: 'caso tal tal tal', tipo: 'cliente' },
-                { autor: 'TonyEsterco', texto: 'beleza vamos resolver seu caso precisamos de mais informações', tipo: 'atendente' }
-            ]
-        },
-        {
-            id: 2,
-            protocolo: '#2',
-            cliente: 'SADA',
-            email: '—',
-            telefone: '—',
-            local: '—',
-            departamento: 'neurodiversidade',
-            status: 'finalizado',
-            data: '10/05, 18:00',
-            assunto: 'Dúvida sobre neurodiversidade',
-            mensagens: [
-                { autor: 'SADA', texto: 'Gostaria de saber mais sobre os recursos disponíveis', tipo: 'cliente' },
-                { autor: 'TonyEsterco', texto: 'Claro! Temos diversos materiais sobre neurodiversidade.', tipo: 'atendente' }
-            ]
-        },
-        {
-            id: 1,
-            protocolo: '#1',
-            cliente: 'David de Araújo Nascimento',
-            email: '—',
-            telefone: '—',
-            local: '—',
-            departamento: 'comercial',
-            status: 'pendente',
-            data: '08/05, 13:00',
-            assunto: 'Informações sobre planos e preços',
-            mensagens: [
-                { autor: 'David de Araújo Nascimento', texto: 'Olá, gostaria de saber sobre os planos disponíveis', tipo: 'cliente' }
-            ]
-        }
-    ];
-
+    let tickets = [];
     let currentTicketId = null;
+
+    // ============================================
+    // FORMATAR DATA
+    // ============================================
+    function formatarData(iso) {
+        const d  = new Date(iso);
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mi = String(d.getMinutes()).padStart(2, '0');
+        return `${dd}/${mm}, ${hh}:${mi}`;
+    }
+
+    // ============================================
+    // CARREGAR DO SUPABASE
+    // ============================================
+    async function carregarTickets() {
+        if (!sb) return;
+        try {
+            const { data, error } = await sb
+                .from('atendimentos')
+                .select(`
+                    id, protocolo, nome, email, telefone, cidade,
+                    departamento, assunto, status, aprovado, criado_em,
+                    mensagens ( id, autor, texto, tipo, criado_em )
+                `)
+                .order('criado_em', { ascending: false });
+
+            if (error) throw error;
+
+            tickets = (data || []).map(t => ({
+                id:           t.id,
+                protocolo:    t.protocolo,
+                cliente:      t.nome,
+                email:        t.email    || '—',
+                telefone:     t.telefone || '—',
+                local:        t.cidade   || '—',
+                departamento: t.departamento,
+                status:       t.status,
+                aprovado:     t.aprovado === true,
+                data:         formatarData(t.criado_em),
+                assunto:      t.assunto,
+                mensagens:    (t.mensagens || [])
+                    .sort((a, b) => new Date(a.criado_em) - new Date(b.criado_em))
+                    .map(m => ({
+                        autor: m.autor,
+                        texto: m.texto,
+                        tipo:  m.tipo
+                    }))
+            }));
+        } catch (err) {
+            console.error('Erro ao carregar tickets:', err);
+            tickets = [];
+        }
+    }
 
     // ============================================
     // RENDERIZAÇÃO DA TABELA
     // ============================================
-    function renderTabela(filtroStatus = 'todos', filtroDept = 'todos', busca = '') {
+    async function renderTabela(filtroStatus = 'todos', filtroDept = 'todos', busca = '') {
+        await carregarTickets();
+
         const tbody = document.getElementById('ticketTableBody');
         if (!tbody) return;
 
         const statusLabels = {
-            'finalizado': { classe: 'badge-gray', texto: 'Finalizado' },
-            'pendente': { classe: 'badge-pink', texto: 'Pendente' },
-            'ativo': { classe: 'badge-green', texto: 'Ativo' }
+            'aguardando': { classe: 'badge-pink',  texto: 'Aguardando' },
+            'finalizado': { classe: 'badge-gray',  texto: 'Finalizado' },
+            'pendente':   { classe: 'badge-pink',  texto: 'Pendente' },
+            'ativo':      { classe: 'badge-green', texto: 'Ativo' }
         };
 
         let html = '';
         let countAtivos = 0, countPendentes = 0, countFinalizados = 0;
 
         tickets.forEach(ticket => {
-            // Filtros
             if (filtroStatus !== 'todos' && ticket.status !== filtroStatus) return;
-            if (filtroDept !== 'todos' && ticket.departamento !== filtroDept) return;
+            if (filtroDept   !== 'todos' && ticket.departamento !== filtroDept) return;
             if (busca) {
                 const termo = busca.toLowerCase();
-                if (!ticket.cliente.toLowerCase().includes(termo) && !ticket.protocolo.toLowerCase().includes(termo)) return;
+                if (!ticket.cliente.toLowerCase().includes(termo) &&
+                    !ticket.protocolo.toLowerCase().includes(termo)) return;
             }
 
-            // Contadores
-            if (ticket.status === 'ativo') countAtivos++;
-            if (ticket.status === 'pendente') countPendentes++;
+            if (ticket.status === 'ativo')      countAtivos++;
+            if (ticket.status === 'pendente')   countPendentes++;
+            if (ticket.status === 'aguardando') countPendentes++;
             if (ticket.status === 'finalizado') countFinalizados++;
 
             const statusInfo = statusLabels[ticket.status] || { classe: 'badge-gray', texto: ticket.status };
-            const contato = ticket.email !== '—' ? `${ticket.email} • ${ticket.telefone} • ${ticket.local}` : '—';
+            const contato = ticket.email !== '—'
+                ? `${ticket.email} • ${ticket.telefone} • ${ticket.local}`
+                : '—';
 
             html += `
                 <tr>
@@ -109,17 +133,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">Nenhum ticket encontrado</td></tr>';
 
-        // Atualiza contadores
-        document.getElementById('countAtivos').textContent = countAtivos;
-        document.getElementById('countFinalizados').textContent = countFinalizados;
-        document.getElementById('countTodos').textContent = tickets.length;
-        document.getElementById('countAtivo').textContent = countAtivos;
-        document.getElementById('countPendente').textContent = countPendentes;
-        document.getElementById('countFinalizado').textContent = countFinalizados;
-        document.getElementById('tempoMedio').textContent = tickets.length > 0 ? '~24h' : '—';
-        document.getElementById('avaliacaoMedia').textContent = '—';
+        document.getElementById('countAtivos').textContent       = countAtivos;
+        document.getElementById('countFinalizados').textContent  = countFinalizados;
+        document.getElementById('countTodos').textContent        = tickets.length;
+        document.getElementById('countAtivo').textContent        = countAtivos;
+        document.getElementById('countPendente').textContent     = countPendentes;
+        document.getElementById('countFinalizado').textContent   = countFinalizados;
+        document.getElementById('tempoMedio').textContent        = tickets.length > 0 ? '~24h' : '—';
+        document.getElementById('avaliacaoMedia').textContent    = '—';
 
-        // Re-atribui eventos dos botões de chat
         document.querySelectorAll('.open-chat-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = parseInt(btn.getAttribute('data-id'));
@@ -138,18 +160,20 @@ document.addEventListener('DOMContentLoaded', () => {
         currentTicketId = id;
 
         document.getElementById('modalTicketTitle').textContent = `Ticket ${ticket.protocolo}`;
-        document.getElementById('modalTicketStatus').textContent = ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1);
+        document.getElementById('modalTicketStatus').textContent =
+            ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1);
         document.getElementById('modalTicketStatus').className = 'badge badge-status ' + (
-            ticket.status === 'ativo' ? 'badge-green' : 
-            ticket.status === 'pendente' ? 'badge-pink' : 'badge-gray'
+            ticket.status === 'aguardando' ? 'badge-pink'  :
+            ticket.status === 'ativo'      ? 'badge-green' :
+            ticket.status === 'pendente'   ? 'badge-pink'  : 'badge-gray'
         );
         document.getElementById('modalClientName').textContent = ticket.cliente;
-        document.getElementById('modalClientContact').textContent = 
+        document.getElementById('modalClientContact').textContent =
             `${ticket.email} • ${ticket.telefone} • ${ticket.local}`;
         document.getElementById('ticketDeptSelect').value = ticket.departamento;
         document.getElementById('modalSubject').textContent = ticket.assunto;
 
-        // Renderiza mensagens
+        // Chat history
         const chatContainer = document.getElementById('chatHistoryContainer');
         let chatHTML = '';
         ticket.mensagens.forEach(msg => {
@@ -164,10 +188,18 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.innerHTML = chatHTML;
         chatContainer.scrollTop = chatContainer.scrollHeight;
 
-        // Atualiza botão de status
+        // Mostra botões Aceitar/Recusar conforme o estado
+        const btnAceitar = document.getElementById('btnAceitar');
+        const btnRecusar = document.getElementById('btnRecusar');
+
+        if (btnAceitar && btnRecusar) {
+            const mostrar = (ticket.status === 'aguardando' && !ticket.aprovado);
+            btnAceitar.hidden = !mostrar;
+            btnRecusar.hidden = !mostrar;
+        }
+
         atualizarBotaoStatus(ticket.status);
 
-        // Mostra modal
         document.getElementById('ticketModal').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -183,132 +215,261 @@ document.addEventListener('DOMContentLoaded', () => {
         const txt = document.getElementById('toggleStatusText');
         if (status === 'finalizado') {
             txt.textContent = 'Reabrir';
-            btn.className = 'secondary-btn';
+            btn.className   = 'secondary-btn';
         } else {
             txt.textContent = 'Finalizar';
-            btn.className = 'primary-purple-btn';
+            btn.className   = 'primary-purple-btn';
         }
+    }
+
+    // ============================================
+    // ACEITAR ATENDIMENTO
+    // ============================================
+    async function aceitarAtendimento() {
+        if (!currentTicketId || !sb) return;
+
+        const { error } = await sb
+            .from('atendimentos')
+            .update({
+                aprovado:     true,
+                aprovado_em:  new Date().toISOString(),
+                aprovado_por: 'TonyEsterco',
+                status:       'ativo'
+            })
+            .eq('id', currentTicketId);
+
+        if (error) {
+            console.error(error);
+            alert('❌ Não foi possível aceitar. Tente novamente.');
+            return;
+        }
+
+        const ticket = tickets.find(t => t.id === currentTicketId);
+        if (ticket) {
+            ticket.aprovado = true;
+            ticket.status   = 'ativo';
+        }
+
+        document.getElementById('modalTicketStatus').textContent = 'Ativo';
+        document.getElementById('modalTicketStatus').className   = 'badge badge-status badge-green';
+
+        const btnAceitar = document.getElementById('btnAceitar');
+        const btnRecusar = document.getElementById('btnRecusar');
+        if (btnAceitar) btnAceitar.hidden = true;
+        if (btnRecusar) btnRecusar.hidden = true;
+
+        atualizarBotaoStatus('ativo');
+
+        const filtro = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
+        const dept   = document.getElementById('deptFilter').value;
+        const busca  = document.getElementById('searchInput').value;
+        renderTabela(filtro, dept, busca);
+    }
+
+    // ============================================
+    // RECUSAR ATENDIMENTO
+    // ============================================
+    async function recusarAtendimento() {
+        if (!currentTicketId || !sb) return;
+        if (!confirm('Recusar este atendimento? Ele será finalizado sem resposta.')) return;
+
+        const { error } = await sb
+            .from('atendimentos')
+            .update({
+                aprovado: false,
+                status:   'finalizado'
+            })
+            .eq('id', currentTicketId);
+
+        if (error) {
+            console.error(error);
+            alert('❌ Não foi possível recusar. Tente novamente.');
+            return;
+        }
+
+        fecharModal();
+
+        const filtro = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
+        const dept   = document.getElementById('deptFilter').value;
+        const busca  = document.getElementById('searchInput').value;
+        renderTabela(filtro, dept, busca);
     }
 
     // ============================================
     // ENVIAR MENSAGEM NO CHAT
     // ============================================
-    function enviarMensagem() {
+    async function enviarMensagem() {
         const textarea = document.getElementById('replyTextarea');
-        const texto = textarea.value.trim();
-        if (!texto || !currentTicketId) return;
+        const texto    = textarea.value.trim();
+        if (!texto || !currentTicketId || !sb) return;
 
         const ticket = tickets.find(t => t.id === currentTicketId);
         if (!ticket) return;
 
-        // Adiciona mensagem
-        ticket.mensagens.push({ autor: 'TonyEsterco', texto: texto, tipo: 'atendente' });
+        try {
+            // 1) Salva mensagem
+            const { error: errMsg } = await sb
+                .from('mensagens')
+                .insert({
+                    atendimento_id: currentTicketId,
+                    autor:          'TonyEsterco',
+                    texto,
+                    tipo:           'atendente'
+                });
 
-        // Atualiza status para ativo se não for finalizado
-        if (ticket.status !== 'finalizado') {
-            ticket.status = 'ativo';
+            if (errMsg) throw errMsg;
+
+            // 2) Se ainda não aprovado, aprova automaticamente ao responder
+            const patch = {};
+            if (ticket.status !== 'finalizado') {
+                patch.status = 'ativo';
+                ticket.status = 'ativo';
+            }
+            if (!ticket.aprovado) {
+                patch.aprovado    = true;
+                patch.aprovado_em = new Date().toISOString();
+                patch.aprovado_por = 'TonyEsterco';
+                ticket.aprovado   = true;
+            }
+
+            if (Object.keys(patch).length) {
+                const { error: errSt } = await sb
+                    .from('atendimentos')
+                    .update(patch)
+                    .eq('id', currentTicketId);
+                if (errSt) throw errSt;
+            }
+
+            // 3) Atualiza UI do chat
+            const chatContainer = document.getElementById('chatHistoryContainer');
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('chat-bubble-wrapper', 'bubble-right');
+            wrapper.innerHTML = `
+                <span class="bubble-author">TonyEsterco</span>
+                <div class="chat-bubble">${texto}</div>
+            `;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            textarea.value = '';
+
+            document.getElementById('modalTicketStatus').textContent =
+                ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1);
+            document.getElementById('modalTicketStatus').className = 'badge badge-status ' + (
+                ticket.status === 'ativo'    ? 'badge-green' :
+                ticket.status === 'pendente' ? 'badge-pink'  : 'badge-gray'
+            );
+
+            // Esconde botões Aceitar/Recusar (já foi aceito implicitamente)
+            const btnAceitar = document.getElementById('btnAceitar');
+            const btnRecusar = document.getElementById('btnRecusar');
+            if (btnAceitar) btnAceitar.hidden = true;
+            if (btnRecusar) btnRecusar.hidden = true;
+
+            atualizarBotaoStatus(ticket.status);
+
+            const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
+            const deptAtivo   = document.getElementById('deptFilter').value;
+            const busca       = document.getElementById('searchInput').value;
+            renderTabela(filtroAtivo, deptAtivo, busca);
+
+        } catch (err) {
+            console.error('Erro ao enviar mensagem:', err);
+            alert('❌ Não foi possível enviar a mensagem. Tente novamente.');
         }
-
-        // Atualiza chat
-        const chatContainer = document.getElementById('chatHistoryContainer');
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('chat-bubble-wrapper', 'bubble-right');
-        wrapper.innerHTML = `
-            <span class="bubble-author">TonyEsterco</span>
-            <div class="chat-bubble">${texto}</div>
-        `;
-        chatContainer.appendChild(wrapper);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        // Limpa textarea
-        textarea.value = '';
-
-        // Atualiza badge no modal
-        document.getElementById('modalTicketStatus').textContent = ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1);
-        document.getElementById('modalTicketStatus').className = 'badge badge-status ' + (
-            ticket.status === 'ativo' ? 'badge-green' : 
-            ticket.status === 'pendente' ? 'badge-pink' : 'badge-gray'
-        );
-
-        atualizarBotaoStatus(ticket.status);
-
-        // Atualiza tabela
-        const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
-        const deptAtivo = document.getElementById('deptFilter').value;
-        const busca = document.getElementById('searchInput').value;
-        renderTabela(filtroAtivo, deptAtivo, busca);
     }
 
     // ============================================
     // TOGGLE STATUS (Reabrir / Finalizar)
     // ============================================
-    function toggleStatus() {
-        if (!currentTicketId) return;
+    async function toggleStatus() {
+        if (!currentTicketId || !sb) return;
         const ticket = tickets.find(t => t.id === currentTicketId);
         if (!ticket) return;
 
-        ticket.status = ticket.status === 'finalizado' ? 'ativo' : 'finalizado';
+        const novoStatus = ticket.status === 'finalizado' ? 'ativo' : 'finalizado';
 
-        document.getElementById('modalTicketStatus').textContent = ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1);
-        document.getElementById('modalTicketStatus').className = 'badge badge-status ' + (
-            ticket.status === 'ativo' ? 'badge-green' : 
-            ticket.status === 'pendente' ? 'badge-pink' : 'badge-gray'
-        );
+        try {
+            const { error } = await sb
+                .from('atendimentos')
+                .update({ status: novoStatus })
+                .eq('id', currentTicketId);
 
-        atualizarBotaoStatus(ticket.status);
+            if (error) throw error;
 
-        const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
-        const deptAtivo = document.getElementById('deptFilter').value;
-        const busca = document.getElementById('searchInput').value;
-        renderTabela(filtroAtivo, deptAtivo, busca);
+            ticket.status = novoStatus;
+
+            document.getElementById('modalTicketStatus').textContent =
+                ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1);
+            document.getElementById('modalTicketStatus').className = 'badge badge-status ' + (
+                ticket.status === 'ativo'    ? 'badge-green' :
+                ticket.status === 'pendente' ? 'badge-pink'  : 'badge-gray'
+            );
+
+            atualizarBotaoStatus(ticket.status);
+
+            const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
+            const deptAtivo   = document.getElementById('deptFilter').value;
+            const busca       = document.getElementById('searchInput').value;
+            renderTabela(filtroAtivo, deptAtivo, busca);
+
+        } catch (err) {
+            console.error('Erro ao mudar status:', err);
+            alert('❌ Não foi possível alterar o status. Tente novamente.');
+        }
     }
 
     // ============================================
     // CRIAR NOVO TICKET
     // ============================================
-    function criarNovoTicket() {
+    async function criarNovoTicket() {
+        if (!sb) return;
+
         const nome = prompt('Nome do cliente:');
         if (!nome) return;
-        const email = prompt('E-mail:') || '—';
-        const telefone = prompt('Telefone:') || '—';
-        const assunto = prompt('Assunto:') || 'Novo atendimento';
-        const dept = prompt('Departamento (suporte/comercial/neurodiversidade):') || 'suporte';
-        const mensagem = prompt('Mensagem inicial:') || '—';
 
-        const novoId = tickets.length > 0 ? Math.max(...tickets.map(t => t.id)) + 1 : 1;
-        const agora = new Date();
-        const dataFormatada = `${String(agora.getDate()).padStart(2,'0')}/${String(agora.getMonth()+1).padStart(2,'0')}, ${String(agora.getHours()).padStart(2,'0')}:${String(agora.getMinutes()).padStart(2,'0')}`;
+        const email        = prompt('E-mail:')        || '';
+        const telefone     = prompt('Telefone:')      || '';
+        const assunto      = prompt('Assunto:')       || 'Novo atendimento';
+        const dept         = prompt('Departamento (suporte/comercial/neurodiversidade):') || 'suporte';
+        const mensagem     = prompt('Mensagem inicial:') || '—';
 
-        tickets.unshift({
-            id: novoId,
-            protocolo: `#${novoId}`,
-            cliente: nome,
-            email: email,
-            telefone: telefone,
-            local: '—',
-            departamento: dept,
-            status: 'ativo',
-            data: dataFormatada,
-            assunto: assunto,
-            mensagens: [
-                { autor: nome, texto: mensagem, tipo: 'cliente' }
-            ]
-        });
+        try {
+            const { error } = await sb.rpc('criar_atendimento', {
+                p_nome:         nome,
+                p_email:        email || `sem-email-${Date.now()}@amn.local`,
+                p_telefone:     telefone || null,
+                p_cidade:       null,
+                p_canal:        'site',
+                p_departamento: dept,
+                p_assunto:      assunto,
+                p_mensagem:     mensagem,
+                p_ip:           null,
+                p_user_agent:   navigator.userAgent.slice(0, 500)
+            });
 
-        renderTabela();
+            if (error) throw error;
+
+            await renderTabela();
+        } catch (err) {
+            console.error('Erro ao criar ticket:', err);
+            alert('❌ Não foi possível criar o ticket. Tente novamente.');
+        }
     }
 
     // ============================================
     // EVENT LISTENERS
     // ============================================
-    document.getElementById('btnNewTicket').addEventListener('click', criarNovoTicket);
-    document.getElementById('closeModalBtn').addEventListener('click', fecharModal);
-    document.getElementById('ticketModal').addEventListener('click', function(e) {
+    document.getElementById('btnNewTicket')?.addEventListener('click', criarNovoTicket);
+    document.getElementById('closeModalBtn')?.addEventListener('click', fecharModal);
+    document.getElementById('ticketModal')?.addEventListener('click', function(e) {
         if (e.target === this) fecharModal();
     });
-    document.getElementById('sendReplyBtn').addEventListener('click', enviarMensagem);
-    document.getElementById('toggleStatusBtn').addEventListener('click', toggleStatus);
-    document.getElementById('replyTextarea').addEventListener('keydown', function(e) {
+    document.getElementById('sendReplyBtn')?.addEventListener('click', enviarMensagem);
+    document.getElementById('toggleStatusBtn')?.addEventListener('click', toggleStatus);
+    document.getElementById('btnAceitar')?.addEventListener('click', aceitarAtendimento);
+    document.getElementById('btnRecusar')?.addEventListener('click', recusarAtendimento);
+    document.getElementById('replyTextarea')?.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             enviarMensagem();
@@ -316,13 +477,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Filtros
-    document.getElementById('searchInput').addEventListener('input', function() {
+    document.getElementById('searchInput')?.addEventListener('input', function() {
         const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
-        const deptAtivo = document.getElementById('deptFilter').value;
+        const deptAtivo   = document.getElementById('deptFilter').value;
         renderTabela(filtroAtivo, deptAtivo, this.value);
     });
 
-    document.getElementById('deptFilter').addEventListener('change', function() {
+    document.getElementById('deptFilter')?.addEventListener('change', function() {
         const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
         const busca = document.getElementById('searchInput').value;
         renderTabela(filtroAtivo, this.value, busca);
@@ -332,9 +493,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            const filtro = this.getAttribute('data-filter');
-            const deptAtivo = document.getElementById('deptFilter').value;
-            const busca = document.getElementById('searchInput').value;
+            const filtro     = this.getAttribute('data-filter');
+            const deptAtivo  = document.getElementById('deptFilter').value;
+            const busca      = document.getElementById('searchInput').value;
             renderTabela(filtro, deptAtivo, busca);
         });
     });
@@ -349,10 +510,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // ACESSIBILIDADE
     // ============================================
-    const btnAcessibilidade = document.getElementById('btnAcessibilidade');
-    const menuAcessibilidade = document.getElementById('menuAcessibilidade');
+    const btnAcessibilidade   = document.getElementById('btnAcessibilidade');
+    const menuAcessibilidade  = document.getElementById('menuAcessibilidade');
     const closeAcessibilidade = document.getElementById('closeAcessibilidade');
-    const accessBtns = document.querySelectorAll('.access-btn');
+    const accessBtns          = document.querySelectorAll('.access-btn');
 
     if (btnAcessibilidade && menuAcessibilidade) {
         btnAcessibilidade.addEventListener('click', (e) => {
@@ -380,16 +541,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function setA11ySetting(key, value) { localStorage.setItem(`a11y_${key}`, value); }
 
     function applyAllA11ySettings() {
-        body.classList.remove('a11y-dark-mode','a11y-high-contrast','a11y-large-text','a11y-small-text','a11y-spacing','a11y-highlight-links','a11y-saturation','a11y-grayscale','a11y-dyslexia');
-        if (getA11ySetting('darkMode','false')==='true') body.classList.add('a11y-dark-mode');
-        if (getA11ySetting('highContrast','false')==='true') body.classList.add('a11y-high-contrast');
-        if (getA11ySetting('textSize','normal')==='large') body.classList.add('a11y-large-text');
-        if (getA11ySetting('textSize','normal')==='small') body.classList.add('a11y-small-text');
-        if (getA11ySetting('spacing','false')==='true') body.classList.add('a11y-spacing');
+        body.classList.remove(
+            'a11y-dark-mode','a11y-high-contrast','a11y-large-text','a11y-small-text',
+            'a11y-spacing','a11y-highlight-links','a11y-saturation','a11y-grayscale','a11y-dyslexia'
+        );
+        if (getA11ySetting('darkMode','false')==='true')       body.classList.add('a11y-dark-mode');
+        if (getA11ySetting('highContrast','false')==='true')   body.classList.add('a11y-high-contrast');
+        if (getA11ySetting('textSize','normal')==='large')     body.classList.add('a11y-large-text');
+        if (getA11ySetting('textSize','normal')==='small')     body.classList.add('a11y-small-text');
+        if (getA11ySetting('spacing','false')==='true')        body.classList.add('a11y-spacing');
         if (getA11ySetting('highlightLinks','false')==='true') body.classList.add('a11y-highlight-links');
-        if (getA11ySetting('saturation','false')==='true') body.classList.add('a11y-saturation');
-        if (getA11ySetting('grayscale','false')==='true') body.classList.add('a11y-grayscale');
-        if (getA11ySetting('dyslexia','false')==='true') body.classList.add('a11y-dyslexia');
+        if (getA11ySetting('saturation','false')==='true')     body.classList.add('a11y-saturation');
+        if (getA11ySetting('grayscale','false')==='true')      body.classList.add('a11y-grayscale');
+        if (getA11ySetting('dyslexia','false')==='true')       body.classList.add('a11y-dyslexia');
     }
 
     function updateButtonStates() {
@@ -398,37 +562,49 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.style.background = ''; btn.style.border = ''; btn.style.color = '';
             const icon = btn.querySelector('i'); if (icon) icon.style.color = '#8b5cf6';
             let isActive = false;
-            if (spanText.includes('escurecer') && getA11ySetting('darkMode','false')==='true') isActive=true;
-            if (spanText.includes('alto') && getA11ySetting('highContrast','false')==='true') isActive=true;
-            if (spanText.includes('maior') && getA11ySetting('textSize','normal')==='large') isActive=true;
-            if (spanText.includes('menor') && getA11ySetting('textSize','normal')==='small') isActive=true;
-            if (spanText.includes('espaçamento') && getA11ySetting('spacing','false')==='true') isActive=true;
-            if (spanText.includes('links') && getA11ySetting('highlightLinks','false')==='true') isActive=true;
-            if (spanText.includes('saturação') && getA11ySetting('saturation','false')==='true') isActive=true;
-            if (spanText.includes('dislexia') && getA11ySetting('dyslexia','false')==='true') isActive=true;
-            if (spanText.includes('reset') && getA11ySetting('grayscale','false')==='true') isActive=true;
-            if (isActive) { btn.style.background='#8b5cf6'; btn.style.border='2px solid #8b5cf6'; btn.style.color='#ffffff'; if(icon) icon.style.color='#ffffff'; }
+            if (spanText.includes('escurecer')    && getA11ySetting('darkMode','false')==='true')       isActive = true;
+            if (spanText.includes('alto')         && getA11ySetting('highContrast','false')==='true')   isActive = true;
+            if (spanText.includes('maior')        && getA11ySetting('textSize','normal')==='large')     isActive = true;
+            if (spanText.includes('menor')        && getA11ySetting('textSize','normal')==='small')     isActive = true;
+            if (spanText.includes('espaçamento')  && getA11ySetting('spacing','false')==='true')        isActive = true;
+            if (spanText.includes('links')        && getA11ySetting('highlightLinks','false')==='true') isActive = true;
+            if (spanText.includes('saturação')    && getA11ySetting('saturation','false')==='true')     isActive = true;
+            if (spanText.includes('dislexia')     && getA11ySetting('dyslexia','false')==='true')       isActive = true;
+            if (spanText.includes('reset')        && getA11ySetting('grayscale','false')==='true')      isActive = true;
+            if (isActive) {
+                btn.style.background = '#8b5cf6';
+                btn.style.border     = '2px solid #8b5cf6';
+                btn.style.color      = '#ffffff';
+                if (icon) icon.style.color = '#ffffff';
+            }
         });
     }
 
     function resetAllSettings() {
-        ['darkMode','highContrast','textSize','spacing','highlightLinks','saturation','grayscale','dyslexia'].forEach(k => localStorage.removeItem(`a11y_${k}`));
-        body.classList.remove('a11y-dark-mode','a11y-high-contrast','a11y-large-text','a11y-small-text','a11y-spacing','a11y-highlight-links','a11y-saturation','a11y-grayscale','a11y-dyslexia');
-        accessBtns.forEach(btn => { btn.style.background=''; btn.style.border=''; btn.style.color=''; const icon=btn.querySelector('i'); if(icon) icon.style.color='#8b5cf6'; });
+        ['darkMode','highContrast','textSize','spacing','highlightLinks','saturation','grayscale','dyslexia']
+            .forEach(k => localStorage.removeItem(`a11y_${k}`));
+        body.classList.remove(
+            'a11y-dark-mode','a11y-high-contrast','a11y-large-text','a11y-small-text',
+            'a11y-spacing','a11y-highlight-links','a11y-saturation','a11y-grayscale','a11y-dyslexia'
+        );
+        accessBtns.forEach(btn => {
+            btn.style.background = ''; btn.style.border = ''; btn.style.color = '';
+            const icon = btn.querySelector('i'); if (icon) icon.style.color = '#8b5cf6';
+        });
     }
 
     accessBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const spanText = btn.querySelector('span').textContent.trim().toLowerCase();
             if (spanText.includes('reset')) { resetAllSettings(); return; }
-            if (spanText.includes('escurecer')) { const c=getA11ySetting('darkMode','false'); setA11ySetting('darkMode',c==='true'?'false':'true'); }
-            else if (spanText.includes('alto')) { const c=getA11ySetting('highContrast','false'); setA11ySetting('highContrast',c==='true'?'false':'true'); }
-            else if (spanText.includes('maior')) { const c=getA11ySetting('textSize','normal'); setA11ySetting('textSize',c==='large'?'normal':'large'); }
-            else if (spanText.includes('menor')) { const c=getA11ySetting('textSize','normal'); setA11ySetting('textSize',c==='small'?'normal':'small'); }
-            else if (spanText.includes('espaçamento')) { const c=getA11ySetting('spacing','false'); setA11ySetting('spacing',c==='true'?'false':'true'); }
-            else if (spanText.includes('links')) { const c=getA11ySetting('highlightLinks','false'); setA11ySetting('highlightLinks',c==='true'?'false':'true'); }
-            else if (spanText.includes('saturação')) { const c=getA11ySetting('saturation','false'); setA11ySetting('saturation',c==='true'?'false':'true'); }
-            else if (spanText.includes('dislexia')) { const c=getA11ySetting('dyslexia','false'); setA11ySetting('dyslexia',c==='true'?'false':'true'); }
+            if (spanText.includes('escurecer'))       { const c=getA11ySetting('darkMode','false');       setA11ySetting('darkMode',       c==='true'?'false':'true'); }
+            else if (spanText.includes('alto'))       { const c=getA11ySetting('highContrast','false');   setA11ySetting('highContrast',   c==='true'?'false':'true'); }
+            else if (spanText.includes('maior'))      { const c=getA11ySetting('textSize','normal');      setA11ySetting('textSize',       c==='large'?'normal':'large'); }
+            else if (spanText.includes('menor'))      { const c=getA11ySetting('textSize','normal');      setA11ySetting('textSize',       c==='small'?'normal':'small'); }
+            else if (spanText.includes('espaçamento')){ const c=getA11ySetting('spacing','false');        setA11ySetting('spacing',        c==='true'?'false':'true'); }
+            else if (spanText.includes('links'))      { const c=getA11ySetting('highlightLinks','false'); setA11ySetting('highlightLinks', c==='true'?'false':'true'); }
+            else if (spanText.includes('saturação'))  { const c=getA11ySetting('saturation','false');     setA11ySetting('saturation',     c==='true'?'false':'true'); }
+            else if (spanText.includes('dislexia'))   { const c=getA11ySetting('dyslexia','false');       setA11ySetting('dyslexia',       c==='true'?'false':'true'); }
             applyAllA11ySettings(); updateButtonStates();
         });
     });
@@ -437,8 +613,39 @@ document.addEventListener('DOMContentLoaded', () => {
     updateButtonStates();
 
     // ============================================
+    // REALTIME — atualiza sozinho
+    // ============================================
+    if (sb) {
+        sb.channel('sac-realtime')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'atendimentos' },
+                () => {
+                    const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
+                    const deptAtivo   = document.getElementById('deptFilter').value;
+                    const busca       = document.getElementById('searchInput').value;
+                    renderTabela(filtroAtivo, deptAtivo, busca);
+                }
+            )
+            .subscribe();
+
+        sb.channel('sac-realtime-msgs')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'mensagens' },
+                () => {
+                    const filtroAtivo = document.querySelector('.status-btn.active')?.getAttribute('data-filter') || 'todos';
+                    const deptAtivo   = document.getElementById('deptFilter').value;
+                    const busca       = document.getElementById('searchInput').value;
+                    renderTabela(filtroAtivo, deptAtivo, busca);
+                }
+            )
+            .subscribe();
+    }
+
+    // ============================================
     // INICIALIZAÇÃO
     // ============================================
     renderTabela();
-    console.log('🚀 SAC completo inicializado!');
+    console.log('🚀 SAC + Supabase inicializado (com aprovação)!');
 });

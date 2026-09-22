@@ -27,16 +27,7 @@
                 </div>
                 <span class="brand-text">Amor NeuroDivergente</span>
             </div>
-            
-            <nav class="nav-center">
-                <a href="/inicio.html">Início</a>
-                <a href="/Recursos/recursos.html">Recursos</a>
-                <a href="/Quem somos/quem-somos.html">Quem Somos</a>
-                <a href="/Direitos/direitos.html">Direitos</a>
-                <a href="/blog/blog.html">Blog</a>
-                <a href="/comunidade/comunidade.html">Comunidade</a>
-                <a href="/chat-Ia/chat-Ia.html">Chat com IA</a>
-            </nav>
+         
 
             <div class="nav-right">
                 <button class="search-btn" aria-label="Pesquisar"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -178,6 +169,7 @@
             </div>
         </footer>
     </div>
+    
 
     <!-- MODAL DE TICKET -->
     <div class="modal-overlay" id="ticketModal">
@@ -190,6 +182,23 @@
                     <span class="badge badge-source">site</span>
                 </div>
                 <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+                <header class="modal-header">
+    <div class="header-left">
+        <h2 class="ticket-title" id="modalTicketTitle">Ticket #1</h2>
+        <span class="badge badge-status" id="modalTicketStatus">Aguardando</span>
+        <span class="badge badge-source">site</span>
+    </div>
+
+    <div class="header-actions">
+        <button id="btnAceitar" class="btn-accept">
+            <i class="fa-solid fa-check"></i> Aceitar
+        </button>
+        <button id="btnRecusar" class="btn-reject">
+            <i class="fa-solid fa-xmark"></i> Recusar
+        </button>
+        <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+    </div>
+</header>
             </header>
 
             <section class="ticket-meta-row">
@@ -269,6 +278,21 @@
         </div>
     </div>
 
+
+    <!-- 1. SDK do Supabase (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- 2. Cria o cliente global -->
+    <script>
+        window.supabaseClient = window.supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+
+    <!-- 3. Script do painel (SEM type="module") -->
     <script src="sac.js"></script>
+</body>
+</html>
 </body>
 </html>
