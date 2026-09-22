@@ -2901,3 +2901,29 @@ border: 1px solid var(--primary);
 }
 
 
+/* =============================================
+   LINKS RESTRITOS (bloqueados para visitantes)
+   ============================================= */
+a.is-locked {
+    position: relative;
+    opacity: 0.55;
+    cursor: not-allowed !important;
+    pointer-events: auto; /* precisamos capturar o clique */
+}
+
+a.is-locked:hover {
+    opacity: 0.75;
+}
+
+a.is-locked .lock-icon {
+    margin-left: 6px;
+    font-size: 0.7em;
+    color: #dc2626;
+    opacity: 0.85;
+}
+
+/* Opcional: tooltip nativo */
+a.is-locked::after {
+    content: attr(aria-disabled);
+    display: none;
+}
