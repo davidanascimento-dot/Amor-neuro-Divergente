@@ -550,16 +550,26 @@
     <!-- Overlay para fechar o hub ao clicar fora -->
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
-    <!-- =============================================
-    SCRIPTS
-    ============================================= -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        window.supabaseClient = supabase.createClient('https://qyixzontuhrxrrjrmzvy.supabase.co', 'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE');
-    </script>
-    <script src="loja.js"></script>
-    <script src="/Acolher-IA/Acolher-IA.js"></script>
-    <!-- VLibras -->
+<!-- =============================================
+     SCRIPTS
+     ============================================= -->
+<!-- 1️⃣ PRIMEIRO: carregar a biblioteca do Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- 2️⃣ DEPOIS: inicializar o cliente -->
+<script>
+    window.supabaseClient = supabase.createClient(
+        'https://qyixzontuhrxrrjrmzvy.supabase.co',
+        'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+    );
+    console.log('✅ Supabase client pronto:', !!window.supabaseClient);
+</script>
+
+<!-- 3️⃣ POR ÚLTIMO: seu JS da loja -->
+<script src="loja.js"></script>
+<script src="/Acolher-IA/Acolher-IA.js"></script>
+
+
 <div vw class="enabled">
     <div vw-access-button class="active"></div>
     <div vw-plugin-wrapper>

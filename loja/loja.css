@@ -1383,3 +1383,48 @@ body.a11y-dark-mode .flash-see-all:hover {
     color: #c4b5e8;
 }
 
+
+/* ============================================
+   WISHLIST / FAVORITOS
+   ============================================ */
+.btn-wishlist.active {
+    color: #ef4444;
+}
+
+.btn-wishlist.active i {
+    animation: heartBeat 0.4s ease;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* ============================================
+   PREÇOS COM RISCO
+   ============================================ */
+.product-price {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.product-price .old-price {
+    font-size: 12px;
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.product-price .current-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #10b981;
+}
+
+/* ============================================
+   TOAST
+   ============================================ */
+.shop-toast {
+    /* Estilos inline já aplicados via JS */
+}

@@ -1,52 +1,154 @@
 // =========================================================================
-// LOJA.JS — Amor NeuroDivergente
-// Sidebar + Acessibilidade + Hub Flutuante + Scroll Top + Loja + Banner
+// LOJA.JS — Amor NeuroDivergente (VERSÃO SUPABASE)
+// Sidebar + Acessibilidade + Hub + Loja + Banner + Wishlist
 // =========================================================================
 
-document.addEventListener("DOMContentLoaded", () => {
-    
+document.addEventListener("DOMContentLoaded", async () => {
     const body = document.body;
+    const supabase = window.supabaseClient;
+
+    if (!supabase) {
+        console.error('❌ Supabase não inicializado!');
+        alert('Erro: Supabase não inicializado. Recarregue a página.');
+        return;
+    }
+
+    // =============================================
+    // ESTADO GLOBAL
+    // =============================================
+    let currentUser = null;
+    let userProfile = null;
+    let wishlistIds = new Set();
+    let allProducts = [];
+    let filteredProducts = [];
+    let renderedCount = 0;
+    const PRODUCTS_PER_PAGE = 6;
+    let isLoading = false;
+    let activeMarketplaceFilter = 'todos';
+    let activeCategoryFilter = 'todos';
+    let currentQuery = '';
+    let searchTimeout = null;
+
+    // Elementos DOM
     const searchInput = document.getElementById("productSearch");
     const productsGrid = document.getElementById("productsGrid");
     const noResults = document.getElementById("noResults");
     const productCounter = document.getElementById("productCounter");
     const loadingSpinner = document.getElementById("loadingSpinner");
 
-    let activeMarketplaceFilter = 'todos';
-    let activeCategoryFilter = 'todos';
-    let searchTimeout = null;
-    let allCurrentResults = [];
-    let renderedCount = 0;
-    const PRODUCTS_PER_PAGE = 6;
-    let isLoading = false;
-    let currentQuery = '';
+    // =============================================
+    // 0. AUTENTICAÇÃO + PERFIL
+    // =============================================
+    async function initAuth() {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
 
-    // =============================================
-    // 0. SINCRONIZAÇÃO DE PERFIL
-    // =============================================
-    function syncProfile() {
-        const savedName = localStorage.getItem('userName');
-        const savedEmail = localStorage.getItem('userEmail');
-        const savedAvatar = localStorage.getItem('userAvatar');
-        
-        const sidebarAvatar = document.getElementById('sidebarAvatar');
-        const sidebarUserName = document.getElementById('sidebarUserName');
-        const sidebarUserEmail = document.getElementById('sidebarUserEmail');
-        
-        if (sidebarAvatar && savedAvatar) {
-            sidebarAvatar.src = savedAvatar;
-            sidebarAvatar.onerror = () => { sidebarAvatar.src = '/img/avatar-padrao.png'; };
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('username, avatar_url, full_name')
+                    .eq('id', currentUser.id)
+                    .maybeSingle();
+
+                userProfile = profile;
+
+                // Atualiza sidebar
+                const sidebarAvatar = document.getElementById('sidebarAvatar');
+                const sidebarUserName = document.getElementById('sidebarUserName');
+                const sidebarUserEmail = document.getElementById('sidebarUserEmail');
+
+                if (sidebarAvatar && profile?.avatar_url) sidebarAvatar.src = profile.avatar_url;
+                if (sidebarUserName && (profile?.username || profile?.full_name)) {
+                    sidebarUserName.textContent = profile.username || profile.full_name;
+                }
+                if (sidebarUserEmail && currentUser.email) sidebarUserEmail.textContent = currentUser.email;
+
+                // Carrega wishlist
+                await loadWishlist();
+
+                console.log('👤 Logado como:', profile?.username || currentUser.email);
+            } else {
+                // Visitante
+                const savedName = localStorage.getItem('userName');
+                const savedEmail = localStorage.getItem('userEmail');
+                const savedAvatar = localStorage.getItem('userAvatar');
+
+                const sidebarAvatar = document.getElementById('sidebarAvatar');
+                const sidebarUserName = document.getElementById('sidebarUserName');
+                const sidebarUserEmail = document.getElementById('sidebarUserEmail');
+
+                if (sidebarAvatar && savedAvatar) sidebarAvatar.src = savedAvatar;
+                if (sidebarUserName && savedName) sidebarUserName.textContent = savedName;
+                if (sidebarUserEmail && savedEmail) sidebarUserEmail.textContent = savedEmail;
+
+                console.log('👤 Visitante');
+            }
+        } catch (e) {
+            console.warn('⚠️ Erro ao verificar sessão:', e);
         }
-        if (sidebarUserName && savedName) sidebarUserName.textContent = savedName;
-        if (sidebarUserEmail && savedEmail) sidebarUserEmail.textContent = savedEmail;
     }
-    syncProfile();
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'userAvatar' || e.key === 'userName' || e.key === 'userEmail') syncProfile();
-    });
 
     // =============================================
-    // 1. SIDEBAR RESPONSIVA (PADRÃO DO PROJETO)
+    // WISHLIST
+    // =============================================
+    async function loadWishlist() {
+        if (!currentUser) return;
+        try {
+            const { data, error } = await supabase.rpc('get_my_wishlists');
+            if (error) throw error;
+            wishlistIds = new Set((data || []).map(w => w.product_id));
+            console.log(`❤️ ${wishlistIds.size} favoritos carregados`);
+        } catch (e) {
+            console.warn('⚠️ Erro ao carregar wishlist:', e);
+        }
+    }
+
+    async function toggleWishlist(productId, btnElement) {
+        if (!currentUser) {
+            showToast('Faça login para favoritar produtos', 'warning');
+            return;
+        }
+
+        const icon = btnElement.querySelector('i');
+        const wasActive = btnElement.classList.contains('active');
+
+        // Optimistic update
+        btnElement.classList.toggle('active');
+        icon.className = wasActive ? 'fa-regular fa-heart' : 'fa-solid fa-heart';
+
+        try {
+            const { data, error } = await supabase.rpc('toggle_wishlist', {
+                p_product_id: productId
+            });
+
+            if (error) throw error;
+
+            if (data?.success) {
+                if (data.action === 'added') {
+                    wishlistIds.add(productId);
+                    showToast('❤️ Adicionado aos favoritos', 'success');
+                } else {
+                    wishlistIds.delete(productId);
+                    showToast('💔 Removido dos favoritos', 'info');
+                }
+            } else {
+                // Reverte
+                btnElement.classList.toggle('active');
+                icon.className = wasActive ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                showToast(data?.error || 'Erro ao atualizar favorito', 'error');
+            }
+        } catch (e) {
+            console.error('❌', e);
+            // Reverte
+            btnElement.classList.toggle('active');
+            icon.className = wasActive ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+            showToast('Erro ao atualizar favorito', 'error');
+        }
+    }
+
+    // =============================================
+    // 1. SIDEBAR RESPONSIVA
     // =============================================
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
     const sidebar = document.getElementById('sidebar');
@@ -75,11 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function toggleSidebar() {
-        if (sidebar.classList.contains('open')) {
-            closeSidebar();
-        } else {
-            openSidebar();
-        }
+        if (sidebar.classList.contains('open')) closeSidebar();
+        else openSidebar();
     }
 
     if (sidebarToggleBtn && sidebar) {
@@ -104,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // =============================================
     const profileToggle = document.getElementById('profileToggle');
     const profileDetail = document.getElementById('profileDetail');
-    
+
     if (profileToggle && profileDetail) {
         profileToggle.addEventListener('click', (e) => {
             e.preventDefault();
@@ -120,9 +219,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         document.addEventListener('click', (e) => {
-            if (!profileDetail.hasAttribute('hidden') && 
-                !profileDetail.contains(e.target) && 
-                e.target !== profileToggle && 
+            if (!profileDetail.hasAttribute('hidden') &&
+                !profileDetail.contains(e.target) &&
+                e.target !== profileToggle &&
                 !profileToggle.contains(e.target)) {
                 profileDetail.setAttribute('hidden', '');
                 profileToggle.setAttribute('aria-expanded', 'false');
@@ -131,44 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =============================================
-    // 3. ACESSIBILIDADE NA SIDEBAR
+    // 3. ACESSIBILIDADE
     // =============================================
-    const a11yToggle = document.getElementById('a11yToggle');
-    const a11yOptions = document.getElementById('a11yOptions');
-
-    if (a11yToggle && a11yOptions) {
-        a11yToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const isHidden = a11yOptions.hasAttribute('hidden');
-            if (isHidden) {
-                a11yOptions.removeAttribute('hidden');
-                a11yToggle.setAttribute('aria-expanded', 'true');
-            } else {
-                a11yOptions.setAttribute('hidden', '');
-                a11yToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!a11yOptions.hasAttribute('hidden') && 
-                !a11yOptions.contains(e.target) && 
-                e.target !== a11yToggle && 
-                !a11yToggle.contains(e.target)) {
-                a11yOptions.setAttribute('hidden', '');
-                a11yToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !a11yOptions.hasAttribute('hidden')) {
-                a11yOptions.setAttribute('hidden', '');
-                a11yToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-    }
-
-    // Funções de acessibilidade
     function getA11y(key, defaultValue = 'false') {
         return localStorage.getItem('a11y_' + key) || defaultValue;
     }
@@ -210,87 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyA11ySettings();
 
-    // Eventos dos botões de acessibilidade
-    document.querySelectorAll('.a11y-option, .a11y-reset').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const action = btn.getAttribute('data-a11y');
-            const section = document.querySelector('.products-section');
-
-            switch (action) {
-                case 'darkMode': {
-                    const current = getA11y('darkMode') === 'true';
-                    setA11y('darkMode', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-dark-mode', !current);
-                    updateStatus('darkModeStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'increaseText': {
-                    const current = getA11y('textSize', 'normal');
-                    if (current === 'large') {
-                        setA11y('textSize', 'normal');
-                        section?.classList.remove('a11y-large-text');
-                    } else {
-                        setA11y('textSize', 'large');
-                        section?.classList.remove('a11y-small-text');
-                        section?.classList.add('a11y-large-text');
-                    }
-                    break;
-                }
-                case 'decreaseText': {
-                    const current = getA11y('textSize', 'normal');
-                    if (current === 'small') {
-                        setA11y('textSize', 'normal');
-                        section?.classList.remove('a11y-small-text');
-                    } else {
-                        setA11y('textSize', 'small');
-                        section?.classList.remove('a11y-large-text');
-                        section?.classList.add('a11y-small-text');
-                    }
-                    break;
-                }
-                case 'highlightLinks': {
-                    const current = getA11y('highlightLinks') === 'true';
-                    setA11y('highlightLinks', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-highlight-links', !current);
-                    updateStatus('linksStatus', !current);
-                    break;
-                }
-                case 'dyslexiaFont': {
-                    const current = getA11y('dyslexiaFont') === 'true';
-                    setA11y('dyslexiaFont', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-dyslexia', !current);
-                    updateStatus('dyslexiaStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'reduceMotion': {
-                    const current = getA11y('reduceMotion') === 'true';
-                    setA11y('reduceMotion', current ? 'false' : 'true');
-                    body.classList.toggle('a11y-reduce-motion', !current);
-                    updateStatus('motionStatus', !current);
-                    updateHubStatus();
-                    break;
-                }
-                case 'reset': {
-                    ['darkMode', 'highlightLinks', 'dyslexiaFont', 'reduceMotion', 'textSize'].forEach(key => {
-                        localStorage.removeItem('a11y_' + key);
-                    });
-                    body.classList.remove('a11y-dark-mode', 'a11y-highlight-links', 'a11y-dyslexia', 'a11y-reduce-motion');
-                    section?.classList.remove('a11y-large-text', 'a11y-small-text');
-                    updateStatus('darkModeStatus', false);
-                    updateStatus('linksStatus', false);
-                    updateStatus('dyslexiaStatus', false);
-                    updateStatus('motionStatus', false);
-                    updateHubStatus();
-                    break;
-                }
-            }
-        });
-    });
-
     // =============================================
     // 4. HUB FLUTUANTE
     // =============================================
@@ -299,15 +281,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const hubOverlay = document.getElementById('floatingOverlay');
 
     function toggleHub() {
-        if (!hubMenu || !hubOverlay) {
-            console.warn('⚠️ Hub elements not found!');
-            return;
-        }
+        if (!hubMenu || !hubOverlay) return;
         const isOpen = !hubMenu.hidden;
         hubMenu.hidden = isOpen;
         hubOverlay.hidden = isOpen;
         if (hubToggle) hubToggle.setAttribute('aria-expanded', !isOpen);
-        console.log('🔄 Hub toggled:', isOpen ? 'closed' : 'open');
     }
 
     function closeHub() {
@@ -320,48 +298,30 @@ document.addEventListener("DOMContentLoaded", () => {
     if (hubToggle) {
         hubToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            console.log('🖱️ Hub button clicked!');
             toggleHub();
         });
-    } else {
-        console.warn('⚠️ floatingHubToggle not found!');
     }
 
-    if (hubOverlay) {
-        hubOverlay.addEventListener('click', closeHub);
-    }
+    if (hubOverlay) hubOverlay.addEventListener('click', closeHub);
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeHub();
-        }
+        if (e.key === 'Escape') closeHub();
     });
 
-    // =============================================
-    // 5. ATUALIZAR STATUS DO HUB
-    // =============================================
     function updateHubStatus() {
         const darkLabel = document.querySelector('.hub-action[data-a11y="darkMode"] .hub-action-label');
-        if (darkLabel) {
-            darkLabel.textContent = body.classList.contains('a11y-dark-mode') ? 'Claro' : 'Escuro';
-        }
+        if (darkLabel) darkLabel.textContent = body.classList.contains('a11y-dark-mode') ? 'Claro' : 'Escuro';
 
         const dyslexiaLabel = document.querySelector('.hub-action[data-a11y="dyslexiaFont"] .hub-action-label');
-        if (dyslexiaLabel) {
-            dyslexiaLabel.textContent = body.classList.contains('a11y-dyslexia') ? 'Ativo' : 'Dislexia';
-        }
+        if (dyslexiaLabel) dyslexiaLabel.textContent = body.classList.contains('a11y-dyslexia') ? 'Ativo' : 'Dislexia';
 
         const motionLabel = document.querySelector('.hub-action[data-a11y="reduceMotion"] .hub-action-label');
-        if (motionLabel) {
-            motionLabel.textContent = body.classList.contains('a11y-reduce-motion') ? 'Ativo' : 'Movimento';
-        }
+        if (motionLabel) motionLabel.textContent = body.classList.contains('a11y-reduce-motion') ? 'Ativo' : 'Movimento';
     }
 
     updateHubStatus();
 
-    // =============================================
-    // 6. AÇÕES DO HUB
-    // =============================================
+    // Ações do Hub
     document.querySelectorAll('.hub-action[data-a11y]').forEach((item) => {
         item.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -431,7 +391,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     break;
                 }
             }
-
             closeHub();
         });
     });
@@ -441,37 +400,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =============================================
-    // 7. BOTÃO VOLTAR AO TOPO
+    // 5. LOGOUT
     // =============================================
-    const scrollTopBtn = document.getElementById('scrollTopBtn');
-
-    if (scrollTopBtn) {
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 400) {
-                scrollTopBtn.style.opacity = '1';
-                scrollTopBtn.style.transform = 'translateY(0)';
-                scrollTopBtn.style.pointerEvents = 'auto';
-            } else {
-                scrollTopBtn.style.opacity = '0';
-                scrollTopBtn.style.transform = 'translateY(20px)';
-                scrollTopBtn.style.pointerEvents = 'none';
-            }
-        });
-
-        scrollTopBtn.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    }
-
-    // =============================================
-    // 8. LOGOUT
-    // =============================================
-    document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+    document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
         e.preventDefault();
         if (confirm('Tem certeza que deseja sair?')) {
+            try {
+                await supabase.auth.signOut();
+            } catch (err) {
+                console.warn('Erro ao fazer logout:', err);
+            }
             localStorage.removeItem('userLoggedIn');
             localStorage.removeItem('userName');
             localStorage.removeItem('userEmail');
@@ -480,133 +418,188 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // =========================================================================
-    // 9. BANCO DE PRODUTOS
-    // =========================================================================
-    const synonymMap = {
-        'aba': ['terapia aba', 'autismo', 'comportamento', 'fonoaudiologia'],
-        'stimming': ['fidget', 'estimulação', 'movimento', 'mastigável'],
-        'meltdown': ['crise', 'regulação', 'calma', 'peso', 'compressão'],
-        'seletividade': ['alimentar', 'comida', 'textura', 'sensorial', 'prato'],
-        'hiperfoco': ['foco', 'concentração', 'atenção', 'tdah'],
-    };
+    // =============================================
+    // 6. CARREGAR PRODUTOS DO SUPABASE
+    // =============================================
+    async function loadProducts() {
+        if (loadingSpinner) loadingSpinner.style.display = 'block';
+        if (productsGrid) productsGrid.innerHTML = '';
 
-    const detailedProductDB = [
-        { keywords: ['manta peso', 'cobertor pesado', 'sensorial', 'ansiedade', 'autismo', 'tdah', 'meltdown'], title: 'Manta de Peso Sensorial Terapêutica 5kg', vendor: 'SensorPeso', rating: 5, ratingCount: 215, price: 'R$ 199,90', marketplace: 'amazon', category: 'sensorial', image: 'https://images.unsplash.com/photo-1616627561950-9f746e330187?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['fidget', 'stimming', 'cubo', 'anti estresse', 'tdah'], title: 'Fidget Toy Cubo Infinito Anti Estresse', vendor: 'FidgetBrasil', rating: 4, ratingCount: 327, price: 'R$ 24,90', marketplace: 'shopee', category: 'foco-tdah', image: 'https://images.unsplash.com/photo-1618842676088-c4d48a6a7c9d?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['pulseira mastigável', 'morder', 'stimming', 'sensorial'], title: 'Pulseira Mastigável Sensorial Antiestresse', vendor: 'ChewyWear', rating: 5, ratingCount: 303, price: 'R$ 19,90', marketplace: 'shopee', category: 'sensorial', image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['timer', 'visual', 'pomodoro', 'foco', 'tdah', 'rotina'], title: 'Relógio Timer Visual 60min para TDAH', vendor: 'TimeManager', rating: 4, ratingCount: 283, price: 'R$ 39,90', marketplace: 'aliexpress', category: 'foco-tdah', image: 'https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['fone', 'cancelamento ruído', 'anc', 'silêncio', 'tdah', 'autismo'], title: 'Fone Bluetooth Cancelamento de Ruído ANC', vendor: 'AudioPro', rating: 4, ratingCount: 456, price: 'R$ 149,90', marketplace: 'shopee', category: 'audio', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['camiseta', 'orgulho', 'neurodivergente', 'frase', 'autismo'], title: 'Camiseta Orgulho Neurodivergente', vendor: 'NeuroStore', rating: 5, ratingCount: 142, price: 'R$ 49,90', marketplace: 'aliexpress', category: 'vestuario', image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['projetor', 'estrelas', 'luz', 'relaxamento', 'sono', 'sensorial'], title: 'Projetor de Estrelas Giratório Sensorial', vendor: 'StarLight', rating: 5, ratingCount: 532, price: 'R$ 79,90', marketplace: 'amazon', category: 'sensorial', image: 'https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['prato', 'divisória', 'seletividade', 'alimentar', 'autismo'], title: 'Prato com Divisórias Seletividade Alimentar', vendor: 'FoodFun', rating: 5, ratingCount: 312, price: 'R$ 34,90', marketplace: 'shopee', category: 'casa', image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['cartão', 'comunicação', 'pecs', 'autismo', 'não verbal'], title: 'Kit Cartões PECS para Autismo 200 Figuras', vendor: 'PECSCom', rating: 5, ratingCount: 278, price: 'R$ 79,90', marketplace: 'mercado-livre', category: 'livros', image: 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['planejador', 'semanal', 'rotina', 'tdah', 'organização'], title: 'Planejador Semanal para Rotina TDAH', vendor: 'PlanPro', rating: 4, ratingCount: 167, price: 'R$ 27,90', marketplace: 'aliexpress', category: 'foco-tdah', image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['massinha', 'slime', 'sensorial', 'criança', 'tátil'], title: 'Kit Massinha Sensorial Terapêutica 12 Cores', vendor: 'KidsPlay', rating: 5, ratingCount: 198, price: 'R$ 34,90', marketplace: 'mercado-livre', category: 'sensorial', image: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=300&fit=crop', link: '#' },
-        { keywords: ['abafador', 'ruído', 'criança', 'autismo', 'ouvido'], title: 'Abafador de Ruído Infantil para Autismo', vendor: 'SafeEar', rating: 5, ratingCount: 189, price: 'R$ 59,90', marketplace: 'amazon', category: 'audio', image: 'https://images.unsplash.com/photo-1577174881658-0f30ed549adc?w=400&h=300&fit=crop', link: '#' },
-    ];
+        try {
+            const { data, error } = await supabase.rpc('get_products', {
+                p_search: currentQuery || null,
+                p_marketplace: activeMarketplaceFilter === 'todos' ? null : activeMarketplaceFilter,
+                p_category: activeCategoryFilter === 'todos' ? null : activeCategoryFilter,
+                p_limit: 200,
+                p_offset: 0
+            });
 
-    const defaultProducts = [...detailedProductDB];
+            if (error) throw error;
 
-    // =========================================================================
-    // 10. RENDERIZAÇÃO
-    // =========================================================================
+            allProducts = (data || []).map(p => ({
+                ...p,
+                price_formatted: formatPrice(p.price),
+                old_price_formatted: p.old_price ? formatPrice(p.old_price) : null
+            }));
+
+            filteredProducts = allProducts;
+            renderBatch();
+
+            console.log(`🛍️ ${allProducts.length} produtos carregados do Supabase`);
+        } catch (error) {
+            console.error('❌ Erro ao carregar produtos:', error);
+            showToast('Erro ao carregar produtos. Usando dados locais.', 'warning');
+            // Fallback para dados locais
+            loadLocalFallback();
+        } finally {
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
+        }
+    }
+
+    // =============================================
+    // 7. FALLBACK LOCAL (se Supabase falhar)
+    // =============================================
+    function loadLocalFallback() {
+        const fallbackDB = [
+            { id: 'local-1', title: 'Manta de Peso Sensorial Terapêutica 5kg', vendor: 'SensorPeso', rating: 5, rating_count: 215, price: 199.90, old_price: 249.90, marketplace: 'amazon', category: 'sensorial', image: 'https://images.unsplash.com/photo-1616627561950-9f746e330187?w=400&h=300&fit=crop', link: '#' },
+            { id: 'local-2', title: 'Fidget Toy Cubo Infinito Anti Estresse', vendor: 'FidgetBrasil', rating: 4, rating_count: 327, price: 24.90, old_price: 39.90, marketplace: 'shopee', category: 'foco-tdah', image: 'https://images.unsplash.com/photo-1618842676088-c4d48a6a7c9d?w=400&h=300&fit=crop', link: '#' },
+            { id: 'local-3', title: 'Pulseira Mastigável Sensorial Antiestresse', vendor: 'ChewyWear', rating: 5, rating_count: 303, price: 19.90, old_price: 34.90, marketplace: 'shopee', category: 'sensorial', image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=300&fit=crop', link: '#' },
+            { id: 'local-4', title: 'Relógio Timer Visual 60min para TDAH', vendor: 'TimeManager', rating: 4, rating_count: 283, price: 39.90, old_price: 59.90, marketplace: 'aliexpress', category: 'foco-tdah', image: 'https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?w=400&h=300&fit=crop', link: '#' },
+            { id: 'local-5', title: 'Fone Bluetooth Cancelamento de Ruído ANC', vendor: 'AudioPro', rating: 4, rating_count: 456, price: 149.90, old_price: 249.90, marketplace: 'shopee', category: 'audio', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop', link: '#' },
+            { id: 'local-6', title: 'Camiseta Orgulho Neurodivergente', vendor: 'NeuroStore', rating: 5, rating_count: 142, price: 49.90, old_price: 79.90, marketplace: 'aliexpress', category: 'vestuario', image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=300&fit=crop', link: '#' },
+        ].map(p => ({
+            ...p,
+            price_formatted: formatPrice(p.price),
+            old_price_formatted: p.old_price ? formatPrice(p.old_price) : null
+        }));
+
+        allProducts = fallbackDB;
+        filteredProducts = fallbackDB;
+        renderBatch();
+    }
+
+    // =============================================
+    // 8. FORMATAR PREÇO
+    // =============================================
+    function formatPrice(value) {
+        if (value === null || value === undefined) return 'R$ 0,00';
+        return 'R$ ' + Number(value).toFixed(2).replace('.', ',');
+    }
+
+    // =============================================
+    // 9. CRIAR CARD DE PRODUTO
+    // =============================================
     function createProductCard(product) {
         const stars = '★'.repeat(product.rating) + '☆'.repeat(5 - product.rating);
         const mpNames = { 'aliexpress': 'AliExpress', 'shopee': 'Shopee', 'mercado-livre': 'Mercado Livre', 'amazon': 'Amazon' };
-        
+        const isFav = wishlistIds.has(product.id);
+
         const card = document.createElement('article');
         card.className = 'product-card';
         card.style.animation = 'fadeIn 0.4s ease forwards';
+        card.dataset.productId = product.id;
+
         card.innerHTML = `
             <div class="product-image-area">
-                <img src="${product.image}" alt="${product.title}" class="product-img" loading="lazy">
-                <span class="marketplace-badge ${product.marketplace}">${mpNames[product.marketplace]}</span>
-                <button class="btn-wishlist" aria-label="Favorito"><i class="fa-regular fa-heart"></i></button>
+                <img src="${product.image || 'https://via.placeholder.com/400x300?text=Produto'}" alt="${escapeHtml(product.title)}" class="product-img" loading="lazy">
+                <span class="marketplace-badge ${product.marketplace}">${mpNames[product.marketplace] || product.marketplace}</span>
+                <button class="btn-wishlist ${isFav ? 'active' : ''}" aria-label="Favorito" data-product-id="${product.id}">
+                    <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                </button>
             </div>
             <div class="product-info-area">
-                <h4 class="product-title">${product.title}</h4>
-                <div class="product-vendor">${product.vendor}</div>
-                <div class="product-rating">${stars} <span class="rating-count">(${product.ratingCount})</span></div>
-                <div class="product-price">${product.price}</div>
-                <a href="${product.link}" target="_blank" rel="nofollow" class="btn-buy">Ver na ${mpNames[product.marketplace]}</a>
+                <h4 class="product-title">${escapeHtml(product.title)}</h4>
+                <div class="product-vendor">${escapeHtml(product.vendor)}</div>
+                <div class="product-rating">${stars} <span class="rating-count">(${product.rating_count})</span></div>
+                <div class="product-price">
+                    ${product.old_price_formatted ? `<span class="old-price">${product.old_price_formatted}</span>` : ''}
+                    <span class="current-price">${product.price_formatted}</span>
+                </div>
+                <a href="${product.link || '#'}" target="_blank" rel="nofollow" class="btn-buy">Ver na ${mpNames[product.marketplace] || 'Loja'}</a>
             </div>`;
-        
-        card.querySelector('.btn-wishlist').addEventListener('click', function(e) {
+
+        const wishBtn = card.querySelector('.btn-wishlist');
+        wishBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            this.classList.toggle('active');
-            const icon = this.querySelector('i');
-            icon.className = this.classList.contains('active') ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+            e.stopPropagation();
+            toggleWishlist(product.id, wishBtn);
         });
+
         return card;
     }
 
-    function searchProducts(query) {
-        const term = query.toLowerCase().trim();
-        if (!term) return [];
-        let terms = [term];
-        for (const [key, syns] of Object.entries(synonymMap)) {
-            if (term.includes(key)) terms = [...terms, ...syns];
-        }
-        return detailedProductDB.filter(p => terms.some(t => p.keywords.join(' ').toLowerCase().includes(t)));
-    }
-
-    function applyFilters(results) {
-        let filtered = [...results];
-        if (activeMarketplaceFilter !== 'todos') filtered = filtered.filter(p => p.marketplace === activeMarketplaceFilter);
-        if (activeCategoryFilter !== 'todos') filtered = filtered.filter(p => p.category === activeCategoryFilter);
-        return filtered;
-    }
-
+    // =============================================
+    // 10. RENDERIZAR EM LOTES
+    // =============================================
     function renderBatch() {
+        if (!productsGrid) return;
         productsGrid.innerHTML = '';
         renderedCount = 0;
-        const filtered = applyFilters(allCurrentResults);
-        if (filtered.length === 0) { 
-            noResults.style.display = 'block'; 
-            productCounter.textContent = '0 produtos'; 
-            return; 
+
+        if (filteredProducts.length === 0) {
+            if (noResults) noResults.style.display = 'block';
+            if (productCounter) productCounter.textContent = '0 produtos';
+            return;
         }
-        noResults.style.display = 'none';
-        const batch = filtered.slice(0, PRODUCTS_PER_PAGE);
+
+        if (noResults) noResults.style.display = 'none';
+
+        const batch = filteredProducts.slice(0, PRODUCTS_PER_PAGE);
         batch.forEach(p => productsGrid.appendChild(createProductCard(p)));
         renderedCount = PRODUCTS_PER_PAGE;
-        productCounter.textContent = `${filtered.length} produto${filtered.length>1?'s':''} encontrado${filtered.length>1?'s':''}`;
+
+        if (productCounter) {
+            productCounter.textContent = `${filteredProducts.length} produto${filteredProducts.length > 1 ? 's' : ''} encontrado${filteredProducts.length > 1 ? 's' : ''}`;
+        }
     }
 
+    // =============================================
+    // 11. CARREGAR MAIS (INFINITE SCROLL)
+    // =============================================
     function loadMore() {
         if (isLoading) return;
-        const filtered = applyFilters(allCurrentResults);
-        if (renderedCount >= filtered.length) return;
+        if (renderedCount >= filteredProducts.length) return;
+
         isLoading = true;
-        loadingSpinner.style.display = 'block';
+        if (loadingSpinner) loadingSpinner.style.display = 'block';
+
         setTimeout(() => {
-            filtered.slice(renderedCount, renderedCount + PRODUCTS_PER_PAGE).forEach(p => productsGrid.appendChild(createProductCard(p)));
+            const nextBatch = filteredProducts.slice(renderedCount, renderedCount + PRODUCTS_PER_PAGE);
+            nextBatch.forEach(p => productsGrid.appendChild(createProductCard(p)));
             renderedCount += PRODUCTS_PER_PAGE;
             isLoading = false;
-            loadingSpinner.style.display = 'none';
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
         }, 400);
     }
 
-    async function updateAll(query) {
-        currentQuery = query;
-        loadingSpinner.style.display = 'block';
-        await new Promise(r => setTimeout(r, 300));
-        allCurrentResults = query ? searchProducts(query) : [...defaultProducts];
+    // =============================================
+    // 12. APLICAR FILTROS
+    // =============================================
+    function applyFilters() {
+        filteredProducts = allProducts.filter(p => {
+            if (activeMarketplaceFilter !== 'todos' && p.marketplace !== activeMarketplaceFilter) return false;
+            if (activeCategoryFilter !== 'todos' && p.category !== activeCategoryFilter) return false;
+            return true;
+        });
         renderBatch();
-        loadingSpinner.style.display = 'none';
     }
 
-    // =========================================================================
-    // 11. EVENTOS
-    // =========================================================================
+    // =============================================
+    // 13. BUSCA
+    // =============================================
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => updateAll(searchInput.value.trim()), 400);
+            searchTimeout = setTimeout(async () => {
+                currentQuery = searchInput.value.trim();
+                await loadProducts();
+            }, 400);
         });
     }
 
+    // =============================================
+    // 14. FILTROS (BOTÕES PILL)
+    // =============================================
     document.querySelectorAll('.filter-row').forEach((row, i) => {
         row.querySelectorAll('.pill-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -615,18 +608,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 const f = this.getAttribute('data-filter');
                 if (i === 0) activeMarketplaceFilter = f;
                 if (i === 1) activeCategoryFilter = f;
-                updateAll(currentQuery);
+                applyFilters();
             });
         });
     });
 
+    // =============================================
+    // 15. INFINITE SCROLL
+    // =============================================
     window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 500) loadMore();
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 500) {
+            loadMore();
+        }
     });
 
-    // =========================================================================
-    // 12. HEADER SCROLL EFFECT
-    // =========================================================================
+    // =============================================
+    // 16. HEADER SCROLL EFFECT
+    // =============================================
     const headerGlass = document.getElementById('headerGlass');
     if (headerGlass) {
         window.addEventListener('scroll', () => {
@@ -634,46 +632,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // =========================================================================
-    // 13. SCROLL REVEAL (opcional)
-    // =========================================================================
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    // =========================================================================
-    // 14. BANNER CARROSSEL AUTOMÁTICO
-    // =========================================================================
+    // =============================================
+    // 17. BANNER CARROSSEL
+    // =============================================
     function initBannerCarousel() {
         const scroll = document.getElementById('bannerScroll');
         const dots = document.getElementById('bannerDots');
         const prevBtn = document.getElementById('bannerPrev');
         const nextBtn = document.getElementById('bannerNext');
 
-        if (!scroll || !dots) {
-            console.warn('⚠️ Banner elements not found, skipping carousel init.');
-            return;
-        }
+        if (!scroll || !dots) return;
 
         const slides = scroll.querySelectorAll('.banner-slide');
         const total = slides.length;
-
-        if (total === 0) {
-            console.warn('⚠️ No slides found in banner.');
-            return;
-        }
+        if (total === 0) return;
 
         let currentIndex = 0;
         let autoInterval = null;
-        const AUTO_TIME = 4000; // 4 segundos
+        const AUTO_TIME = 4000;
 
-        // ===== CRIA AS BOLINHAS =====
         dots.innerHTML = '';
         for (let i = 0; i < total; i++) {
             const dot = document.createElement('span');
@@ -688,97 +665,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const dotElements = dots.querySelectorAll('span');
 
-        // ===== FUNÇÃO PARA IR PARA UM SLIDE =====
         function goTo(index) {
             if (index < 0) index = total - 1;
             if (index >= total) index = 0;
             currentIndex = index;
             scroll.style.transform = `translateX(-${index * 100}%)`;
-
-            // Atualiza bolinhas
-            dotElements.forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
+            dotElements.forEach((dot, i) => dot.classList.toggle('active', i === index));
         }
 
-        // ===== PRÓXIMO / ANTERIOR =====
-        function next() {
-            goTo(currentIndex + 1);
-        }
-
-        function prev() {
-            goTo(currentIndex - 1);
-        }
-
-        // ===== SCROLL AUTOMÁTICO =====
+        function next() { goTo(currentIndex + 1); }
+        function prev() { goTo(currentIndex - 1); }
         function startAuto() {
             if (autoInterval) clearInterval(autoInterval);
             autoInterval = setInterval(next, AUTO_TIME);
         }
-
         function stopAuto() {
-            if (autoInterval) {
-                clearInterval(autoInterval);
-                autoInterval = null;
-            }
+            if (autoInterval) { clearInterval(autoInterval); autoInterval = null; }
         }
+        function resetAuto() { stopAuto(); startAuto(); }
 
-        function resetAuto() {
-            stopAuto();
-            startAuto();
-        }
+        nextBtn?.addEventListener('click', (e) => { e.stopPropagation(); next(); resetAuto(); });
+        prevBtn?.addEventListener('click', (e) => { e.stopPropagation(); prev(); resetAuto(); });
 
-        // ===== EVENTOS DAS SETAS =====
-        if (nextBtn) {
-            nextBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                next();
-                resetAuto();
-            });
-        }
-
-        if (prevBtn) {
-            prevBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                prev();
-                resetAuto();
-            });
-        }
-
-        // ===== PAUSA NO HOVER =====
         const container = document.querySelector('.banner-carousel-container');
         if (container) {
             container.addEventListener('mouseenter', stopAuto);
             container.addEventListener('mouseleave', startAuto);
         }
 
-        // ===== TOQUE (mobile) =====
         let touchStartX = 0;
-        let touchEndX = 0;
         const wrapper = document.querySelector('.banner-carousel-wrapper');
-
         if (wrapper) {
-            wrapper.addEventListener('touchstart', function(e) {
+            wrapper.addEventListener('touchstart', (e) => {
                 touchStartX = e.changedTouches[0].screenX;
             }, { passive: true });
-
-            wrapper.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                const diff = touchStartX - touchEndX;
+            wrapper.addEventListener('touchend', (e) => {
+                const diff = touchStartX - e.changedTouches[0].screenX;
                 if (Math.abs(diff) > 40) {
-                    if (diff > 0) {
-                        next();
-                    } else {
-                        prev();
-                    }
+                    diff > 0 ? next() : prev();
                     resetAuto();
                 }
             }, { passive: true });
         }
 
-        // ===== CONTADOR REGRESSIVO =====
+        // Contador regressivo
         let totalSeconds = 10 * 3600 + 55 * 60 + 52;
-
         function updateCountdown() {
             if (totalSeconds <= 0) {
                 const el = document.getElementById('countdownBanner');
@@ -792,26 +723,86 @@ document.addEventListener("DOMContentLoaded", () => {
             const el = document.getElementById('countdownBanner');
             if (el) el.textContent = `${h}:${m}:${s}`;
         }
-
-        // Inicia o contador imediatamente e depois a cada 1 segundo
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
-        // ===== INICIA O AUTOMÁTICO =====
         startAuto();
-
-        console.log('🎯 Banner carrossel automático iniciado!');
-        console.log(`📦 Total de banners: ${total}`);
+        console.log(`🎯 Banner carrossel iniciado (${total} slides)`);
     }
 
-    // =========================================================================
-    // 15. INICIALIZAÇÃO
-    // =========================================================================
-    updateAll('');
-    
-    // Inicializa o banner carrossel
+    // =============================================
+    // 18. TOAST DE NOTIFICAÇÃO
+    // =============================================
+    function showToast(msg, type = 'info', duration = 3000) {
+        const existing = document.querySelector('.shop-toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'shop-toast';
+        toast.textContent = msg;
+
+        const colors = { success: '#10b981', error: '#ef4444', info: '#7c3aed', warning: '#f59e0b' };
+        toast.style.cssText = `
+            position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);
+            background:${colors[type] || colors.info};color:#fff;padding:14px 32px;
+            border-radius:30px;font-size:14px;font-weight:500;z-index:99999;
+            box-shadow:0 8px 30px rgba(0,0,0,0.2);transition:all 0.4s ease;
+            opacity:0;pointer-events:none;max-width:90vw;text-align:center;
+            font-family:Inter,sans-serif;
+        `;
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+        });
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(20px)';
+            setTimeout(() => toast.remove(), 400);
+        }, duration);
+    }
+
+    // =============================================
+    // 19. ESCAPE HTML (Segurança)
+    // =============================================
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // =============================================
+    // 20. REALTIME — Atualizações em tempo real
+    // =============================================
+    function subscribeToProductsRealtime() {
+        supabase
+            .channel('shop-products-changes')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'products'
+            }, (payload) => {
+                console.log('🔄 Produto atualizado em tempo real:', payload);
+                // Recarrega apenas se for mudança relevante
+                if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE' || payload.eventType === 'DELETE') {
+                    loadProducts();
+                }
+            })
+            .subscribe();
+    }
+
+    // =============================================
+    // 21. INICIALIZAÇÃO
+    // =============================================
+    await initAuth();
+    await loadProducts();
     initBannerCarousel();
-    
-    console.log('🛍️ Loja ND pronta!');
-    console.log('👤 Perfil:', localStorage.getItem('userName') || 'Visitante');
+    subscribeToProductsRealtime();
+
+    console.log('🛍️ Loja ND pronta (Supabase)!');
+    console.log('👤 Usuário:', currentUser?.email || 'Visitante');
+    console.log('❤️ Favoritos:', wishlistIds.size);
 });

@@ -1,6 +1,6 @@
 // ============================================================
 // GRUPO.JS - PAINEL ADMIN DE GRUPOS (SUPABASE)
-// Mesma lógica de sessão da moderação
+// Igual à moderação — versão que funciona
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -21,35 +21,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     let searchQuery = '';
 
     // ============================================================
-    // 1. VERIFICAR AUTENTICAÇÃO (mesma lógica da moderação)
+    // VERIFICAR AUTENTICAÇÃO (igual moderação)
     // ============================================================
     try {
-        // Tenta getUser primeiro (mais confiável que getSession)
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            currentUser = session.user;
 
-        if (user) {
-            currentUser = user;
-            console.log('✅ [Grupo] Usuário:', user.email);
-        } else {
-            // Fallback: tenta getSession
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                console.log('✅ [Grupo] Sessão:', session.user.email);
-            }
-        }
-
-        if (currentUser) {
-            // Buscar perfil do usuário
-            const { data: profile, error: profError } = await supabase
+            const { data: profile } = await supabase
                 .from('profiles')
                 .select('is_admin, is_moderator, username, avatar_url')
                 .eq('id', currentUser.id)
                 .maybeSingle();
-
-            if (profError) {
-                console.error('❌ [Grupo] Erro ao buscar perfil:', profError);
-            }
 
             isAdmin = profile?.is_admin === true;
             isModerator = profile?.is_moderator === true;
@@ -65,41 +48,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.warn('Erro ao verificar sessão:', e);
     }
 
-    // ============================================================
-    // BLOQUEIO DE ACESSO
-    // ============================================================
-    if (!currentUser) {
-        // Salva URL para voltar após login
-        sessionStorage.setItem('redirect_after_login', window.location.href);
-
-        document.body.innerHTML = `
-            <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Inter,sans-serif;background:#0f0f1a;color:#fff;text-align:center;padding:20px;">
-                <div>
-                    <i class="fa-solid fa-user-lock" style="font-size:64px;color:#7c3aed;margin-bottom:20px;"></i>
-                    <h1 style="font-size:22px;margin-bottom:10px;">Faça login para continuar</h1>
-                    <p style="color:#94a3b8;margin-bottom:20px;">Redirecionando para a página de login...</p>
-                    <a href="/login/login.html" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;text-decoration:none;border-radius:30px;font-weight:600;">
-                        <i class="fa-solid fa-right-to-bracket"></i> Ir para login
-                    </a>
-                </div>
-            </div>
-        `;
-
-        setTimeout(() => {
-            window.location.href = '/login/login.html';
-        }, 1800);
-
-        return;
-    }
-
-    // Está logado mas não é admin → acesso negado
-    if (!isAdmin && !isModerator) {
+    // Bloqueio de acesso
+    if (!currentUser || (!isAdmin && !isModerator)) {
         document.body.innerHTML = `
             <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Inter,sans-serif;background:#0f0f1a;color:#fff;text-align:center;padding:20px;">
                 <div>
                     <i class="fa-solid fa-shield-halved" style="font-size:64px;color:#ef4444;margin-bottom:20px;"></i>
                     <h1 style="font-size:24px;margin-bottom:10px;">Acesso Restrito</h1>
-                    <p style="color:#94a3b8;margin-bottom:20px;">Você não tem permissão para gerenciar grupos.</p>
+                    <p style="color:#94a3b8;margin-bottom:20px;">Você não tem permissão para acessar esta área.</p>
                     <a href="/inicio.html" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;text-decoration:none;border-radius:30px;font-weight:600;">
                         <i class="fa-solid fa-arrow-left"></i> Voltar ao Início
                     </a>
@@ -110,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 2. ELEMENTOS DO DOM
+    // ELEMENTOS DO DOM
     // ============================================================
     const groupsContainer = document.getElementById('groupsContainer');
     const modalOverlay = document.getElementById('modalOverlay');
@@ -124,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const groupDescInput = document.getElementById('groupDescInput');
 
     // ============================================================
-    // 3. CARREGAR GRUPOS DO SUPABASE
+    // CARREGAR GRUPOS
     // ============================================================
     async function loadGroups() {
         if (!groupsContainer) return;
@@ -137,13 +93,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
 
         try {
-            // Tentar via RPC
             const { data: rpcData, error: rpcError } = await supabase.rpc('admin_get_groups');
 
             if (!rpcError && rpcData) {
                 groups = rpcData;
             } else {
-                // Fallback: SELECT direto
                 console.warn('⚠️ RPC falhou, usando SELECT direto:', rpcError?.message);
 
                 const { data, error } = await supabase
@@ -155,7 +109,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 groups = (data || []).map(g => ({
                     ...g,
                     creator_name: '—',
-                    status: g.status || 'ativo'
+                    status: g.status || 'ativo',
+                    banned: g.banned || false
                 }));
             }
 
@@ -173,13 +128,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 4. RENDERIZAR GRUPOS
+    // RENDERIZAR
     // ============================================================
     function renderGroups() {
         if (!groupsContainer) return;
         groupsContainer.innerHTML = '';
 
-        // Aplicar filtros
         let filtered = groups;
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
@@ -263,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 5. MODAL - ABRIR / FECHAR
+    // MODAL
     // ============================================================
     openModalBtn?.addEventListener('click', () => {
         if (modalTitle) modalTitle.innerText = 'Novo Grupo';
@@ -282,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // ============================================================
-    // 6. SALVAR (CRIAR / EDITAR)
+    // SALVAR
     // ============================================================
     groupForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -304,7 +258,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             if (id) {
-                // EDITAR
                 const { data, error } = await supabase.rpc('admin_update_group', {
                     p_group_id: id,
                     p_name: name,
@@ -312,13 +265,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
 
                 if (error) throw error;
-
-                if (!data?.success) {
-                    throw new Error(data?.error || 'Erro ao atualizar');
-                }
+                if (!data?.success) throw new Error(data?.error || 'Erro ao atualizar');
                 showToast('✅ Grupo atualizado!', 'success');
             } else {
-                // CRIAR
                 const { data, error } = await supabase.rpc('admin_create_group', {
                     p_name: name,
                     p_description: desc,
@@ -328,10 +277,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
 
                 if (error) throw error;
-
-                if (!data?.success) {
-                    throw new Error(data?.error || 'Erro ao criar grupo');
-                }
+                if (!data?.success) throw new Error(data?.error || 'Erro ao criar grupo');
                 showToast('✅ Grupo criado!', 'success');
             }
 
@@ -352,7 +298,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // ============================================================
-    // 7. EDITAR
+    // EDITAR
     // ============================================================
     function editGroup(id) {
         const group = groups.find(g => g.id === id);
@@ -368,7 +314,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 8. DELETAR
+    // DELETAR
     // ============================================================
     async function deleteGroup(id) {
         const group = groups.find(g => g.id === id);
@@ -382,10 +328,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             if (error) throw error;
-
-            if (!data?.success) {
-                throw new Error(data?.error || 'Erro ao excluir');
-            }
+            if (!data?.success) throw new Error(data?.error || 'Erro ao excluir');
 
             showToast('🗑️ Grupo excluído!', 'info');
             await loadGroups();
@@ -396,7 +339,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 9. BANIR / DESBANIR
+    // BANIR / DESBANIR
     // ============================================================
     async function toggleBanGroup(id, isBanned) {
         const group = groups.find(g => g.id === id);
@@ -405,7 +348,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let reason = null;
         if (!isBanned) {
             reason = prompt(`Motivo do banimento do grupo "${group.name}":`, 'Violação das regras da comunidade');
-            if (reason === null) return; // cancelou
+            if (reason === null) return;
         } else {
             if (!confirm(`Desbanir o grupo "${group.name}"?`)) return;
         }
@@ -418,10 +361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             if (error) throw error;
-
-            if (!data?.success) {
-                throw new Error(data?.error || 'Erro');
-            }
+            if (!data?.success) throw new Error(data?.error || 'Erro');
 
             showToast(data.message || (isBanned ? 'Grupo desbanido' : 'Grupo banido'), 'success');
             await loadGroups();
@@ -432,7 +372,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 10. HELPERS
+    // HELPERS
     // ============================================================
     function escapeHtml(t) {
         if (!t) return '';
@@ -442,11 +382,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function showToast(msg, type = 'info', duration = 3000) {
-        const existing = document.querySelector('.admin-toast');
+        const existing = document.querySelector('.mod-toast-custom');
         if (existing) existing.remove();
 
         const toast = document.createElement('div');
-        toast.className = 'admin-toast';
+        toast.className = 'mod-toast-custom';
         toast.textContent = msg;
 
         const colors = { success: '#10b981', error: '#ef4444', info: '#7c3aed', warning: '#f59e0b' };
@@ -471,7 +411,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 11. REALTIME
+    // REALTIME
     // ============================================================
     function subscribeToGroups() {
         supabase
@@ -488,7 +428,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ============================================================
-    // 12. ACESSIBILIDADE
+    // ACESSIBILIDADE
     // ============================================================
     const btnAcessibilidade = document.getElementById('btnAcessibilidade');
     const menuAcessibilidade = document.getElementById('menuAcessibilidade');
@@ -546,7 +486,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     applyAllA11ySettings();
 
     // ============================================================
-    // 13. INICIALIZAÇÃO
+    // INICIALIZAÇÃO
     // ============================================================
     await loadGroups();
     subscribeToGroups();
