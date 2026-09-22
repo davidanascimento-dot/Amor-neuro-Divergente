@@ -1262,7 +1262,27 @@
     </div>
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
-<script src="https://cdn.userway.org/widget.js" data-account="QQqIFghR0i"></script>
+<script src="https://cdn.userway.org/widget.js"
+        data-account="QQqIFghR0i"
+        data-position="3"
+        data-offset="20, 160"></script>
+
+<script>
+  (function () {
+    function fix() {
+      const el = document.querySelector('#userwayAccessibilityIcon, .userway_buttons_wrapper');
+      if (el) {
+        el.style.setProperty('right', '0px', 'important');
+        el.style.setProperty('bottom', '50px', 'important');
+        el.style.setProperty('top', 'auto', 'important');
+        el.style.setProperty('left', 'auto', 'important');
+      }
+    }
+    const t = setInterval(fix, 300);
+    setTimeout(() => clearInterval(t), 10000);
+    new MutationObserver(fix).observe(document.body, { childList: true, subtree: true });
+  })();
+</script>
     <!-- VLibras -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>

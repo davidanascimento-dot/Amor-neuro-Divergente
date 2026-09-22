@@ -12,11 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        /* =========================================
-           RESET E BASE
-           ========================================= */
-        :root {
+  <style>
+      :root {
             --primary: #0ea5e9;
             --primary-dark: #0284c7;
             --primary-light: #e0f2fe;
@@ -46,13 +43,9 @@
         button { font-family: inherit; cursor: pointer; border: none; background: none; }
         :focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; border-radius: 6px; }
 
-        /* =========================================
-           BARRA DE PROGRESSO
-           ========================================= */
         .reading-progress {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             height: 3px;
             background: linear-gradient(90deg, #0ea5e9, #7c3aed);
             z-index: 300;
@@ -60,16 +53,11 @@
             transition: width 0.1s linear;
         }
 
-        /* =========================================
-           SIDEBAR TOGGLE
-           ========================================= */
         .sidebar-toggle-btn {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 20px; left: 20px;
             z-index: 105;
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             border-radius: 10px;
             background: #7c3aed;
             color: #ffffff;
@@ -77,7 +65,6 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            border: none;
             cursor: pointer;
             transition: background-color 0.15s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -85,13 +72,9 @@
         .sidebar-toggle-btn:hover { background: #6d28d9; }
         .sidebar-toggle-btn:active { transform: scale(0.96); }
 
-        /* =========================================
-           SIDEBAR
-           ========================================= */
         .sidebar {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: min(280px, 88vw);
             height: 100vh;
             background: #ffffff;
@@ -109,15 +92,9 @@
         }
         .sidebar::-webkit-scrollbar { width: 6px; }
         .sidebar::-webkit-scrollbar-thumb { background: #d4d4d4; }
-        .sidebar.open {
-            transform: translateX(0);
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
-        }
+        .sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08); }
 
-        .sidebar-profile {
-            padding: 20px;
-            border-bottom: 1px solid #e8e3dd;
-        }
+        .sidebar-profile { padding: 20px; border-bottom: 1px solid #e8e3dd; }
         .profile-toggle {
             display: flex;
             align-items: center;
@@ -134,8 +111,7 @@
         }
         .profile-toggle:hover { background-color: #f5f5f5; }
         .profile-toggle img {
-            width: 42px;
-            height: 42px;
+            width: 42px; height: 42px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #e8e3dd;
@@ -155,11 +131,7 @@
             transition: transform 0.2s ease;
         }
         .profile-toggle[aria-expanded="true"] i { transform: rotate(180deg); }
-        .profile-detail {
-            padding: 10px 6px 0;
-            font-size: 13px;
-            color: #5c5652;
-        }
+        .profile-detail { padding: 10px 6px 0; font-size: 13px; color: #5c5652; }
         .profile-detail p { margin-bottom: 8px; word-break: break-all; }
         .profile-link {
             color: #0ea5e9;
@@ -171,12 +143,7 @@
         .profile-link:hover { text-decoration: underline; color: #0284c7; }
         .profile-detail[hidden] { display: none; }
 
-        .sidebar-nav {
-            padding: 16px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+        .sidebar-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
         .sidebar-link {
             display: flex;
             align-items: center;
@@ -230,9 +197,6 @@
         }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
-        /* =========================================
-           HEADER GLASS
-           ========================================= */
         .header-glass {
             position: fixed;
             top: 0; right: 0; left: 0;
@@ -283,9 +247,6 @@
         }
         .header-links a:hover { background: rgba(124,58,237,0.06); color: #0ea5e9; }
 
-        /* =========================================
-           HERO EDITORIAL
-           ========================================= */
         .article-hero {
             position: relative;
             min-height: 520px;
@@ -306,12 +267,10 @@
         }
         .article-hero__overlay {
             position: absolute; inset: 0;
-            background: linear-gradient(
-                180deg,
+            background: linear-gradient(180deg,
                 rgba(15, 10, 30, 0.55) 0%,
                 rgba(15, 10, 30, 0.65) 50%,
-                rgba(15, 10, 30, 0.85) 100%
-            );
+                rgba(15, 10, 30, 0.85) 100%);
         }
         .article-hero__content {
             position: relative;
@@ -359,14 +318,7 @@
             margin: 0 auto;
         }
 
-        /* =========================================
-           META BAR
-           ========================================= */
-        .article-meta-bar {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 24px 32px 0;
-        }
+        .article-meta-bar { max-width: 1100px; margin: 0 auto; padding: 24px 32px 0; }
         .article-meta-bar__container {
             display: flex;
             align-items: center;
@@ -401,19 +353,8 @@
         }
         .article-meta-bar__right i { margin-right: 4px; color: #0ea5e9; }
 
-        /* =========================================
-           CONTEÚDO DO ARTIGO
-           ========================================= */
-        .article-container {
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 48px 24px 80px;
-        }
-        .article-content {
-            font-size: 19px;
-            line-height: 1.85;
-            color: var(--text-body);
-        }
+        .article-container { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+        .article-content { font-size: 19px; line-height: 1.85; color: var(--text-body); }
         .article-content p { margin-bottom: 24px; }
         .article-content p.article-lead {
             font-size: 21px;
@@ -438,18 +379,9 @@
             text-underline-offset: 3px;
         }
         .article-content a:hover { color: #0284c7; }
-
-        .article-content ul {
-            margin: 0 0 24px 24px;
-            padding-left: 4px;
-        }
-        .article-content ul li {
-            margin-bottom: 10px;
-            padding-left: 8px;
-            line-height: 1.75;
-        }
+        .article-content ul { margin: 0 0 24px 24px; padding-left: 4px; }
+        .article-content ul li { margin-bottom: 10px; padding-left: 8px; line-height: 1.75; }
         .article-content ul li::marker { color: #0ea5e9; }
-
         .article-content blockquote {
             margin: 32px 0;
             padding: 20px 28px;
@@ -472,9 +404,6 @@
             margin-right: 8px;
         }
 
-        /* =========================================
-           TAGS E COMPARTILHAR
-           ========================================= */
         .article-tags {
             display: flex;
             gap: 8px;
@@ -501,11 +430,7 @@
             margin-top: 24px;
             flex-wrap: wrap;
         }
-        .article-share__label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
+        .article-share__label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
         .article-share__btn {
             display: inline-flex;
             align-items: center;
@@ -525,14 +450,8 @@
             transform: translateY(-2px);
         }
 
-        /* =========================================
-           COMENTÁRIOS
-           ========================================= */
-        .area-comentarios {
-            max-width: 800px;
-            margin: 0 auto 80px;
-            padding: 0 24px;
-        }
+        /* ============ COMENTÁRIOS ============ */
+        .area-comentarios { max-width: 800px; margin: 0 auto 80px; padding: 0 24px; }
         .area-comentarios__head {
             margin-bottom: 24px;
             padding-bottom: 16px;
@@ -544,17 +463,14 @@
             color: var(--text-dark);
             margin: 0 0 6px;
         }
-        .area-comentarios__head p {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin: 0;
-        }
+        .area-comentarios__head p { font-size: 14px; color: var(--text-muted); margin: 0; }
         .sidebarAvatar {
             width: 44px; height: 44px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--border-color);
             flex-shrink: 0;
+            background: linear-gradient(135deg, #0ea5e9, #7c3aed);
         }
         .novo-comentario-container {
             display: flex;
@@ -605,6 +521,7 @@
         }
         .btn-enviar:hover { background: #0284c7; transform: translateY(-1px); }
         .btn-enviar:active { transform: scale(0.98); }
+        .btn-enviar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .lista-comentarios { display: flex; flex-direction: column; gap: 16px; }
         .item-comentario {
@@ -620,20 +537,113 @@
         .cabecalho-comentario { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .nome-autor { font-size: 14px; font-weight: 700; color: var(--text-dark); }
         .tempo-comentario { font-size: 12px; color: var(--text-muted); }
-        .texto-comentario { margin: 0; font-size: 15px; line-height: 1.65; color: var(--text-body); }
+        .texto-comentario { margin: 0; font-size: 15px; line-height: 1.65; color: var(--text-body); word-break: break-word; }
         .btn-responder {
             align-self: flex-start;
             background: none;
             color: #0ea5e9;
             font-size: 13px;
             font-weight: 600;
-            padding: 0;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.15s;
         }
-        .btn-responder:hover { color: #0284c7; }
+        .btn-responder:hover { background: rgba(14, 165, 233, 0.08); color: #0284c7; }
+        .btn-responder i { font-size: 12px; }
 
-        /* =========================================
-           FOOTER
-           ========================================= */
+        .form-resposta {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(14, 165, 233, 0.04);
+            border-radius: 10px;
+            border: 1px solid rgba(14, 165, 233, 0.15);
+        }
+        .form-resposta .campo-texto { min-height: 60px; font-size: 14px; }
+        .form-resposta__acoes {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .btn-secundario {
+            background: transparent;
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .btn-secundario:hover { background: rgba(0,0,0,0.05); }
+
+        .carregando-comentarios,
+        .sem-comentarios,
+        .erro-comentario {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 24px;
+            font-size: 14px;
+        }
+        .erro-comentario { color: #ef4444; }
+
+        /* ============ ANINHAMENTO SIMPLES ============ */
+        .respostas-container {
+            margin-top: 10px;
+        }
+        .respostas-container:empty {
+            display: none;
+        }
+        .respostas-container > .item-comentario {
+            margin-top: 10px;
+            margin-left: 12px;
+            padding-left: 14px;
+            border-left: 2px solid var(--border-color);
+            background: transparent;
+            border-radius: 0;
+        }
+        /* Reduz progressivamente o recuo a cada nível */
+        .respostas-container .respostas-container > .item-comentario {
+            margin-left: 10px;
+            padding-left: 12px;
+        }
+        .respostas-container .respostas-container .respostas-container > .item-comentario {
+            margin-left: 8px;
+            padding-left: 10px;
+        }
+        .respostas-container .respostas-container .respostas-container .respostas-container > .item-comentario {
+            margin-left: 6px;
+            padding-left: 8px;
+        }
+        .respostas-container .respostas-container .respostas-container .respostas-container .respostas-container > .item-comentario {
+            margin-left: 4px;
+            padding-left: 6px;
+        }
+
+        /* Avatares levemente menores em níveis profundos */
+        .respostas-container .respostas-container .sidebarAvatar {
+            width: 38px;
+            height: 38px;
+        }
+        .respostas-container .respostas-container .respostas-container .sidebarAvatar {
+            width: 34px;
+            height: 34px;
+        }
+        .respostas-container .respostas-container .respostas-container .respostas-container .sidebarAvatar {
+            width: 32px;
+            height: 32px;
+        }
+        .respostas-container .respostas-container .respostas-container .respostas-container .respostas-container .sidebarAvatar {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* Dark mode */
+        body.a11y-dark-mode .respostas-container > .item-comentario {
+            border-left-color: #2d2d44;
+        }
+
         .footer {
             background: #f0f4f8;
             color: #4a6a8a;
@@ -677,9 +687,6 @@
         .footer-bottom a:hover { color: #2c4a6a; }
         .footer-bottom p { width: 100%; text-align: center; margin-top: 8px; }
 
-        /* =========================================
-           HUB FLUTUANTE
-           ========================================= */
         .floating-hub {
             position: fixed;
             bottom: 24px;
@@ -721,7 +728,6 @@
         .floating-hub-toggle:hover .floating-hub-label { opacity: 1; transform: translateX(0); }
         .floating-hub-toggle[aria-expanded="true"] i { transform: rotate(45deg); }
         .floating-hub-toggle i { transition: transform 0.2s ease; }
-
         .floating-hub-menu {
             position: absolute;
             bottom: 200px;
@@ -795,9 +801,7 @@
         }
         .floating-overlay[hidden] { display: none; }
 
-        /* =========================================
-           DARK MODE
-           ========================================= */
+        /* ============ DARK MODE ============ */
         body.a11y-dark-mode {
             --bg-body: #0f0f1a;
             --bg-white: #1a1a2e;
@@ -893,10 +897,12 @@
         body.a11y-dark-mode .footer-col a:hover { color: #c8e4f8; }
         body.a11y-dark-mode .social-links a { background: #2a3a4a; color: #b8d4e8; }
         body.a11y-dark-mode .footer-bottom { border-top-color: #2a3a4a; color: #6a8aaa; }
+        body.a11y-dark-mode .form-resposta {
+            background: rgba(56, 189, 248, 0.06);
+            border-color: rgba(56, 189, 248, 0.2);
+        }
+        body.a11y-dark-mode .btn-secundario:hover { background: rgba(255,255,255,0.05); }
 
-        /* =========================================
-           ACESSIBILIDADE
-           ========================================= */
         .article-content.a11y-large-text { font-size: 135% !important; }
         .article-content.a11y-small-text { font-size: 82% !important; }
         body.a11y-dyslexia * { font-family: var(--font-dyslexia) !important; }
@@ -912,9 +918,6 @@
             transition-duration: 0.01ms !important;
         }
 
-        /* =========================================
-           RESPONSIVO
-           ========================================= */
         @media (max-width: 900px) {
             .breadcrumb-nav { display: none; }
             .header-glass { padding: 0 16px 0 64px; height: 65px; }
@@ -952,19 +955,16 @@
 </head>
 <body>
 
-    <!-- Barra de progresso -->
     <div class="reading-progress" id="readingProgress"></div>
 
-    <!-- SIDEBAR TOGGLE -->
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <div class="sidebar-profile" id="sidebarProfile">
             <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
-                <img src="/img/avatar-padrao.png" alt="Sua foto de perfil" id="sidebarAvatar">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42'><rect width='42' height='42' fill='%237c3aed'/><text x='50%25' y='54%25' text-anchor='middle' font-size='20' fill='white' font-family='sans-serif' dominant-baseline='middle'>A</text></svg>" alt="Sua foto de perfil" id="sidebarAvatar">
                 <span id="sidebarUserName">Visitante</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
@@ -990,7 +990,6 @@
     </aside>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- HEADER GLASS -->
     <header class="header-glass" id="headerGlass">
         <nav class="breadcrumb-nav" aria-label="Breadcrumb">
             <a href="/inicio.html">Início</a>
@@ -1012,7 +1011,6 @@
         </nav>
     </header>
 
-    <!-- HERO EDITORIAL -->
     <section class="article-hero">
         <div class="article-hero__media">
             <img src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1920&h=900&fit=crop"
@@ -1033,7 +1031,6 @@
         </div>
     </section>
 
-    <!-- META BAR -->
     <section class="article-meta-bar">
         <div class="article-meta-bar__container">
             <div class="article-meta-bar__left">
@@ -1052,7 +1049,6 @@
         </div>
     </section>
 
-    <!-- CONTEÚDO -->
     <article class="article-container">
         <div class="article-content" id="articleContent">
 
@@ -1106,7 +1102,6 @@
             <p><strong>Lembre-se:</strong> o autismo não é uma falha. É uma forma diferente — e igualmente válida — de experienciar o mundo. 💜</p>
         </div>
 
-        <!-- Tags -->
         <div class="article-tags">
             <span class="article-tag">Autismo</span>
             <span class="article-tag">Diagnóstico</span>
@@ -1114,7 +1109,6 @@
             <span class="article-tag">Comunicação</span>
         </div>
 
-        <!-- Compartilhar -->
         <div class="article-share">
             <span class="article-share__label">Compartilhar:</span>
             <a href="#" class="article-share__btn" aria-label="Compartilhar no WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
@@ -1123,51 +1117,31 @@
         </div>
     </article>
 
-    <!-- COMENTÁRIOS -->
     <section class="area-comentarios">
         <header class="area-comentarios__head">
-            <h2>Área de comentários</h2>
+            <h2>Área de comentários (<span id="totalComentarios">0</span>)</h2>
             <p>Compartilhe sua experiência — toda voz importa. 💜</p>
         </header>
 
         <div class="novo-comentario-container">
             <div class="usuario-info">
-                <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" class="sidebarAvatar">
-                <span class="nome-usuario">Faça seu comentário:</span>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><rect width='44' height='44' fill='%230ea5e9'/><text x='50%25' y='54%25' text-anchor='middle' font-size='20' fill='white' font-family='sans-serif' dominant-baseline='middle'>V</text></svg>" alt="Sua foto de perfil" class="sidebarAvatar" id="userAvatar">
+                <span class="nome-usuario" id="userName">Visitante</span>
             </div>
-            <form class="form-comentario" onsubmit="return false;">
-                <textarea class="campo-texto" placeholder="Escreva seu comentário..." aria-label="Escreva seu comentário"></textarea>
-                <button type="submit" class="btn-enviar">Publicar</button>
+            <form class="form-comentario" id="formComentario">
+                <textarea class="campo-texto" id="campoComentario"
+                          placeholder="Escreva seu comentário..."
+                          aria-label="Escreva seu comentário"
+                          maxlength="2000"></textarea>
+                <button type="submit" class="btn-enviar" id="btnPublicar">Publicar</button>
             </form>
         </div>
 
-        <div class="lista-comentarios">
-            <div class="item-comentario">
-                <img src="/img/foto-padrão.jpg" alt="Visitante" class="sidebarAvatar">
-                <div class="conteudo-comentario">
-                    <div class="cabecalho-comentario">
-                        <strong class="nome-autor">Visitante</strong>
-                        <span class="tempo-comentario">há 2 horas</span>
-                    </div>
-                    <p class="texto-comentario">Esse texto me ajudou a entender algo que eu sentia há anos. Obrigado por escrever.</p>
-                    <button type="button" class="btn-responder">Responder</button>
-                </div>
-            </div>
-            <div class="item-comentario">
-                <img src="/img/foto-padrão.jpg" alt="Visitante" class="sidebarAvatar">
-                <div class="conteudo-comentario">
-                    <div class="cabecalho-comentario">
-                        <strong class="nome-autor">Visitante</strong>
-                        <span class="tempo-comentario">há 5 horas</span>
-                    </div>
-                    <p class="texto-comentario">A parte do stimming me fez repensar muita coisa. Obrigado por escrever sem estereótipos.</p>
-                    <button type="button" class="btn-responder">Responder</button>
-                </div>
-            </div>
+        <div class="lista-comentarios" id="listaComentarios">
+            <p class="carregando-comentarios">Carregando comentários...</p>
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-main">
             <div class="footer-col">
@@ -1205,65 +1179,28 @@
         </div>
     </footer>
 
-    <!-- HUB FLUTUANTE -->
-    <div class="floating-hub" id="floatingHub">
-        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
-            <i class="fa-solid fa-circle-plus"></i>
-            <span class="floating-hub-label">Acessibilidade</span>
-        </button>
-        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
-            <div class="floating-hub-menu-inner">
-                <div class="floating-hub-group">
-                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
-                    <div class="floating-hub-actions">
-                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
-                            <i class="fa-regular fa-moon"></i><span class="hub-action-label">Escuro</span>
-                        </button>
-                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
-                            <i class="fa-solid fa-text-height"></i><span class="hub-action-label">A+</span>
-                        </button>
-                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
-                            <i class="fa-solid fa-text-slash"></i><span class="hub-action-label">A-</span>
-                        </button>
-                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
-                            <i class="fa-regular fa-eye"></i><span class="hub-action-label">Dislexia</span>
-                        </button>
-                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
-                            <i class="fa-solid fa-person-walking"></i><span class="hub-action-label">Movimento</span>
-                        </button>
-                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
-                            <i class="fa-solid fa-rotate-left"></i><span class="hub-action-label">Reset</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="floating-hub-divider"></div>
-                <div class="floating-hub-group">
-                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
-                    <div class="floating-hub-actions">
-                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
-                            <i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span>
-                        </a>
-                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
-                            <i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span>
-                        </a>
-                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
-                            <i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span>
-                        </a>
-                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
-                            <i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span>
-                        </a>
-                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script src="https://cdn.userway.org/widget.js"
+            data-account="QQqIFghR0i"
+            data-position="3"
+            data-offset="20, 160"></script>
 
-    <div class="floating-overlay" id="floatingOverlay" hidden></div>
-<script src="https://cdn.userway.org/widget.js" data-account="QQqIFghR0i"></script>
-    <!-- VLibras -->
+    <script>
+      (function () {
+        function fix() {
+          const el = document.querySelector('#userwayAccessibilityIcon, .userway_buttons_wrapper');
+          if (el) {
+            el.style.setProperty('right', '0px', 'important');
+            el.style.setProperty('bottom', '50px', 'important');
+            el.style.setProperty('top', 'auto', 'important');
+            el.style.setProperty('left', 'auto', 'important');
+          }
+        }
+        const t = setInterval(fix, 300);
+        setTimeout(() => clearInterval(t), 10000);
+        new MutationObserver(fix).observe(document.body, { childList: true, subtree: true });
+      })();
+    </script>
+
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
@@ -1273,153 +1210,395 @@
         new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
 
-    <script>
-        // =============================================
-        // 1. BARRA DE PROGRESSO
-        // =============================================
-        const progressBar = document.getElementById('readingProgress');
-        window.addEventListener('scroll', () => {
-            const currentScrollY = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = docHeight > 0 ? (currentScrollY / docHeight) * 100 : 0;
-            progressBar.style.width = Math.min(progress, 100) + '%';
-        }, { passive: true });
+    <!-- =============================================
+         SDK SUPABASE (CDN)
+         ============================================= -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        // =============================================
-        // 2. SIDEBAR
-        // =============================================
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
+    <!-- =============================================
+         SCRIPT PRINCIPAL
+         ============================================= -->
 
-        function openSidebar() {
-            sidebar?.classList.add('open');
-            sidebarOverlay?.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeSidebar() {
-            sidebar?.classList.remove('open');
-            sidebarOverlay?.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        function toggleSidebar() {
-            if (sidebar?.classList.contains('open')) closeSidebar();
-            else openSidebar();
-        }
+<script>
+/* =============================================
+   0. CONFIGURAÇÃO SUPABASE
+   ============================================= */
+const SUPABASE_URL      = 'https://qyixzontuhrxrrjrmzvy.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE';
 
-        sidebarToggleBtn?.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar(); });
-        sidebarOverlay?.addEventListener('click', closeSidebar);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidebar?.classList.contains('open')) closeSidebar();
+/* =============================================
+   1. BARRA DE PROGRESSO
+   ============================================= */
+const progressBar = document.getElementById('readingProgress');
+window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (currentScrollY / docHeight) * 100 : 0;
+    if (progressBar) progressBar.style.width = Math.min(progress, 100) + '%';
+}, { passive: true });
+
+/* =============================================
+   2. SIDEBAR
+   ============================================= */
+const sidebar = document.getElementById('sidebar');
+const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openSidebar() {
+    sidebar?.classList.add('open');
+    sidebarOverlay?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+    sidebar?.classList.remove('open');
+    sidebarOverlay?.classList.remove('active');
+    document.body.style.overflow = '';
+}
+function toggleSidebar() {
+    if (sidebar?.classList.contains('open')) closeSidebar();
+    else openSidebar();
+}
+
+sidebarToggleBtn?.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar(); });
+sidebarOverlay?.addEventListener('click', closeSidebar);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar?.classList.contains('open')) closeSidebar();
+});
+
+const profileToggle = document.getElementById('profileToggle');
+const profileDetail = document.getElementById('profileDetail');
+profileToggle?.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const isHidden = profileDetail?.hasAttribute('hidden');
+    if (isHidden) {
+        profileDetail?.removeAttribute('hidden');
+        profileToggle.setAttribute('aria-expanded', 'true');
+    } else {
+        profileDetail?.setAttribute('hidden', '');
+        profileToggle.setAttribute('aria-expanded', 'false');
+    }
+});
+
+/* =============================================
+   3. HUB FLUTUANTE
+   ============================================= */
+const hubToggle = document.getElementById('floatingHubToggle');
+const hubMenu = document.getElementById('floatingHubMenu');
+const hubOverlay = document.getElementById('floatingOverlay');
+
+function toggleHub() {
+    if (!hubMenu || !hubOverlay) return;
+    const isOpen = !hubMenu.hidden;
+    hubMenu.hidden = isOpen;
+    hubOverlay.hidden = isOpen;
+    if (hubToggle) hubToggle.setAttribute('aria-expanded', !isOpen);
+}
+if (hubToggle) hubToggle.addEventListener('click', (e) => { e.stopPropagation(); toggleHub(); });
+if (hubOverlay) hubOverlay.addEventListener('click', toggleHub);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && hubMenu && !hubMenu.hidden) toggleHub();
+});
+
+/* =============================================
+   4. ACESSIBILIDADE
+   ============================================= */
+function gs(k, fb) { return localStorage.getItem('a11y_' + k) || fb; }
+function ss(k, v) { localStorage.setItem('a11y_' + k, v); }
+
+function applySettings() {
+    const body = document.body;
+    const content = document.getElementById('articleContent');
+    if (gs('darkMode') === 'true') body.classList.add('a11y-dark-mode');
+    if (gs('highlightLinks') === 'true') body.classList.add('a11y-highlight-links');
+    if (gs('dyslexiaFont') === 'true') body.classList.add('a11y-dyslexia');
+    if (gs('reduceMotion') === 'true') body.classList.add('a11y-reduce-motion');
+    const ts = gs('textSize', 'normal');
+    if (content) {
+        content.classList.remove('a11y-large-text', 'a11y-small-text');
+        if (ts === 'large') content.classList.add('a11y-large-text');
+        if (ts === 'small') content.classList.add('a11y-small-text');
+    }
+}
+
+document.querySelectorAll('.hub-action[data-a11y]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const action = btn.getAttribute('data-a11y');
+        const body = document.body;
+        const content = document.getElementById('articleContent');
+
+        switch (action) {
+            case 'darkMode': {
+                const dm = gs('darkMode') === 'true';
+                ss('darkMode', dm ? 'false' : 'true');
+                body.classList.toggle('a11y-dark-mode', !dm);
+                break;
+            }
+            case 'increaseText': {
+                const cs = gs('textSize', 'normal');
+                if (cs === 'large') { ss('textSize', 'normal'); content?.classList.remove('a11y-large-text'); }
+                else { ss('textSize', 'large'); content?.classList.remove('a11y-small-text'); content?.classList.add('a11y-large-text'); }
+                break;
+            }
+            case 'decreaseText': {
+                const cz = gs('textSize', 'normal');
+                if (cz === 'small') { ss('textSize', 'normal'); content?.classList.remove('a11y-small-text'); }
+                else { ss('textSize', 'small'); content?.classList.remove('a11y-large-text'); content?.classList.add('a11y-small-text'); }
+                break;
+            }
+            case 'dyslexiaFont': {
+                const df = gs('dyslexiaFont') === 'true';
+                ss('dyslexiaFont', df ? 'false' : 'true');
+                body.classList.toggle('a11y-dyslexia', !df);
+                break;
+            }
+            case 'reduceMotion': {
+                const rm = gs('reduceMotion') === 'true';
+                ss('reduceMotion', rm ? 'false' : 'true');
+                body.classList.toggle('a11y-reduce-motion', !rm);
+                break;
+            }
+            case 'reset': {
+                ['darkMode','highlightLinks','dyslexiaFont','reduceMotion','textSize'].forEach(k => localStorage.removeItem('a11y_' + k));
+                body.classList.remove('a11y-dark-mode','a11y-highlight-links','a11y-dyslexia','a11y-reduce-motion');
+                content?.classList.remove('a11y-large-text','a11y-small-text');
+                break;
+            }
+        }
+        toggleHub();
+    });
+});
+
+applySettings();
+
+/* =============================================
+   5. SISTEMA DE COMENTÁRIOS (SUPABASE)
+   — Sem respostas, sem aninhamento
+   ============================================= */
+(function () {
+    'use strict';
+
+    const $ = (sel) => document.querySelector(sel);
+
+    function escapeHtml(s) {
+        return String(s ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function tempoRelativo(iso) {
+        if (!iso) return '';
+        const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60)      return 'agora mesmo';
+        if (diff < 3600)    return `há ${Math.floor(diff / 60)} min`;
+        if (diff < 86400)   return `há ${Math.floor(diff / 3600)} h`;
+        if (diff < 2592000) return `há ${Math.floor(diff / 86400)} dias`;
+        return new Date(iso).toLocaleDateString('pt-BR');
+    }
+
+    // Avatar SVG com iniciais (cor determinística por nome)
+    function gerarAvatarSVG(nome) {
+        const iniciais = (nome || 'V')
+            .trim()
+            .split(/\s+/)
+            .map(p => p[0])
+            .slice(0, 2)
+            .join('')
+            .toUpperCase();
+
+        const cores = ['#0ea5e9', '#7c3aed', '#ec4899', '#f59e0b',
+                       '#10b981', '#ef4444', '#8b5cf6', '#06b6d4'];
+        let hash = 0;
+        for (let i = 0; i < nome.length; i++) {
+            hash = (hash * 31 + nome.charCodeAt(i)) % 99999;
+        }
+        const cor = cores[hash % cores.length];
+
+        return `data:image/svg+xml;utf8,${encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+                <rect width="44" height="44" fill="${cor}"/>
+                <text x="50%" y="54%" text-anchor="middle" font-size="18"
+                      fill="white" font-family="sans-serif" font-weight="bold"
+                      dominant-baseline="middle">${iniciais}</text>
+             </svg>`
+        )}`;
+    }
+
+    const SLUG_ARTIGO = location.pathname
+        .split('/')
+        .pop()
+        .replace('.html', '')
+        .toLowerCase();
+
+    console.log('[comentários] Slug detectado:', SLUG_ARTIGO);
+
+    let sb;
+    try {
+        const { createClient } = window.supabase;
+        if (!createClient) throw new Error('SDK do Supabase não carregou');
+        sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true }
         });
+        console.log('[comentários] Supabase conectado ✅');
+    } catch (err) {
+        console.error('[comentários] Falha ao iniciar Supabase:', err);
+        const c = $('#listaComentarios');
+        if (c) c.innerHTML = '<p class="erro-comentario">Erro: não foi possível conectar ao Supabase. Verifique o console.</p>';
+        return;
+    }
 
-        // Perfil colapsável
-        const profileToggle = document.getElementById('profileToggle');
-        const profileDetail = document.getElementById('profileDetail');
-        profileToggle?.addEventListener('click', (e) => {
-            e.preventDefault(); e.stopPropagation();
-            const isHidden = profileDetail?.hasAttribute('hidden');
-            if (isHidden) {
-                profileDetail?.removeAttribute('hidden');
-                profileToggle.setAttribute('aria-expanded', 'true');
+    let USUARIO = null;
+    let PERFIL  = { nome: 'Visitante', avatar: null };
+
+    async function carregarUsuario() {
+        try {
+            const { data: { user } } = await sb.auth.getUser();
+            USUARIO = user;
+            const avatarEl = $('#userAvatar');
+            const nomeEl   = $('#userName');
+            if (!avatarEl || !nomeEl) return;
+
+            if (user) {
+                // Prioridade: full_name → name → parte antes do @
+                let nome =
+                    user.user_metadata?.full_name ||
+                    user.user_metadata?.name ||
+                    (user.email ? user.email.split('@')[0] : 'Visitante');
+
+                // Se ainda contiver '@', corta
+                if (nome.includes('@')) nome = nome.split('@')[0];
+
+                const avatar = user.user_metadata?.avatar_url || null;
+                PERFIL = { nome, avatar };
+
+                nomeEl.textContent = nome;
+                avatarEl.src = avatar || gerarAvatarSVG(nome);
             } else {
-                profileDetail?.setAttribute('hidden', '');
-                profileToggle.setAttribute('aria-expanded', 'false');
+                PERFIL = { nome: 'Visitante', avatar: null };
+                nomeEl.textContent = 'Visitante (comentário anônimo)';
+                avatarEl.src = gerarAvatarSVG('Visitante');
             }
-        });
-
-        // =============================================
-        // 3. HUB FLUTUANTE
-        // =============================================
-        const hubToggle = document.getElementById('floatingHubToggle');
-        const hubMenu = document.getElementById('floatingHubMenu');
-        const hubOverlay = document.getElementById('floatingOverlay');
-
-        function toggleHub() {
-            if (!hubMenu || !hubOverlay) return;
-            const isOpen = !hubMenu.hidden;
-            hubMenu.hidden = isOpen;
-            hubOverlay.hidden = isOpen;
-            if (hubToggle) hubToggle.setAttribute('aria-expanded', !isOpen);
+        } catch (e) {
+            console.warn('[comentários] Usuário indisponível:', e.message);
         }
-        if (hubToggle) hubToggle.addEventListener('click', (e) => { e.stopPropagation(); toggleHub(); });
-        if (hubOverlay) hubOverlay.addEventListener('click', toggleHub);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && hubMenu && !hubMenu.hidden) toggleHub();
-        });
+    }
 
-        // =============================================
-        // 4. ACESSIBILIDADE
-        // =============================================
-        function gs(k, fb) { return localStorage.getItem('a11y_' + k) || fb; }
-        function ss(k, v) { localStorage.setItem('a11y_' + k, v); }
+    async function carregarComentarios() {
+        const container = $('#listaComentarios');
+        if (!container) return;
 
-        function applySettings() {
-            const body = document.body;
-            const content = document.getElementById('articleContent');
-            if (gs('darkMode') === 'true') body.classList.add('a11y-dark-mode');
-            if (gs('highlightLinks') === 'true') body.classList.add('a11y-highlight-links');
-            if (gs('dyslexiaFont') === 'true') body.classList.add('a11y-dyslexia');
-            if (gs('reduceMotion') === 'true') body.classList.add('a11y-reduce-motion');
-            const ts = gs('textSize', 'normal');
-            if (content) {
-                content.classList.remove('a11y-large-text', 'a11y-small-text');
-                if (ts === 'large') content.classList.add('a11y-large-text');
-                if (ts === 'small') content.classList.add('a11y-small-text');
-            }
+        console.log('[comentários] Buscando blog_slug =', SLUG_ARTIGO);
+
+        const { data, error } = await sb
+            .from('comments')
+            .select('id, blog_slug, author_id, author_name, author_avatar, content, likes, created_at')
+            .eq('blog_slug', SLUG_ARTIGO)
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('[comentários] Erro:', error);
+            container.innerHTML = `<p class="erro-comentario">Erro: ${escapeHtml(error.message)}</p>`;
+            return;
         }
 
-        document.querySelectorAll('.hub-action[data-a11y]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const action = btn.getAttribute('data-a11y');
-                const body = document.body;
-                const content = document.getElementById('articleContent');
+        console.log('[comentários] Recebidos:', data?.length || 0, 'comentários');
 
-                switch (action) {
-                    case 'darkMode': {
-                        const dm = gs('darkMode') === 'true';
-                        ss('darkMode', dm ? 'false' : 'true');
-                        body.classList.toggle('a11y-dark-mode', !dm);
-                        break;
-                    }
-                    case 'increaseText': {
-                        const cs = gs('textSize', 'normal');
-                        if (cs === 'large') { ss('textSize', 'normal'); content?.classList.remove('a11y-large-text'); }
-                        else { ss('textSize', 'large'); content?.classList.remove('a11y-small-text'); content?.classList.add('a11y-large-text'); }
-                        break;
-                    }
-                    case 'decreaseText': {
-                        const cz = gs('textSize', 'normal');
-                        if (cz === 'small') { ss('textSize', 'normal'); content?.classList.remove('a11y-small-text'); }
-                        else { ss('textSize', 'small'); content?.classList.remove('a11y-large-text'); content?.classList.add('a11y-small-text'); }
-                        break;
-                    }
-                    case 'dyslexiaFont': {
-                        const df = gs('dyslexiaFont') === 'true';
-                        ss('dyslexiaFont', df ? 'false' : 'true');
-                        body.classList.toggle('a11y-dyslexia', !df);
-                        break;
-                    }
-                    case 'reduceMotion': {
-                        const rm = gs('reduceMotion') === 'true';
-                        ss('reduceMotion', rm ? 'false' : 'true');
-                        body.classList.toggle('a11y-reduce-motion', !rm);
-                        break;
-                    }
-                    case 'reset': {
-                        ['darkMode','highlightLinks','dyslexiaFont','reduceMotion','textSize'].forEach(k => localStorage.removeItem('a11y_' + k));
-                        body.classList.remove('a11y-dark-mode','a11y-highlight-links','a11y-dyslexia','a11y-reduce-motion');
-                        content?.classList.remove('a11y-large-text','a11y-small-text');
-                        break;
-                    }
-                }
-                toggleHub();
-            });
+        container.innerHTML = (data && data.length)
+            ? data.map(c => renderComentario(c)).join('')
+            : '<p class="sem-comentarios">Seja a primeira pessoa a comentar 💜</p>';
+
+        atualizarTotal(data?.length || 0);
+    }
+
+    function renderComentario(c) {
+        const nome   = c.author_name || 'Visitante';
+        const tempo  = tempoRelativo(c.created_at);
+        const avatar = c.author_avatar || gerarAvatarSVG(nome);
+
+        return `
+            <div class="item-comentario" data-id="${c.id}">
+                <img src="${avatar}" alt="${escapeHtml(nome)}" class="sidebarAvatar">
+                <div class="conteudo-comentario">
+                    <div class="cabecalho-comentario">
+                        <strong class="nome-autor">${escapeHtml(nome)}</strong>
+                        <span class="tempo-comentario">${tempo}</span>
+                    </div>
+                    <p class="texto-comentario">${escapeHtml(c.content)}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function atualizarTotal(n) {
+        const el = $('#totalComentarios');
+        if (el) el.textContent = n || 0;
+    }
+
+    async function publicarComentario(conteudo) {
+        const payload = {
+            blog_slug:     SLUG_ARTIGO,
+            post_id:       null,
+            parent_id:     null,
+            content:       conteudo.trim(),
+            author_id:     USUARIO?.id || null,
+            author_name:   PERFIL?.nome || 'Visitante',
+            author_avatar: PERFIL?.avatar || null,
+            status:        'approved',
+            is_active:     true
+        };
+        const { data, error } = await sb
+            .from('comments')
+            .insert(payload)
+            .select()
+            .single();
+        if (error) throw error;
+        return data;
+    }
+
+    function vincularEventos() {
+        $('#formComentario')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const campo = $('#campoComentario');
+            const texto = campo.value.trim();
+            if (!texto) return;
+
+            const btn = $('#btnPublicar');
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Publicando...';
+
+            try {
+                await publicarComentario(texto);
+                campo.value = '';
+                await carregarComentarios();
+            } catch (err) {
+                alert('Erro ao publicar: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = original;
+            }
         });
+    }
 
-        applySettings();
-    </script>
+    async function initComentarios() {
+        console.log('[comentários] Iniciando...');
+        await carregarUsuario();
+        await carregarComentarios();
+        vincularEventos();
+        console.log('[comentários] Pronto ✅');
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initComentarios);
+    } else {
+        initComentarios();
+    }
+})();
+</script>
 
 </body>
 </html>
