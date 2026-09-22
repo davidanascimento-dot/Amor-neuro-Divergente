@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const supabase = window.supabaseClient;
 
     // Caminho padrão correto baseado na sua estrutura local
-    const AVATAR_PADRAO = '/img/avatar-padrao.png';
+    const AVATAR_PADRAO = '/img/foto-padrão.jpg';
 
     // =============================================
     // VERIFICAÇÃO DE STORAGE (anti Tracking Prevention)
@@ -747,6 +747,257 @@ document.addEventListener('DOMContentLoaded', async () => {
             fecharModal();
         }
     });
+
+
+        // =============================================
+    // 8. REMOÇÃO / DESATIVAÇÃO DE CONTA
+    // =============================================
+
+    // ---------- Modal de confirmação reutilizável ----------
+    function openAccountModal({ title, message, confirmText = 'Confirmar', danger = false }) {
+        return new Promise((resolve) => {
+            const existing = document.getElementById('accountActionModal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'accountActionModal';
+            modal.style.cssText = `
+                position:fixed;inset:0;background:rgba(0,0,0,0.55);
+                display:flex;align-items:center;justify-content:center;
+                z-index:10000;padding:20px;animation:fadeIn 0.2s ease;
+            `;
+            modal.innerHTML = `
+                <div style="
+                    background:var(--bg-card,#fff);color:var(--text,#111);
+                    border-radius:16px;padding:24px;max-width:440px;width:100%;
+                    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+                    font-family:inherit;
+                ">
+                    <h3 style="margin:0 0 12px;font-size:18px;">${title}</h3>
+                    <p style="margin:0 0 20px;font-size:14px;line-height:1.5;color:var(--text-muted,#555);">${message}</p>
+                    <div style="display:flex;gap:10px;justify-content:flex-end;">
+                        <button id="accCancel" class="btn-secondary-light" style="margin:0;">Cancelar</button>
+                        <button id="accConfirm" style="
+                            background:${danger ? '#ef4444' : 'var(--primary,#7c3aed)'};
+                            color:#fff;border:none;border-radius:10px;
+                            padding:10px 20px;font-weight:600;cursor:pointer;font-size:14px;
+                        ">${confirmText}</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            const cleanup = (result) => {
+                modal.style.opacity = '0';
+                modal.style.transition = 'opacity 0.2s ease';
+                setTimeout(() => modal.remove(), 200);
+                resolve(result);
+            };
+
+            modal.querySelector('#accCancel').onclick = () => cleanup(false);
+            modal.querySelector('#accConfirm').onclick = () => cleanup(true);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) cleanup(false);
+            });
+            document.addEventListener('keydown', function onEsc(e) {
+                if (e.key === 'Escape') {
+                    document.removeEventListener('keydown', onEsc);
+                    cleanup(false);
+                }
+            });
+        });
+    }
+
+    // ---------- Registrar ação no log ----------
+    async function logAccountAction(action, reason = null) {
+        if (!supabase) return;
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            await supabase.from('account_deletion_log').insert({
+                user_id: user.id,
+                action,
+                reason,
+                performed_by: user.id
+            });
+        } catch (err) {
+            console.warn('Falha ao registrar log:', err);
+        }
+    }
+
+    // ---------- Desativar conta ----------
+    document.getElementById('deactivateAccountBtn')?.addEventListener('click', async () => {
+        const confirmou = await openAccountModal({
+            title: '⚠️ Desativar conta?',
+            message: 'Sua conta ficará invisível para outros usuários e você não poderá fazer login. Você poderá reativá-la depois entrando em contato com o suporte. Deseja continuar?',
+            confirmText: 'Desativar'
+        });
+        if (!confirmou) return;
+
+        if (!supabase) {
+            showToast('Erro: Supabase não disponível', true);
+            return;
+        }
+
+        try {
+            showToast('Desativando conta...');
+
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                showToast('Você precisa estar logado', true);
+                return;
+            }
+
+            // Chama função RPC ou faz update direto
+            const { error } = await supabase.rpc('deactivate_account', { p_reason: null });
+
+            // Fallback se RPC não existir
+            if (error && error.code === '42883') {
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .update({
+                        is_active: false,
+                        deactivated_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', user.id);
+
+                if (updateError) throw updateError;
+                await logAccountAction('deactivate');
+            } else if (error) {
+                throw error;
+            }
+
+            showToast('Conta desativada. Saindo...');
+
+            setTimeout(async () => {
+                await supabase.auth.signOut();
+                if (storageAvailable) localStorage.clear();
+                window.location.href = '/login/login.html';
+            }, 1500);
+
+        } catch (err) {
+            console.error('Erro ao desativar:', err);
+            showToast('Erro ao desativar: ' + err.message, true);
+        }
+    });
+
+    // ---------- Excluir conta ----------
+    document.getElementById('deleteAccountBtn')?.addEventListener('click', async () => {
+        // 1ª confirmação
+        const confirmou = await openAccountModal({
+            title: '🗑️ Excluir conta permanentemente?',
+            message: 'Esta ação é IRREVERSÍVEL. Todos os seus dados, publicações, mensagens e histórico serão apagados permanentemente. Deseja continuar?',
+            confirmText: 'Sim, excluir',
+            danger: true
+        });
+        if (!confirmou) return;
+
+        // 2ª confirmação — digitar "EXCLUIR"
+        const palavra = prompt(
+            'Para confirmar a exclusão permanente, digite a palavra EXCLUIR (em maiúsculas):'
+        );
+        if (palavra !== 'EXCLUIR') {
+            showToast('Exclusão cancelada. A palavra digitada não confere.', true);
+            return;
+        }
+
+        if (!supabase) {
+            showToast('Erro: Supabase não disponível', true);
+            return;
+        }
+
+        try {
+            showToast('Excluindo conta...');
+
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                showToast('Você precisa estar logado', true);
+                return;
+            }
+
+            // Tenta RPC de exclusão imediata
+            const { error } = await supabase.rpc('delete_account_immediately', {
+                p_reason: 'Solicitado pelo usuário via configurações'
+            });
+
+            // Fallback: soft delete + signOut
+            if (error && (error.code === '42883' || error.code === 'PGRST202')) {
+                console.warn('RPC não disponível, usando fallback soft delete');
+
+                // Marca como solicitado para exclusão (grace period 30 dias)
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .update({
+                        is_active: false,
+                        deletion_requested_at: new Date().toISOString(),
+                        deletion_scheduled_for: new Date(Date.now() + 30 * 86400000).toISOString(),
+                        deletion_reason: 'Solicitado pelo usuário'
+                    })
+                    .eq('id', user.id);
+
+                if (updateError) throw updateError;
+                await logAccountAction('request_deletion', 'Solicitado pelo usuário');
+
+                showToast('Exclusão agendada. Você tem 30 dias para cancelar.', true);
+            } else if (error) {
+                throw error;
+            } else {
+                showToast('Conta excluída permanentemente.');
+            }
+
+            setTimeout(async () => {
+                try { await supabase.auth.signOut(); } catch(e) {}
+                if (storageAvailable) localStorage.clear();
+                window.location.href = '/login/login.html';
+            }, 2000);
+
+        } catch (err) {
+            console.error('Erro ao excluir:', err);
+            showToast('Erro ao excluir: ' + err.message, true);
+        }
+    });
+
+    // ---------- Verificar se conta está pendente de exclusão (ao carregar) ----------
+    (async () => {
+        if (!supabase) return;
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return;
+
+            const profile = await fetchProfile(session.user.id);
+            if (profile?.deletion_scheduled_for) {
+                const scheduledFor = new Date(profile.deletion_scheduled_for);
+                const diasRestantes = Math.ceil((scheduledFor - Date.now()) / 86400000);
+
+                if (diasRestantes > 0) {
+                    const cancelar = await openAccountModal({
+                        title: '⏳ Conta agendada para exclusão',
+                        message: `Sua conta será excluída em ${diasRestantes} dia(s) (${scheduledFor.toLocaleDateString('pt-BR')}). Deseja cancelar a exclusão e reativar sua conta?`,
+                        confirmText: 'Cancelar exclusão'
+                    });
+
+                    if (cancelar) {
+                        const { error } = await supabase.rpc('cancel_account_deletion');
+                        if (error) {
+                            await supabase.from('profiles')
+                                .update({
+                                    is_active: true,
+                                    deletion_requested_at: null,
+                                    deletion_scheduled_for: null,
+                                    deletion_reason: null
+                                })
+                                .eq('id', session.user.id);
+                            await logAccountAction('cancel_deletion');
+                        }
+                        showToast('Exclusão cancelada. Bem-vindo(a) de volta! 💜');
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn('Erro ao verificar status da conta:', err);
+        }
+    })();
     // =============================================
     // 9. INICIALIZAÇÃO
     // =============================================

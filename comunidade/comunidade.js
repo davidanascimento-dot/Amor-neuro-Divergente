@@ -1494,19 +1494,19 @@ async function updateCommentCount(postId) {
             }
 
             return `
-            <div class="post-card" data-post-id="${p.id}">
-                <div class="post-header">
-                    <div class="post-author-avatar-wrapper">
-                        <img src="${postAvatar}" class="post-author-avatar" 
-                             onerror="this.style.display='none';this.parentElement.querySelector('.post-author-fallback').style.display='flex';" 
-                             alt="${escapeHtml(p.author_name || 'U')}">
-                        <div class="post-author-fallback" style="background:${stringToColor(p.author_id || p.id)};">${authorInitial}</div>
-                    </div>
-                    <div class="post-body">
-                        <div class="post-author-info">
-                            <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
-                            <span class="post-date">· ${formatDate(p.created_at)}</span>
-                        </div>
+           <div class="post-card" data-post-id="${p.id}">
+    <div class="post-header">
+        <div class="post-author-avatar-wrapper">
+            <img src="${postAvatar}" class="post-author-avatar"
+                 alt="${escapeHtml(p.author_name || 'U')}"
+                 onerror="this.onerror=null; this.src='${AVATAR_PADRAO}'; this.addEventListener('error', function(){ this.style.display='none'; const fb=this.parentElement.querySelector('.post-author-fallback'); if(fb) fb.style.display='flex'; }, {once:true});">
+            <div class="post-author-fallback" style="display:none; background:${stringToColor(p.author_id || p.id)};">${authorInitial}</div>
+        </div>
+        <div class="post-body">
+            <div class="post-author-info">
+                <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
+                <span class="post-date">· ${formatDate(p.created_at)}</span>
+            </div>
                         <p class="post-text">${escapeHtml(p.content)}</p>
                         ${videoHtml}
                         <div class="post-actions">
