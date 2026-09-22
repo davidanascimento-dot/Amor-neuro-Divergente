@@ -1625,6 +1625,25 @@ body.a11y-reduce-motion .section-head__link {
     box-shadow: var(--explore-shadow);
 }
 
+/* ===== Layout interno: contato lateral + formulário ===== */
+.form-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+.form-main {
+    min-width: 0; /* evita overflow em grid */
+}
+
+@media (max-width: 900px) {
+    .form-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
 #support-form {
     display: flex;
     flex-direction: column;
@@ -1740,6 +1759,114 @@ body.a11y-reduce-motion .section-head__link {
 
 .char-counter.is-warning { color: #f59e0b; }
 .char-counter.is-danger  { color: #ef4444; font-weight: 700; }
+
+/* =========================================
+   LATERAL DE CONTATO (dentro do form-card)
+   ========================================= */
+.contact-info {
+    background: var(--explore-bg);
+    border: 1px solid var(--explore-border);
+    border-radius: 16px;
+    padding: 22px 20px;
+    position: sticky;
+    top: 24px;
+}
+
+.contact-info h3 {
+    margin: 0 0 18px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--explore-text);
+    letter-spacing: -0.01em;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--explore-border);
+}
+
+.contact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.contact-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--explore-accent-light);
+    color: var(--explore-accent);
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.contact-list strong {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--explore-text);
+    margin-bottom: 3px;
+    letter-spacing: 0.01em;
+}
+
+.contact-list a,
+.contact-list span {
+    font-size: 13px;
+    color: var(--explore-muted);
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.contact-list a {
+    color: var(--explore-accent);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.contact-list a:hover {
+    color: #6d28d9;
+    text-decoration: underline;
+}
+
+/* Redes sociais */
+.social-links {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--explore-accent-light);
+    color: var(--explore-accent);
+    font-size: 14px;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.social-links a:hover {
+    background: var(--explore-accent);
+    color: #ffffff;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
 
 /* =========================================
    BOTÃO PRIMÁRIO
@@ -1966,6 +2093,16 @@ body.a11y-reduce-motion .section-head__link {
     color: var(--explore-muted);
     font-style: italic;
 }
+
+/* =========================================
+   ESTADOS 2 e 3 — ESPERA E CHAT
+   ========================================= */
+#estado-espera,
+#estado-chat {
+    width: 100%;
+}
+
+/* Você pode manter seus estilos existentes de espera/chat aqui */
 
 /* =========================================
    DARK MODE
@@ -2347,3 +2484,4 @@ body.a11y-dark-mode .chat-msg--atendente .chat-msg-balao { background: #2d2d44; 
 body.a11y-dark-mode .chat-resposta textarea { background: #12121f; color: #e8e3dd; border-color: #2d2d44; }
 body.a11y-dark-mode .chat-header { border-bottom-color: #2d2d44; }
 body.a11y-dark-mode .chat-resposta { border-top-color: #2d2d44; }
+

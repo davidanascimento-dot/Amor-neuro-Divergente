@@ -612,75 +612,130 @@
 <div class="form-card">
 
     <!-- ========================================= -->
-    <!-- ESTADO 1 — FORMULÁRIO                     -->
+    <!-- ESTADO 1 — FORMULÁRIO + CONTATO LATERAL   -->
     <!-- ========================================= -->
     <div id="estado-formulario">
-        <form id="support-form">
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="form-nome">Nome *</label>
-                    <input type="text" id="form-nome" required>
-                </div>
-                <div class="form-group">
-                    <label for="form-email">E-mail *</label>
-                    <input type="email" id="form-email" required>
-                </div>
-            </div>
+        <div class="form-layout">
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="form-phone">Telefone / WhatsApp</label>
-                    <input type="tel" id="form-phone">
-                </div>
-                <div class="form-group">
-                    <label for="form-cidade">Cidade</label>
-                    <input type="text" id="form-cidade">
-                </div>
-            </div>
+            <!-- ===== COLUNA LATERAL: DADOS DE CONTATO ===== -->
+            <aside class="contact-info">
+                <h3>Fale Conosco</h3>
+                <ul class="contact-list">
+                    <li>
+                        <span class="contact-icon"><i class="fa-solid fa-phone"></i></span>
+                        <div>
+                            <strong>Telefone / WhatsApp</strong>
+                            <a href="tel:+5511999999999">(11) 99999-9999</a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>
+                        <div>
+                            <strong>E-mail</strong>
+                            <a href="mailto:contato@seudominio.com.br">contato@seudominio.com.br</a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>
+                        <div>
+                            <strong>Endereço</strong>
+                            <span>Rua Exemplo, 123 — Centro<br>São Paulo/SP — CEP 00000-000</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="contact-icon"><i class="fa-regular fa-clock"></i></span>
+                        <div>
+                            <strong>Horário de atendimento</strong>
+                            <span>Segunda a sexta, das 9h às 18h</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="contact-icon"><i class="fa-solid fa-share-nodes"></i></span>
+                        <div>
+                            <strong>Redes sociais</strong>
+                            <span class="social-links">
+                                <a href="#" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="#" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                                <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </aside>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="form-canal">Canal preferido</label>
-                    <div class="select-wrapper">
-                        <select id="form-canal">
-                            <option value="site">Resposta pelo site</option>
-                            <option value="whatsapp">WhatsApp</option>
-                            <option value="email">E-mail</option>
-                        </select>
+            <!-- ===== COLUNA PRINCIPAL: FORMULÁRIO ===== -->
+            <div class="form-main">
+                <form id="support-form">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="form-nome">Nome *</label>
+                            <input type="text" id="form-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-email">E-mail *</label>
+                            <input type="email" id="form-email" required>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="form-depto">Departamento</label>
-                    <div class="select-wrapper">
-                        <select id="form-depto">
-                            <option value="suporte">Suporte geral</option>
-                            <option value="financeiro">Financeiro</option>
-                            <option value="parcerias">Parcerias</option>
-                        </select>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="form-phone">Telefone / WhatsApp</label>
+                            <input type="tel" id="form-phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="form-cidade">Cidade</label>
+                            <input type="text" id="form-cidade">
+                        </div>
                     </div>
-                </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="form-canal">Canal preferido</label>
+                            <div class="select-wrapper">
+                                <select id="form-canal">
+                                    <option value="site">Resposta pelo site</option>
+                                    <option value="whatsapp">WhatsApp</option>
+                                    <option value="email">E-mail</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-depto">Departamento</label>
+                            <div class="select-wrapper">
+                                <select id="form-depto">
+                                    <option value="suporte">Suporte geral</option>
+                                    <option value="financeiro">Financeiro</option>
+                                    <option value="parcerias">Parcerias</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="form-assunto">Assunto *</label>
+                        <input type="text" id="form-assunto" placeholder="Ex.: Dúvida sobre laudo, denúncia, sugestão..." required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="form-caso">Conte-nos seu caso *</label>
+                        <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa 🌱" required></textarea>
+                        <div class="char-counter"><span id="current-chars">0</span>/4000</div>
+                    </div>
+
+                    <button type="submit" class="primary-btn submit-form-btn">
+                        Abrir atendimento
+                    </button>
+
+                    <p class="privacy-notice">
+                        Ao enviar, você concorda com nossa política de privacidade. Seus dados são tratados com sigilo.
+                    </p>
+                </form>
             </div>
 
-            <div class="form-group full-width">
-                <label for="form-assunto">Assunto *</label>
-                <input type="text" id="form-assunto" placeholder="Ex.: Dúvida sobre laudo, denúncia, sugestão..." required>
-            </div>
-
-            <div class="form-group full-width">
-                <label for="form-caso">Conte-nos seu caso *</label>
-                <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa 🌱" required></textarea>
-                <div class="char-counter"><span id="current-chars">0</span>/4000</div>
-            </div>
-
-            <button type="submit" class="primary-btn submit-form-btn">
-                Abrir atendimento
-            </button>
-
-            <p class="privacy-notice">
-                Ao enviar, você concorda com nossa política de privacidade. Seus dados são tratados com sigilo.
-            </p>
-        </form>
+        </div>
     </div>
 
     <!-- ========================================= -->
@@ -702,10 +757,10 @@
                 </button>
             </div>
 
-          <div class="espera-status espera-status--aguardando">
-    <span class="status-dot"></span>
-    <span id="statusEsperaTexto">Aguardando a equipe aceitar seu atendimento…</span>
-</div>
+            <div class="espera-status espera-status--aguardando">
+                <span class="status-dot"></span>
+                <span id="statusEsperaTexto">Aguardando a equipe aceitar seu atendimento…</span>
+            </div>
 
             <p class="espera-nota">
                 Esta página atualiza sozinha quando chegar uma resposta.
@@ -788,56 +843,22 @@
 
     </main>
 
-    <!-- HUB FLUTUANTE -->
+<!-- HUB FLUTUANTE -->
     <div class="floating-hub" id="floatingHub">
-        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
-            <i class="fa-solid fa-circle-plus"></i>
-            <span class="floating-hub-label">Acessibilidade</span>
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de ajuda" title="Ajuda">
+            <i class="fa-regular fa-circle-question"></i>
+            <span class="floating-hub-label">Ajuda</span>
         </button>
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
                 <div class="floating-hub-group">
-                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
-                    <div class="floating-hub-actions">
-                        <button class="hub-action" data-a11y="darkMode" title="Modo escuro/claro">
-                            <i class="fa-regular fa-moon"></i><span class="hub-action-label">Escuro</span>
-                        </button>
-                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
-                            <i class="fa-solid fa-text-height"></i><span class="hub-action-label">A+</span>
-                        </button>
-                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
-                            <i class="fa-solid fa-text-slash"></i><span class="hub-action-label">A-</span>
-                        </button>
-                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
-                            <i class="fa-regular fa-eye"></i><span class="hub-action-label">Dislexia</span>
-                        </button>
-                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
-                            <i class="fa-solid fa-person-walking"></i><span class="hub-action-label">Movimento</span>
-                        </button>
-                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
-                            <i class="fa-solid fa-rotate-left"></i><span class="hub-action-label">Reset</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="floating-hub-divider"></div>
-                <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
-                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA">
-                            <i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span>
-                        </a>
-                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
-                            <i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span>
-                        </a>
-                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes">
-                            <i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span>
-                        </a>
-                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
-                            <i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span>
-                        </a>
-                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span>
-                        </a>
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action" title="Falar com AcolherIA"><i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span></a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade"><i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span></a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes"><i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span></a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail"><i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span></a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span></a>
                     </div>
                 </div>
             </div>
@@ -847,6 +868,7 @@
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
     <!-- 1. SDK do Supabase (CDN) — PRIMEIRO -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.userway.org/widget.js" data-account="QQqIFghR0i"></script>
 
     <!-- 2. Cria o cliente global — DEPOIS do SDK -->
     <script>
