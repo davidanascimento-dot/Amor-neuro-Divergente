@@ -2012,70 +2012,74 @@ if (groupImageUploadArea) {
             return;
         }
 
-        grid.innerHTML = groups.map(g => {
-            const isAdmin = g.is_admin === true;
-            const isPrivate = g.is_private === true;
-            const memberCount = g.members || 0;
-            const categoryName = g.category || 'Geral';
-            const imageUrl = g.image_url || '/img/grupo-padrao.png';
-            const isMember = g.is_member === true || g.name === 'Geral';
-            const initial = (g.name || 'G').charAt(0).toUpperCase();
-            const colors = ['#7c3aed', '#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6366f1', '#14b8a6'];
-            const bgColor = colors[Math.abs((g.id || '0').charCodeAt(0)) % colors.length];
+     grid.innerHTML = groups.map(g => {
+    const isAdmin = g.is_admin === true;
+    const isPrivate = g.is_private === true;
+    const memberCount = g.members || 0;
+    const categoryName = g.category || 'Geral';
+    const imageUrl = g.image_url && g.image_url !== '/img/grupo-padrao.png' ? g.image_url : null;
+    const isMember = g.is_member === true || g.name === 'Geral';
+    const initial = (g.name || 'G').charAt(0).toUpperCase();
 
-            return `
-            <div class="group-card" data-group-id="${g.id}">
-                <div class="group-card-image" style="background:${bgColor}; display:flex; align-items:center; justify-content:center; min-height:120px;">
-                    ${imageUrl && imageUrl !== '/img/grupo-padrao.png' ? `<img src="${imageUrl}" alt="${g.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">` : ''}
-                    <span style="color:white;font-size:44px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.2);">${initial}</span>
-                </div>
-                <div class="group-card-body">
-                    <div class="group-card-title">
-                        ${g.name}
-                        ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
-                        ${isPrivate ? '<i class="fa-solid fa-lock" style="color: var(--text-muted); font-size: 14px;"></i>' : '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Público</span>'}
-                        ${isMember ? '<span style="font-size:10px;color:#10b981;background:rgba(16,185,129,0.1);padding:2px 10px;border-radius:20px;">Membro</span>' : ''}
-                    </div>
-                    <p class="group-card-description">${escapeHtml(g.description || 'Sem descrição')}</p>
-                    <div class="group-card-meta">
-                        <span><i class="fa-regular fa-user"></i> ${memberCount} membros</span>
-                        <span><i class="fa-regular fa-tag"></i> ${categoryName}</span>
-                    </div>
-                    <div class="group-card-actions">
-                        ${isMember ? `
-                            <button class="btn-chat" onclick="window.openGroupChat('${g.id}')">
-                                <i class="fa-regular fa-comments"></i> Conversar
-                            </button>
-                            ${g.name !== 'Geral' ? `
-                            <button class="btn-leave" onclick="window.leaveGroup('${g.id}')" style="background:transparent;color:#ef4444;border-color:#ef4444;">
-                                <i class="fa-solid fa-right-from-bracket"></i> Sair
-                            </button>` : ''}
-                        ` : `
-                            ${!isPrivate ? `
-                            <button class="btn-join" onclick="window.joinGroup('${g.id}')">
-                                <i class="fa-solid fa-right-to-bracket"></i> Entrar
-                            </button>
-                            ` : `
-                            <button class="btn-private" style="background:transparent;color:#888;border-color:#888;cursor:not-allowed;" disabled>
-                                <i class="fa-solid fa-lock"></i> Privado
-                            </button>
-                            `}
-                        `}
-                    </div>
-                    ${isAdmin ? `
-                    <div class="group-admin-actions">
-                        <button class="btn-group-admin" onclick="window.openAddFriendToGroupModal('${g.id}')">
-                            <i class="fa-solid fa-user-plus"></i> Adicionar amigo
-                        </button>
-                        <button class="btn-group-admin" onclick="window.openInviteCodeModal('${g.id}', '${escapeHtml(g.name)}')">
-                            <i class="fa-solid fa-key"></i> Código
-                        </button>
-                    </div>
-                    ` : ''}
-                </div>
-            </div>`;
-        }).join('');
+    return `
+    <div class="group-card" data-group-id="${g.id}">
 
+        <div class="group-card-image">
+            ${imageUrl
+                ? `<img src="${imageUrl}" alt="${escapeHtml(g.name)}" onerror="this.style.display='none';">`
+                : `<span>${initial}</span>`}
+        </div>
+
+        <div class="group-card-body">
+            <div class="group-card-title">
+                <span class="group-card-name">${escapeHtml(g.name)}</span>
+                <div class="group-card-badges">
+                    ${isAdmin ? '<span class="badge badge-admin">Admin</span>' : ''}
+                    ${isPrivate
+                        ? '<span class="badge badge-private"><i class="fa-solid fa-lock"></i> Privado</span>'
+                        : '<span class="badge badge-public">Público</span>'}
+                    ${isMember ? '<span class="badge badge-member">Membro</span>' : ''}
+                </div>
+            </div>
+            <p class="group-card-description">${escapeHtml(g.description || 'Sem descrição')}</p>
+            <div class="group-card-meta">
+                <span><i class="fa-regular fa-user"></i> ${memberCount} membros</span>
+                <span><i class="fa-regular fa-tag"></i> ${escapeHtml(categoryName)}</span>
+            </div>
+            <div class="group-card-actions">
+                ${isMember ? `
+                    <button class="btn-chat" onclick="window.openGroupChat('${g.id}')">
+                        <i class="fa-regular fa-comments"></i> Conversar
+                    </button>
+                    ${g.name !== 'Geral' ? `
+                    <button class="btn-leave" onclick="window.leaveGroup('${g.id}')">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sair
+                    </button>` : ''}
+                ` : `
+                    ${!isPrivate ? `
+                    <button class="btn-join" onclick="window.joinGroup('${g.id}')">
+                        <i class="fa-solid fa-right-to-bracket"></i> Entrar
+                    </button>
+                    ` : `
+                    <button class="btn-private" disabled>
+                        <i class="fa-solid fa-lock"></i> Privado
+                    </button>
+                    `}
+                `}
+            </div>
+            ${isAdmin ? `
+            <div class="group-admin-actions">
+                <button class="btn-group-admin" onclick="window.openAddFriendToGroupModal('${g.id}')">
+                    <i class="fa-solid fa-user-plus"></i> Adicionar amigo
+                </button>
+                <button class="btn-group-admin" onclick="window.openInviteCodeModal('${g.id}', '${escapeHtml(g.name)}')">
+                    <i class="fa-solid fa-key"></i> Código
+                </button>
+            </div>
+            ` : ''}
+        </div>
+    </div>`;
+}).join('');
         await renderChatChannels();
         await renderFriendsList();
         await renderFriendRequests();
@@ -2623,10 +2627,10 @@ function renderMessages(container, messages) {
                              onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
                     </div>
                 ` : ''}
-                <div class="msg-content" style="${isSent ? 'background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff;' : 'background: var(--bg-secondary, #f1f5f9);'}">
-                    ${!isSent ? `<div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
+  <div class="msg-content" style="${isSent ? 'background: var(--cx-text, #1a1a2e); color: #fff;' : 'background: var(--cx-bg-soft, #faf9f6); color: var(--cx-text, #1a1a2e);'}">
+                    ${!isSent ? `<div class="msg-author" style="color:var(--cx-gold, #b8935a);font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
                     <div class="msg-text" style="word-wrap:break-word;white-space:pre-wrap;">${escapeHtml(m.content)}</div>
-                    <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--text-muted, #94a3b8);'}font-size:10px;margin-top:4px;text-align:right;">
+                  <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--cx-muted, #8a827c);'}font-size:10px;margin-top:4px;text-align:right;">
                         ${formatChatTime(m.created_at)}
                     </div>
                 </div>
@@ -2731,8 +2735,8 @@ function addMessageToChat(message) {
                          onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
                 </div>
             ` : ''}
-            <div class="msg-content" style="${isSent ? 'background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: #fff;' : 'background: var(--bg-secondary, #f1f5f9);'}">
-                ${!isSent ? `<div class="msg-author" style="color:${userColor};font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
+          <div class="msg-content" style="${isSent ? 'background: var(--cx-text, #1a1a2e); color: #fff;' : 'background: var(--cx-bg-soft, #faf9f6); color: var(--cx-text, #1a1a2e);'}">
+                ${!isSent ? `<div class="msg-author" style="color:var(--cx-gold, #b8935a);font-weight:600;font-size:12px;margin-bottom:2px;">${escapeHtml(senderName)}</div>` : ''}
                 <div class="msg-text" style="word-wrap:break-word;white-space:pre-wrap;">${escapeHtml(message.content)}</div>
                 <div class="msg-time" style="${isSent ? 'color: rgba(255,255,255,0.7);' : 'color: var(--text-muted, #94a3b8);'}font-size:10px;margin-top:4px;text-align:right;">
                     ${formatChatTime(message.created_at)}
@@ -2918,28 +2922,34 @@ async function sendMessage() {
             return;
         }
 
-        grid.innerHTML = events.map(ev => {
-            const date = new Date(ev.date);
-            return `
-            <div class="event-card">
-                <div class="event-date" style="background:${stringToColor(ev.id)};">
-                    <span class="event-day">${date.getDate()}</span>
-                    <span class="event-month">${date.toLocaleString('pt-BR', { month: 'short' }).toUpperCase()}</span>
-                </div>
-                <div class="event-info">
-                    <h4>${escapeHtml(ev.title)}</h4>
-                    <p>${escapeHtml(ev.description || '')}</p>
-                    <div class="event-meta">
-                        <span><i class="fa-regular fa-calendar"></i> ${formatEventDate(ev.date)}</span>
-                        <span><i class="fa-regular fa-user"></i> ${ev.participants || 0} participantes</span>
-                    </div>
-                </div>
-                <button class="event-join-btn" data-event-id="${ev.id}">
-                    <i class="fa-solid fa-calendar-check"></i> Participar
-                </button>
-            </div>`;
-        }).join('');
+      grid.innerHTML = events.map(ev => {
+    const date = new Date(ev.date);
+    const day = date.getDate().toString().padStart(2, '0');
+    const monthShort = date.toLocaleString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
+    const fullDate = date.toLocaleDateString('pt-BR', {
+        day: '2-digit', month: 'long', year: 'numeric'
+    });
+    const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
+    return `
+    <div class="event-card">
+        <div class="event-date">
+            <span class="event-day">${day}</span>
+            <span class="event-month">${monthShort}</span>
+        </div>
+        <div class="event-info">
+            <h4>${escapeHtml(ev.title || 'Evento')}</h4>
+            <p>${escapeHtml(ev.description || '')}</p>
+            <div class="event-meta">
+                <span><i class="fa-regular fa-calendar"></i> ${fullDate} às ${time}</span>
+                <span><i class="fa-regular fa-user"></i> ${ev.participants || 0} participantes</span>
+            </div>
+        </div>
+        <button class="event-join-btn" data-event-id="${ev.id}">
+            <i class="fa-solid fa-calendar-check"></i> Participar
+        </button>
+    </div>`;
+}).join('');
               // ✅ BOTÕES DE PARTICIPAR — VERSÃO CORRIGIDA (sem 409)
         document.querySelectorAll('.event-join-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
@@ -3261,8 +3271,7 @@ window.showCommunityRules = function() {
         '<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="background:none;border:none;font-size:22px;color:var(--text-muted,#94a3b8);cursor:pointer;padding:4px 8px;">✕</button>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:8px;">' + rulesHtml + '</div>' +
-        '<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:30px;background:linear-gradient(135deg,#9333ea,#ec4899);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:Inter,sans-serif;transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'">✅ Entendi e concordo</button>';
-    
+       '<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:6px;background:#1a1a2e;color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:Inter,sans-serif;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.9\'" onmouseout="this.style.opacity=\'1\'">Entendi e concordo</button>';
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     
@@ -3279,11 +3288,11 @@ function addRulesBanner() {
     
     var banner = document.createElement('div');
     banner.id = 'rulesBanner';
-    banner.style.cssText = 'padding:12px 16px;margin-bottom:12px;background:linear-gradient(135deg,rgba(124,58,237,0.05),rgba(236,72,153,0.05));border-radius:16px;border:1px solid var(--border-color,#e2e8f0);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;';
+   banner.style.cssText = 'padding:12px 16px;margin-bottom:12px;background:var(--cx-bg-soft,#faf9f6);border-radius:6px;border:1px solid var(--cx-border,#e8e3dd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;';
     
     banner.innerHTML = 
         '<div style="display:flex;align-items:center;gap:10px;">' +
-        '<i class="fa-solid fa-shield-halved" style="font-size:24px;color:#7c3aed;"></i>' +
+       '<i class="fa-solid fa-shield-halved" style="font-size:20px;color:var(--cx-gold,#b8935a);"></i>'+
         '<div><span style="font-weight:600;color:var(--text-primary,#1e293b);">Regras da Comunidade</span>' +
         '<p style="font-size:12px;color:var(--text-secondary,#64748b);margin:0;">Ajude a manter um ambiente acolhedor</p></div>' +
         '</div>' +
@@ -3320,7 +3329,7 @@ function addGroupSearch() {
     filterHtml += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
     
     categories.forEach(function(cat, index) {
-        var bgColor = cat === 'todos' ? 'background:linear-gradient(135deg,#9333ea,#ec4899);color:#fff;' : 'background:transparent;color:var(--text-secondary,#64748b);';
+       var bgColor = cat === 'todos' ? 'background:#1a1a2e;color:#fff;border-color:#1a1a2e;' : 'background:transparent;color:var(--cx-muted,#8a827c);';
         filterHtml += '<button class="group-filter-btn" data-filter="' + cat + '" style="padding:6px 14px;border:2px solid var(--border-color,#e2e8f0);border-radius:20px;' + bgColor + 'font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:4px;">';
         filterHtml += '<i class="fa-regular ' + catIcons[index] + '"></i> ' + catLabels[index];
         filterHtml += '</button>';
