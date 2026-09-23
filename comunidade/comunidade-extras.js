@@ -626,20 +626,21 @@
                 }
             }
 
-                      if (avatarEl) {
-                // 🔥 Remover o background vermelho
+                              if (avatarEl) {
+                // 🔥 Usar group.image_url (não profile!)
                 avatarEl.style.background = 'transparent';
                 
-                const hasAvatar = profile.avatar_url && 
-                                 profile.avatar_url !== CONFIG.avatarPadrao &&
-                                 profile.avatar_url.trim() !== '' &&
-                                 profile.avatar_url !== 'null';
+                const groupAvatarUrl = group.image_url && 
+                                       group.image_url !== '/img/grupo-padrao.png' &&
+                                       group.image_url.trim() !== '' &&
+                                       group.image_url !== 'null';
                 
-                const avatarSrc = hasAvatar ? profile.avatar_url : CONFIG.avatarPadrao;
+                const avatarSrc = groupAvatarUrl ? group.image_url : CONFIG.avatarPadrao;
+                const groupName = group.name || 'Grupo';
                 
                 avatarEl.innerHTML = `<img src="${avatarSrc}" 
-                    alt="${escapeHtml(username)}" 
-                    style="width:100%;height:100%;object-fit:cover;display:block;"
+                    alt="${escapeHtml(groupName)}" 
+                    style="width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;"
                     onerror="this.onerror=null; this.src='${CONFIG.avatarPadrao}'">`;
             }
 
