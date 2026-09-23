@@ -45,9 +45,9 @@
                         </div>
                     </div>
 
-                    <div class="forgot-password">
-                        <a href="#">Esqueci minha senha</a>
-                    </div>
+                  <div class="forgot-password">
+    <a href="#" id="btnForgotPassword">Esqueci minha senha</a>
+</div>
 
                     <button type="submit" class="btn-login">Entrar</button>
                 </form>
@@ -160,7 +160,34 @@
         </section>
 
     </div>
+<!-- ================= MODAL ESQUECI SENHA ================= -->
+<div id="forgotModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+        <button type="button" class="modal-close" id="closeForgotModal" aria-label="Fechar">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
+        <div class="form-header">
+            <h1>Recuperar senha.</h1>
+            <p class="subtitle">Enviaremos um link para redefinir sua senha.</p>
+        </div>
+
+        <form id="forgotForm">
+            <div class="input-group">
+                <label for="forgotEmail">
+                    <i class="fa-regular fa-envelope"></i> Email cadastrado
+                </label>
+                <input type="email" id="forgotEmail" placeholder="seu@email.com" required>
+            </div>
+
+            <button type="submit" class="btn-login">Enviar link</button>
+        </form>
+
+        <div class="register-link">
+            <a href="#" id="backToLoginFromForgot">← Voltar ao login</a>
+        </div>
+    </div>
+</div>
     <div id="heartTransition" class="transition-overlay">
     <div class="heart-pipeline">
         <svg class="drawing-heart" viewBox="0 0 32 29.6">

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir senha — Amor NeuroDivergente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="login.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .reset-wrapper { width: 100%; max-width: 460px; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="reset-wrapper">
+        <div class="form-box" id="resetCard">
+            <div class="form-header">
+                <h1>Nova senha.</h1>
+                <p class="subtitle">Escolha uma nova senha para sua conta.</p>
+            </div>
+
+            <form id="resetForm">
+                <div class="input-group">
+                    <label for="newPassword">
+                        <i class="fa-solid fa-lock"></i> Nova senha
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="newPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        <i class="fa-regular fa-eye toggle-password" data-target="newPassword"></i>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">
+                        <i class="fa-solid fa-lock"></i> Confirmar senha
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="Repita a senha" required minlength="6">
+                        <i class="fa-regular fa-eye toggle-password" data-target="confirmPassword"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login">Salvar nova senha</button>
+            </form>
+
+            <div class="register-link">
+                <a href="/login.html">← Voltar ao login</a>
+            </div>
+        </div>
+
+        <div class="form-box" id="loadingCard" style="display:none; text-align:center;">
+            <div class="form-header">
+                <h1>Validando link...</h1>
+                <p class="subtitle">Aguarde um instante.</p>
+            </div>
+        </div>
+
+        <div class="form-box" id="errorCard" style="display:none; text-align:center;">
+            <div class="form-header">
+                <h1>Link inválido.</h1>
+                <p class="subtitle">Este link expirou ou já foi usado. Solicite outro.</p>
+            </div>
+            <div class="register-link">
+                <a href="/login.html">← Voltar ao login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const supabase = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+
+        function showToast(message, type = 'info') {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#2d2a28'};
+                color: #fff; padding: 12px 24px; border-radius: 12px;
+                font-size: 14px; font-weight: 500; z-index: 10000;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Mostrar/esconder senha
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const input = document.getElementById(icon.getAttribute('data-target'));
+                if (!input) return;
+                const isPwd = input.type === 'password';
+                input.type = isPwd ? 'text' : 'password';
+                icon.classList.toggle('fa-eye', isPwd);
+                icon.classList.toggle('fa-eye-slash', !isPwd);
+            });
+        });
+
+        const resetCard   = document.getElementById('resetCard');
+        const loadingCard = document.getElementById('loadingCard');
+        const errorCard   = document.getElementById('errorCard');
+
+        function mostrarErro() {
+            loadingCard.style.display = 'none';
+            resetCard.style.display = 'none';
+            errorCard.style.display = 'block';
+        }
+
+        // O Supabase entrega o token no hash da URL (#access_token=...&type=recovery)
+        // O SDK processa isso automaticamente quando a página carrega.
+        // Escutamos o evento PASSWORD_RECOVERY para confirmar que é válido.
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                loadingCard.style.display = 'none';
+                resetCard.style.display = 'block';
+            }
+        });
+
+        // Fallback: se após 2s nada aconteceu, decide se mostra form ou erro
+        setTimeout(async () => {
+            if (resetCard.style.display === 'block') return;
+            const { data } = await supabase.auth.getSession();
+            if (data.session) {
+                loadingCard.style.display = 'none';
+                resetCard.style.display = 'block';
+            } else {
+                mostrarErro();
+            }
+        }, 2000);
+
+        // Salvar nova senha
+        document.getElementById('resetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const pwd     = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+
+            if (pwd !== confirm) {
+                showToast('As senhas não coincidem.', 'error');
+                return;
+            }
+            if (pwd.length < 6) {
+                showToast('A senha deve ter pelo menos 6 caracteres.', 'error');
+                return;
+            }
+
+            showToast('Salvando...', 'info');
+
+            const { error } = await supabase.auth.updateUser({ password: pwd });
+
+            if (error) {
+                console.error(error);
+                showToast('Erro: ' + error.message, 'error');
+            } else {
+                showToast('Senha alterada com sucesso!', 'success');
+                await supabase.auth.signOut();
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>

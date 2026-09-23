@@ -287,4 +287,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log('🔐 Transições imersivas e conexões prontas!');
+        // =============================================
+    // ESQUECI MINHA SENHA (Supabase nativo)
+    // =============================================
+    (function initForgotPassword() {
+        const forgotModal       = document.getElementById('forgotModal');
+        const btnForgot         = document.getElementById('btnForgotPassword');
+        const closeForgot       = document.getElementById('closeForgotModal');
+        const backToLoginForgot = document.getElementById('backToLoginFromForgot');
+        const forgotForm        = document.getElementById('forgotForm');
+
+        if (!forgotModal || !btnForgot || !forgotForm) {
+            console.warn('⚠️ Elementos do modal "Esqueci senha" não encontrados.');
+            return;
+        }
+
+        function abrirModalForgot() {
+            forgotModal.style.display = 'flex';
+        }
+
+        function fecharModalForgot() {
+            forgotModal.style.display = 'none';
+            forgotForm.reset();
+        }
+
+        btnForgot.addEventListener('click', (e) => {
+            e.preventDefault();
+            abrirModalForgot();
+        });
+
+        if (closeForgot) closeForgot.addEventListener('click', fecharModalForgot);
+
+        if (backToLoginForgot) {
+            backToLoginForgot.addEventListener('click', (e) => {
+                e.preventDefault();
+                fecharModalForgot();
+            });
+        }
+
+        forgotModal.addEventListener('click', (e) => {
+            if (e.target === forgotModal) fecharModalForgot();
+        });
+
+        forgotForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('forgotEmail').value.trim();
+
+            const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            if (!emailValido) {
+                showToast('Digite um e-mail válido.', 'error');
+                return;
+            }
+
+            showToast('Enviando link...', 'info');
+
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/redefinir-senha.html`
+            });
+
+            if (error) {
+                console.error('❌ Erro Supabase:', error);
+                showToast('Erro: ' + error.message, 'error');
+            } else {
+                showToast('Link enviado! Confira seu e-mail.', 'success');
+                fecharModalForgot();
+            }
+        });
+
+        console.log('✅ Sistema "Esqueci senha" pronto (sem captcha).');
+    })();
 });
