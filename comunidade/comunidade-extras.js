@@ -341,17 +341,16 @@
                 return;
             }
 
-            list.innerHTML = profiles.map(p => {
-                const initial = (p.username || 'U').charAt(0).toUpperCase();
+                       list.innerHTML = profiles.map(p => {
                 const bgColor = stringToColor(p.id);
                 const hasImg = p.avatar_url && p.avatar_url !== CONFIG.avatarPadrao;
 
                 return `
                     <div class="community-inner-member-item" data-user-id="${p.id}" title="${escapeHtml(p.username)}">
                         <div class="community-inner-member-avatar" style="background:${bgColor};">
-                            ${hasImg
-                                ? `<img src="${p.avatar_url}" alt="" onerror="this.outerHTML='<span style=\\'color:#fff;font-weight:700;font-size:12px;\\'>${initial}</span>'">`
-                                : `<span style="color:#fff;font-weight:700;font-size:12px;">${initial}</span>`}
+                            <img src="${hasImg ? p.avatar_url : CONFIG.avatarPadrao}" 
+                                 alt="${escapeHtml(p.username || 'Membro')}" 
+                                 onerror="this.onerror=null; this.src='${CONFIG.avatarPadrao}'">
                         </div>
                         <div class="community-inner-member-info">
                             <span class="community-inner-member-name">${escapeHtml(p.username || 'Membro')}</span>
@@ -627,13 +626,21 @@
                 }
             }
 
-            if (avatarEl) {
-                avatarEl.style.background = bgColor;
-                if (group.image_url && group.image_url !== '/img/grupo-padrao.png') {
-                    avatarEl.innerHTML = `<img src="${group.image_url}" alt="">`;
-                } else {
-                    avatarEl.innerHTML = `<span>${(group.name || 'G').charAt(0).toUpperCase()}</span>`;
-                }
+                      if (avatarEl) {
+                // 🔥 Remover o background vermelho
+                avatarEl.style.background = 'transparent';
+                
+                const hasAvatar = profile.avatar_url && 
+                                 profile.avatar_url !== CONFIG.avatarPadrao &&
+                                 profile.avatar_url.trim() !== '' &&
+                                 profile.avatar_url !== 'null';
+                
+                const avatarSrc = hasAvatar ? profile.avatar_url : CONFIG.avatarPadrao;
+                
+                avatarEl.innerHTML = `<img src="${avatarSrc}" 
+                    alt="${escapeHtml(username)}" 
+                    style="width:100%;height:100%;object-fit:cover;display:block;"
+                    onerror="this.onerror=null; this.src='${CONFIG.avatarPadrao}'">`;
             }
 
             if (nameEl) nameEl.textContent = group.name || 'Grupo';
@@ -769,17 +776,17 @@
                 return;
             }
 
-            container.innerHTML = members.map(m => {
+                    container.innerHTML = members.map(m => {
                 const profile = m.profiles || {};
-                const initial = (profile.username || 'U').charAt(0).toUpperCase();
                 const bgColor = stringToColor(m.user_id);
+                const hasImg = profile.avatar_url && profile.avatar_url !== CONFIG.avatarPadrao;
 
                 return `
                     <div class="details-member-item" data-user-id="${m.user_id}">
                         <div class="details-member-avatar" style="background:${bgColor};">
-                            ${profile.avatar_url && profile.avatar_url !== CONFIG.avatarPadrao
-                                ? `<img src="${profile.avatar_url}" alt="" onerror="this.outerHTML='<span style=\\'color:#fff;font-weight:700;\\'>${initial}</span>'">`
-                                : `<span style="color:#fff;font-weight:700;">${initial}</span>`}
+                            <img src="${hasImg ? profile.avatar_url : CONFIG.avatarPadrao}" 
+                                 alt="${escapeHtml(profile.username || 'Membro')}" 
+                                 onerror="this.onerror=null; this.src='${CONFIG.avatarPadrao}'">
                         </div>
                         <div class="details-member-info">
                             <span class="details-member-name">${escapeHtml(profile.username || 'Membro')}</span>
@@ -2659,17 +2666,16 @@ function renderMembersDirectory(members) {
         return;
     }
 
-    list.innerHTML = members.map(m => {
-        const initial = (m.username || 'U').charAt(0).toUpperCase();
+       list.innerHTML = members.map(m => {
         const bgColor = stringToColor(m.id);
         const hasImg = m.avatar_url && m.avatar_url !== CONFIG.avatarPadrao;
 
         return `
             <div class="details-member-item member-directory-item" data-user-id="${m.id}" data-username="${escapeHtml(m.username || '')}">
                 <div class="details-member-avatar" style="background:${bgColor};position:relative;">
-                    ${hasImg
-                        ? `<img src="${m.avatar_url}" alt="" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\\'color:#fff;font-weight:700;\\'>${initial}</span>';">`
-                        : `<span style="color:#fff;font-weight:700;">${initial}</span>`}
+                    <img src="${hasImg ? m.avatar_url : CONFIG.avatarPadrao}" 
+                         alt="${escapeHtml(m.username || 'Membro')}" 
+                         onerror="this.onerror=null; this.src='${CONFIG.avatarPadrao}'">
                     <span style="position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;background:#10b981;border:2px solid #fff;"></span>
                 </div>
                 <div class="details-member-info" style="flex:1;">
@@ -2682,7 +2688,6 @@ function renderMembersDirectory(members) {
             </div>
         `;
     }).join('');
-
     list.querySelectorAll('.member-directory-item').forEach(item => {
         item.addEventListener('click', (e) => {
             if (e.target.closest('.member-action-btn')) return;
