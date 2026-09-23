@@ -2940,27 +2940,74 @@ async function sendMessage() {
             </div>`;
         }).join('');
 
+              // ✅ BOTÕES DE PARTICIPAR — VERSÃO CORRIGIDA (sem 409)
         document.querySelectorAll('.event-join-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 if (!currentUser) {
                     showToast('Faça login para participar', 'error');
                     return;
                 }
+
                 const eventId = btn.dataset.eventId;
-                const { error } = await supabase
-                    .from('event_participants')
-                    .insert({ event_id: eventId, user_id: currentUser.id });
-                if (!error) {
-                    showToast('Presença confirmada! 🎉', 'success');
-                    btn.textContent = '✅ Confirmado';
-                    btn.classList.add('confirmed');
-                } else {
-                    showToast('Erro ao confirmar presença', 'error');
+                if (!eventId) return;
+
+                btn.disabled = true;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+                try {
+                    // Verificar se já está inscrito
+                    const { data: existing } = await supabase
+                        .from('event_participants')
+                        .select('id')
+                        .eq('event_id', eventId)
+                        .eq('user_id', currentUser.id)
+                        .maybeSingle();
+
+                    if (existing) {
+                        // Cancelar presença
+                        await supabase
+                            .from('event_participants')
+                            .delete()
+                            .eq('event_id', eventId)
+                            .eq('user_id', currentUser.id);
+
+                        showToast('Presença cancelada', 'info');
+                        btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Participar';
+                        btn.classList.remove('confirmed');
+                    } else {
+                        // Confirmar presença — UPSERT evita 409
+                        const { error } = await supabase
+                            .from('event_participants')
+                            .upsert(
+                                { event_id: eventId, user_id: currentUser.id },
+                                { onConflict: 'event_id,user_id', ignoreDuplicates: true }
+                            );
+
+                        if (error && error.code !== '23505' && error.status !== 409) {
+                            throw error;
+                        }
+
+                        showToast('Presença confirmada! 🎉', 'success');
+                        btn.innerHTML = '✅ Confirmado';
+                        btn.classList.add('confirmed');
+                    }
+                } catch (err) {
+                    console.error('Erro:', err);
+                    if (err.code === '23505' || err.status === 409) {
+                        showToast('Você já confirmou presença! ✅', 'info');
+                        btn.innerHTML = '✅ Confirmado';
+                        btn.classList.add('confirmed');
+                    } else {
+                        showToast('Erro: ' + (err.message || 'Tente novamente'), 'error');
+                        btn.innerHTML = originalHTML;
+                    }
+                } finally {
+                    btn.disabled = false;
                 }
             });
         });
     }
-
     // =============================================
     // 20. SUBSCRIÇÕES REALTIME
     // =============================================

@@ -4,20 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin · Eventos | Amor NeuroDivergente</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="eventos.css">
+
+
 </head>
 <body>
 
     <!-- ============================================ -->
-    <!-- CONTEÚDO PRINCIPAL                         -->
+    <!-- CONTEÚDO PRINCIPAL                            -->
     <!-- ============================================ -->
     <div class="main-wrapper">
-        
+
         <!-- NAVBAR SUPERIOR -->
         <header class="navbar">
             <div class="nav-left">
@@ -47,7 +49,7 @@
 
         <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content">
-            
+
             <div class="page-header">
                 <h1>Admin <span>· Eventos</span></h1>
                 <button class="btn-new-event" id="addEventBtn">
@@ -61,6 +63,91 @@
             </div>
 
         </main>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MODAL: CRIAR / EDITAR EVENTO                  -->
+    <!-- ============================================ -->
+    <div class="event-modal-overlay" id="eventModalOverlay">
+        <div class="event-modal" role="dialog" aria-labelledby="eventModalTitle" aria-modal="true">
+
+            <div class="event-modal-header">
+                <h2 id="eventModalTitle">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    <span id="eventModalTitleText">Novo evento</span>
+                </h2>
+                <button class="event-modal-close" id="eventModalClose" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="event-modal-body">
+                <form id="eventForm" autocomplete="off">
+
+                    <input type="hidden" id="eventId" value="">
+
+                    <div class="event-form-group">
+                        <label for="eventTitle">Título do evento <span class="req">*</span></label>
+                        <input type="text" id="eventTitle" placeholder="Ex: Roda de conversa sobre TDAH" maxlength="120" required>
+                    </div>
+
+                    <div class="event-form-group">
+                        <label for="eventDescription">Descrição</label>
+                        <textarea id="eventDescription" placeholder="Sobre o que é o evento? Quem pode participar?" maxlength="500"></textarea>
+                    </div>
+
+                    <div class="event-form-row">
+                        <div class="event-form-group">
+                            <label for="eventDate">Data e hora <span class="req">*</span></label>
+                            <input type="datetime-local" id="eventDate" required>
+                        </div>
+                        <div class="event-form-group">
+                            <label for="eventPlatform">Plataforma</label>
+                            <select id="eventPlatform">
+                                <option value="Google Meet">Google Meet</option>
+                                <option value="Zoom">Zoom</option>
+                                <option value="Microsoft Teams">Microsoft Teams</option>
+                                <option value="Discord">Discord</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="YouTube Live">YouTube Live</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="event-form-group">
+                        <label for="eventLink">Link do evento</label>
+                        <input type="url" id="eventLink" placeholder="https://meet.google.com/...">
+                        <span class="event-form-hint">Aparecerá como botão "Entrar" na comunidade</span>
+                    </div>
+
+                    <div class="event-form-group">
+                        <label for="eventImage">URL da imagem de capa</label>
+                        <input type="url" id="eventImage" placeholder="https://exemplo.com/imagem.jpg">
+                        <span class="event-form-hint">Opcional — deixe em branco para usar o padrão</span>
+                    </div>
+
+                    <div class="event-toggle-row">
+                        <span><i class="fa-solid fa-eye" style="color:#8b5cf6;margin-right:6px;"></i> Evento ativo</span>
+                        <label class="event-switch">
+                            <input type="checkbox" id="eventActive" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="event-modal-footer">
+                <button type="button" class="event-btn-cancel" id="eventModalCancel">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </button>
+                <button type="button" class="event-btn-save" id="eventModalSave">
+                    <i class="fa-solid fa-check"></i> <span id="eventSaveLabel">Criar evento</span>
+                </button>
+            </div>
+
+        </div>
     </div>
 
     <!-- BOTÃO DE ACESSIBILIDADE (ESTILO LOJA) -->
@@ -88,6 +175,17 @@
             <button class="access-btn"><i class="fa-solid fa-rotate-left"></i><span>Reset</span></button>
         </div>
     </div>
+
+    <!-- ============================================================
+         SUPABASE — precisa vir ANTES do eventos.js
+         ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
 
     <script src="eventos.js"></script>
 </body>
