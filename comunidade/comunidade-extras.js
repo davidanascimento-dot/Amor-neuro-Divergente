@@ -183,20 +183,7 @@
             if (typeof window.openCreateGroupModal === 'function') window.openCreateGroupModal();
         });
 
-        // Botões simples (placeholder)
-        const simpleBtns = {
-            communityCalendarBtn: '📅 Calendário em breve!',
-            communityMembersBtn: '👥 Membros em breve!',
-            communityRankingBtn: '🏆 Classificação em breve!',
-            communityAboutBtn: 'ℹ️ Sobre em breve!'
-        };
-        Object.keys(simpleBtns).forEach(id => {
-            document.getElementById(id)?.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (typeof window.showToast === 'function') window.showToast(simpleBtns[id], 'info');
-            });
-        });
-
+       
         console.log('✅ Sidebar 2 construída com botões da nav original');
     }
 
@@ -2268,7 +2255,7 @@ function injectStyles() {
            MEMBERS DIRECTORY
            ============================================================ */
         .member-directory-item { transition: background 0.15s; }
-        .member-directory-item:hover { background: var(--cx-bg-soft); }
+    
 
         .member-action-btn {
             padding: 6px 14px;
@@ -2281,12 +2268,7 @@ function injectStyles() {
             transition: all 0.15s;
             font-family: 'Inter', sans-serif;
         }
-        .member-action-btn:hover {
-            background: var(--cx-gold-bg);
-            color: var(--cx-gold);
-            border-color: var(--cx-gold-soft);
-        }
-
+       
         #membersDirectorySearch {
             width: 100%;
             padding: 10px 14px 10px 40px;
@@ -2325,23 +2307,7 @@ function injectStyles() {
             color: var(--cx-gold);
         }
 
-        /* ============================================================
-           ACHIEVEMENTS — cards quadrados e limpos
-           ============================================================ */
-        .achievement-card {
-            text-align: center;
-            padding: 18px 14px;
-            border-radius: var(--cx-radius);
-            border: 1px solid var(--cx-border);
-            background: var(--cx-bg);
-            transition: border-color 0.15s;
-        }
-        .achievement-card:hover { border-color: var(--cx-gold-soft); }
-        .achievement-card.unlocked {
-            background: var(--cx-gold-bg);
-            border-color: rgba(184, 147, 90, 0.25);
-        }
-        .achievement-card.unlocked::before { display: none; }
+     
 
         /* ============================================================
            STAT CARDS (Sobre)
@@ -2738,8 +2704,7 @@ function injectStyles() {
     border-bottom: 1px solid var(--cx-border-soft);
     transition: background 0.15s;
 }
-.member-directory-item:last-child { border-bottom: none; }
-.member-directory-item:hover { background: var(--cx-bg-soft); }
+
 
 .details-member-avatar {
     position: relative;
@@ -2784,6 +2749,373 @@ function injectStyles() {
     color: var(--cx-gold);
 }
 .member-action-btn i { font-size: 12px; }
+/* ============================================================
+   CONQUISTAS — clean, dourado
+   ============================================================ */
+#achievementsModal .details-modal-container { max-width: 560px; }
+
+.achievements-summary {
+    text-align: center;
+    padding: 16px 0 28px;
+}
+.achievements-summary-count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    color: var(--cx-text);
+}
+.achievements-summary-number {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--cx-text);
+}
+.achievements-summary-total {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--cx-muted);
+}
+.achievements-summary-label {
+    font-size: 11px;
+    color: var(--cx-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 6px;
+    font-weight: 600;
+}
+.achievements-summary-bar {
+    margin: 16px auto 0;
+    height: 4px;
+    background: var(--cx-border-soft);
+    border-radius: 2px;
+    overflow: hidden;
+    max-width: 260px;
+}
+.achievements-summary-bar-fill {
+    height: 100%;
+    background: var(--cx-gold);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+}
+
+/* Grid de conquistas */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.achievement-card {
+    text-align: center;
+    padding: 18px 12px 16px;
+    border-radius: var(--cx-radius);
+    border: 1px solid var(--cx-border);
+    background: var(--cx-bg);
+    transition: border-color 0.15s, background 0.15s;
+    opacity: 0.55;
+    filter: grayscale(0.3);
+}
+.achievement-card:hover {
+    border-color: var(--cx-gold-soft);
+}
+.achievement-card.unlocked {
+    background: var(--cx-gold-bg);
+    border-color: rgba(184, 147, 90, 0.3);
+    opacity: 1;
+    filter: none;
+}
+
+.achievement-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--cx-bg-hover);
+    color: var(--cx-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 18px;
+    transition: background 0.15s, color 0.15s;
+}
+.achievement-card.unlocked .achievement-icon {
+    background: var(--cx-gold);
+    color: #fff;
+}
+
+.achievement-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--cx-text);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+.achievement-card:not(.unlocked) .achievement-title {
+    color: var(--cx-text-soft);
+}
+
+.achievement-desc {
+    font-size: 10.5px;
+    color: var(--cx-muted);
+    line-height: 1.4;
+    margin-bottom: 10px;
+    min-height: 28px;
+}
+
+.achievement-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+}
+.achievement-progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--cx-border-soft);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.achievement-progress-fill {
+    height: 100%;
+    background: var(--cx-gold);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+.achievement-progress-text {
+    font-size: 9.5px;
+    color: var(--cx-muted);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.achievement-done {
+    font-size: 10.5px;
+    color: var(--cx-gold);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.achievement-done i {
+    font-size: 11px;
+}
+
+/* ============================================================
+   DARK MODE — Conquistas
+   ============================================================ */
+body.a11y-dark-mode .achievement-card {
+    background: #16162a;
+    border-color: #2d2d44;
+}
+
+body.a11y-dark-mode .achievement-icon {
+    background: #2a2a40;
+    color: #94a3b8;
+}
+body.a11y-dark-mode .achievement-card.unlocked .achievement-icon {
+    background: #d4b483;
+    color: #1a1a2e;
+}
+body.a11y-dark-mode .achievement-title { color: #e8e3dd; }
+body.a11y-dark-mode .achievement-card:not(.unlocked) .achievement-title { color: #94a3b8; }
+body.a11y-dark-mode .achievement-desc,
+body.a11y-dark-mode .achievement-progress-text { color: #6a6a8a; }
+body.a11y-dark-mode .achievement-progress-bar { background: #2d2d44; }
+body.a11y-dark-mode .achievement-progress-fill { background: #d4b483; }
+body.a11y-dark-mode .achievement-done { color: #d4b483; }
+body.a11y-dark-mode .achievements-summary-number { color: #e8e3dd; }
+body.a11y-dark-mode .achievements-summary-total,
+body.a11y-dark-mode .achievements-summary-label { color: #94a3b8; }
+body.a11y-dark-mode .achievements-summary-bar { background: #2d2d44; }
+body.a11y-dark-mode .achievements-summary-bar-fill { background: #d4b483; }
+/* ============================================================
+   SOBRE — clean, dourado
+   ============================================================ */
+#communityAboutModal .details-modal-container { max-width: 640px; }
+
+.about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.visual-stat-card {
+    background: var(--cx-bg-soft);
+    border: 1px solid var(--cx-border);
+    border-radius: var(--cx-radius);
+    padding: 16px 10px;
+    text-align: center;
+    transition: border-color 0.15s;
+}
+.visual-stat-card:hover { border-color: var(--cx-gold-soft); }
+
+.visual-stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--cx-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-size: 15px;
+    background: var(--cx-gold-bg);
+    color: var(--cx-gold);
+}
+
+.visual-stat-number {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cx-text);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.visual-stat-label {
+    font-size: 10.5px;
+    color: var(--cx-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+.about-section { margin-bottom: 24px; }
+
+.about-section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cx-text);
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.01em;
+}
+.about-section-title i {
+    color: var(--cx-gold);
+    font-size: 14px;
+}
+
+.about-section-text {
+    font-size: 13.5px;
+    color: var(--cx-muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.about-values {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.about-value {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.about-value i {
+    color: var(--cx-gold);
+    font-size: 14px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+.about-value strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cx-text);
+    margin-bottom: 2px;
+}
+.about-value p {
+    font-size: 12.5px;
+    color: var(--cx-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.about-quote {
+    padding: 16px 18px;
+    background: var(--cx-bg-soft);
+    border-radius: var(--cx-radius);
+    border-left: 3px solid var(--cx-gold);
+    margin-bottom: 20px;
+}
+.about-quote p {
+    font-size: 13.5px;
+    color: var(--cx-text-soft);
+    font-style: italic;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.about-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid var(--cx-border);
+    border-radius: var(--cx-radius);
+    background: transparent;
+    color: var(--cx-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.about-cta:hover {
+    background: var(--cx-gold-bg);
+    border-color: var(--cx-gold-soft);
+    color: var(--cx-gold);
+}
+.about-cta i {
+    font-size: 12px;
+    transition: transform 0.15s;
+}
+.about-cta:hover i {
+    transform: translateX(3px);
+}
+
+/* Dark Mode — Sobre */
+body.a11y-dark-mode .visual-stat-card {
+    background: #16162a;
+    border-color: #2d2d44;
+}
+body.a11y-dark-mode .visual-stat-icon {
+    background: rgba(212, 180, 131, 0.1);
+    color: #d4b483;
+}
+body.a11y-dark-mode .visual-stat-number { color: #e8e3dd; }
+body.a11y-dark-mode .visual-stat-label,
+body.a11y-dark-mode .about-section-text,
+body.a11y-dark-mode .about-value p { color: #94a3b8; }
+body.a11y-dark-mode .about-section-title { color: #e8e3dd; }
+body.a11y-dark-mode .about-section-title i { color: #d4b483; }
+body.a11y-dark-mode .about-value strong { color: #e8e3dd; }
+body.a11y-dark-mode .about-value i { color: #d4b483; }
+body.a11y-dark-mode .about-quote {
+    background: #16162a;
+    border-left-color: #d4b483;
+}
+body.a11y-dark-mode .about-quote p { color: #b8b0a8; }
+body.a11y-dark-mode .about-cta {
+    border-color: #2d2d44;
+    color: #e8e3dd;
+}
+body.a11y-dark-mode .about-cta:hover {
+    background: rgba(212, 180, 131, 0.1);
+    border-color: #b8935a;
+    color: #d4b483;
+}
     `;
     document.head.appendChild(styles);
 }
@@ -3624,89 +3956,118 @@ function createAboutModal() {
     document.body.insertAdjacentHTML('beforeend', `
         <div class="modal-overlay" id="communityAboutModal" hidden>
             <div class="details-modal-container" style="max-width:640px;">
-                <div class="details-modal-banner" style="background:linear-gradient(135deg,#7c3aed,#ec4899);height:140px;display:flex;align-items:center;justify-content:center;">
-                    <button class="details-modal-close" id="closeAboutModal" style="position:absolute;top:12px;right:12px;">
+
+                <div class="details-modal-banner" id="aboutBanner">
+                    <button class="details-modal-close" id="closeAboutModal" aria-label="Fechar">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <i class="fa-solid fa-heart" style="font-size:60px;color:#fff;opacity:0.9;"></i>
+                    <div class="banner-floating-badge">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                        <span>Sobre</span>
+                    </div>
                 </div>
-                <div class="details-modal-header" style="text-align:center;margin-top:-40px;">
-                    <h2 class="details-modal-name" style="font-size:26px;">Amor NeuroDivergente</h2>
-                    <p class="details-modal-description" style="font-size:15px;">
+
+                <div class="details-modal-header">
+                    <h2 class="details-modal-name" style="font-size:24px;">Amor NeuroDivergente</h2>
+                    <p class="details-modal-description">
                         Um espaço seguro para compartilhar experiências, fazer perguntas e encontrar apoio.
                     </p>
                 </div>
-                <div class="details-modal-content" style="padding:16px 24px 32px;">
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
-                        <div style="text-align:center;padding:16px;background:rgba(124,58,237,0.05);border-radius:12px;">
-                            <i class="fa-solid fa-users" style="font-size:24px;color:#7c3aed;margin-bottom:8px;"></i>
-                            <div style="font-size:20px;font-weight:800;color:#1f2937;">1.2k+</div>
-                            <div style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Membros</div>
+
+                <div class="details-modal-content" style="padding:0 24px 28px;">
+
+                    <!-- Stats -->
+                    <div class="about-stats">
+                        <div class="visual-stat-card">
+                            <div class="visual-stat-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="visual-stat-number">1.2k+</div>
+                            <div class="visual-stat-label">Membros</div>
                         </div>
-                        <div style="text-align:center;padding:16px;background:rgba(236,72,153,0.05);border-radius:12px;">
-                            <i class="fa-regular fa-message" style="font-size:24px;color:#ec4899;margin-bottom:8px;"></i>
-                            <div style="font-size:20px;font-weight:800;color:#1f2937;">5.8k+</div>
-                            <div style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Publicações</div>
+                        <div class="visual-stat-card">
+                            <div class="visual-stat-icon"><i class="fa-regular fa-message"></i></div>
+                            <div class="visual-stat-number">5.8k+</div>
+                            <div class="visual-stat-label">Publicações</div>
                         </div>
-                        <div style="text-align:center;padding:16px;background:rgba(16,185,129,0.05);border-radius:12px;">
-                            <i class="fa-regular fa-calendar" style="font-size:24px;color:#10b981;margin-bottom:8px;"></i>
-                            <div style="font-size:20px;font-weight:800;color:#1f2937;">120+</div>
-                            <div style="font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Eventos</div>
+                        <div class="visual-stat-card">
+                            <div class="visual-stat-icon"><i class="fa-regular fa-calendar"></i></div>
+                            <div class="visual-stat-number">120+</div>
+                            <div class="visual-stat-label">Eventos</div>
                         </div>
                     </div>
 
-                    <h3 style="font-size:16px;font-weight:700;color:#1f2937;margin-bottom:12px;">
-                        <i class="fa-solid fa-bullseye" style="color:#7c3aed;"></i> Nossa Missão
-                    </h3>
-                    <p style="font-size:14px;color:#6b7280;line-height:1.7;margin-bottom:20px;">
-                        Criar um ambiente acolhedor onde pessoas neurodivergentes possam compartilhar 
-                        experiências, encontrar apoio mútuo e celebrar suas conquistas sem julgamentos.
-                    </p>
-
-                    <h3 style="font-size:16px;font-weight:700;color:#1f2937;margin-bottom:12px;">
-                        <i class="fa-solid fa-heart" style="color:#ec4899;"></i> Nossos Valores
-                    </h3>
-                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
-                        <div style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fa-solid fa-check-circle" style="color:#10b981;margin-top:2px;"></i>
-                            <div>
-                                <strong style="font-size:13px;color:#1f2937;">Respeito</strong>
-                                <p style="font-size:12px;color:#6b7280;margin:2px 0 0 0;">Cada pessoa é única e merece ser ouvida.</p>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fa-solid fa-check-circle" style="color:#10b981;margin-top:2px;"></i>
-                            <div>
-                                <strong style="font-size:13px;color:#1f2937;">Acolhimento</strong>
-                                <p style="font-size:12px;color:#6b7280;margin:2px 0 0 0;">Um espaço seguro para ser quem você é.</p>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fa-solid fa-check-circle" style="color:#10b981;margin-top:2px;"></i>
-                            <div>
-                                <strong style="font-size:13px;color:#1f2937;">Privacidade</strong>
-                                <p style="font-size:12px;color:#6b7280;margin:2px 0 0 0;">Suas histórias são protegidas aqui.</p>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fa-solid fa-check-circle" style="color:#10b981;margin-top:2px;"></i>
-                            <div>
-                                <strong style="font-size:13px;color:#1f2937;">Empatia</strong>
-                                <p style="font-size:12px;color:#6b7280;margin:2px 0 0 0;">Compartilhamos vivências e nos apoiamos.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="padding:16px;background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(236,72,153,0.08));border-radius:12px;text-align:center;">
-                        <p style="font-size:14px;color:#4b5563;font-style:italic;margin:0;">
-                            "Juntos somos mais fortes. Juntos somos comunidade." 💜
+                    <!-- Missão -->
+                    <div class="about-section">
+                        <h3 class="about-section-title">
+                            <i class="fa-solid fa-bullseye"></i> Nossa Missão
+                        </h3>
+                        <p class="about-section-text">
+                            Criar um ambiente acolhedor onde pessoas neurodivergentes possam compartilhar
+                            experiências, encontrar apoio mútuo e celebrar suas conquistas sem julgamentos.
                         </p>
                     </div>
+
+                    <!-- Valores -->
+                    <div class="about-section">
+                        <h3 class="about-section-title">
+                            <i class="fa-solid fa-heart"></i> Nossos Valores
+                        </h3>
+                        <div class="about-values">
+                            <div class="about-value">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <div>
+                                    <strong>Respeito</strong>
+                                    <p>Cada pessoa é única e merece ser ouvida.</p>
+                                </div>
+                            </div>
+                            <div class="about-value">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <div>
+                                    <strong>Acolhimento</strong>
+                                    <p>Um espaço seguro para ser quem você é.</p>
+                                </div>
+                            </div>
+                            <div class="about-value">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <div>
+                                    <strong>Privacidade</strong>
+                                    <p>Suas histórias são protegidas aqui.</p>
+                                </div>
+                            </div>
+                            <div class="about-value">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <div>
+                                    <strong>Empatia</strong>
+                                    <p>Compartilhamos vivências e nos apoiamos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quote -->
+                    <div class="about-quote">
+                        <p>"Juntos somos mais fortes. Juntos somos comunidade."</p>
+                    </div>
+
+                    <!-- CTA — Saber Mais -->
+                    <a href="/Quem somos/quem-somos.html" class="about-cta">
+                        <i class="fa-solid fa-arrow-right"></i>
+                        Conheça nossa história completa
+                    </a>
+
                 </div>
             </div>
         </div>
     `);
+function openAboutModal() {
+    // Se ainda não existe, cria
+    if (!document.getElementById('communityAboutModal')) {
+        createAboutModal();
+    }
 
+    // Agora sim abre
+    const modal = document.getElementById('communityAboutModal');
+    modal?.removeAttribute('hidden');
+}
     const modal = document.getElementById('communityAboutModal');
     document.getElementById('closeAboutModal')?.addEventListener('click', () => modal?.setAttribute('hidden', ''));
     modal?.addEventListener('click', (e) => { if (e.target === modal) modal.setAttribute('hidden', ''); });
@@ -3722,19 +4083,28 @@ function createAchievementsModal() {
     document.body.insertAdjacentHTML('beforeend', `
         <div class="modal-overlay" id="achievementsModal" hidden>
             <div class="details-modal-container" style="max-width:560px;">
-                <div class="details-modal-banner" style="background:linear-gradient(135deg,#f59e0b,#ec4899);height:120px;display:flex;align-items:center;justify-content:center;">
-                    <button class="details-modal-close" id="closeAchievementsModal" style="position:absolute;top:12px;right:12px;">
+
+                <div class="details-modal-banner" id="achievementsBanner">
+                    <button class="details-modal-close" id="closeAchievementsModal" aria-label="Fechar">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <i class="fa-solid fa-trophy" style="font-size:50px;color:#fff;opacity:0.9;"></i>
+                    <div class="banner-floating-badge">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Jornada</span>
+                    </div>
                 </div>
-                <div class="details-modal-header" style="text-align:center;margin-top:-30px;">
+
+                <div class="details-modal-header">
                     <h2 class="details-modal-name">Suas Conquistas</h2>
-                    <p class="details-modal-description">Marcos da sua jornada na comunidade</p>
+                    <p class="details-modal-description">Marcos da sua jornada na comunidade.</p>
                 </div>
-                <div class="details-modal-content" id="achievementsList" style="padding:0 24px 24px;">
-                    <div class="community-inner-loading"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>
+
+                <div class="details-modal-content" id="achievementsList">
+                    <div class="community-inner-loading">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Carregando...
+                    </div>
                 </div>
+
             </div>
         </div>
     `);
@@ -3746,13 +4116,14 @@ function createAchievementsModal() {
 
 async function openAchievementsModal() {
     if (!document.getElementById('achievementsModal')) createAchievementsModal();
-    
+
     const modal = document.getElementById('achievementsModal');
     modal?.removeAttribute('hidden');
 
     const list = document.getElementById('achievementsList');
     if (!list) return;
 
+    // 🔥 Se NÃO está logado, mostra mensagem amigável (sem usar variáveis inexistentes)
     if (!currentUser) {
         list.innerHTML = `
             <div class="details-empty">
@@ -3768,7 +4139,6 @@ async function openAchievementsModal() {
     try {
         const supabase = CONFIG.supabase;
 
-        // Buscar dados do usuário
         const [postsRes, commentsRes, friendsRes] = await Promise.all([
             supabase.from('posts').select('*', { count: 'exact', head: true }).eq('author_id', currentUser.id),
             supabase.from('comments').select('*', { count: 'exact', head: true }).eq('author_id', currentUser.id),
@@ -3793,29 +4163,34 @@ async function openAchievementsModal() {
         const unlockedCount = achievements.filter(a => a.unlocked).length;
 
         list.innerHTML = `
-            <div style="text-align:center;padding:16px 0 24px;">
-                <div style="font-size:32px;font-weight:800;color:#7c3aed;">${unlockedCount}/${achievements.length}</div>
-                <div style="font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Conquistas Desbloqueadas</div>
-                <div style="margin-top:12px;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;max-width:280px;margin-left:auto;margin-right:auto;">
-                    <div style="height:100%;background:linear-gradient(90deg,#7c3aed,#ec4899);width:${(unlockedCount / achievements.length) * 100}%;border-radius:3px;transition:width 0.5s;"></div>
+            <div class="achievements-summary">
+                <div class="achievements-summary-count">
+                    <span class="achievements-summary-number">${unlockedCount}</span>
+                    <span class="achievements-summary-total">/ ${achievements.length}</span>
+                </div>
+                <div class="achievements-summary-label">Conquistas Desbloqueadas</div>
+                <div class="achievements-summary-bar">
+                    <div class="achievements-summary-bar-fill" style="width:${(unlockedCount / achievements.length) * 100}%;"></div>
                 </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">
+            <div class="achievements-grid">
                 ${achievements.map(a => `
-                    <div style="text-align:center;padding:16px 12px;border-radius:12px;border:1px solid ${a.unlocked ? 'rgba(124,58,237,0.2)' : '#e5e7eb'};background:${a.unlocked ? 'rgba(124,58,237,0.03)' : '#fafafa'};opacity:${a.unlocked ? 1 : 0.5};transition:all 0.2s;">
-                        <div style="width:48px;height:48px;border-radius:50%;background:${a.unlocked ? 'linear-gradient(135deg,#7c3aed,#ec4899)' : '#e5e7eb'};display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
-                            <i class="fa-solid ${a.icon}" style="font-size:20px;color:${a.unlocked ? '#fff' : '#9ca3af'};"></i>
+                    <div class="achievement-card ${a.unlocked ? 'unlocked' : ''}">
+                        <div class="achievement-icon">
+                            <i class="fa-solid ${a.icon}"></i>
                         </div>
-                        <div style="font-size:12px;font-weight:700;color:#1f2937;margin-bottom:4px;">${a.title}</div>
-                        <div style="font-size:10px;color:#9ca3af;line-height:1.4;">${a.desc}</div>
+                        <div class="achievement-title">${a.title}</div>
+                        <div class="achievement-desc">${a.desc}</div>
                         ${!a.unlocked ? `
-                            <div style="margin-top:8px;height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden;">
-                                <div style="height:100%;background:#7c3aed;width:${(a.progress / a.total) * 100}%;"></div>
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-bar">
+                                    <div class="achievement-progress-fill" style="width:${(a.progress / a.total) * 100}%;"></div>
+                                </div>
+                                <div class="achievement-progress-text">${a.progress}/${a.total}</div>
                             </div>
-                            <div style="font-size:9px;color:#9ca3af;margin-top:4px;">${a.progress}/${a.total}</div>
                         ` : `
-                            <div style="margin-top:8px;font-size:10px;color:#10b981;font-weight:700;">
+                            <div class="achievement-done">
                                 <i class="fa-solid fa-check-circle"></i> Concluído
                             </div>
                         `}
@@ -3833,7 +4208,6 @@ async function openAchievementsModal() {
         `;
     }
 }
-
 // =============================================
 // SUBSTITUIR BOTÕES PLACEHOLDER POR FUNÇÕES REAIS
 // =============================================
@@ -3872,6 +4246,8 @@ function patchSidebarButtons() {
         }
     }
 }
+
+
 
 // =============================================
 // APLICAR CORREÇÕES E SUBSTITUIÇÕES
@@ -4266,38 +4642,6 @@ function injectVisualImprovements() {
             transform: scale(1.05);
         }
 
-        /* ==========================================
-           ACHIEVEMENT CARDS COM BRILHO
-           ========================================== */
-        .achievement-card {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .achievement-card.unlocked {
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(236, 72, 153, 0.03));
-        }
-
-        .achievement-card.unlocked::before {
-            content: '✨';
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            font-size: 14px;
-            opacity: 0.6;
-            animation: sparkle 2s ease-in-out infinite;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
-        }
-
-        .achievement-card.unlocked:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
-        }
 
         /* ==========================================
            BOTÕES COM GRADIENTE SUAVE
@@ -4434,32 +4778,7 @@ function injectVisualImprovements() {
             border-radius: 10px;
         }
 
-        /* ==========================================
-           DARK MODE — AJUSTES VISUAIS
-           ========================================== */
-        body.a11y-dark-mode .banner-floating-badge {
-            background: rgba(42, 42, 64, 0.95);
-            color: #c4b5fd;
-        }
-
-        body.a11y-dark-mode .visual-empty-state h4 {
-            color: #e8e8f0;
-        }
-
-        body.a11y-dark-mode .achievement-card.unlocked {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.1));
-        }
-
-        body.a11y-dark-mode .member-directory-item:hover {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(236, 72, 153, 0.08));
-        }
-
-        body.a11y-dark-mode #communityCalendarModal .details-modal-container,
-        body.a11y-dark-mode #membersDirectoryModal .details-modal-container,
-        body.a11y-dark-mode #achievementsModal .details-modal-container,
-        body.a11y-dark-mode #communityAboutModal .details-modal-container {
-            background: linear-gradient(180deg, #1a1a2e 0%, #16162a 100%);
-        }
+       
     `;
 
     document.head.appendChild(styles);
@@ -4517,112 +4836,15 @@ function enhanceMembersModal() {
     }
 }
 
-function enhanceAchievementsModal() {
-    const banner = document.querySelector('#achievementsModal .details-modal-banner');
-    if (banner) {
-        banner.classList.remove('visual-banner');
-        banner.style.background = 'var(--cx-bg-soft, #faf9f6)';
-        banner.style.backgroundImage = 'none';
-        banner.style.height = '80px';
-        banner.querySelector('.banner-decorative-icon')?.remove();
-    }
-}
 
-function enhanceAboutModal() {
-    const banner = document.querySelector('#communityAboutModal .details-modal-banner');
-    if (banner) {
-        banner.classList.remove('visual-banner');
-        banner.style.background = 'var(--cx-bg-soft, #faf9f6)';
-        banner.style.backgroundImage = 'none';
-        banner.style.height = '80px';
-        banner.style.display = 'block';
-        banner.querySelector('.banner-decorative-icon')?.remove();
-    }
-}
 
-// =============================================
-// PATCH — MEMBROS COM BANNER VISUAL
-// =============================================
 
-function enhanceMembersModal() {
-    const banner = document.querySelector('#membersDirectoryModal .details-modal-banner');
-    if (banner && !banner.classList.contains('visual-banner')) {
-        applyVisualBanner(banner, 'members', 'fa-users');
 
-        if (!banner.querySelector('.banner-floating-badge')) {
-            banner.insertAdjacentHTML('afterbegin', `
-                <div class="banner-floating-badge">
-                    <i class="fa-solid fa-heart"></i>
-                    <span>Nossa Comunidade</span>
-                </div>
-            `);
-        }
-    }
-}
 
-// =============================================
-// PATCH — CONQUISTAS COM BANNER VISUAL
-// =============================================
 
-function enhanceAchievementsModal() {
-    const banner = document.querySelector('#achievementsModal .details-modal-banner');
-    if (banner && !banner.classList.contains('visual-banner')) {
-        applyVisualBanner(banner, 'achievements', 'fa-trophy');
 
-        if (!banner.querySelector('.banner-floating-badge')) {
-            banner.insertAdjacentHTML('afterbegin', `
-                <div class="banner-floating-badge">
-                    <i class="fa-solid fa-star"></i>
-                    <span>Sua Jornada</span>
-                </div>
-            `);
-        }
-    }
-}
 
-// =============================================
-// PATCH — SOBRE COM BANNER VISUAL
-// =============================================
 
-function enhanceAboutModal() {
-    const banner = document.querySelector('#communityAboutModal .details-modal-banner');
-    if (banner && !banner.classList.contains('visual-banner')) {
-        // Para o Sobre, usar um banner mais especial
-        banner.classList.add('visual-banner');
-        banner.style.backgroundImage = `url('${VISUAL_IMAGES.about[0]}')`;
-        banner.style.backgroundSize = 'cover';
-        banner.style.backgroundPosition = 'center';
-        banner.style.height = '180px';
-        banner.style.display = 'flex';
-        banner.style.alignItems = 'center';
-        banner.style.justifyContent = 'center';
-
-        // Remover ícone heart antigo se existir
-        const oldIcon = banner.querySelector('i.fa-heart:not(.banner-decorative-icon)');
-        if (oldIcon && !oldIcon.classList.contains('fa-xmark')) {
-            oldIcon.style.position = 'relative';
-            oldIcon.style.zIndex = '2';
-            oldIcon.style.fontSize = '70px';
-            oldIcon.style.color = '#fff';
-            oldIcon.style.textShadow = '0 4px 20px rgba(0,0,0,0.3)';
-            oldIcon.style.opacity = '0.95';
-            oldIcon.style.animation = 'badgeFloat 3s ease-in-out infinite';
-        }
-
-        banner.insertAdjacentHTML('beforeend', `
-            <i class="fa-solid fa-heart banner-decorative-icon"></i>
-        `);
-
-        if (!banner.querySelector('.banner-floating-badge')) {
-            banner.insertAdjacentHTML('afterbegin', `
-                <div class="banner-floating-badge">
-                    <i class="fa-solid fa-hand-holding-heart"></i>
-                    <span>Amor NeuroDivergente</span>
-                </div>
-            `);
-        }
-    }
-}
 
 // =============================================
 // PATCH — EVENTOS COM BANNER VISUAL
