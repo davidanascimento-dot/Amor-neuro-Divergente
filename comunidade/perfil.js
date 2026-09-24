@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PERFIL.JS — Página de Perfil do Usuário
+   PERFIL.JS — Página de Perfil (layout Reddit + Destaques + Moldura)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -9,33 +9,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    let currentUser = null;
-    let profileUser = null;   // Usuário dono do perfil sendo visualizado
-    let isOwnProfile = false;
-    let currentTab = 'posts';
-
     const AVATAR_PADRAO = '/img/foto-padrão.jpg';
 
+    let currentUser = null;
+    let profileUser = null;
+    let isOwnProfile = false;
+    let currentTab = 'posts';
+    let allPosts = [];        // cache dos posts do usuário
+    let allSavedPosts = [];   // cache dos posts salvos
+
     // =============================================
-    // 1. OBTER USUÁRIO LOGADO
+    // 1. USUÁRIO LOGADO
     // =============================================
     try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
             currentUser = session.user;
             console.log('✅ Usuário logado:', currentUser.email);
+        } else {
+            console.log('ℹ️ Nenhum usuário logado (modo visitante)');
         }
     } catch (e) {
         console.error('Erro ao verificar sessão:', e);
     }
 
     // =============================================
-    // 2. OBTER ID DO PERFIL PELA URL
+    // 2. ID DO PERFIL (via URL ou próprio)
     // =============================================
     const urlParams = new URLSearchParams(window.location.search);
     const profileIdFromUrl = urlParams.get('id');
-
-    // Se não veio ID na URL, usar o próprio usuário logado
     const targetUserId = profileIdFromUrl || currentUser?.id;
 
     if (!targetUserId) {
@@ -44,13 +46,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     isOwnProfile = currentUser?.id === targetUserId;
+    console.log(`👤 Visualizando perfil: ${targetUserId} (próprio: ${isOwnProfile})`);
 
     // =============================================
     // 3. CARREGAR PERFIL
     // =============================================
     async function loadProfile() {
         try {
-            // Buscar dados do perfil no banco
             const { data: profile, error } = await supabase
                 .from('profiles')
                 .select('*')
@@ -61,24 +63,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error('❌ Erro ao buscar perfil:', error);
             }
 
-            // Se não encontrou, tentar buscar informações básicas do auth
             if (!profile) {
-                const { data: { user } } = await supabase.auth.admin.getUserById(targetUserId);
-                // fallback: usar dados mínimos
                 profileUser = {
                     id: targetUserId,
-                    username: user?.user_metadata?.username || user?.email?.split('@')[0] || 'Usuário',
-                    avatar_url: user?.user_metadata?.avatar_url || null,
+                    username: 'Usuário',
+                    avatar_url: null,
                     banner_url: null,
                     bio: 'Sem bio.',
                     location: null,
                     website: null,
                     is_admin: false,
                     is_verified: false,
+                    frame: 'none',
                     followers_count: 0,
                     following_count: 0,
                     contribution_count: 0,
-                    created_at: user?.created_at || new Date().toISOString()
+                    created_at: new Date().toISOString()
                 };
             } else {
                 profileUser = {
@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     website: profile.website || null,
                     is_admin: profile.is_admin || false,
                     is_verified: profile.is_verified || false,
+                    frame: profile.frame || 'none',
                     followers_count: profile.followers_count || 0,
                     following_count: profile.following_count || 0,
                     contribution_count: profile.contribution_count || 0,
@@ -101,6 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderProfile();
             await loadPosts();
             await loadStats();
+            await loadSavedPosts();
+            renderHighlights();
 
         } catch (err) {
             console.error('❌ Erro inesperado:', err);
@@ -109,89 +112,128 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // =============================================
-    // 4. RENDERIZAR PERFIL NA TELA
+    // 4. RENDERIZAR PERFIL
     // =============================================
     function renderProfile() {
         const p = profileUser;
 
-        // Topbar
-        document.getElementById('topbarName').textContent = p.username;
+        // Título da página
         document.title = `${p.username} — Amor NeuroDivergente`;
 
         // Banner
         const bannerImg = document.getElementById('bannerImg');
         const bannerPlaceholder = document.getElementById('bannerPlaceholder');
-        if (p.banner_url && p.banner_url.trim() !== '') {
-            bannerImg.src = p.banner_url;
-            bannerImg.style.display = 'block';
-            bannerPlaceholder.style.display = 'none';
-        } else {
-            bannerImg.style.display = 'none';
-            bannerPlaceholder.style.display = 'flex';
+        if (bannerImg && bannerPlaceholder) {
+            if (p.banner_url && p.banner_url.trim() !== '') {
+                bannerImg.src = p.banner_url;
+                bannerImg.style.display = 'block';
+                bannerPlaceholder.style.display = 'none';
+                bannerImg.onerror = () => {
+                    bannerImg.style.display = 'none';
+                    bannerPlaceholder.style.display = 'flex';
+                };
+            } else {
+                bannerImg.style.display = 'none';
+                bannerPlaceholder.style.display = 'flex';
+            }
         }
 
-        // Avatar
+        // Avatar (com cache-buster para forçar atualização)
         const avatarImg = document.getElementById('profileAvatar');
         const avatarPlaceholder = document.getElementById('avatarPlaceholder');
-        if (p.avatar_url && p.avatar_url.trim() !== '') {
-            avatarImg.src = p.avatar_url;
-            avatarImg.style.display = 'block';
-            avatarPlaceholder.style.display = 'none';
-            avatarImg.onerror = () => {
+        if (avatarImg && avatarPlaceholder) {
+            if (p.avatar_url && p.avatar_url.trim() !== '') {
+                const sep = p.avatar_url.includes('?') ? '&' : '?';
+                avatarImg.src = p.avatar_url + sep + 'v=' + Date.now();
+                avatarImg.style.display = 'block';
+                avatarPlaceholder.style.display = 'none';
+                avatarImg.onerror = () => {
+                    avatarImg.style.display = 'none';
+                    avatarPlaceholder.style.display = 'flex';
+                };
+            } else {
                 avatarImg.style.display = 'none';
                 avatarPlaceholder.style.display = 'flex';
-            };
-        } else {
-            avatarImg.style.display = 'none';
-            avatarPlaceholder.style.display = 'flex';
+            }
         }
 
-        // Nome + badges
-        document.getElementById('profileName').textContent = p.username;
-        document.getElementById('profileHandle').textContent = '@' + p.username.toLowerCase();
+        // ✅ Avatar da nav (header)
+        const headerAvatar = document.getElementById('headerAvatar');
+        if (headerAvatar) {
+            if (p.avatar_url && p.avatar_url.trim() !== '') {
+                const sep = p.avatar_url.includes('?') ? '&' : '?';
+                headerAvatar.src = p.avatar_url + sep + 'v=' + Date.now();
+                headerAvatar.onerror = () => { headerAvatar.src = AVATAR_PADRAO; };
+            } else {
+                headerAvatar.src = AVATAR_PADRAO;
+            }
+        }
 
-        document.getElementById('verifiedBadge').style.display = p.is_verified ? 'inline-flex' : 'none';
-        document.getElementById('adminBadge').style.display = p.is_admin ? 'inline-flex' : 'none';
+        // Moldura do avatar
+        const heroAvatar = document.getElementById('avatarWrapper');
+        if (heroAvatar) {
+            heroAvatar.dataset.frame = p.frame || 'none';
+        }
+
+        // Nome + handle
+        const nameEl = document.getElementById('profileName');
+        const handleEl = document.getElementById('profileHandle');
+        if (nameEl) nameEl.textContent = p.username;
+        if (handleEl) handleEl.textContent = '@' + (p.username || '').toLowerCase();
+
+        // Badges
+        const verifiedEl = document.getElementById('verifiedBadge');
+        const adminEl = document.getElementById('adminBadge');
+        if (verifiedEl) verifiedEl.style.display = p.is_verified ? 'inline-flex' : 'none';
+        if (adminEl) adminEl.style.display = p.is_admin ? 'inline-flex' : 'none';
 
         // Bio
-        document.getElementById('profileBio').textContent = p.bio || 'Sem bio.';
+        const bioEl = document.getElementById('profileBio');
+        if (bioEl) bioEl.textContent = p.bio || 'Sem bio.';
 
         // Localização
         const locEl = document.getElementById('profileLocation');
-        if (p.location && p.location.trim() !== '') {
-            locEl.style.display = 'inline-flex';
-            locEl.querySelector('span').textContent = p.location;
-        } else {
-            locEl.style.display = 'none';
+        if (locEl) {
+            if (p.location && p.location.trim() !== '') {
+                locEl.style.display = 'inline-flex';
+                const span = locEl.querySelector('span');
+                if (span) span.textContent = p.location;
+            } else {
+                locEl.style.display = 'none';
+            }
         }
 
         // Link
         const linkEl = document.getElementById('profileLink');
-        if (p.website && p.website.trim() !== '') {
-            linkEl.style.display = 'inline-flex';
-            const a = linkEl.querySelector('a');
-            a.href = p.website.startsWith('http') ? p.website : 'https://' + p.website;
-            a.textContent = p.website.replace(/^https?:\/\//, '');
-        } else {
-            linkEl.style.display = 'none';
+        if (linkEl) {
+            if (p.website && p.website.trim() !== '') {
+                linkEl.style.display = 'inline-flex';
+                const a = linkEl.querySelector('a');
+                if (a) {
+                    a.href = p.website.startsWith('http') ? p.website : 'https://' + p.website;
+                    a.textContent = p.website.replace(/^https?:\/\//, '');
+                }
+            } else {
+                linkEl.style.display = 'none';
+            }
         }
 
         // Data de entrada
-        const joinDate = new Date(p.created_at);
-        document.getElementById('profileJoinDate').innerHTML =
-            `<i class="fa-regular fa-calendar"></i> Entrou em ${joinDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`;
+        const joinEl = document.getElementById('profileJoinDate');
+        if (joinEl) {
+            const joinDate = new Date(p.created_at);
+            joinEl.innerHTML = `<i class="fa-regular fa-calendar"></i> Entrou em ${joinDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`;
+        }
 
         // Estatísticas
-        document.getElementById('statFollowers').textContent = formatNumber(p.followers_count);
-        document.getElementById('statFollowing').textContent = formatNumber(p.following_count);
-        document.getElementById('statContrib').textContent = formatNumber(p.contribution_count);
+        setText('statFollowers', formatNumber(p.followers_count));
+        setText('statFollowing', formatNumber(p.following_count));
+        setText('statContrib', formatNumber(p.contribution_count));
 
-        // Botão de editar só aparece no próprio perfil
+        // Botão de editar só no próprio perfil
         const editBtn = document.getElementById('openEditBtn');
-        if (isOwnProfile) {
-            editBtn.style.display = 'flex';
-        } else {
-            editBtn.style.display = 'none';
+        if (editBtn) {
+            editBtn.style.display = isOwnProfile ? 'flex' : 'none';
         }
     }
 
@@ -200,6 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // =============================================
     async function loadPosts() {
         const container = document.getElementById('profileContent');
+        if (!container) return;
 
         try {
             const { data: posts, error } = await supabase
@@ -215,33 +258,171 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // Atualizar contador no topbar
-            document.getElementById('topbarPosts').textContent = `${posts.length} posts`;
-
-            if (!posts || posts.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-regular fa-feather"></i>
-                        <p>Nenhum post ainda</p>
-                        <small>Quando este usuário postar, aparecerá aqui.</small>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = posts.map(post => renderPostCard(post)).join('');
+            allPosts = posts || [];
+            renderCurrentTab();
 
         } catch (err) {
             console.error('❌ Erro inesperado:', err);
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Erro ao carregar posts</p></div>`;
+        }
+    }
+
+  async function loadSavedPosts() {
+    console.log('🔍 [loadSavedPosts] Buscando salvos de:', targetUserId);
+
+    try {
+        // 1. Buscar os IDs dos posts salvos
+        const { data: saved, error: savedErr } = await supabase
+            .from('saved_posts')
+            .select('post_id, created_at')
+            .eq('user_id', targetUserId)
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+        if (savedErr) {
+            console.warn('⚠️ [loadSavedPosts] Erro em saved_posts:', savedErr);
+            console.warn('   Código:', savedErr.code, '| Mensagem:', savedErr.message);
+            console.warn('   → Se for "relation does not exist", crie a tabela saved_posts.');
+            console.warn('   → Se for "permission denied", ajuste as políticas RLS.');
+            allSavedPosts = [];
+            return;
+        }
+
+        console.log('📦 [loadSavedPosts] Registros encontrados:', saved?.length || 0);
+
+        if (!saved || saved.length === 0) {
+            console.log('ℹ️ Nenhum post salvo por este usuário.');
+            allSavedPosts = [];
+            return;
+        }
+
+        const postIds = saved.map(s => s.post_id).filter(Boolean);
+        console.log('🔑 [loadSavedPosts] IDs dos posts salvos:', postIds);
+
+        // 2. Buscar os posts completos
+        const { data: posts, error: postsErr } = await supabase
+            .from('posts')
+            .select('*')
+            .in('id', postIds)
+            .eq('is_active', true);
+
+        if (postsErr) {
+            console.warn('⚠️ [loadSavedPosts] Erro ao buscar posts:', postsErr);
+            allSavedPosts = [];
+            return;
+        }
+
+        console.log('📄 [loadSavedPosts] Posts carregados:', posts?.length || 0);
+
+        // 3. Reordenar conforme a ordem dos saved
+        const postsMap = new Map((posts || []).map(p => [p.id, p]));
+        allSavedPosts = postIds
+            .map(id => postsMap.get(id))
+            .filter(Boolean);
+
+        console.log(`⭐ [loadSavedPosts] ${allSavedPosts.length} posts salvos prontos`);
+    } catch (e) {
+        console.warn('❌ [loadSavedPosts] Exceção:', e);
+        allSavedPosts = [];
+    }
+}
+       // =============================================
+    // 5.2. RENDERIZAR DESTAQUES DA COMUNIDADE
+    // =============================================
+    function renderHighlights() {
+        const scroll = document.getElementById('highlightsScroll');
+        if (!scroll) return;
+
+        if (!allSavedPosts || allSavedPosts.length === 0) {
+            scroll.innerHTML = `<div class="highlights-empty">Nenhum destaque ainda — salve posts no fórum para vê-los aqui.</div>`;
+            return;
+        }
+
+        scroll.innerHTML = allSavedPosts.map(post => {
+            const thumbUrl = post.image_url || null;
+            const content = post.content || '';
+            const title = content.substring(0, 80) + (content.length > 80 ? '…' : '');
+            const avatar = post.author_avatar || profileUser.avatar_url || AVATAR_PADRAO;
+            const authorName = post.author_name || profileUser.username;
+
+            return `
+                <div class="highlight-card" data-post-id="${post.id}" onclick="window.openHighlight('${post.id}')">
+                    <div class="highlight-card-thumb">
+                        ${thumbUrl
+                            ? `<img src="${thumbUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;highlight-card-thumb-placeholder&quot;><i class=&quot;fa-regular fa-image&quot;></i></div>';">`
+                            : `<div class="highlight-card-thumb-placeholder"><i class="fa-regular fa-image"></i></div>`}
+                    </div>
+                    <div class="highlight-card-body">
+                        <div class="highlight-card-title">${escapeHtml(title)}</div>
+                        <div class="highlight-card-footer">
+                            <img class="highlight-card-avatar" src="${avatar}" alt="" onerror="this.src='${AVATAR_PADRAO}'">
+                            <span>@${escapeHtml((authorName || '').toLowerCase())}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Abrir o post clicado no fórum
+    window.openHighlight = function(postId) {
+        window.location.href = `/comunidade/comunidade.html#post-${postId}`;
+    };
+
+    // =============================================
+    // 6. RENDERIZAR ABA ATUAL
+    // =============================================
+    function renderCurrentTab() {
+        const container = document.getElementById('profileContent');
+        if (!container) return;
+
+        let filtered = allPosts;
+
+        if (currentTab === 'midia') {
+            filtered = allPosts.filter(p =>
+                (p.image_url && p.image_url.trim()) ||
+                (p.video_url && p.video_url.trim())
+            );
+        } else if (currentTab === 'salvos') {
+            filtered = allSavedPosts;
+        } else if (currentTab === 'respostas') {
+            filtered = [];
+        } else if (currentTab === 'curtidas') {
+            filtered = [];
+        }
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-feather"></i>
+                    <p>Nada por aqui ainda</p>
+                    <small>${emptyMessageForTab(currentTab)}</small>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = filtered.map(post => renderPostCard(post)).join('');
+    }
+
+    function emptyMessageForTab(tab) {
+        switch (tab) {
+            case 'posts': return 'Quando este usuário postar, aparecerá aqui.';
+            case 'respostas': return 'Nenhuma resposta ainda.';
+            case 'midia': return 'Nenhuma mídia publicada ainda.';
+            case 'curtidas': return 'Nenhuma curtida ainda.';
+            case 'salvos': return 'Nenhum post salvo ainda — salve no fórum para vê-los aqui.';
+            default: return '';
         }
     }
 
     // =============================================
-    // 6. RENDERIZAR CARD DE POST
+    // 7. CARD DE POST
     // =============================================
     function renderPostCard(post) {
         const avatarUrl = post.author_avatar || profileUser.avatar_url || AVATAR_PADRAO;
         const authorName = post.author_name || profileUser.username;
+        const authorHandle = (post.author_name || profileUser.username || '').toLowerCase();
 
         let mediaHtml = '';
         if (post.image_url && post.image_url.trim() !== '') {
@@ -257,7 +438,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                          onerror="this.src='${AVATAR_PADRAO}'">
                     <div class="user-post-info">
                         <span class="user-post-name">${escapeHtml(authorName)}</span>
-                        <span class="user-post-handle">@${escapeHtml(profileUser.username.toLowerCase())}</span>
+                        <span class="user-post-handle">@${escapeHtml(authorHandle)}</span>
                         <span class="user-post-date">· ${formatDate(post.created_at)}</span>
                     </div>
                 </div>
@@ -274,18 +455,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // =============================================
-    // 7. CARREGAR ESTATÍSTICAS
+    // 8. ESTATÍSTICAS
     // =============================================
     async function loadStats() {
         try {
-            // Contar posts
             const { count: postsCount } = await supabase
                 .from('posts')
                 .select('*', { count: 'exact', head: true })
                 .eq('author_id', targetUserId)
                 .eq('is_active', true);
 
-            // Contar comentários
             const { count: commentsCount } = await supabase
                 .from('comments')
                 .select('*', { count: 'exact', head: true })
@@ -293,29 +472,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .eq('is_active', true);
 
             const total = (postsCount || 0) + (commentsCount || 0);
-            document.getElementById('statContrib').textContent = formatNumber(total);
+            setText('statContrib', formatNumber(total));
         } catch (e) {
             console.warn('Erro ao carregar stats:', e);
         }
     }
 
     // =============================================
-    // 8. ABAS
+    // 9. ABAS INTERNAS
     // =============================================
-    document.querySelectorAll('.profile-tab').forEach(tab => {
+    document.querySelectorAll('.profile-inner-tab').forEach(tab => {
         tab.addEventListener('click', () => {
-            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.profile-inner-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
-            currentTab = tab.dataset.tab;
-
-            // Por enquanto todas as abas mostram posts
-            // Depois você pode separar respostas/reposts/midia/curtidas
-            loadPosts();
+            currentTab = tab.dataset.tab || 'posts';
+            renderCurrentTab();
         });
     });
 
     // =============================================
-    // 9. MODAL DE EDIÇÃO
+    // 10. MODAL DE EDIÇÃO
     // =============================================
     const editOverlay = document.getElementById('editOverlay');
     const openEditBtn = document.getElementById('openEditBtn');
@@ -329,49 +505,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     openEditBtn?.addEventListener('click', () => {
         if (!isOwnProfile) return;
         populateEditForm();
-        editOverlay.removeAttribute('hidden');
+        editOverlay?.removeAttribute('hidden');
     });
 
-    closeEditBtn?.addEventListener('click', () => editOverlay.setAttribute('hidden', ''));
-    cancelEditBtn?.addEventListener('click', () => editOverlay.setAttribute('hidden', ''));
+    closeEditBtn?.addEventListener('click', () => editOverlay?.setAttribute('hidden', ''));
+    cancelEditBtn?.addEventListener('click', () => editOverlay?.setAttribute('hidden', ''));
     editOverlay?.addEventListener('click', (e) => {
         if (e.target === editOverlay) editOverlay.setAttribute('hidden', '');
     });
 
     function populateEditForm() {
         const p = profileUser;
-        document.getElementById('editName').value = p.username || '';
-        document.getElementById('editUsername').value = p.username || '';
-        document.getElementById('editBio').value = p.bio || '';
-        document.getElementById('editLocation').value = p.location || '';
-        document.getElementById('editLink').value = p.website || '';
+        setValue('editName', p.username || '');
+        setValue('editUsername', p.username || '');
+        setValue('editBio', p.bio || '');
+        setValue('editLocation', p.location || '');
+        setValue('editLink', p.website || '');
 
-        // Contador de bio
         updateBioCounter();
 
-        // Banner
+        // Banner preview
         const bannerImg = document.getElementById('editBannerImg');
         const bannerPh = document.getElementById('editBannerPlaceholder');
-        if (p.banner_url) {
-            bannerImg.src = p.banner_url;
-            bannerImg.style.display = 'block';
-            bannerPh.style.display = 'none';
-        } else {
-            bannerImg.style.display = 'none';
-            bannerPh.style.display = 'flex';
+        if (bannerImg && bannerPh) {
+            if (p.banner_url) {
+                bannerImg.src = p.banner_url;
+                bannerImg.style.display = 'block';
+                bannerPh.style.display = 'none';
+            } else {
+                bannerImg.style.display = 'none';
+                bannerPh.style.display = 'flex';
+            }
         }
 
-        // Avatar
+        // Avatar preview
         const avatarImg = document.getElementById('editAvatarImg');
         const avatarPh = document.getElementById('editAvatarPlaceholder');
-        if (p.avatar_url) {
-            avatarImg.src = p.avatar_url;
-            avatarImg.style.display = 'block';
-            avatarPh.style.display = 'none';
-        } else {
-            avatarImg.style.display = 'none';
-            avatarPh.style.display = 'flex';
+        if (avatarImg && avatarPh) {
+            if (p.avatar_url) {
+                avatarImg.src = p.avatar_url;
+                avatarImg.style.display = 'block';
+                avatarPh.style.display = 'none';
+            } else {
+                avatarImg.style.display = 'none';
+                avatarPh.style.display = 'flex';
+            }
         }
+
+        // Frame preview
+        const frame = p.frame || 'none';
+        const frameInput = document.getElementById('editFrame');
+        if (frameInput) frameInput.value = frame;
+        document.querySelectorAll('.frame-option').forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.frame === frame);
+        });
+        const avatarPreview = document.getElementById('editAvatarPreview');
+        if (avatarPreview) avatarPreview.dataset.frame = frame;
 
         pendingBannerFile = null;
         pendingAvatarFile = null;
@@ -380,35 +569,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Contador de bio
     document.getElementById('editBio')?.addEventListener('input', updateBioCounter);
     function updateBioCounter() {
-        const bio = document.getElementById('editBio').value || '';
-        document.getElementById('bioCounter').textContent = bio.length;
+        const bioInput = document.getElementById('editBio');
+        const counter = document.getElementById('bioCounter');
+        if (bioInput && counter) {
+            counter.textContent = (bioInput.value || '').length;
+        }
     }
 
-    // Upload de banner
+    // Upload banner
     document.getElementById('editBannerPreview')?.addEventListener('click', () => {
-        document.getElementById('editBannerInput').click();
+        document.getElementById('editBannerInput')?.click();
     });
 
-    document.getElementById('editBannerInput')?.addEventListener('change', async (e) => {
+    document.getElementById('editBannerInput')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         pendingBannerFile = file;
 
-        // Preview
         const url = URL.createObjectURL(file);
         const bannerImg = document.getElementById('editBannerImg');
         const bannerPh = document.getElementById('editBannerPlaceholder');
-        bannerImg.src = url;
-        bannerImg.style.display = 'block';
-        bannerPh.style.display = 'none';
+        if (bannerImg && bannerPh) {
+            bannerImg.src = url;
+            bannerImg.style.display = 'block';
+            bannerPh.style.display = 'none';
+        }
     });
 
-    // Upload de avatar
+    // Upload avatar
     document.getElementById('editAvatarPreview')?.addEventListener('click', () => {
-        document.getElementById('editAvatarInput').click();
+        document.getElementById('editAvatarInput')?.click();
     });
 
-    document.getElementById('editAvatarInput')?.addEventListener('change', async (e) => {
+    document.getElementById('editAvatarInput')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         pendingAvatarFile = file;
@@ -416,23 +609,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         const url = URL.createObjectURL(file);
         const avatarImg = document.getElementById('editAvatarImg');
         const avatarPh = document.getElementById('editAvatarPlaceholder');
-        avatarImg.src = url;
-        avatarImg.style.display = 'block';
-        avatarPh.style.display = 'none';
+        if (avatarImg && avatarPh) {
+            avatarImg.src = url;
+            avatarImg.style.display = 'block';
+            avatarPh.style.display = 'none';
+        }
+    });
+
+    // ✅ Picker de moldura
+    document.querySelectorAll('.frame-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            document.querySelectorAll('.frame-option').forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            const frame = opt.dataset.frame;
+            const frameInput = document.getElementById('editFrame');
+            if (frameInput) frameInput.value = frame;
+            const avatarPreview = document.getElementById('editAvatarPreview');
+            if (avatarPreview) avatarPreview.dataset.frame = frame;
+            const heroAvatar = document.getElementById('avatarWrapper');
+            if (heroAvatar) heroAvatar.dataset.frame = frame;
+        });
     });
 
     // =============================================
-    // 10. SALVAR EDIÇÕES
+    // 11. SALVAR EDIÇÕES
     // =============================================
     saveEditBtn?.addEventListener('click', async () => {
         saveEditBtn.disabled = true;
         saveEditBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
         try {
-            const name = document.getElementById('editName').value.trim();
-            const bio = document.getElementById('editBio').value.trim();
-            const location = document.getElementById('editLocation').value.trim();
-            const website = document.getElementById('editLink').value.trim();
+            const name = document.getElementById('editName')?.value.trim() || '';
+            const bio = document.getElementById('editBio')?.value.trim() || '';
+            const location = document.getElementById('editLocation')?.value.trim() || '';
+            const website = document.getElementById('editLink')?.value.trim() || '';
+            const frame = document.getElementById('editFrame')?.value || 'none';
 
             if (!name) {
                 showToast('O nome não pode ficar vazio.', 'error');
@@ -441,39 +652,41 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // Upload banner se houver
+            // Upload banner
             let bannerUrl = profileUser.banner_url;
             if (pendingBannerFile) {
                 const fileExt = pendingBannerFile.name.split('.').pop();
                 const fileName = `${currentUser.id}/banner-${Date.now()}.${fileExt}`;
                 const { error: upErr } = await supabase.storage
                     .from('avatars')
-                    .upload(fileName, pendingBannerFile, { upsert: true });
+                    .upload(fileName, pendingBannerFile, { upsert: true, cacheControl: '3600' });
                 if (upErr) {
                     console.warn('Erro ao enviar banner:', upErr);
+                    showToast('Erro ao enviar banner: ' + upErr.message, 'error');
                 } else {
                     const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(fileName);
                     bannerUrl = publicUrl;
                 }
             }
 
-            // Upload avatar se houver
+            // Upload avatar
             let avatarUrl = profileUser.avatar_url;
             if (pendingAvatarFile) {
                 const fileExt = pendingAvatarFile.name.split('.').pop();
                 const fileName = `${currentUser.id}/avatar-${Date.now()}.${fileExt}`;
                 const { error: upErr } = await supabase.storage
                     .from('avatars')
-                    .upload(fileName, pendingAvatarFile, { upsert: true });
+                    .upload(fileName, pendingAvatarFile, { upsert: true, cacheControl: '3600' });
                 if (upErr) {
                     console.warn('Erro ao enviar avatar:', upErr);
+                    showToast('Erro ao enviar avatar: ' + upErr.message, 'error');
                 } else {
                     const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(fileName);
                     avatarUrl = publicUrl;
                 }
             }
 
-            // Atualizar perfil no banco
+            // Atualizar perfil
             const updates = {
                 username: name,
                 bio: bio,
@@ -481,6 +694,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 website: website,
                 banner_url: bannerUrl,
                 avatar_url: avatarUrl,
+                frame: frame,
                 updated_at: new Date().toISOString()
             };
 
@@ -490,7 +704,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .eq('id', currentUser.id);
 
             if (updateErr) {
-             console.error('Erro ao salvar:', JSON.stringify(updateErr, null, 2));
+                console.error('Erro ao salvar:', JSON.stringify(updateErr, null, 2));
                 showToast('Erro ao salvar perfil: ' + updateErr.message, 'error');
                 saveEditBtn.disabled = false;
                 saveEditBtn.innerHTML = '<i class="fa-solid fa-check"></i> Salvar';
@@ -500,7 +714,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Atualizar estado local
             Object.assign(profileUser, updates);
             renderProfile();
-            editOverlay.setAttribute('hidden', '');
+            editOverlay?.setAttribute('hidden', '');
             showToast('✅ Perfil atualizado!', 'success');
 
         } catch (err) {
@@ -513,16 +727,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // =============================================
-    // 11. TOAST
+    // 12. BOTÃO COMPARTILHAR
+    // =============================================
+    document.getElementById('shareProfileBtn')?.addEventListener('click', () => {
+        const url = window.location.href;
+        if (navigator.share) {
+            navigator.share({ title: `Perfil de ${profileUser.username}`, url }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(url)
+                .then(() => showToast('🔗 Link copiado!', 'success'))
+                .catch(() => showToast('Erro ao copiar link', 'error'));
+        }
+    });
+
+    // =============================================
+    // 13. TOAST
     // =============================================
     function showToast(message, type = 'info') {
         const colors = { success: '#10b981', error: '#ef4444', info: '#1d9bf0' };
         const toast = document.createElement('div');
         toast.style.cssText = `
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: ${colors[type]}; color: #fff; padding: 12px 24px; border-radius: 24px;
+            background: ${colors[type] || colors.info}; color: #fff; padding: 12px 24px; border-radius: 24px;
             font-size: 14px; font-weight: 500; z-index: 99999; transition: all 0.3s;
             box-shadow: 0 8px 30px rgba(0,0,0,0.3); font-family: Inter, sans-serif;
+            max-width: 90vw; text-align: center;
         `;
         toast.textContent = message;
         document.body.appendChild(toast);
@@ -537,8 +766,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // =============================================
-    // 12. HELPERS
+    // 14. HELPERS
     // =============================================
+    function setText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    function setValue(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    }
+
     function escapeHtml(t) {
         if (!t) return '';
         const d = document.createElement('div');
@@ -562,16 +801,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function showError(msg) {
-        document.getElementById('profileContent').innerHTML = `
-            <div class="empty-state">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <p>${msg}</p>
-            </div>
-        `;
+        const c = document.getElementById('profileContent');
+        if (c) {
+            c.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>${msg}</p>
+                </div>
+            `;
+        }
     }
 
     // =============================================
-    // 13. INICIALIZAR
+    // 15. INICIALIZAR
     // =============================================
     await loadProfile();
 

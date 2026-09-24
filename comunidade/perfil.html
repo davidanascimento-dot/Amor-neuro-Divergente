@@ -3,17 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Perfil — Amor NeuroDivergente">
     <title>Perfil — Amor NeuroDivergente</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="comunidade.css">
     <link rel="stylesheet" href="perfil.css">
 </head>
 <body>
 
-    <!-- Overlay de edição -->
+    <!-- ============================================
+         HEADER SUPERIOR
+         ============================================ -->
+    <header class="header-glass" id="headerGlass">
+        <a href="/inicio.html" class="logo">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+            <span class="logo-text">Amor NeuroDivergente</span>
+        </a>
+
+        <a href="/comunidade/comunidade.html" class="btn-voltar-site">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar à comunidade</span>
+        </a>
+
+        <button class="header-profile-btn" id="headerProfileBtn" aria-label="Perfil">
+            <img src="/img/foto-padrão.jpg" alt="Perfil" class="header-avatar" id="headerAvatar">
+        </button>
+    </header>
+
+    <!-- ============================================
+         ÁREA DO PERFIL
+         ============================================ -->
+    <main class="profile-page" id="profilePage">
+
+        <!-- Banner full width -->
+        <div class="profile-hero">
+            <div class="profile-hero-banner" id="profileBanner">
+                <img id="bannerImg" src="" alt="" style="display:none;">
+                <div class="profile-hero-banner-placeholder" id="bannerPlaceholder">
+                    <i class="fa-regular fa-image"></i>
+                </div>
+            </div>
+
+            <!-- Avatar + info + ações -->
+            <div class="profile-hero-bar">
+                <div class="profile-hero-avatar" id="avatarWrapper" data-frame="none">
+                    <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar-img">
+                    <div class="profile-avatar-placeholder" id="avatarPlaceholder">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="profile-hero-info">
+                    <div class="profile-hero-name-row">
+                        <h1 id="profileName">Carregando...</h1>
+                        <span class="verified-badge" id="verifiedBadge" style="display:none;">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </span>
+                        <span class="admin-badge" id="adminBadge" style="display:none;">
+                            <i class="fa-solid fa-crown"></i> Admin
+                        </span>
+                    </div>
+                    <p class="profile-hero-handle" id="profileHandle">@carregando</p>
+                </div>
+
+                <div class="profile-hero-actions">
+                    <button class="btn-hero-secondary" id="shareProfileBtn" title="Compartilhar">
+                        <i class="fa-regular fa-share-from-square"></i>
+                    </button>
+                    <button class="btn-hero-primary" id="openEditBtn">
+                        <i class="fa-solid fa-pen"></i> Editar Perfil
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Corpo do perfil — 2 colunas -->
+        <div class="profile-body">
+
+            <!-- Coluna principal (esquerda) -->
+            <div class="profile-main-col">
+
+                <!-- Bio + meta -->
+                <div class="profile-about-card">
+                    <p class="profile-bio" id="profileBio">Sem bio.</p>
+                    <div class="profile-meta">
+                        <span id="profileLocation" style="display:none;">
+                            <i class="fa-regular fa-map"></i> <span></span>
+                        </span>
+                        <span id="profileLink" style="display:none;">
+                            <i class="fa-solid fa-link"></i> <a href="#" target="_blank">link</a>
+                        </span>
+                        <span id="profileJoinDate">
+                            <i class="fa-regular fa-calendar"></i> Entrou em ...
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ⭐ DESTAQUES DA COMUNIDADE -->
+                <section class="profile-highlights" id="profileHighlights">
+                    <div class="highlights-header">
+                        <i class="fa-solid fa-star"></i>
+                        <span>Destaques da Comunidade</span>
+                    </div>
+                    <div class="highlights-scroll" id="highlightsScroll">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </section>
+
+                <!-- Abas internas -->
+                <nav class="profile-inner-tabs" role="tablist">
+                    <button class="profile-inner-tab active" data-tab="posts" role="tab">
+                        <i class="fa-regular fa-message"></i> Posts
+                    </button>
+                    <button class="profile-inner-tab" data-tab="respostas" role="tab">
+                        <i class="fa-regular fa-comment"></i> Respostas
+                    </button>
+                    <button class="profile-inner-tab" data-tab="midia" role="tab">
+                        <i class="fa-regular fa-image"></i> Mídia
+                    </button>
+                    <button class="profile-inner-tab" data-tab="curtidas" role="tab">
+                        <i class="fa-regular fa-heart"></i> Curtidas
+                    </button>
+                    <button class="profile-inner-tab" data-tab="salvos" role="tab">
+                        <i class="fa-regular fa-bookmark"></i> Salvos
+                    </button>
+                </nav>
+
+                <!-- ✅ SÓ UM profileContent agora -->
+                <div class="profile-content" id="profileContent">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+
+            <!-- Coluna lateral (direita) -->
+            <aside class="profile-side-col">
+                <div class="profile-stats-card">
+                    <h3 class="stats-card-title">Sobre</h3>
+                    <div class="stats-row">
+                        <div class="stats-item">
+                            <strong id="statFollowing">0</strong>
+                            <span>Seguindo</span>
+                        </div>
+                        <div class="stats-item">
+                            <strong id="statFollowers">0</strong>
+                            <span>Seguidores</span>
+                        </div>
+                    </div>
+                    <div class="stats-contrib">
+                        <i class="fa-solid fa-star" style="color:#b8935a;"></i>
+                        <strong id="statContrib">0</strong>
+                        <span>contribuições</span>
+                    </div>
+                </div>
+
+                <div class="profile-stats-card">
+                    <h3 class="stats-card-title">Comunidade</h3>
+                    <a href="/comunidade/comunidade.html#forum" class="stats-link">
+                        <i class="fa-regular fa-message"></i> Ir para o Fórum
+                    </a>
+                    <a href="/comunidade/comunidade.html#grupos" class="stats-link">
+                        <i class="fa-solid fa-users"></i> Explorar Grupos
+                    </a>
+                    <a href="/comunidade/comunidade.html#conversa" class="stats-link">
+                        <i class="fa-regular fa-comment-dots"></i> Conversar
+                    </a>
+                </div>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- ============================================
+         MODAL DE EDIÇÃO
+         ============================================ -->
     <div class="edit-overlay" id="editOverlay" hidden>
         <div class="edit-modal">
             <div class="edit-modal-header">
@@ -21,6 +189,7 @@
                 <button class="edit-close" id="closeEditBtn"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="edit-modal-body">
+
                 <!-- Banner -->
                 <div class="edit-field">
                     <label>Banner (capa)</label>
@@ -37,13 +206,37 @@
                 <!-- Avatar -->
                 <div class="edit-field">
                     <label>Foto de perfil</label>
-                    <div class="edit-avatar-preview" id="editAvatarPreview">
+                    <div class="edit-avatar-preview" id="editAvatarPreview" data-frame="none">
                         <img id="editAvatarImg" src="" alt="">
                         <div class="edit-avatar-placeholder" id="editAvatarPlaceholder">
                             <i class="fa-solid fa-camera"></i>
                         </div>
                         <input type="file" id="editAvatarInput" accept="image/*" hidden>
                     </div>
+                </div>
+
+                <!-- ✅ Moldura do avatar -->
+                <div class="edit-field">
+                    <label>Moldura do avatar</label>
+                    <div class="edit-frame-picker" id="editFramePicker">
+                        <button type="button" class="frame-option active" data-frame="none" title="Sem moldura">
+                            <span class="frame-preview frame-none"></span>
+                        </button>
+                        <button type="button" class="frame-option" data-frame="gold" title="Dourada">
+                            <span class="frame-preview frame-gold"></span>
+                        </button>
+                        <button type="button" class="frame-option" data-frame="purple" title="Roxa">
+                            <span class="frame-preview frame-purple"></span>
+                        </button>
+                        <button type="button" class="frame-option" data-frame="neon" title="Neon">
+                            <span class="frame-preview frame-neon"></span>
+                        </button>
+                        <button type="button" class="frame-option" data-frame="rainbow" title="Arco-íris">
+                            <span class="frame-preview frame-rainbow"></span>
+                        </button>
+                    </div>
+                    <small class="edit-hint">Sistema de molduras chega em breve — preview apenas.</small>
+                    <input type="hidden" id="editFrame" value="none">
                 </div>
 
                 <!-- Nome -->
@@ -84,82 +277,6 @@
         </div>
     </div>
 
-    <!-- Container principal -->
-    <main class="profile-container" id="profileContainer">
-
-        <!-- Header de navegação -->
-        <header class="profile-topbar">
-            <button class="topbar-back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
-            <div class="topbar-info">
-                <h1 id="topbarName">Carregando...</h1>
-                <span id="topbarPosts">0 posts</span>
-            </div>
-            <button class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </header>
-
-        <!-- Banner -->
-        <div class="profile-banner" id="profileBanner">
-            <img id="bannerImg" src="" alt="" style="display:none;">
-            <div class="profile-banner-placeholder" id="bannerPlaceholder">
-                <i class="fa-regular fa-image"></i>
-            </div>
-        </div>
-
-        <!-- Avatar + Botão editar -->
-        <div class="profile-avatar-row">
-            <div class="profile-avatar-wrapper">
-                <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
-                <div class="profile-avatar-placeholder" id="avatarPlaceholder">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-            </div>
-            <button class="btn-edit-profile" id="openEditBtn">
-                <i class="fa-solid fa-pen"></i> Editar Perfil
-            </button>
-        </div>
-
-        <!-- Informações do perfil -->
-        <div class="profile-info">
-            <div class="profile-name-row">
-                <h2 id="profileName">Carregando...</h2>
-                <span class="verified-badge" id="verifiedBadge" style="display:none;">
-                    <i class="fa-solid fa-circle-check"></i> Verificado
-                </span>
-                <span class="admin-badge" id="adminBadge" style="display:none;">
-                    <i class="fa-solid fa-crown"></i> Admin
-                </span>
-            </div>
-            <p class="profile-handle" id="profileHandle">@carregando</p>
-            <p class="profile-bio" id="profileBio">Sem bio.</p>
-            <div class="profile-meta">
-                <span id="profileLocation" style="display:none;"><i class="fa-regular fa-map"></i> <span></span></span>
-                <span id="profileLink" style="display:none;"><i class="fa-solid fa-link"></i> <a href="#" target="_blank">link</a></span>
-                <span id="profileJoinDate"><i class="fa-regular fa-calendar"></i> Entrou em ...</span>
-            </div>
-            <div class="profile-stats">
-                <span><strong id="statFollowing">0</strong> Seguindo</span>
-                <span><strong id="statFollowers">0</strong> Seguidores</span>
-                <span><strong id="statContrib">0</strong> Contribuições</span>
-            </div>
-        </div>
-
-        <!-- Abas -->
-        <nav class="profile-tabs" role="tablist">
-            <button class="profile-tab active" data-tab="posts" role="tab">Posts</button>
-            <button class="profile-tab" data-tab="respostas" role="tab">Respostas</button>
-            <button class="profile-tab" data-tab="reposts" role="tab">Reposts</button>
-            <button class="profile-tab" data-tab="midia" role="tab">Mídia</button>
-            <button class="profile-tab" data-tab="curtidas" role="tab">Curtidas</button>
-        </nav>
-
-        <!-- Conteúdo das abas -->
-        <div class="profile-content" id="profileContent">
-            <!-- Preenchido via JS -->
-        </div>
-
-    </main>
-
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         window.supabaseClient = supabase.createClient(

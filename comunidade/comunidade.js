@@ -25,6 +25,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error('Erro ao verificar sessão:', e);
     }
 
+    // =============================================
+// PAGINAÇÃO DE POSTS (fim da rolagem infinita)
+// =============================================
+let postsPaginaAtual = 1;
+const POSTS_POR_PAGINA = 10;
+let postsTotal = 0;
 
     // AUXILIARES
 
@@ -987,46 +993,47 @@ async function apiUseInviteCode(code) {
     }
 
     // =============================================
-    // 8. TABS
-    // =============================================
-    const mainTabs = document.querySelectorAll('.main-tab');
-    const tabScreens = document.querySelectorAll('.tab-screen');
+// NAVEGAÇÃO — SUBNAV (substitui as tabs antigas)
+// =============================================
+const subnavTabs = document.querySelectorAll('.subnav-tab');
+const communityScreens = document.querySelectorAll('.community-screen');
 
-    function switchTab(tabId) {
-        mainTabs.forEach(tab => {
-            const isActive = tab.dataset.tab === tabId;
-            tab.classList.toggle('active', isActive);
-            tab.setAttribute('aria-selected', isActive);
-        });
-
-        tabScreens.forEach(screen => {
-            const isActive = screen.id === `screen-${tabId}`;
-            screen.classList.toggle('active', isActive);
-        });
-
-        switch(tabId) {
-            case 'forum':
-                renderPosts();
-                break;
-            case 'grupos':
-                renderGroups();
-                break;
-            case 'eventos':
-                renderEvents();
-                break;
-            case 'conversa':
-                loadChatMessages();
-                break;
-        }
-    }
-
-    mainTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const tabId = tab.dataset.tab;
-            switchTab(tabId);
-        });
+function switchTab(tabId) {
+    // Atualizar abas
+    subnavTabs.forEach(tab => {
+        const isActive = tab.dataset.tab === tabId;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive);
     });
 
+    // Atualizar telas
+    communityScreens.forEach(screen => {
+        const isActive = screen.id === `screen-${tabId}`;
+        screen.classList.toggle('active', isActive);
+    });
+
+    // Ações específicas por tela
+    switch(tabId) {
+        case 'forum':
+            renderPosts();
+            break;
+        case 'grupos':
+            renderGroups();
+            break;
+        case 'eventos':
+            renderEvents();
+            break;
+        case 'conversa':
+            loadChatMessages();
+            break;
+    }
+}
+
+subnavTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        switchTab(tab.dataset.tab);
+    });
+});
    
 // =============================================
 // loadAndShowComments - VERSÃO DEFINITIVA
@@ -1155,33 +1162,198 @@ window.loadAndShowComments = async function(postId) {
         list.innerHTML = '<p style="color:#ef4444;font-size:13px;padding:8px;">❌ Erro ao carregar comentários</p>';
     }
 };
-    // =============================================
-    // SETUP POST EVENTS
-    // =============================================
-    function setupPostEvents() {
-        console.log('🔄 Configurando eventos dos posts...');
+// =============================================
+// SETUP POST EVENTS
+// =============================================
+function setupPostEvents() {
+    console.log('🔄 Configurando eventos dos posts...');
 
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.removeEventListener('click', handleLike);
-            btn.addEventListener('click', handleLike);
-        });
+    // Botões de curtir
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.removeEventListener('click', handleLike);
+        btn.addEventListener('click', handleLike);
+    });
 
-        document.querySelectorAll('.comment-toggle-btn').forEach(btn => {
-            btn.removeEventListener('click', handleCommentToggle);
-            btn.addEventListener('click', handleCommentToggle);
-        });
+    // Botões de toggle de comentários
+    document.querySelectorAll('.comment-toggle-btn').forEach(btn => {
+        btn.removeEventListener('click', handleCommentToggle);
+        btn.addEventListener('click', handleCommentToggle);
+    });
 
-        document.querySelectorAll('.submit-comment-btn').forEach(btn => {
-            btn.removeEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
-            btn.addEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
-        });
+    // Botões de enviar comentário
+    document.querySelectorAll('.submit-comment-btn').forEach(btn => {
+        btn.removeEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
+        btn.addEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
+    });
 
-        document.querySelectorAll('.video-fullscreen-btn').forEach(btn => {
-            btn.removeEventListener('click', handleVideoFullscreen);
-            btn.addEventListener('click', handleVideoFullscreen);
-        });
+    // Botões de tela cheia do vídeo
+    document.querySelectorAll('.video-fullscreen-btn').forEach(btn => {
+        btn.removeEventListener('click', handleVideoFullscreen);
+        btn.addEventListener('click', handleVideoFullscreen);
+    });
+
+    // ✅ NOVO: Botões de 3 pontinhos (menu de ações do post)
+    document.querySelectorAll('.post-menu-btn').forEach(btn => {
+        btn.removeEventListener('click', handlePostMenu);
+        btn.addEventListener('click', handlePostMenu);
+    });
+}
+
+// =============================================
+// HANDLE POST MENU (3 pontinhos)
+// =============================================
+async function handlePostMenu(e) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const postId = btn.dataset.postId;
+    const postCard = btn.closest('.post-card');
+    const authorId = postCard?.dataset.authorId;
+    const isOwner = currentUser && authorId === currentUser.id;
+
+    // Fechar menus abertos anteriormente
+    document.querySelectorAll('.post-menu-dropdown').forEach(m => m.remove());
+
+    // Criar o menu
+    const menu = document.createElement('div');
+    menu.className = 'post-menu-dropdown';
+
+    let menuHTML = `
+        <button class="post-menu-item" data-action="copy">
+            <i class="fa-regular fa-copy"></i>
+            Copiar link
+        </button>
+        <button class="post-menu-item" data-action="share">
+            <i class="fa-regular fa-share-from-square"></i>
+            Compartilhar
+        </button>
+        <button class="post-menu-item" data-action="save">
+            <i class="fa-regular fa-bookmark"></i>
+            Salvar post
+        </button>
+        <button class="post-menu-item" data-action="report">
+            <i class="fa-regular fa-flag"></i>
+            Denunciar
+        </button>
+    `;
+
+    // Ações exclusivas do dono do post
+    if (isOwner) {
+        menuHTML += `
+            <div class="post-menu-divider"></div>
+            <button class="post-menu-item" data-action="edit">
+                <i class="fa-regular fa-pen-to-square"></i>
+                Editar post
+            </button>
+            <button class="post-menu-item danger" data-action="delete">
+                <i class="fa-regular fa-trash-can"></i>
+                Excluir post
+            </button>
+        `;
     }
 
+    menu.innerHTML = menuHTML;
+    postCard.appendChild(menu);
+
+    // Adicionar os handlers de cada item do menu
+    menu.querySelectorAll('.post-menu-item').forEach(item => {
+        item.addEventListener('click', async (ev) => {
+            ev.stopPropagation();
+            const action = item.dataset.action;
+            menu.remove();
+
+            switch (action) {
+                case 'copy': {
+                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    navigator.clipboard.writeText(url)
+                        .then(() => showToast('🔗 Link copiado!', 'success'))
+                        .catch(() => showToast('Erro ao copiar link', 'error'));
+                    break;
+                }
+
+                case 'share': {
+                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'Post da Comunidade',
+                            url: url
+                        }).catch(() => {});
+                    } else {
+                        navigator.clipboard.writeText(url)
+                            .then(() => showToast('🔗 Link copiado para compartilhar!', 'success'))
+                            .catch(() => showToast('Compartilhamento não disponível', 'info'));
+                    }
+                    break;
+                }
+
+          case 'save': {
+    if (!currentUser) {
+        showToast('Faça login para salvar', 'error');
+        break;
+    }
+
+    try {
+        // Verifica se já está salvo
+        const { data: existing, error: checkErr } = await supabase
+            .from('saved_posts')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .eq('post_id', postId)
+            .maybeSingle();
+
+        if (checkErr) {
+            console.error('❌ Erro ao verificar save:', checkErr);
+            showToast('Erro ao verificar: ' + checkErr.message, 'error');
+            break;
+        }
+
+        if (existing) {
+            // Já está salvo → remover
+            const { error: delErr } = await supabase
+                .from('saved_posts')
+                .delete()
+                .eq('id', existing.id);
+
+            if (delErr) {
+                showToast('Erro ao remover: ' + delErr.message, 'error');
+            } else {
+                showToast('🔖 Post removido dos salvos', 'info');
+            }
+        } else {
+            // Não está salvo → inserir
+            const { error: insErr } = await supabase
+                .from('saved_posts')
+                .insert({
+                    user_id: currentUser.id,
+                    post_id: postId
+                });
+
+            if (insErr) {
+                console.error('❌ Erro ao salvar:', insErr);
+                showToast('Erro ao salvar: ' + insErr.message, 'error');
+            } else {
+                showToast('🔖 Post salvo! Veja em seu perfil → Salvos', 'success');
+            }
+        }
+    } catch (e) {
+        console.error('❌ Exceção ao salvar:', e);
+        showToast('Erro ao salvar: ' + e.message, 'error');
+    }
+    break;
+}
+            }
+        });
+    });
+
+    // Fechar ao clicar fora
+    setTimeout(() => {
+        document.addEventListener('click', function closeMenu(ev) {
+            if (!menu.contains(ev.target) && ev.target !== btn) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        });
+    }, 50);
+}
     // =============================================
     // HANDLERS
     // =============================================
@@ -1501,60 +1673,63 @@ async function updateCommentCount(postId) {
         }
 
         return `
-        <div class="post-card" data-post-id="${p.id}" data-author-id="${p.author_id || ''}">
-            <!-- Cabeçalho -->
-            <div class="post-header">
-                <div class="post-author-avatar-wrapper">
-                    <img src="${postAvatar}" class="post-author-avatar"
-                         alt="${escapeHtml(p.author_name || 'U')}"
-                         onerror="this.onerror=null; this.src='${AVATAR_PADRAO}'; this.addEventListener('error', function(){ this.style.display='none'; const fb=this.parentElement.querySelector('.post-author-fallback'); if(fb) fb.style.display='flex'; }, {once:true});">
-                    <div class="post-author-fallback" style="display:none; background:${stringToColor(p.author_id || p.id)};">${authorInitial}</div>
-                </div>
-                <div class="post-body">
-                    <div class="post-author-info">
-                        <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
-                        <span class="post-date">${formatDate(p.created_at)}</span>
-                    </div>
-                    <p class="post-text">${escapeHtml(p.content)}</p>
-                    ${mediaHtml}
-                </div>
-            </div>
-
-            <!-- Rodapé: ações + botão Saiba Mais -->
-            <div class="post-footer">
-                <div class="post-actions">
-                    <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-post-id="${p.id}">
-                        <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i>
-                        <span class="count">${p.likes || 0}</span>
-                    </button>
-                    <button class="action-btn comment-toggle-btn" data-post-id="${p.id}">
-                        <i class="fa-regular fa-comment"></i>
-                        <span class="count">${p.comment_count || 0}</span>
-                    </button>
-                    <button class="action-btn">
-                        <i class="fa-solid fa-retweet"></i>
-                        <span class="count">0</span>
-                    </button>
-                    <button class="action-btn">
-                        <i class="fa-regular fa-share-from-square"></i>
-                    </button>
-                </div>
-                <button class="btn-saiba-mais" onclick="window.open('${p.link_url || '#'}', '_blank')">
-                    Saiba Mais
+<div class="post-card" data-post-id="${p.id}" data-author-id="${p.author_id || ''}">
+    <!-- Cabeçalho -->
+    <div class="post-header">
+        <div class="post-author-avatar-wrapper">
+            <img src="${postAvatar}" class="post-author-avatar"
+                 alt="${escapeHtml(p.author_name || 'U')}"
+                 onerror="this.onerror=null; this.src='${AVATAR_PADRAO}'; this.addEventListener('error', function(){ this.style.display='none'; const fb=this.parentElement.querySelector('.post-author-fallback'); if(fb) fb.style.display='flex'; }, {once:true});">
+            <div class="post-author-fallback" style="display:none; background:${stringToColor(p.author_id || p.id)};">${authorInitial}</div>
+        </div>
+        <div class="post-body">
+            <div class="post-author-info">
+                <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
+                <span class="post-date">${formatDate(p.created_at)}</span>
+                <button class="post-menu-btn" data-post-id="${p.id}" aria-label="Mais opções" title="Mais opções">
+                    <i class="fa-solid fa-ellipsis"></i>
                 </button>
             </div>
+            <p class="post-text">${escapeHtml(p.content)}</p>
+            ${mediaHtml}
+        </div>
+    </div>
 
-            <!-- Seção de comentários -->
-            <div class="comments-section" id="comments-${p.id}" style="display:none;">
-                <div class="comments-list">
-                    <p style="color:#666;font-size:13px;padding:8px;">Carregando...</p>
-                </div>
-                <div class="add-comment">
-                    <input placeholder="Escreva um comentário..." id="comment-input-${p.id}">
-                    <button class="submit-comment-btn" data-post-id="${p.id}">Enviar</button>
-                </div>
-            </div>
-        </div>`;
+    <!-- Rodapé: ações + botão Saiba Mais -->
+    <div class="post-footer">
+        <div class="post-actions">
+            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-post-id="${p.id}">
+                <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i>
+                <span class="count">${p.likes || 0}</span>
+            </button>
+            <button class="action-btn comment-toggle-btn" data-post-id="${p.id}">
+                <i class="fa-regular fa-comment"></i>
+                <span class="count">${p.comment_count || 0}</span>
+            </button>
+            <button class="action-btn">
+                <i class="fa-solid fa-retweet"></i>
+                <span class="count">0</span>
+            </button>
+            <button class="action-btn">
+                <i class="fa-regular fa-share-from-square"></i>
+            </button>
+        </div>
+        <button class="btn-saiba-mais" onclick="window.open('${p.link_url || '#'}', '_blank')">
+            Saiba Mais
+        </button>
+    </div>
+
+    <!-- Seção de comentários -->
+    <div class="comments-section" id="comments-${p.id}" style="display:none;">
+        <div class="comments-list" id="comments-list-${p.id}">
+            <p style="color:#666;font-size:13px;padding:8px;">Carregando...</p>
+        </div>
+        <div class="add-comment">
+            <input placeholder="Escreva um comentário..." id="comment-input-${p.id}">
+            <button class="submit-comment-btn" data-post-id="${p.id}">Enviar</button>
+        </div>
+    </div>
+</div>`;
     }).join('');
 
     setupPostEvents();
@@ -3516,117 +3691,6 @@ window.markAllRead = function() {
     if (panel) panel.remove();
 };
 
-// 8. REAÇÕES COM ÍCONES
-window.REACTIONS = [
-    { id: 'apoiar', label: 'Apoiar', icon: 'fa-heart', color: '#ef4444' },
-    { id: 'util', label: 'Útil', icon: 'fa-lightbulb', color: '#f59e0b' },
-    { id: 'identifico', label: 'Me identifico', icon: 'fa-face-smile', color: '#8b5cf6' },
-    { id: 'comigo', label: 'Estou com você', icon: 'fa-handshake', color: '#10b981' }
-];
-
-// 9. ADICIONAR REAÇÕES AOS POSTS
-// 9. ADICIONAR REAÇÕES AOS POSTS (VERSÃO CORRIGIDA COM toggle_reaction_direct)
-function addReactionsToPosts() {
-    var posts = document.querySelectorAll('.post-card');
-    posts.forEach(function(post) {
-        var actionsDiv = post.querySelector('.post-actions');
-        if (!actionsDiv) return;
-        if (actionsDiv.querySelector('.reactions-container')) return;
-        
-        var container = document.createElement('div');
-        container.className = 'reactions-container';
-        container.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;';
-        
-        window.REACTIONS.forEach(function(r) {
-            var btn = document.createElement('button');
-            btn.className = 'reaction-btn';
-            btn.dataset.postId = post.dataset.postId;
-            btn.dataset.reaction = r.id;
-            btn.style.cssText = 'background:none;border:1px solid var(--border-color,#e2e8f0);border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;transition:all 0.2s;font-family:Inter,sans-serif;color:var(--text-secondary,#64748b);display:flex;align-items:center;gap:4px;';
-            btn.innerHTML = '<i class="fa-regular ' + r.icon + '" style="color:' + r.color + ';"></i> <span class="reaction-count" data-reaction="' + r.id + '">0</span>';
-            
-            // CARREGAR CONTAGEM INICIAL
-            carregarContagemInicial(post.dataset.postId, r.id, btn);
-            
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (!currentUser) return showToast('Faça login', 'error');
-                
-                var postId = this.dataset.postId;
-                var reactionType = this.dataset.reaction;
-                var countSpan = this.querySelector('.reaction-count');
-                
-                // Desabilitar botão para evitar spam
-                this.disabled = true;
-                this.style.opacity = '0.6';
-                
-                // 🔥 OBTER ID DO USUÁRIO ATUAL
-                supabase.auth.getUser().then(function(userResult) {
-                    var userId = userResult.data.user?.id;
-                    
-                    if (!userId) {
-                        showToast('Erro: usuário não identificado', 'error');
-                        btn.disabled = false;
-                        btn.style.opacity = '1';
-                        return;
-                    }
-                    
-                    // 🔥 CHAMAR toggle_reaction_direct COM user_id
-                    supabase.rpc('toggle_reaction_direct', {
-                        p_post_id: postId,
-                        p_reaction_type: reactionType,
-                        p_user_id: userId
-                    }).then(function(result) {
-                        console.log('📥 Resposta toggle_reaction_direct:', result);
-                        
-                        if (result.error) {
-                            console.error('❌ Erro na RPC:', result.error);
-                            showToast('Erro: ' + (result.error.message || 'Erro ao reagir'), 'error');
-                            btn.disabled = false;
-                            btn.style.opacity = '1';
-                            return;
-                        }
-                        
-                        // ATUALIZA O CONTADOR COM O VALOR RETORNADO
-                        if (result.data && result.data.count !== undefined) {
-                            if (countSpan) {
-                                countSpan.textContent = result.data.count;
-                            }
-                            
-                            if (result.data.action === 'added') {
-                                btn.style.borderColor = '#7c3aed';
-                                btn.style.background = 'rgba(124,58,237,0.08)';
-                            } else if (result.data.action === 'removed') {
-                                btn.style.borderColor = 'var(--border-color,#e2e8f0)';
-                                btn.style.background = 'transparent';
-                            }
-                            
-                            console.log('✅ Reação ' + result.data.action + '! Total: ' + result.data.count);
-                        }
-                        
-                        btn.disabled = false;
-                        btn.style.opacity = '1';
-                        
-                    }).catch(function(error) {
-                        console.error('❌ Erro ao reagir:', error);
-                        showToast('Erro ao reagir: ' + error.message, 'error');
-                        btn.disabled = false;
-                        btn.style.opacity = '1';
-                    });
-                }).catch(function(error) {
-                    console.error('❌ Erro ao obter usuário:', error);
-                    showToast('Erro ao obter usuário', 'error');
-                    btn.disabled = false;
-                    btn.style.opacity = '1';
-                });
-            });
-            
-            container.appendChild(btn);
-        });
-        
-        actionsDiv.appendChild(container);
-    });
-}
 
 // FUNÇÃO PARA CARREGAR CONTAGEM INICIAL
 function carregarContagemInicial(postId, reactionType, btn) {
@@ -4840,4 +4904,189 @@ if (document.readyState === 'loading') {
 
 })();
 
+// =============================================
+// MENU DE 3 PONTINHOS DO POST
+// =============================================
+function attachPostMenuEvents() {
+    document.querySelectorAll('.post-menu-btn').forEach(btn => {
+        btn.removeEventListener('click', handlePostMenu);
+        btn.addEventListener('click', handlePostMenu);
+    });
+}
+
+async function handlePostMenu(e) {
+    e.stopPropagation();
+
+    // ✅ Aceita tanto click direto quanto delegação
+    const btn = e.currentTarget?.dataset?.postId
+        ? e.currentTarget
+        : e.target.closest('.post-menu-btn');
+
+    if (!btn) return;
+
+    const postId = btn.dataset.postId;
+    const postCard = btn.closest('.post-card');
+    const authorId = postCard?.dataset.authorId;
+    const isOwner = currentUser && authorId === currentUser.id;
+
+    // Fecha menus abertos anteriormente
+    document.querySelectorAll('.post-menu-dropdown').forEach(m => m.remove());
+
+    // ✅ Cria o menu e anexa DIRETO NO BODY (não no card)
+    const menu = document.createElement('div');
+    menu.className = 'post-menu-dropdown';
+    menu.style.position = 'fixed';   // fixo em relação à viewport
+    menu.style.zIndex = '99999';
+
+    let html = `
+        <button class="post-menu-item" data-action="copy">
+            <i class="fa-regular fa-copy"></i> Copiar link
+        </button>
+        <button class="post-menu-item" data-action="share">
+            <i class="fa-regular fa-share-from-square"></i> Compartilhar
+        </button>
+        <button class="post-menu-item" data-action="save">
+            <i class="fa-regular fa-bookmark"></i> Salvar post
+        </button>
+        <button class="post-menu-item" data-action="report">
+            <i class="fa-regular fa-flag"></i> Denunciar
+        </button>
+    `;
+
+    if (isOwner) {
+        html += `
+            <div class="post-menu-divider"></div>
+            <button class="post-menu-item" data-action="edit">
+                <i class="fa-regular fa-pen-to-square"></i> Editar post
+            </button>
+            <button class="post-menu-item danger" data-action="delete">
+                <i class="fa-regular fa-trash-can"></i> Excluir post
+            </button>
+        `;
+    }
+
+    menu.innerHTML = html;
+    document.body.appendChild(menu);
+
+    // ✅ POSICIONA ABAIXO DO BOTÃO, com clamp pra não sair da tela
+    const rect = btn.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const padding = 8;
+
+    let top = rect.bottom + 6;
+    let left = rect.right - menuRect.width;
+
+    // Se não couber embaixo, joga pra cima
+    if (top + menuRect.height > window.innerHeight - padding) {
+        top = rect.top - menuRect.height - 6;
+    }
+    // Se ainda não couber (post muito no topo), centraliza
+    if (top < padding) {
+        top = padding;
+    }
+    // Não deixa sair pela esquerda
+    if (left < padding) left = padding;
+    // Não deixa sair pela direita
+    if (left + menuRect.width > window.innerWidth - padding) {
+        left = window.innerWidth - menuRect.width - padding;
+    }
+
+    menu.style.top = top + 'px';
+    menu.style.left = left + 'px';
+
+    // ✅ Handlers dos itens
+    menu.querySelectorAll('.post-menu-item').forEach(item => {
+        item.addEventListener('click', async (ev) => {
+            ev.stopPropagation();
+            const action = item.dataset.action;
+            menu.remove();
+
+            switch (action) {
+                case 'copy': {
+                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    navigator.clipboard.writeText(url)
+                        .then(() => showToast('🔗 Link copiado!', 'success'))
+                        .catch(() => showToast('Erro ao copiar link', 'error'));
+                    break;
+                }
+                case 'share': {
+                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    if (navigator.share) {
+                        navigator.share({ title: 'Post da Comunidade', url }).catch(() => {});
+                    } else {
+                        navigator.clipboard.writeText(url)
+                            .then(() => showToast('🔗 Link copiado para compartilhar!', 'success'))
+                            .catch(() => showToast('Compartilhamento não disponível', 'info'));
+                    }
+                    break;
+                }
+              case 'save': {
+    if (!currentUser) {
+        showToast('Faça login para salvar', 'error');
+        break;
+    }
+
+    try {
+        const { data: existing, error: checkErr } = await supabase
+            .from('saved_posts')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .eq('post_id', postId)
+            .maybeSingle();
+
+        if (checkErr) {
+            console.error('❌ Erro ao verificar save:', checkErr);
+            showToast('Erro ao verificar: ' + checkErr.message, 'error');
+            break;
+        }
+
+        if (existing) {
+            const { error: delErr } = await supabase
+                .from('saved_posts')
+                .delete()
+                .eq('id', existing.id);
+
+            if (delErr) {
+                showToast('Erro ao remover: ' + delErr.message, 'error');
+            } else {
+                showToast('🔖 Post removido dos salvos', 'info');
+            }
+        } else {
+            const { error: insErr } = await supabase
+                .from('saved_posts')
+                .insert({ user_id: currentUser.id, post_id: postId });
+
+            if (insErr) {
+                console.error('❌ Erro ao salvar:', insErr);
+                showToast('Erro ao salvar: ' + insErr.message, 'error');
+            } else {
+                showToast('🔖 Post salvo! Veja em seu perfil → Salvos', 'success');
+            }
+        }
+    } catch (e) {
+        console.error('❌ Exceção ao salvar:', e);
+        showToast('Erro ao salvar: ' + e.message, 'error');
+    }
+    break;
+}
+            }
+        });
+    });
+
+    // ✅ Fecha ao clicar fora ou ao rolar
+    setTimeout(() => {
+        const closeMenu = (ev) => {
+            if (!menu.contains(ev.target) && ev.target !== btn) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+                window.removeEventListener('scroll', closeMenu, true);
+                window.removeEventListener('resize', closeMenu);
+            }
+        };
+        document.addEventListener('click', closeMenu);
+        window.addEventListener('scroll', closeMenu, true);
+        window.addEventListener('resize', closeMenu);
+    }, 50);
+}
+// Chamar junto com setupPostEvents()
 });

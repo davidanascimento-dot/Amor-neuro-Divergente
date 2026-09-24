@@ -16,268 +16,186 @@
 </head>
 <body>
 
-  
-    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
-        <i class="fa-solid fa-bars"></i>
-    </button>
+    <!-- ============================================
+         HEADER SIMPLES — Só logo + Voltar
+         ============================================ -->
+    <header class="header-glass" id="headerGlass">
+        <a href="/inicio.html" class="logo">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+            <span class="logo-text">Amor NeuroDivergente</span>
+        </a>
 
+        <a href="/inicio.html" class="btn-voltar-site">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar ao site</span>
+        </a>
 
-    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
-        <div class="sidebar-profile" id="sidebarProfile">
-            <button class="profile-toggle" id="profileToggle" aria-label="Mostrar ou esconder perfil" aria-expanded="false">
-                <img src="/img/foto-padrão.jpg" alt="Sua foto de perfil" id="sidebarAvatar">
-                <span id="sidebarUserName">Visitante</span>
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="profile-detail" id="profileDetail" hidden>
-                <p id="sidebarUserEmail">carregando@email.com</p>
-                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
-            </div>
-        </div>
+        <button class="header-profile-btn" id="headerProfileBtn" aria-label="Perfil">
+            <img src="/img/foto-padrão.jpg" alt="Perfil" class="header-avatar" id="headerAvatar">
+        </button>
+    </header>
 
-        <nav class="sidebar-nav" aria-label="Principal">
-            <a href="/inicio.html" class="sidebar-link" aria-current=""><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/Explorar/Explorar.html" class="sidebar-link"><i class="fa-solid fa-compass"></i> Explorar</a>
-            <a href="/comunidade/comunidade.html" class="sidebar-link active"><i class="fa-regular fa-comments"></i> Comunidade</a>
-            <a href="/Direitos/direitos.html" class="sidebar-link"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</a>
-            <a href="/biblioteca/biblioteca.html" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Biblioteca</a>
-        </nav>
-
-        <div class="sidebar-secondary">
-            <a href="/loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
-            <a href="/apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
-            <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
-        </div>
-    </aside>
-
-    <!-- Overlay para sidebar no mobile -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
- 
-    <main class="main-content" id="mainContent">
-
-
-        <header class="header-glass" id="headerGlass">
- <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-                <a href="/inicio.html">Início</a>
-                <i class="fa-solid fa-chevron-right"></i>
-                <a href="/Explorar/Explorar.html"></a>
-                  <span>Comunidade</span>
-          
-            </nav>
-            
-            <a href="/inicio.html" class="logo">
-                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
-                <span class="logo-text">Amor NeuroDivergente</span>
-            </a>
-            <nav class="header-links">
-                <a href="/Explorar/Explorar.html">Explorar</a>
-                <a href="/Comunidade/Comunidade.html" class="">Comunidade</a>
-                <a href="/Chat-Ia/Chat-Ia.html">AcolherIA</a>
-            </nav>
-            <button class="header-profile-btn" id="headerProfileBtn" aria-label="Perfil">
-                <img src="/img/foto-padrão.jpg" alt="Perfil" class="header-avatar" id="headerAvatar">
-            </button>
-        </header>
-
-   
-        <nav class="main-tabs" id="mainTabs" role="tablist">
-            <button class="main-tab active" data-tab="forum" role="tab" aria-selected="true" aria-controls="screen-forum">
+    <!-- ============================================
+         NAV SECUNDÁRIA — Fórum / Grupos / Eventos / Conversa
+         Background atrás, passando logo abaixo do header
+         ============================================ -->
+    <nav class="community-subnav" id="communitySubnav" role="tablist">
+        <div class="community-subnav-inner">
+            <button class="subnav-tab active" data-tab="forum" role="tab" aria-selected="true">
                 <i class="fa-regular fa-message"></i>
                 <span>Fórum</span>
-                <span class="tab-badge">12</span>
             </button>
-            <button class="main-tab" data-tab="grupos" role="tab" aria-selected="false" aria-controls="screen-grupos">
+            <button class="subnav-tab" data-tab="grupos" role="tab" aria-selected="false">
                 <i class="fa-solid fa-users"></i>
                 <span>Grupos</span>
-                <span class="tab-badge">5</span>
             </button>
-            <button class="main-tab" data-tab="eventos" role="tab" aria-selected="false" aria-controls="screen-eventos">
+            <button class="subnav-tab" data-tab="eventos" role="tab" aria-selected="false">
                 <i class="fa-regular fa-calendar"></i>
                 <span>Eventos</span>
-                <span class="tab-badge">3</span>
             </button>
-            <button class="main-tab" data-tab="conversa" role="tab" aria-selected="false" aria-controls="screen-conversa">
+            <button class="subnav-tab" data-tab="conversa" role="tab" aria-selected="false">
                 <i class="fa-regular fa-comment-dots"></i>
                 <span>Conversa</span>
-                <span class="tab-badge active-dot">●</span>
+                <span class="subnav-dot">●</span>
             </button>
-        </nav>
-
-   
-
-        <div class="tab-screens">
-
-        
-
-            <section class="tab-screen active" id="screen-forum" role="tabpanel" aria-labelledby="tab-forum">
-                <div class="screen-header">
-                    <h2><i class="fa-regular fa-message"></i> Fórum</h2>
-                    <button class="btn-create-post" id="openPostModalBtn">
-                        <i class="fa-regular fa-pen-to-square"></i> Novo Post
-                    </button>
-                </div>
-
-                <!-- Caixa de postagem rápida -->
-                <div class="quick-post">
-                    <img src="/img/foto-padrão.jpg" alt="Seu avatar" class="quick-post-avatar" id="quickPostAvatar">
-                    <input type="text" id="quickPostInput" placeholder="O que você está pensando? Compartilhe com a comunidade...">
-                    <button class="btn-quick-post" id="quickPostBtn">Postar</button>
-                </div>
-
-                <!-- Feed de posts -->
-                <div class="posts-feed" id="postsFeed">
-                    <!-- Posts renderizados via JavaScript -->
-                </div>
-            </section>
-
-          
-
-
-            <section class="tab-screen" id="screen-grupos" role="tabpanel" aria-labelledby="tab-grupos">
-                <div class="screen-header">
-                    <h2><i class="fa-solid fa-users"></i> Grupos</h2>
-                    <div class="screen-header-actions">
-                        <button class="btn-use-invite" id="useInviteCodeBtn">
-                            <i class="fa-solid fa-key"></i> Usar código
-                        </button>
-                        <button class="btn-create-group" id="openCreateGroupBtn">
-                            <i class="fa-solid fa-plus"></i> Criar Grupo
-                        </button>
-                    </div>
-                </div>
-
-                <div class="groups-grid" id="groupsGrid">
-                    <!-- Grupos renderizados via JavaScript -->
-                </div>
-            </section>
-
-          
-
-            <section class="tab-screen" id="screen-eventos" role="tabpanel" aria-labelledby="tab-eventos">
-                <div class="screen-header">
-                    <h2><i class="fa-regular fa-calendar"></i> Eventos</h2>
-                    <button class="btn-create-event" id="openCreateEventBtn">
-                        <i class="fa-solid fa-plus"></i> Criar Evento
-                    </button>
-                </div>
-
-                <div class="events-grid" id="eventsGrid">
-                    <!-- Eventos renderizados via JavaScript -->
-                </div>
-            </section>
-
-
-            <section class="tab-screen" id="screen-conversa" role="tabpanel" aria-labelledby="tab-conversa">
-                           
- <!-- Barra de pesquisa de usuários -->
-                        <div class="user-search-section">
-                            <div class="user-search-bar">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" id="userSearchInput" placeholder="Pesquisar usuário..." autocomplete="off">
-                            </div>
-                            <div id="userSearchResults" class="user-search-results" hidden></div>
-                        </div>
-                <div class="chat-full-layout">
-                    <!-- Lista de canais (sidebar do chat) -->
-                    <aside class="chat-channels">
-                        <div class="chat-channels-header">
-                            <h3><i class="fa-regular fa-comments"></i> Conversas</h3>
-                            <button class="btn-new-channel" id="openCreateGroupFromChatBtn" title="Novo canal">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
-                        </div>
-
-                       
-
-                        <!-- Solicitações de amizade pendentes -->
-                        <div id="friendRequestsSection" class="friends-section" hidden>
-                            <div class="friends-section-header">
-                                <span><i class="fa-solid fa-user-clock"></i> Solicitações</span>
-                                <span class="friend-request-count" id="friendRequestCount">0</span>
-                            </div>
-                            <div id="friendRequestsList" class="friend-requests-list"></div>
-                        </div>
-
-                        <!-- Lista de amigos -->
-                        <div id="friendsSection" class="friends-section">
-                            <div class="friends-section-header">
-                                <span><i class="fa-solid fa-user-group"></i> Amigos</span>
-                            </div>
-                            <div id="friendsList" class="friends-list">
-                                <div class="empty-friends">Pesquise usuários acima para adicionar amigos</div>
-                            </div>
-                        </div>
-
-                        <!-- Separador visual -->
-                        <div class="channels-divider">
-                            <span>Canais</span>
-                        </div>
-
-                        <div class="channels-list" id="channelsList">
-                            <div class="channel-item active" data-channel="geral">
-                                <div class="channel-icon"><i class="fa-solid fa-hashtag"></i></div>
-                                <div class="channel-info">
-                                    <span class="channel-name">Geral</span>
-                                    <span class="channel-meta">1.2k membros</span>
-                                </div>
-                                <span class="channel-badge">●</span>
-                            </div>
-                            <div class="channel-item" data-channel="tdah">
-                                <div class="channel-icon"><i class="fa-solid fa-brain"></i></div>
-                                <div class="channel-info">
-                                    <span class="channel-name">TDAH & Suporte</span>
-                                    <span class="channel-meta">450 membros</span>
-                                </div>
-                            </div>
-                            <div class="channel-item" data-channel="autismo">
-                                <div class="channel-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
-                                <div class="channel-info">
-                                    <span class="channel-name">Espectro Autista</span>
-                                    <span class="channel-meta">320 membros</span>
-                                </div>
-                            </div>
-                            <!-- Canais criados via JS aparecerão aqui -->
-                        </div>
-                    </aside>
-
-                    <!-- Área de mensagens -->
-                    <div class="chat-messages-area">
-                        <div class="chat-area-header">
-                            <div class="chat-area-title">
-                                <i class="fa-solid fa-hashtag" style="color:var(--primary);"></i>
-                                <span id="chatCurrentChannel">Geral</span>
-                            </div>
-                            <span class="chat-area-members" id="chatMemberCount">1.2k membros</span>
-                        </div>
-
-                        <div class="chat-messages-container" id="chatMessagesContainer">
-                            <div class="chat-messages" id="chatMessages">
-                                <!-- Mensagens renderizadas via JavaScript -->
-                            </div>
-                        </div>
-
-                        <div class="chat-input-area">
-                            <button class="chat-attach-btn" title="Anexar arquivo">
-                                <i class="fa-solid fa-paperclip"></i>
-                            </button>
-                            <button class="chat-attach-btn" title="Enviar vídeo" id="chatVideoBtn">
-                                <i class="fa-solid fa-video"></i>
-                            </button>
-                            <input type="text" id="chatInput" placeholder="Digite sua mensagem..." class="chat-input">
-                            <button id="sendChatBtn" class="chat-send-btn">
-                                <i class="fa-solid fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
         </div>
+    </nav>
+
+    <!-- ============================================
+         CONTEÚDO PRINCIPAL — Fórum é o central
+         ============================================ -->
+    <main class="community-main" id="mainContent">
+
+        <!-- Tela: FÓRUM -->
+        <section class="community-screen active" id="screen-forum" role="tabpanel">
+            <div class="screen-header">
+                <h2><i class="fa-regular fa-message"></i> Fórum</h2>
+                <button class="btn-create-post" id="openPostModalBtn">
+                    <i class="fa-regular fa-pen-to-square"></i> Novo Post
+                </button>
+            </div>
+
+            <!-- Caixa de postagem rápida -->
+            <div class="quick-post">
+                <img src="/img/foto-padrão.jpg" alt="Seu avatar" class="quick-post-avatar" id="quickPostAvatar">
+                <input type="text" id="quickPostInput" placeholder="O que você está pensando? Compartilhe com a comunidade...">
+                <button class="btn-quick-post" id="quickPostBtn">Postar</button>
+            </div>
+
+            <!-- Feed de posts -->
+            <div class="posts-feed" id="postsFeed"></div>
+        </section>
+
+        <!-- Tela: GRUPOS -->
+        <section class="community-screen" id="screen-grupos" role="tabpanel">
+            <div class="screen-header">
+                <h2><i class="fa-solid fa-users"></i> Grupos</h2>
+                <div class="screen-header-actions">
+                    <button class="btn-use-invite" id="useInviteCodeBtn">
+                        <i class="fa-solid fa-key"></i> Usar código
+                    </button>
+                    <button class="btn-create-group" id="openCreateGroupBtn">
+                        <i class="fa-solid fa-plus"></i> Criar Grupo
+                    </button>
+                </div>
+            </div>
+            <div class="groups-grid" id="groupsGrid"></div>
+        </section>
+
+        <!-- Tela: EVENTOS -->
+        <section class="community-screen" id="screen-eventos" role="tabpanel">
+            <div class="screen-header">
+                <h2><i class="fa-regular fa-calendar"></i> Eventos</h2>
+                <button class="btn-create-event" id="openCreateEventBtn">
+                    <i class="fa-solid fa-plus"></i> Criar Evento
+                </button>
+            </div>
+            <div class="events-grid" id="eventsGrid"></div>
+        </section>
+
+        <!-- Tela: CONVERSA -->
+        <section class="community-screen" id="screen-conversa" role="tabpanel">
+            <div class="screen-header">
+                <h2><i class="fa-regular fa-comment-dots"></i> Conversa</h2>
+            </div>
+
+            <div class="user-search-section">
+                <div class="user-search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="userSearchInput" placeholder="Pesquisar usuário..." autocomplete="off">
+                </div>
+                <div id="userSearchResults" class="user-search-results" hidden></div>
+            </div>
+
+            <div class="chat-full-layout">
+                <aside class="chat-channels">
+                    <div class="chat-channels-header">
+                        <h3><i class="fa-regular fa-comments"></i> Conversas</h3>
+                        <button class="btn-new-channel" id="openCreateGroupFromChatBtn" title="Novo canal">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <div id="friendRequestsSection" class="friends-section" hidden>
+                        <div class="friends-section-header">
+                            <span><i class="fa-solid fa-user-clock"></i> Solicitações</span>
+                            <span class="friend-request-count" id="friendRequestCount">0</span>
+                        </div>
+                        <div id="friendRequestsList" class="friend-requests-list"></div>
+                    </div>
+
+                    <div id="friendsSection" class="friends-section">
+                        <div class="friends-section-header">
+                            <span><i class="fa-solid fa-user-group"></i> Amigos</span>
+                        </div>
+                        <div id="friendsList" class="friends-list">
+                            <div class="empty-friends">Pesquise usuários acima para adicionar amigos</div>
+                        </div>
+                    </div>
+
+                    <div class="channels-divider">
+                        <span>Canais</span>
+                    </div>
+
+                    <div class="channels-list" id="channelsList"></div>
+                </aside>
+
+                <div class="chat-messages-area">
+                    <div class="chat-area-header">
+                        <div class="chat-area-title">
+                            <i class="fa-solid fa-hashtag" style="color:var(--primary);"></i>
+                            <span id="chatCurrentChannel">Geral</span>
+                        </div>
+                        <span class="chat-area-members" id="chatMemberCount">1.2k membros</span>
+                    </div>
+
+                    <div class="chat-messages-container" id="chatMessagesContainer">
+                        <div class="chat-messages" id="chatMessages"></div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <button class="chat-attach-btn" title="Anexar arquivo">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </button>
+                        <button class="chat-attach-btn" title="Enviar vídeo" id="chatVideoBtn">
+                            <i class="fa-solid fa-video"></i>
+                        </button>
+                        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." class="chat-input">
+                        <button id="sendChatBtn" class="chat-send-btn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
- 
+    <!-- ============================================
+         MODAIS (mantidos iguais)
+         ============================================ -->
 
+    <!-- Modal: Criar Grupo -->
     <div class="modal-overlay" id="createGroupModal" hidden>
         <div class="modal-container">
             <div class="modal-header">
@@ -331,9 +249,9 @@
         </div>
     </div>
 
-
+    <!-- Modal: Novo Post -->
     <div class="modal-overlay" id="postModalOverlay" hidden>
-        <div class="x-modal" id="postModal" role="dialog" aria-labelledby="postModalTitle" aria-hidden="true">
+        <div class="x-modal" id="postModal">
             <div class="x-modal-header">
                 <button class="x-modal-close-btn" id="closeModalBtn" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
                 <span class="x-modal-action-text">Novo Post</span>
@@ -362,9 +280,9 @@
         </div>
     </div>
 
-
+    <!-- Modal: Responder -->
     <div class="modal-overlay" id="replyModalOverlay" hidden>
-        <div class="x-modal" id="replyModal" role="dialog" aria-labelledby="replyModalTitle" aria-hidden="true">
+        <div class="x-modal" id="replyModal">
             <div class="x-modal-header">
                 <button class="x-modal-close-btn" id="closeReplyModalBtn" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
                 <span class="x-modal-action-text">Responder</span>
@@ -406,7 +324,7 @@
         </div>
     </div>
 
-
+    <!-- Modal: AcolherIA -->
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
         <div class="acolheria-modal">
             <div class="acolheria-modal-header">
@@ -440,7 +358,7 @@
             </div>
             <div class="acolheria-modal-footer">
                 <div class="acolheria-input-wrapper">
-                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1"></textarea>
                     <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
@@ -453,17 +371,15 @@
     </div>
     <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
 
-
-
+    <!-- Hub flutuante -->
     <div class="floating-hub" id="floatingHub">
-        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
-            <i class="fa-solid fa-circle-plus"></i>
-            <span class="floating-hub-label">Acessibilidade</span>
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de ajuda" title="Ajuda">
+            <i class="fa-regular fa-circle-question"></i>
+            <span class="floating-hub-label">Ajuda</span>
         </button>
 
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
-                <!-- Acessibilidade -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
                     <div class="floating-hub-actions">
@@ -496,7 +412,6 @@
 
                 <div class="floating-hub-divider"></div>
 
-                <!-- Ajuda -->
                 <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
@@ -525,16 +440,12 @@
             </div>
         </div>
     </div>
-
-    <!-- Overlay para fechar o hub -->
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
-
-
 
     <input type="file" id="videoUploadInput" accept="video/*" style="display:none;">
     <input type="file" id="imageUploadInput" accept="image/*" style="display:none;">
 
-    <!-- Modal: Adicionar amigo a grupo -->
+    <!-- Modais pequenos -->
     <div class="modal-overlay" id="addFriendToGroupModal" hidden>
         <div class="modal-container modal-sm">
             <div class="modal-header">
@@ -546,14 +457,11 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="searchFriendForGroupInput" placeholder="Pesquisar entre seus amigos..." autocomplete="off">
                 </div>
-                <div id="friendsForGroupList" class="friends-for-group-list">
-                    <!-- Lista de amigos renderizada via JS -->
-                </div>
+                <div id="friendsForGroupList" class="friends-for-group-list"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Selecionar grupo para adicionar amigo -->
     <div class="modal-overlay" id="selectGroupForFriendModal" hidden>
         <div class="modal-container modal-sm">
             <div class="modal-header">
@@ -562,14 +470,11 @@
             </div>
             <div class="modal-body">
                 <p class="modal-subtitle" id="selectGroupSubtitle">Selecione um grupo</p>
-                <div id="groupsForFriendList" class="groups-for-friend-list">
-                    <!-- Lista de grupos renderizada via JS -->
-                </div>
+                <div id="groupsForFriendList" class="groups-for-friend-list"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Código de convite do grupo -->
     <div class="modal-overlay" id="inviteCodeModal" hidden>
         <div class="modal-container modal-sm">
             <div class="modal-header">
@@ -594,7 +499,6 @@
         </div>
     </div>
 
-    <!-- Modal: Usar código de convite -->
     <div class="modal-overlay" id="useInviteCodeModal" hidden>
         <div class="modal-container modal-sm">
             <div class="modal-header">
@@ -613,7 +517,6 @@
         </div>
     </div>
 
-    <!-- Modal: Perfil do amigo -->
     <div class="modal-overlay" id="friendProfileModal" hidden>
         <div class="modal-container modal-sm">
             <div class="modal-header">
@@ -638,10 +541,6 @@
         </div>
     </div>
 
-
-
-
-<!-- ✅ ORDEM CORRETA -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     window.supabaseClient = supabase.createClient(
@@ -653,6 +552,5 @@
 <script src="/comunidade/comunidade.js"></script>
 <script src="/Acolher-IA/Acolher-IA.js"></script>
 <script src="moderation-integration.js"></script>
-<script src="comunidade-extras.js"></script>
 </body>
 </html>
