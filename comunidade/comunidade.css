@@ -2717,3 +2717,228 @@ body {
         max-width: 95vw;
     }
 }
+
+/* ==========================================================================
+   CUSTOM VIDEO PLAYER — estilo X/Twitter
+   ========================================================================== */
+.custom-video-player {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    line-height: 0;
+    user-select: none;
+    margin-top: 8px;
+}
+
+.custom-video-player video {
+    width: 100%;
+    max-height: 500px;
+    display: block;
+    background: #000;
+    object-fit: contain;
+}
+
+/* Esconde TODOS os controles nativos */
+.custom-video-player video::-webkit-media-controls,
+.custom-video-player video::-webkit-media-controls-enclosure,
+.custom-video-player video::-webkit-media-controls-panel,
+.custom-video-player video::-webkit-media-controls-play-button {
+    display: none !important;
+    -webkit-appearance: none;
+}
+.custom-video-player video::-moz-media-controls {
+    display: none !important;
+}
+
+/* Botão grande de play central */
+.cvp-big-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    color: #000;
+    font-size: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 5px;
+    transition: transform 0.2s, opacity 0.2s;
+    z-index: 3;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.cvp-big-play:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+}
+
+.custom-video-player.playing .cvp-big-play {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Controles inferiores */
+.cvp-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 30px 14px 12px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.25s;
+    z-index: 2;
+    line-height: 1;
+}
+
+.custom-video-player:hover .cvp-controls,
+.custom-video-player.show-controls .cvp-controls {
+    opacity: 1;
+}
+
+/* Barra de progresso */
+.cvp-progress {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: height 0.15s;
+}
+
+.cvp-progress:hover {
+    height: 6px;
+}
+
+.cvp-progress-buffer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    width: 0;
+}
+
+.cvp-progress-filled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: #fff;
+    border-radius: 4px;
+    width: 0;
+    pointer-events: none;
+}
+
+.cvp-progress-thumb {
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.15s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.cvp-progress:hover .cvp-progress-thumb {
+    transform: translateY(-50%) scale(1);
+}
+
+/* Linha de botões */
+.cvp-buttons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cvp-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.cvp-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.cvp-btn:active {
+    transform: scale(0.92);
+}
+
+/* Tempo */
+.cvp-time {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    padding: 0 8px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    letter-spacing: 0.02em;
+}
+
+.cvp-sep {
+    opacity: 0.6;
+}
+
+/* Spacer pra empurrar os botões da direita */
+.cvp-spacer {
+    flex: 1;
+}
+
+/* Estado de vídeo mudo */
+.cvp-btn.cvp-mute.muted i::before {
+    content: "\f6a9"; /* volume-xmark */
+}
+
+/* ==========================================================================
+   RESPONSIVO
+   ========================================================================== */
+@media (max-width: 640px) {
+    .cvp-big-play {
+        width: 56px;
+        height: 56px;
+        font-size: 20px;
+    }
+
+    .cvp-controls {
+        padding: 24px 10px 10px;
+    }
+
+    .cvp-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .cvp-time {
+        font-size: 12px;
+    }
+
+    /* Esconde PiP e Config no mobile (opcional) */
+    .cvp-pip,
+    .cvp-settings {
+        display: none;
+    }
+}

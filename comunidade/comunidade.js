@@ -1350,6 +1350,7 @@ async function handlePostMenu(e) {
             if (!menu.contains(ev.target) && ev.target !== btn) {
                 menu.remove();
                 document.removeEventListener('click', closeMenu);
+                  initCustomVideoPlayers();
             }
         });
     }, 50);
@@ -1624,7 +1625,223 @@ async function updateCommentCount(postId) {
         });
         modal.focus();
     }
+    // =============================================
+    // CUSTOM VIDEO PLAYER — Inicializador
+    // =============================================
+    function initCustomVideoPlayers() {
+        document.querySelectorAll('.custom-video-player').forEach(player => {
+            if (player.dataset.cvpInit === 'true') return;
+            player.dataset.cvpInit = 'true';
 
+            const video = player.querySelector('video');
+            const bigPlay = player.querySelector('.cvp-big-play');
+            const playPauseBtn = player.querySelector('.cvp-play-pause');
+            const playPauseIcon = playPauseBtn?.querySelector('i');
+            const muteBtn = player.querySelector('.cvp-mute');
+            const muteIcon = muteBtn?.querySelector('i');
+            const settingsBtn = player.querySelector('.cvp-settings');
+            const pipBtn = player.querySelector('.cvp-pip');
+            const fullscreenBtn = player.querySelector('.cvp-fullscreen');
+            const fullscreenIcon = fullscreenBtn?.querySelector('i');
+
+            const progress = player.querySelector('.cvp-progress');
+            const progressFilled = player.querySelector('.cvp-progress-filled');
+            const progressBuffer = player.querySelector('.cvp-progress-buffer');
+
+            const currentTimeEl = player.querySelector('.cvp-current');
+            const durationEl = player.querySelector('.cvp-duration');
+
+            if (!video) return;
+
+            // ---- FORMATAR TEMPO ----
+            function formatTime(seconds) {
+                if (isNaN(seconds) || seconds === Infinity) return '0:00';
+                const m = Math.floor(seconds / 60);
+                const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            }
+
+            // ---- PLAY / PAUSE ----
+            function togglePlay() {
+                if (video.paused) {
+                    video.play().catch(() => {});
+                } else {
+                    video.pause();
+                }
+            }
+
+            bigPlay?.addEventListener('click', togglePlay);
+            playPauseBtn?.addEventListener('click', togglePlay);
+            video.addEventListener('click', (e) => {
+                // Não dispara se clicou em um controle
+                if (e.target.closest('.cvp-controls')) return;
+                togglePlay();
+            });
+
+            video.addEventListener('play', () => {
+                player.classList.add('playing');
+                if (playPauseIcon) playPauseIcon.className = 'fa-solid fa-pause';
+            });
+
+            video.addEventListener('pause', () => {
+                player.classList.remove('playing');
+                if (playPauseIcon) playPauseIcon.className = 'fa-solid fa-play';
+            });
+
+            // ---- TEMPO ----
+            video.addEventListener('loadedmetadata', () => {
+                if (durationEl) durationEl.textContent = formatTime(video.duration);
+            });
+
+            video.addEventListener('timeupdate', () => {
+                const pct = (video.currentTime / video.duration) * 100 || 0;
+                if (progressFilled) progressFilled.style.width = pct + '%';
+                if (currentTimeEl) currentTimeEl.textContent = formatTime(video.currentTime);
+            });
+
+            // ---- BUFFER ----
+            video.addEventListener('progress', () => {
+                if (video.buffered.length > 0 && progressBuffer) {
+                    const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+                    const pct = (bufferedEnd / video.duration) * 100 || 0;
+                    progressBuffer.style.width = pct + '%';
+                }
+            });
+
+            // ---- SEEK ----
+            function seekFromEvent(e) {
+                if (!progress) return;
+                const rect = progress.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const x = clientX - rect.left;
+                const pct = Math.max(0, Math.min(1, x / rect.width));
+                video.currentTime = pct * video.duration;
+            }
+
+            if (progress) {
+                let isSeeking = false;
+                progress.addEventListener('mousedown', (e) => {
+                    isSeeking = true;
+                    seekFromEvent(e);
+                });
+                window.addEventListener('mousemove', (e) => {
+                    if (isSeeking) seekFromEvent(e);
+                });
+                window.addEventListener('mouseup', () => { isSeeking = false; });
+
+                progress.addEventListener('touchstart', seekFromEvent, { passive: true });
+                progress.addEventListener('touchmove', seekFromEvent, { passive: true });
+            }
+
+            // ---- MUDO ----
+            muteBtn?.addEventListener('click', () => {
+                video.muted = !video.muted;
+                if (muteIcon) {
+                    muteIcon.className = video.muted
+                        ? 'fa-solid fa-volume-xmark'
+                        : 'fa-solid fa-volume-high';
+                }
+            });
+
+            // ---- VELOCIDADE ----
+            settingsBtn?.addEventListener('click', () => {
+                const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+                const currentIdx = speeds.indexOf(video.playbackRate);
+                const nextIdx = (currentIdx + 1) % speeds.length;
+                video.playbackRate = speeds[nextIdx];
+                if (window.showToast) {
+                    window.showToast(`⚡ ${speeds[nextIdx]}x`, 'info', 1200);
+                }
+            });
+
+            // ---- PICTURE IN PICTURE ----
+            if (document.pictureInPictureEnabled && pipBtn) {
+                pipBtn.addEventListener('click', async () => {
+                    try {
+                        if (document.pictureInPictureElement) {
+                            await document.exitPictureInPicture();
+                        } else {
+                            await video.requestPictureInPicture();
+                        }
+                    } catch (err) {
+                        console.warn('PiP não disponível:', err);
+                    }
+                });
+            } else if (pipBtn) {
+                pipBtn.style.display = 'none';
+            }
+
+            // ---- TELA CHEIA ----
+            fullscreenBtn?.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    if (player.requestFullscreen) {
+                        player.requestFullscreen();
+                    } else if (player.webkitRequestFullscreen) {
+                        player.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                if (fullscreenIcon) {
+                    fullscreenIcon.className = document.fullscreenElement
+                        ? 'fa-solid fa-compress'
+                        : 'fa-solid fa-expand';
+                }
+            });
+
+            // ---- MOSTRAR/ESCONDER CONTROLES ----
+            let controlsTimeout;
+            function showControls() {
+                player.classList.add('show-controls');
+                clearTimeout(controlsTimeout);
+                if (!video.paused) {
+                    controlsTimeout = setTimeout(() => {
+                        player.classList.remove('show-controls');
+                    }, 2500);
+                }
+            }
+
+            video.addEventListener('mousemove', showControls);
+            player.addEventListener('mouseenter', showControls);
+            player.addEventListener('mouseleave', () => {
+                if (!video.paused) player.classList.remove('show-controls');
+            });
+
+            // ---- ATALHOS ----
+            video.setAttribute('tabindex', '0');
+            video.addEventListener('keydown', (e) => {
+                switch (e.key) {
+                    case ' ':
+                    case 'k':
+                        e.preventDefault();
+                        togglePlay();
+                        break;
+                    case 'ArrowRight':
+                        video.currentTime = Math.min(video.duration, video.currentTime + 5);
+                        break;
+                    case 'ArrowLeft':
+                        video.currentTime = Math.max(0, video.currentTime - 5);
+                        break;
+                    case 'm':
+                        video.muted = !video.muted;
+                        if (muteIcon) {
+                            muteIcon.className = video.muted
+                                ? 'fa-solid fa-volume-xmark'
+                                : 'fa-solid fa-volume-high';
+                        }
+                        break;
+                    case 'f':
+                        fullscreenBtn?.click();
+                        break;
+                }
+            });
+        });
+    }
     async function renderPosts() {
     const feed = document.getElementById('postsFeed');
     if (!feed) return;
@@ -1658,18 +1875,61 @@ async function updateCommentCount(postId) {
                 </div>
             `;
         } else if (p.video_url && p.video_url.trim() !== '' && p.video_url !== 'null') {
-            mediaHtml = `
-                <div class="post-video-container">
-                    <video controls preload="metadata" playsinline>
-                        <source src="${p.video_url}" type="video/mp4">
-                        <source src="${p.video_url}" type="video/webm">
-                        <p>Seu navegador não suporta vídeos.</p>
-                    </video>
-                    <button class="video-fullscreen-btn" title="Tela cheia">
-                        <i class="fa-solid fa-expand"></i>
-                    </button>
+           mediaHtml = `
+    <div class="custom-video-player" data-video-url="${p.video_url}">
+        <video preload="metadata" playsinline>
+            <source src="${p.video_url}" type="video/mp4">
+            <source src="${p.video_url}" type="video/webm">
+        </video>
+
+        <!-- Botão central de play -->
+        <button class="cvp-big-play" aria-label="Reproduzir">
+            <i class="fa-solid fa-play"></i>
+        </button>
+
+        <!-- Controles na parte de baixo -->
+        <div class="cvp-controls">
+            <!-- Barra de progresso -->
+            <div class="cvp-progress" data-progress>
+                <div class="cvp-progress-buffer" data-buffer></div>
+                <div class="cvp-progress-filled" data-filled>
+                    <div class="cvp-progress-thumb"></div>
                 </div>
-            `;
+            </div>
+
+            <!-- Linha de botões -->
+            <div class="cvp-buttons">
+                <button class="cvp-btn cvp-play-pause" aria-label="Play/Pause">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+
+                <div class="cvp-time">
+                    <span class="cvp-current">0:00</span>
+                    <span class="cvp-sep">/</span>
+                    <span class="cvp-duration">0:00</span>
+                </div>
+
+                <div class="cvp-spacer"></div>
+
+                <button class="cvp-btn cvp-mute" aria-label="Mudo">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+
+                <button class="cvp-btn cvp-settings" aria-label="Configurações">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+
+                <button class="cvp-btn cvp-pip" aria-label="Picture in Picture">
+                    <i class="fa-solid fa-clone"></i>
+                </button>
+
+                <button class="cvp-btn cvp-fullscreen" aria-label="Tela cheia">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+`;
         }
 
         return `
@@ -1733,6 +1993,7 @@ async function updateCommentCount(postId) {
     }).join('');
 
     setupPostEvents();
+       initCustomVideoPlayers();   // ← ADICIONE
 }
 
     // =============================================
