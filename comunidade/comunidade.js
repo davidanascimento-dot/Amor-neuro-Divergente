@@ -1454,90 +1454,111 @@ async function updateCommentCount(postId) {
     }
 
     async function renderPosts() {
-        const feed = document.getElementById('postsFeed');
-        if (!feed) return;
+    const feed = document.getElementById('postsFeed');
+    if (!feed) return;
 
-        const posts = await apiGetPosts();
+    const posts = await apiGetPosts();
 
-        if (!posts || posts.length === 0) {
-            feed.innerHTML = `
-                <div class="no-content" style="text-align:center;padding:60px 20px;color:#888;">
-                    <i class="fa-solid fa-feather" style="font-size:48px;display:block;margin-bottom:16px;opacity:0.3;"></i>
-                    <p style="font-size:16px;font-weight:500;">Nenhum post ainda</p>
-                    <p style="font-size:14px;color:#aaa;">Seja o primeiro a compartilhar algo com a comunidade!</p>
+    if (!posts || posts.length === 0) {
+        feed.innerHTML = `
+            <div class="no-content">
+                <i class="fa-solid fa-feather" style="font-size:48px;display:block;margin-bottom:16px;opacity:0.3;"></i>
+                <p style="font-size:16px;font-weight:500;">Nenhum post ainda</p>
+                <p style="font-size:14px;color:#666;">Seja o primeiro a compartilhar algo com a comunidade!</p>
+            </div>
+        `;
+        return;
+    }
+
+    const userAvatar = getUserAvatar();
+
+    feed.innerHTML = posts.map(p => {
+        const isLiked = p.is_liked || false;
+        const postAvatar = p.author_avatar || userAvatar;
+        const authorInitial = (p.author_name || 'U').charAt(0).toUpperCase();
+
+        // Mídia (imagem ou vídeo)
+        let mediaHtml = '';
+        if (p.image_url && p.image_url.trim() !== '' && p.image_url !== 'null') {
+            mediaHtml = `
+                <div class="post-image-container">
+                    <img src="${p.image_url}" alt="Imagem do post" onerror="this.style.display='none'">
                 </div>
             `;
-            return;
+        } else if (p.video_url && p.video_url.trim() !== '' && p.video_url !== 'null') {
+            mediaHtml = `
+                <div class="post-video-container">
+                    <video controls preload="metadata" playsinline>
+                        <source src="${p.video_url}" type="video/mp4">
+                        <source src="${p.video_url}" type="video/webm">
+                        <p>Seu navegador não suporta vídeos.</p>
+                    </video>
+                    <button class="video-fullscreen-btn" title="Tela cheia">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
+                </div>
+            `;
         }
 
-        const userAvatar = getUserAvatar();
-
-        feed.innerHTML = posts.map(p => {
-            const isLiked = p.is_liked || false;
-            const postAvatar = p.author_avatar || userAvatar;
-            const authorInitial = (p.author_name || 'U').charAt(0).toUpperCase();
-
-            let videoHtml = '';
-            if (p.video_url && p.video_url.trim() !== '' && p.video_url !== 'null') {
-                videoHtml = `
-                    <div class="post-video-container">
-                        <video controls preload="metadata" playsinline>
-                            <source src="${p.video_url}" type="video/mp4">
-                            <source src="${p.video_url}" type="video/webm">
-                            <p>Seu navegador não suporta vídeos.</p>
-                        </video>
-                        <button class="video-fullscreen-btn" title="Tela cheia">
-                            <i class="fa-solid fa-expand"></i>
-                        </button>
-                    </div>
-                `;
-            }
-
-            return `
-           <div class="post-card" data-post-id="${p.id}">
-    <div class="post-header">
-        <div class="post-author-avatar-wrapper">
-            <img src="${postAvatar}" class="post-author-avatar"
-                 alt="${escapeHtml(p.author_name || 'U')}"
-                 onerror="this.onerror=null; this.src='${AVATAR_PADRAO}'; this.addEventListener('error', function(){ this.style.display='none'; const fb=this.parentElement.querySelector('.post-author-fallback'); if(fb) fb.style.display='flex'; }, {once:true});">
-            <div class="post-author-fallback" style="display:none; background:${stringToColor(p.author_id || p.id)};">${authorInitial}</div>
-        </div>
-        <div class="post-body">
-            <div class="post-author-info">
-                <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
-                <span class="post-date">· ${formatDate(p.created_at)}</span>
-            </div>
-                        <p class="post-text">${escapeHtml(p.content)}</p>
-                        ${videoHtml}
-                        <div class="post-actions">
-                            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-post-id="${p.id}">
-                                <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i>
-                                <span class="count">${p.likes || 0}</span>
-                            </button>
-                            <button class="action-btn comment-toggle-btn" data-post-id="${p.id}">
-                                <i class="fa-regular fa-comment"></i>
-                                <span class="count">${p.comment_count || 0}</span>
-                            </button>
-                            <button class="action-btn" onclick="showToast('Compartilhar disponível em breve!', 'info')">
-                                <i class="fa-regular fa-share-from-square"></i>
-                            </button>
-                        </div>
-                        <div class="comments-section" id="comments-${p.id}" style="display:none;">
-                            <div class="comments-list">
-                                <p style="color:#888;font-size:13px;padding:8px;">Carregando...</p>
-                            </div>
-                            <div class="add-comment">
-                                <input placeholder="Escreva um comentário..." id="comment-input-${p.id}">
-                                <button class="submit-comment-btn" data-post-id="${p.id}">Enviar</button>
-                            </div>
-                        </div>
-                    </div>
+        return `
+        <div class="post-card" data-post-id="${p.id}" data-author-id="${p.author_id || ''}">
+            <!-- Cabeçalho -->
+            <div class="post-header">
+                <div class="post-author-avatar-wrapper">
+                    <img src="${postAvatar}" class="post-author-avatar"
+                         alt="${escapeHtml(p.author_name || 'U')}"
+                         onerror="this.onerror=null; this.src='${AVATAR_PADRAO}'; this.addEventListener('error', function(){ this.style.display='none'; const fb=this.parentElement.querySelector('.post-author-fallback'); if(fb) fb.style.display='flex'; }, {once:true});">
+                    <div class="post-author-fallback" style="display:none; background:${stringToColor(p.author_id || p.id)};">${authorInitial}</div>
                 </div>
-            </div>`;
-        }).join('');
+                <div class="post-body">
+                    <div class="post-author-info">
+                        <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
+                        <span class="post-date">${formatDate(p.created_at)}</span>
+                    </div>
+                    <p class="post-text">${escapeHtml(p.content)}</p>
+                    ${mediaHtml}
+                </div>
+            </div>
 
-        setupPostEvents();
-    }
+            <!-- Rodapé: ações + botão Saiba Mais -->
+            <div class="post-footer">
+                <div class="post-actions">
+                    <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-post-id="${p.id}">
+                        <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i>
+                        <span class="count">${p.likes || 0}</span>
+                    </button>
+                    <button class="action-btn comment-toggle-btn" data-post-id="${p.id}">
+                        <i class="fa-regular fa-comment"></i>
+                        <span class="count">${p.comment_count || 0}</span>
+                    </button>
+                    <button class="action-btn">
+                        <i class="fa-solid fa-retweet"></i>
+                        <span class="count">0</span>
+                    </button>
+                    <button class="action-btn">
+                        <i class="fa-regular fa-share-from-square"></i>
+                    </button>
+                </div>
+                <button class="btn-saiba-mais" onclick="window.open('${p.link_url || '#'}', '_blank')">
+                    Saiba Mais
+                </button>
+            </div>
+
+            <!-- Seção de comentários -->
+            <div class="comments-section" id="comments-${p.id}" style="display:none;">
+                <div class="comments-list">
+                    <p style="color:#666;font-size:13px;padding:8px;">Carregando...</p>
+                </div>
+                <div class="add-comment">
+                    <input placeholder="Escreva um comentário..." id="comment-input-${p.id}">
+                    <button class="submit-comment-btn" data-post-id="${p.id}">Enviar</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    setupPostEvents();
+}
 
     // =============================================
     // 10. NOVO POST
@@ -4201,6 +4222,622 @@ if (document.readyState === 'loading') {
     
 }
 
+/* ==========================================================================
+   HOVER PERFIL - TOOLTIP/POPOVER DE PERFIL NO FÓRUM
+   Estilo: quadrado, escuro, sem bordas, com suporte a banner/avatar
+   Comportamento: fica FIXO quando o mouse entra no card
+   ========================================================================== */
 
+(function() {
+    'use strict';
+
+    const HOVER_DELAY = 400;
+    const CLOSE_DELAY = 300;
+    const AVATAR_PADRAO = '/img/foto-padrão.jpg';
+    const profileCache = new Map();
+
+    let hoverCard = null;
+    let hoverTimeout = null;
+    let closeTimeout = null;
+    let isMouseOverCard = false;
+    let currentProfile = null;
+
+    // =============================================
+    // CRIAR O CARD (uma única vez)
+    // =============================================
+    function createHoverCard() {
+        if (hoverCard) return hoverCard;
+
+        hoverCard = document.createElement('div');
+        hoverCard.id = 'hoverPerfilCard';
+        hoverCard.style.cssText = `
+            position: fixed;
+            z-index: 99998;
+            width: 380px;
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 0px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            padding: 0px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            font-family: 'Inter', sans-serif;
+            display: none;
+            overflow: hidden;
+            color: #ffffff;
+        `;
+
+        hoverCard.innerHTML = `
+            <!-- Banner -->
+            <div id="hoverBanner" style="
+                width: 100%;
+                height: 100px;
+                background: #2a2a2a;
+                position: relative;
+                overflow: hidden;
+            ">
+                <img id="hoverBannerImg" src="" alt="" style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: none;
+                ">
+                <div id="hoverBannerPlaceholder" style="
+                    width: 100%; height: 100%;
+                    display: flex; align-items: center; justify-content: center;
+                    color: #555; font-size: 12px;
+                ">Sem banner</div>
+            </div>
+
+            <!-- Conteúdo -->
+            <div style="padding: 16px 20px 20px 20px;">
+
+                <!-- Avatar + Botão -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: -50px; margin-bottom: 12px;">
+                    <div style="position: relative;">
+                        <img id="hoverAvatar" src="${AVATAR_PADRAO}" alt="Avatar" style="
+                            width: 80px;
+                            height: 80px;
+                            border-radius: 50%;
+                            border: 4px solid #1a1a1a;
+                            object-fit: cover;
+                            background: #2a2a2a;
+                            display: block;
+                        ">
+                        <div id="hoverAvatarFallback" style="
+                            display: none;
+                            width: 80px; height: 80px; border-radius: 50%;
+                            border: 4px solid #1a1a1a;
+                            background: #333;
+                            align-items: center; justify-content: center;
+                            font-size: 32px; font-weight: 700; color: #fff;
+                            position: absolute; top: 0; left: 0;
+                        ">U</div>
+                    </div>
+                    <button id="hoverFollowBtn" style="
+                        padding: 8px 22px;
+                        border-radius: 4px;
+                        border: 1px solid #ffffff;
+                        background: transparent;
+                        color: #ffffff;
+                        font-size: 14px;
+                        font-weight: 700;
+                        cursor: pointer;
+                        font-family: 'Inter', sans-serif;
+                        transition: all 0.2s;
+                        margin-bottom: 4px;
+                    ">Ver Perfil</button>
+                </div>
+
+                <!-- Nome + Handle -->
+                <div style="margin-bottom: 10px;">
+                    <h3 id="hoverName" style="
+                        font-size: 20px;
+                        font-weight: 700;
+                        color: #ffffff;
+                        margin: 0 0 2px 0;
+                        line-height: 1.2;
+                    ">Nome</h3>
+                    <span id="hoverHandle" style="
+                        font-size: 14px;
+                        color: #888888;
+                    ">@username</span>
+                </div>
+
+                <!-- Bio -->
+                <p id="hoverBio" style="
+                    font-size: 14px;
+                    color: #cccccc;
+                    line-height: 1.5;
+                    margin: 0 0 14px 0;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                ">Sem descrição.</p>
+
+                <!-- Badges -->
+                <div id="hoverBadges" style="
+                    display: flex;
+                    gap: 6px;
+                    flex-wrap: wrap;
+                    margin-bottom: 14px;
+                "></div>
+
+                <!-- Estatísticas -->
+                <div style="display: flex; gap: 28px; margin-top: 4px; padding-top: 14px; border-top: 1px solid #333;">
+                    <div>
+                        <div id="hoverFollowers" style="
+                            font-size: 16px;
+                            font-weight: 700;
+                            color: #ffffff;
+                        ">0</div>
+                        <div style="font-size: 13px; color: #888888;">seguidores</div>
+                    </div>
+                    <div>
+                        <div id="hoverContribuicao" style="
+                            font-size: 16px;
+                            font-weight: 700;
+                            color: #ffffff;
+                        ">0</div>
+                        <div style="font-size: 13px; color: #888888;">contribuição</div>
+                    </div>
+                </div>
+
+                <!-- Ações -->
+                <div id="hoverActions" style="
+                    display: flex;
+                    gap: 8px;
+                    margin-top: 14px;
+                    padding-top: 14px;
+                    border-top: 1px solid #333;
+                "></div>
+            </div>
+        `;
+
+        // ✅ EVENTOS PARA MANTER O CARD FIXO QUANDO O MOUSE ENTRA
+        hoverCard.addEventListener('mouseenter', () => {
+            isMouseOverCard = true;
+            clearTimeout(closeTimeout);
+            clearTimeout(hoverTimeout);
+        });
+
+        hoverCard.addEventListener('mouseleave', () => {
+            isMouseOverCard = false;
+            hideHoverCard();
+        });
+
+        // ✅ CLICAR NO CARD (fora dos botões) NÃO FECHA
+        hoverCard.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        document.body.appendChild(hoverCard);
+        return hoverCard;
+    }
+
+    // =============================================
+    // BUSCAR PERFIL PELO NOME DO AUTOR
+    // =============================================
+    async function fetchProfileByName(authorName) {
+        if (!authorName) return null;
+
+        const cacheKey = 'name:' + authorName.toLowerCase();
+        if (profileCache.has(cacheKey)) return profileCache.get(cacheKey);
+
+        const supabase = window.supabaseClient;
+        if (!supabase) return null;
+
+        try {
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .ilike('username', authorName)
+                .maybeSingle();
+
+            if (error) {
+                const { data: simpleProfile } = await supabase
+                    .from('profiles')
+                    .select('id, username, avatar_url')
+                    .ilike('username', authorName)
+                    .maybeSingle();
+                
+                if (!simpleProfile) return null;
+
+                const simpleData = {
+                    id: simpleProfile.id,
+                    username: simpleProfile.username || authorName,
+                    avatar_url: simpleProfile.avatar_url || AVATAR_PADRAO,
+                    bio: 'Membro da comunidade',
+                    banner_url: null,
+                    role: 'member',
+                    is_admin: false,
+                    is_collaborator: false,
+                    followers_count: 0,
+                    contribution_count: 0
+                };
+                profileCache.set(cacheKey, simpleData);
+                return simpleData;
+            }
+
+            if (!profile) return null;
+
+            let contributionCount = 0;
+            try {
+                const { count: postCount } = await supabase
+                    .from('posts')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('author_id', profile.id)
+                    .eq('is_active', true);
+
+                const { count: commentCount } = await supabase
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('author_id', profile.id)
+                    .eq('is_active', true);
+
+                contributionCount = (postCount || 0) + (commentCount || 0);
+            } catch(e) {}
+
+            const profileData = {
+                id: profile.id,
+                username: profile.username || authorName,
+                avatar_url: profile.avatar_url || AVATAR_PADRAO,
+                bio: profile.bio || 'Membro da comunidade',
+                banner_url: profile.banner_url || null,
+                role: profile.role || 'member',
+                is_admin: profile.is_admin || false,
+                is_collaborator: profile.is_collaborator || false,
+                followers_count: profile.followers_count || 0,
+                contribution_count: contributionCount
+            };
+
+            profileCache.set(cacheKey, profileData);
+            return profileData;
+
+        } catch (err) {
+            console.error('❌ Erro ao buscar perfil:', err);
+            return null;
+        }
+    }
+
+    // =============================================
+    // RENDERIZAR O CARD
+    // =============================================
+    function renderHoverCard(profile) {
+        if (!hoverCard || !profile) return;
+
+        currentProfile = profile;
+
+        // ---- AVATAR ----
+        const avatarEl = hoverCard.querySelector('#hoverAvatar');
+        const avatarFallback = hoverCard.querySelector('#hoverAvatarFallback');
+
+        if (profile.avatar_url && profile.avatar_url !== AVATAR_PADRAO && profile.avatar_url.trim() !== '') {
+            avatarEl.src = profile.avatar_url;
+            avatarEl.style.display = 'block';
+            avatarFallback.style.display = 'none';
+            avatarEl.onerror = () => {
+                avatarEl.style.display = 'none';
+                avatarFallback.style.display = 'flex';
+                avatarFallback.textContent = (profile.username || 'U').charAt(0).toUpperCase();
+            };
+        } else {
+            avatarEl.style.display = 'none';
+            avatarFallback.style.display = 'flex';
+            avatarFallback.textContent = (profile.username || 'U').charAt(0).toUpperCase();
+        }
+
+        // ---- BANNER ----
+        const bannerImg = hoverCard.querySelector('#hoverBannerImg');
+        const bannerPlaceholder = hoverCard.querySelector('#hoverBannerPlaceholder');
+        const bannerDiv = hoverCard.querySelector('#hoverBanner');
+
+        if (profile.banner_url && profile.banner_url.trim() !== '') {
+            bannerImg.src = profile.banner_url;
+            bannerImg.style.display = 'block';
+            bannerPlaceholder.style.display = 'none';
+            bannerDiv.style.background = '#2a2a2a';
+            bannerImg.onerror = () => {
+                bannerImg.style.display = 'none';
+                bannerPlaceholder.style.display = 'flex';
+            };
+        } else {
+            bannerImg.style.display = 'none';
+            bannerPlaceholder.style.display = 'flex';
+            bannerDiv.style.background = '#2a2a2a';
+        }
+
+        // ---- NOME ----
+        hoverCard.querySelector('#hoverName').textContent = profile.username;
+        hoverCard.querySelector('#hoverHandle').textContent = '@' + profile.username.toLowerCase();
+        hoverCard.querySelector('#hoverBio').textContent = profile.bio || 'Membro da comunidade';
+
+        // ---- BADGES ----
+        const badgesEl = hoverCard.querySelector('#hoverBadges');
+        let badgesHtml = '';
+
+        if (profile.is_admin) {
+            badgesHtml += `<span style="background:#3a2a1a;color:#d4b483;border:1px solid #d4b483;font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.05em;"><i class="fa-solid fa-crown"></i> Admin</span>`;
+        }
+        if (profile.is_collaborator) {
+            badgesHtml += `<span style="background:#1a2a3a;color:#93c5fd;border:1px solid #93c5fd;font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.05em;"><i class="fa-solid fa-hand-holding-heart"></i> Colaborador</span>`;
+        }
+        if (!profile.is_admin && !profile.is_collaborator) {
+            badgesHtml += `<span style="background:#1a2a1a;color:#86efac;border:1px solid #86efac;font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.05em;"><i class="fa-solid fa-user"></i> Membro</span>`;
+        }
+        badgesEl.innerHTML = badgesHtml;
+
+        // ---- ESTATÍSTICAS ----
+        hoverCard.querySelector('#hoverFollowers').textContent = formatNumber(profile.followers_count || 0);
+        hoverCard.querySelector('#hoverContribuicao').textContent = formatNumber(profile.contribution_count || 0);
+
+        // ---- BOTÃO "VER PERFIL" ----
+        const followBtn = hoverCard.querySelector('#hoverFollowBtn');
+        followBtn.onclick = (e) => {
+            e.stopPropagation();
+            irParaPerfil(profile.id);
+        };
+
+        // ---- AÇÕES ----
+        const actionsEl = hoverCard.querySelector('#hoverActions');
+        actionsEl.innerHTML = `
+            <button id="hoverMsgBtn" style="
+                flex: 1; padding: 8px; border-radius: 4px;
+                border: 1px solid #444; background: transparent; color: #ffffff;
+                font-size: 13px; font-weight: 600; cursor: pointer;
+                font-family: 'Inter', sans-serif;
+            "><i class="fa-regular fa-comment-dots"></i> Mensagem</button>
+            <button id="hoverAddBtn" style="
+                flex: 1; padding: 8px; border-radius: 4px;
+                border: none; background: #ffffff; color: #1a1a1a;
+                font-size: 13px; font-weight: 600; cursor: pointer;
+                font-family: 'Inter', sans-serif;
+            "><i class="fa-solid fa-user-plus"></i> Adicionar</button>
+        `;
+
+        // ✅ BOTÃO MENSAGEM
+        hoverCard.querySelector('#hoverMsgBtn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (typeof window.openFriendChat === 'function') {
+                window.openFriendChat('', profile.username, profile.id);
+            }
+            hideHoverCard(true);
+        });
+
+        // ✅ BOTÃO ADICIONAR
+        hoverCard.querySelector('#hoverAddBtn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (typeof window.sendFriendRequest === 'function') {
+                window.sendFriendRequest(profile.id);
+            }
+            hideHoverCard(true);
+        });
+
+        actionsEl.style.display = 'flex';
+    }
+
+    // =============================================
+    // IR PARA O PERFIL
+    // =============================================
+    function irParaPerfil(userId) {
+        if (!userId) return;
+        // Fecha o card imediatamente
+        hideHoverCard(true);
+        // Redireciona para a página de perfil
+        window.location.href = `/comunidade/perfil.html?id=${userId}`;
+    }
+
+    // =============================================
+    // POSICIONAR
+    // =============================================
+    function positionHoverCard(target) {
+        if (!hoverCard || !target) return;
+
+        const rect = target.getBoundingClientRect();
+        const cardWidth = 380;
+        const cardHeight = hoverCard.offsetHeight || 500;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const padding = 12;
+
+        let left = rect.right + 12;
+        if (left + cardWidth > windowWidth - padding) {
+            left = rect.left - cardWidth - 12;
+        }
+        if (left < padding) left = padding;
+
+        let top = rect.top + (rect.height / 2) - (cardHeight / 2);
+        if (top < padding) top = padding;
+        if (top + cardHeight > windowHeight - padding) {
+            top = windowHeight - cardHeight - padding;
+        }
+
+        hoverCard.style.left = left + 'px';
+        hoverCard.style.top = top + 'px';
+    }
+
+    // =============================================
+    // MOSTRAR / ESCONDER
+    // =============================================
+    function showHoverCard(target, authorName) {
+        clearTimeout(closeTimeout);
+        clearTimeout(hoverTimeout);
+
+        hoverTimeout = setTimeout(async () => {
+            const profile = await fetchProfileByName(authorName);
+            if (!profile) return;
+
+            createHoverCard();
+            renderHoverCard(profile);
+            positionHoverCard(target);
+
+            hoverCard.style.display = 'block';
+            hoverCard.style.pointerEvents = 'auto';
+
+            requestAnimationFrame(() => {
+                hoverCard.style.opacity = '1';
+                hoverCard.style.transform = 'translateY(0)';
+            });
+        }, HOVER_DELAY);
+    }
+
+    function hideHoverCard(force = false) {
+        clearTimeout(hoverTimeout);
+
+        // ✅ SE O MOUSE ESTIVER SOBRE O CARD E NÃO FOR FORÇADO, NÃO FECHA
+        if (isMouseOverCard && !force) return;
+
+        if (!hoverCard) return;
+
+        closeTimeout = setTimeout(() => {
+            // Verifica novamente se o mouse ainda está sobre o card
+            if (isMouseOverCard && !force) return;
+
+            hoverCard.style.opacity = '0';
+            hoverCard.style.transform = 'translateY(8px)';
+            hoverCard.style.pointerEvents = 'none';
+            setTimeout(() => {
+                if (hoverCard && !isMouseOverCard) {
+                    hoverCard.style.display = 'none';
+                }
+            }, 200);
+        }, CLOSE_DELAY);
+    }
+
+    // =============================================
+    // UTILITÁRIOS
+    // =============================================
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+        return num.toString();
+    }
+
+    // =============================================
+    // ADICIONAR EVENTOS DE HOVER NOS POSTS
+    // =============================================
+    function attachHoverEvents() {
+        const feed = document.getElementById('postsFeed');
+        if (!feed) return;
+
+        const postCards = feed.querySelectorAll('.post-card');
+        postCards.forEach(card => {
+            if (card.dataset.hoverAttached === 'true') return;
+            card.dataset.hoverAttached = 'true';
+
+            const authorNameEl = card.querySelector('.post-author-name');
+            if (!authorNameEl) return;
+
+            const authorName = authorNameEl.textContent.trim();
+            if (!authorName || authorName === 'Usuário') return;
+
+            const avatar = card.querySelector('.post-author-avatar');
+            if (avatar) {
+                avatar.style.cursor = 'pointer';
+                avatar.addEventListener('mouseenter', (e) => {
+                    isMouseOverCard = false;
+                    showHoverCard(e.currentTarget, authorName);
+                });
+                avatar.addEventListener('mouseleave', () => {
+                    // ✅ Só fecha se o mouse NÃO estiver sobre o card
+                    setTimeout(() => {
+                        if (!isMouseOverCard) hideHoverCard();
+                    }, 100);
+                });
+                // ✅ CLICAR NO AVATAR VAI PARA O PERFIL
+                avatar.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const profileData = profileCache.get('name:' + authorName.toLowerCase());
+                    if (profileData?.id) {
+                        irParaPerfil(profileData.id);
+                    }
+                });
+            }
+
+            authorNameEl.style.cursor = 'pointer';
+            authorNameEl.addEventListener('mouseenter', (e) => {
+                isMouseOverCard = false;
+                showHoverCard(e.currentTarget, authorName);
+            });
+            authorNameEl.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    if (!isMouseOverCard) hideHoverCard();
+                }, 100);
+            });
+            // ✅ CLICAR NO NOME VAI PARA O PERFIL
+            authorNameEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const profileData = profileCache.get('name:' + authorName.toLowerCase());
+                if (profileData?.id) {
+                    irParaPerfil(profileData.id);
+                }
+            });
+        });
+    }
+
+    // =============================================
+    // OBSERVER PARA NOVOS POSTS
+    // =============================================
+    function observeNewPosts() {
+        const feed = document.getElementById('postsFeed');
+        if (!feed) return;
+
+        const observer = new MutationObserver(() => {
+            attachHoverEvents();
+        });
+
+        observer.observe(feed, { childList: true, subtree: true });
+    }
+
+    // =============================================
+    // FECHAR AO CLICAR FORA
+    // =============================================
+    document.addEventListener('click', (e) => {
+        if (!hoverCard) return;
+        if (!hoverCard.contains(e.target) && !e.target.closest('[data-hover-attached]')) {
+            hideHoverCard(true);
+        }
+    });
+
+    // =============================================
+    // INICIALIZAÇÃO
+    // =============================================
+    function init() {
+        console.log('🖱️ Hover Perfil: Inicializando...');
+        createHoverCard();
+        setTimeout(attachHoverEvents, 1500);
+        observeNewPosts();
+
+        // Fechar ao rolar (opcional — descomente se quiser)
+        // window.addEventListener('scroll', () => {
+        //     if (hoverCard && hoverCard.style.display === 'block' && !isMouseOverCard) {
+        //         hideHoverCard();
+        //     }
+        // }, { passive: true });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') hideHoverCard(true);
+        });
+
+        console.log('✅ Hover Perfil: Pronto!');
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        setTimeout(init, 800);
+    }
+
+})();
 
 });

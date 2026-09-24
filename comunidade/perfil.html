@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil — Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="perfil.css">
+</head>
+<body>
+
+    <!-- Overlay de edição -->
+    <div class="edit-overlay" id="editOverlay" hidden>
+        <div class="edit-modal">
+            <div class="edit-modal-header">
+                <h2><i class="fa-solid fa-pen"></i> Editar Perfil</h2>
+                <button class="edit-close" id="closeEditBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="edit-modal-body">
+                <!-- Banner -->
+                <div class="edit-field">
+                    <label>Banner (capa)</label>
+                    <div class="edit-banner-preview" id="editBannerPreview">
+                        <img id="editBannerImg" src="" alt="">
+                        <div class="edit-banner-placeholder" id="editBannerPlaceholder">
+                            <i class="fa-regular fa-image"></i>
+                            <span>Clique para enviar banner</span>
+                        </div>
+                        <input type="file" id="editBannerInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Avatar -->
+                <div class="edit-field">
+                    <label>Foto de perfil</label>
+                    <div class="edit-avatar-preview" id="editAvatarPreview">
+                        <img id="editAvatarImg" src="" alt="">
+                        <div class="edit-avatar-placeholder" id="editAvatarPlaceholder">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <input type="file" id="editAvatarInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Nome -->
+                <div class="edit-field">
+                    <label>Nome de exibição</label>
+                    <input type="text" id="editName" maxlength="40" placeholder="Seu nome">
+                </div>
+
+                <!-- Username -->
+                <div class="edit-field">
+                    <label>@username</label>
+                    <input type="text" id="editUsername" maxlength="20" placeholder="@username">
+                </div>
+
+                <!-- Bio -->
+                <div class="edit-field">
+                    <label>Bio</label>
+                    <textarea id="editBio" rows="3" maxlength="160" placeholder="Conte um pouco sobre você..."></textarea>
+                    <small class="edit-counter"><span id="bioCounter">0</span>/160</small>
+                </div>
+
+                <!-- Localização -->
+                <div class="edit-field">
+                    <label>Localização</label>
+                    <input type="text" id="editLocation" maxlength="40" placeholder="Cidade, País">
+                </div>
+
+                <!-- Link -->
+                <div class="edit-field">
+                    <label>Link</label>
+                    <input type="url" id="editLink" placeholder="https://...">
+                </div>
+            </div>
+            <div class="edit-modal-footer">
+                <button class="btn-cancel" id="cancelEditBtn">Cancelar</button>
+                <button class="btn-save" id="saveEditBtn"><i class="fa-solid fa-check"></i> Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container principal -->
+    <main class="profile-container" id="profileContainer">
+
+        <!-- Header de navegação -->
+        <header class="profile-topbar">
+            <button class="topbar-back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+            <div class="topbar-info">
+                <h1 id="topbarName">Carregando...</h1>
+                <span id="topbarPosts">0 posts</span>
+            </div>
+            <button class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </header>
+
+        <!-- Banner -->
+        <div class="profile-banner" id="profileBanner">
+            <img id="bannerImg" src="" alt="" style="display:none;">
+            <div class="profile-banner-placeholder" id="bannerPlaceholder">
+                <i class="fa-regular fa-image"></i>
+            </div>
+        </div>
+
+        <!-- Avatar + Botão editar -->
+        <div class="profile-avatar-row">
+            <div class="profile-avatar-wrapper">
+                <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
+                <div class="profile-avatar-placeholder" id="avatarPlaceholder">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+            <button class="btn-edit-profile" id="openEditBtn">
+                <i class="fa-solid fa-pen"></i> Editar Perfil
+            </button>
+        </div>
+
+        <!-- Informações do perfil -->
+        <div class="profile-info">
+            <div class="profile-name-row">
+                <h2 id="profileName">Carregando...</h2>
+                <span class="verified-badge" id="verifiedBadge" style="display:none;">
+                    <i class="fa-solid fa-circle-check"></i> Verificado
+                </span>
+                <span class="admin-badge" id="adminBadge" style="display:none;">
+                    <i class="fa-solid fa-crown"></i> Admin
+                </span>
+            </div>
+            <p class="profile-handle" id="profileHandle">@carregando</p>
+            <p class="profile-bio" id="profileBio">Sem bio.</p>
+            <div class="profile-meta">
+                <span id="profileLocation" style="display:none;"><i class="fa-regular fa-map"></i> <span></span></span>
+                <span id="profileLink" style="display:none;"><i class="fa-solid fa-link"></i> <a href="#" target="_blank">link</a></span>
+                <span id="profileJoinDate"><i class="fa-regular fa-calendar"></i> Entrou em ...</span>
+            </div>
+            <div class="profile-stats">
+                <span><strong id="statFollowing">0</strong> Seguindo</span>
+                <span><strong id="statFollowers">0</strong> Seguidores</span>
+                <span><strong id="statContrib">0</strong> Contribuições</span>
+            </div>
+        </div>
+
+        <!-- Abas -->
+        <nav class="profile-tabs" role="tablist">
+            <button class="profile-tab active" data-tab="posts" role="tab">Posts</button>
+            <button class="profile-tab" data-tab="respostas" role="tab">Respostas</button>
+            <button class="profile-tab" data-tab="reposts" role="tab">Reposts</button>
+            <button class="profile-tab" data-tab="midia" role="tab">Mídia</button>
+            <button class="profile-tab" data-tab="curtidas" role="tab">Curtidas</button>
+        </nav>
+
+        <!-- Conteúdo das abas -->
+        <div class="profile-content" id="profileContent">
+            <!-- Preenchido via JS -->
+        </div>
+
+    </main>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+    <script src="perfil.js"></script>
+</body>
+</html>
