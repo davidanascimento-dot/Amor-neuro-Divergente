@@ -556,6 +556,130 @@
 }
 
 /* --------------------------------------------------------------
+   SUGESTÕES — QUEM SEGUIR
+   -------------------------------------------------------------- */
+.suggested-profiles-card[hidden] {
+    display: none;
+}
+
+.suggested-profiles-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.suggested-profile-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--pf-border);
+}
+
+.suggested-profile-item:first-child {
+    padding-top: 0;
+    border-top: none;
+}
+
+.suggested-profile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.suggested-profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--pf-border);
+    background: var(--pf-bg-soft);
+}
+
+.suggested-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.suggested-profile-name,
+.suggested-profile-handle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.suggested-profile-name {
+    color: var(--pf-text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.suggested-profile-link:hover .suggested-profile-name {
+    text-decoration: underline;
+}
+
+.suggested-profile-handle {
+    color: #6f6862;
+    font-size: 11px;
+}
+
+.suggestion-follow-button {
+    min-width: 68px;
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--pf-text);
+    border-radius: 999px;
+    background: var(--pf-text);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.suggestion-follow-button:hover:not(:disabled) {
+    background: #2a2a4e;
+    transform: translateY(-1px);
+}
+
+.suggestion-follow-button.is-following {
+    background: transparent;
+    color: var(--pf-text);
+    border-color: var(--pf-border);
+}
+
+.suggestion-follow-button.is-following:hover:not(:disabled) {
+    background: #fff0f3;
+    color: #a83255;
+    border-color: #e8bfca;
+}
+
+.suggestion-follow-button:focus-visible,
+.suggested-profile-link:focus-visible {
+    outline: 2px solid var(--pf-verified);
+    outline-offset: 2px;
+}
+
+.suggestion-follow-button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.suggested-profiles-more {
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--pf-border);
+}
+
+/* --------------------------------------------------------------
    MODAL DE EDIÇÃO
    -------------------------------------------------------------- */
 .edit-overlay {

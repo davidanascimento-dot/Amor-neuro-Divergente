@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentTab = 'posts';
     let allPosts = [];        // cache dos posts do usuário
     let allSavedPosts = [];   // cache dos posts salvos
+    let suggestedProfiles = [];
+    const followedUserIds = new Set();
 
     // =============================================
     // 1. USUÁRIO LOGADO
@@ -479,6 +481,203 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // =============================================
+    // 8.1. SUGESTÕES — QUEM SEGUIR
+    // =============================================
+    async function loadFollowSuggestions() {
+        const card = document.getElementById('suggestedProfilesCard');
+        const list = document.getElementById('suggestedProfilesList');
+        if (!currentUser || !card || !list) return;
+
+        card.removeAttribute('hidden');
+        card.setAttribute('aria-busy', 'true');
+
+        try {
+            const { data: profiles, error: profilesError } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .order('created_at', { ascending: false })
+                .limit(24);
+
+            if (profilesError) throw profilesError;
+
+            const candidates = (profiles || []).filter(profile =>
+                profile &&
+                isValidUuid(profile.id) &&
+                profile.id !== currentUser.id &&
+                profile.id !== targetUserId
+            );
+
+            if (!candidates.length) {
+                card.hidden = true;
+                return;
+            }
+
+            const candidateIds = candidates.map(profile => profile.id);
+            const { data: followingRows, error: followingError } = await supabase
+                .from('follows')
+                .select('followed_id')
+                .eq('follower_id', currentUser.id)
+                .in('followed_id', candidateIds);
+
+            if (followingError) {
+                console.warn('⚠️ Não foi possível carregar os seguimentos:', followingError);
+            } else {
+                followedUserIds.clear();
+                (followingRows || []).forEach(row => {
+                    if (row.followed_id) followedUserIds.add(row.followed_id);
+                });
+            }
+
+            suggestedProfiles = candidates
+                .filter(profile => !followedUserIds.has(profile.id))
+                .slice(0, 3)
+                .map(profile => ({
+                    id: profile.id,
+                    username: cleanUsername(profile.username),
+                    avatar_url: getSafeImageUrl(profile.avatar_url),
+                    is_following: false
+                }));
+
+            if (!suggestedProfiles.length) {
+                card.hidden = true;
+                list.replaceChildren();
+                return;
+            }
+
+            renderSuggestedProfiles();
+        } catch (err) {
+            console.warn('⚠️ Erro ao carregar sugestões de perfis:', err);
+            card.hidden = true;
+            list.replaceChildren();
+        } finally {
+            card.setAttribute('aria-busy', 'false');
+        }
+    }
+
+    function renderSuggestedProfiles() {
+        const list = document.getElementById('suggestedProfilesList');
+        if (!list) return;
+
+        const fragment = document.createDocumentFragment();
+
+        suggestedProfiles.forEach(user => {
+            const item = document.createElement('li');
+            item.className = 'suggested-profile-item';
+
+            const profileLink = document.createElement('a');
+            profileLink.className = 'suggested-profile-link';
+            profileLink.href = `/comunidade/perfil.html?id=${encodeURIComponent(user.id)}`;
+            profileLink.setAttribute('aria-label', `Ver perfil de ${user.username}`);
+
+            const avatar = document.createElement('img');
+            avatar.className = 'suggested-profile-avatar';
+            avatar.src = user.avatar_url;
+            avatar.alt = '';
+            avatar.loading = 'lazy';
+            avatar.decoding = 'async';
+            avatar.addEventListener('error', () => {
+                avatar.src = AVATAR_PADRAO;
+            }, { once: true });
+
+            const info = document.createElement('span');
+            info.className = 'suggested-profile-info';
+
+            const name = document.createElement('span');
+            name.className = 'suggested-profile-name';
+            name.textContent = user.username;
+
+            const handle = document.createElement('span');
+            handle.className = 'suggested-profile-handle';
+            handle.textContent = `@${user.username.toLowerCase()}`;
+
+            info.append(name, handle);
+            profileLink.append(avatar, info);
+
+            const followButton = document.createElement('button');
+            followButton.type = 'button';
+            followButton.className = 'suggestion-follow-button';
+            followButton.dataset.userId = user.id;
+            updateFollowButton(followButton, user, user.is_following);
+
+            item.append(profileLink, followButton);
+            fragment.appendChild(item);
+        });
+
+        list.replaceChildren(fragment);
+    }
+
+    function updateFollowButton(button, user, isFollowing, isBusy = false) {
+        button.disabled = isBusy;
+        button.classList.toggle('is-following', isFollowing);
+        button.setAttribute('aria-pressed', String(isFollowing));
+        button.setAttribute('aria-label', `${isFollowing ? 'Deixar de seguir' : 'Seguir'} ${user.username}`);
+        button.title = isFollowing ? 'Deixar de seguir' : 'Seguir';
+        button.textContent = isBusy ? '...' : (isFollowing ? 'Seguindo' : 'Seguir');
+    }
+
+    async function toggleFollowSuggestion(userId, button) {
+        if (!currentUser || !isValidUuid(userId) || userId === currentUser.id || button.disabled) return;
+
+        const user = suggestedProfiles.find(profile => profile.id === userId);
+        if (!user) return;
+
+        const wasFollowing = followedUserIds.has(userId);
+        const willFollow = !wasFollowing;
+        updateFollowButton(button, user, willFollow, true);
+
+        const request = wasFollowing
+            ? supabase
+                .from('follows')
+                .delete()
+                .eq('follower_id', currentUser.id)
+                .eq('followed_id', userId)
+            : supabase
+                .from('follows')
+                .insert({ follower_id: currentUser.id, followed_id: userId });
+
+        const { error } = await request;
+
+        if (error) {
+            console.error('❌ Erro ao atualizar seguimento:', error);
+            updateFollowButton(button, user, wasFollowing);
+            showToast('Não foi possível atualizar o seguimento. Tente novamente.', 'error');
+            return;
+        }
+
+        if (willFollow) followedUserIds.add(userId);
+        else followedUserIds.delete(userId);
+
+        user.is_following = willFollow;
+        updateFollowButton(button, user, willFollow);
+        updateProfileFollowStats(userId, willFollow);
+        showToast(
+            willFollow ? `Agora você segue @${user.username}` : `Você deixou de seguir @${user.username}`,
+            'success'
+        );
+    }
+
+    function updateProfileFollowStats(userId, isFollowing) {
+        if (!profileUser) return;
+
+        const delta = isFollowing ? 1 : -1;
+        if (isOwnProfile) {
+            profileUser.following_count = Math.max(0, (Number(profileUser.following_count) || 0) + delta);
+            setText('statFollowing', formatNumber(profileUser.following_count));
+        } else if (profileUser.id === userId) {
+            profileUser.followers_count = Math.max(0, (Number(profileUser.followers_count) || 0) + delta);
+            setText('statFollowers', formatNumber(profileUser.followers_count));
+        }
+    }
+
+    document.getElementById('suggestedProfilesList')?.addEventListener('click', event => {
+        const button = event.target instanceof Element
+            ? event.target.closest('.suggestion-follow-button')
+            : null;
+        if (!button) return;
+        toggleFollowSuggestion(button.dataset.userId, button);
+    });
+
+    // =============================================
     // 9. ABAS INTERNAS
     // =============================================
     document.querySelectorAll('.profile-inner-tab').forEach(tab => {
@@ -768,6 +967,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     // =============================================
     // 14. HELPERS
     // =============================================
+    function isValidUuid(value) {
+        return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+    }
+
+    function cleanUsername(value) {
+        const username = String(value || 'Membro da comunidade')
+            .trim()
+            .replace(/^@+/, '')
+            .replace(/\s+/g, ' ')
+            .slice(0, 40);
+        return username || 'Membro da comunidade';
+    }
+
+    function getSafeImageUrl(value) {
+        if (!value || typeof value !== 'string') return AVATAR_PADRAO;
+
+        try {
+            const url = new URL(value, window.location.origin);
+            if (url.protocol === 'https:' || url.origin === window.location.origin) {
+                return url.href;
+            }
+        } catch (err) {
+            console.warn('URL de avatar inválida:', value);
+        }
+
+        return AVATAR_PADRAO;
+    }
+
     function setText(id, text) {
         const el = document.getElementById(id);
         if (el) el.textContent = text;
@@ -815,7 +1042,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // =============================================
     // 15. INICIALIZAR
     // =============================================
-    await loadProfile();
+    const profileLoad = loadProfile();
+    loadFollowSuggestions();
+    await profileLoad;
 
     console.log('✅ Página de perfil carregada!');
 });
