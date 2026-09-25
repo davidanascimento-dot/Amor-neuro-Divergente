@@ -11,6 +11,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error('❌ Supabase não inicializado!');
         return;
     }
+
+    // Compatibilidade com links antigos de publicações.
+    const legacyPostMatch = window.location.hash.match(/^#post-([a-f0-9-]{36})$/i);
+    if (legacyPostMatch) {
+        window.location.replace(`/comunidade/post.html?id=${encodeURIComponent(legacyPostMatch[1])}`);
+        return;
+    }
     
     let currentUser = null;
     const AVATAR_PADRAO = '/img/foto-padrão.jpg';
@@ -965,6 +972,24 @@ async function apiUseInviteCode(code) {
         return d.innerHTML;
     }
 
+    function getSafeMediaUrl(value) {
+        if (!value || value === 'null' || typeof value !== 'string') return null;
+        try {
+            const url = new URL(value, window.location.origin);
+            const localDevelopment = url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname);
+            if (url.protocol === 'https:' || localDevelopment || url.origin === window.location.origin) {
+                return url.href;
+            }
+        } catch (error) {
+            console.warn('URL de mídia inválida:', value);
+        }
+        return null;
+    }
+
+    function getPostDetailUrl(postId) {
+        return `${window.location.origin}/comunidade/post.html?id=${encodeURIComponent(postId)}`;
+    }
+
     function formatDate(d) {
         return new Date(d).toLocaleDateString('pt-BR', {
             day: '2-digit',
@@ -1186,6 +1211,12 @@ function setupPostEvents() {
         btn.addEventListener('click', window.handleCommentSubmit || handleCommentSubmit);
     });
 
+    // Botão de compartilhamento direto
+    document.querySelectorAll('.share-post-btn').forEach(btn => {
+        btn.removeEventListener('click', handleSharePost);
+        btn.addEventListener('click', handleSharePost);
+    });
+
     // Botões de tela cheia do vídeo
     document.querySelectorAll('.video-fullscreen-btn').forEach(btn => {
         btn.removeEventListener('click', handleVideoFullscreen);
@@ -1197,6 +1228,52 @@ function setupPostEvents() {
         btn.removeEventListener('click', handlePostMenu);
         btn.addEventListener('click', handlePostMenu);
     });
+
+    setupPostCardNavigation();
+}
+
+function setupPostCardNavigation() {
+    const feed = document.getElementById('postsFeed');
+    if (!feed || feed.dataset.postNavigationReady === 'true') return;
+
+    feed.dataset.postNavigationReady = 'true';
+    feed.addEventListener('click', event => {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) return;
+
+        const interactiveTarget = target.closest(
+            'a, button, input, textarea, select, video, audio, [contenteditable="true"], .custom-video-player, .post-menu-dropdown'
+        );
+        if (interactiveTarget) return;
+
+        const card = target.closest('.post-card[data-post-url]');
+        if (!card) return;
+        window.location.href = card.dataset.postUrl;
+    });
+}
+
+async function handleSharePost(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const postId = event.currentTarget?.dataset.postId;
+    if (!postId) return;
+
+    const url = getPostDetailUrl(postId);
+    if (navigator.share) {
+        try {
+            await navigator.share({ title: 'Publicação da Comunidade', url });
+        } catch (error) {
+            if (error?.name !== 'AbortError') showToast('Não foi possível compartilhar.', 'error');
+        }
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(url);
+        showToast('🔗 Link da publicação copiado!', 'success');
+    } catch {
+        showToast('Não foi possível copiar o link.', 'error');
+    }
 }
 
 // =============================================
@@ -1263,7 +1340,7 @@ async function handlePostMenu(e) {
 
             switch (action) {
                 case 'copy': {
-                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    const url = getPostDetailUrl(postId);
                     navigator.clipboard.writeText(url)
                         .then(() => showToast('🔗 Link copiado!', 'success'))
                         .catch(() => showToast('Erro ao copiar link', 'error'));
@@ -1271,7 +1348,7 @@ async function handlePostMenu(e) {
                 }
 
                 case 'share': {
-                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    const url = getPostDetailUrl(postId);
                     if (navigator.share) {
                         navigator.share({
                             title: 'Post da Comunidade',
@@ -1383,45 +1460,37 @@ async function handleLike(e) {
                 .eq('user_id', currentUser.id)
                 .maybeSingle();
 
+            const { data: postBeforeLike } = await supabase
+                .from('posts')
+                .select('likes')
+                .eq('id', postId)
+                .single();
+            const nextLikes = Math.max(0, (Number(postBeforeLike?.likes) || 0) + (existingLike ? -1 : 1));
+
             if (existingLike) {
-                // Remover like
-                await supabase
+                const { error: deleteError } = await supabase
                     .from('likes')
                     .delete()
                     .eq('id', existingLike.id);
-                
-                await supabase
-                    .from('posts')
-                    .update({ likes: supabase.rpc('decrement', { row_id: postId }) })
-                    .eq('id', postId);
-                
-                result = { data: { liked: false, likes: 0 } };
+                if (deleteError) throw deleteError;
             } else {
-                // Adicionar like
-                await supabase
+                const { error: insertError } = await supabase
                     .from('likes')
                     .insert({
                         post_id: postId,
                         user_id: currentUser.id,
                         created_at: new Date().toISOString()
                     });
-                
-                await supabase
-                    .from('posts')
-                    .update({ likes: supabase.rpc('increment', { row_id: postId }) })
-                    .eq('id', postId);
-                
-                result = { data: { liked: true, likes: 0 } };
+                if (insertError) throw insertError;
             }
-            
-            // Buscar contagem atualizada
-            const { data: postData } = await supabase
+
+            const { error: updateError } = await supabase
                 .from('posts')
-                .select('likes')
-                .eq('id', postId)
-                .single();
-            
-            result.data.likes = postData?.likes || 0;
+                .update({ likes: nextLikes })
+                .eq('id', postId);
+            if (updateError) throw updateError;
+
+            result = { data: { liked: !existingLike, likes: nextLikes } };
         }
         
         // Atualizar UI
@@ -1859,27 +1928,30 @@ async function updateCommentCount(postId) {
         return;
     }
 
-    const userAvatar = getUserAvatar();
+    const userAvatar = getSafeMediaUrl(getUserAvatar()) || AVATAR_PADRAO;
 
     feed.innerHTML = posts.map(p => {
         const isLiked = p.is_liked || false;
-        const postAvatar = p.author_avatar || userAvatar;
+        const postAvatar = getSafeMediaUrl(p.author_avatar) || userAvatar;
+        const postUrl = getPostDetailUrl(p.id);
         const authorInitial = (p.author_name || 'U').charAt(0).toUpperCase();
+        const imageUrl = getSafeMediaUrl(p.image_url);
+        const videoUrl = getSafeMediaUrl(p.video_url);
 
         // Mídia (imagem ou vídeo)
         let mediaHtml = '';
-        if (p.image_url && p.image_url.trim() !== '' && p.image_url !== 'null') {
+        if (imageUrl) {
             mediaHtml = `
                 <div class="post-image-container">
-                    <img src="${p.image_url}" alt="Imagem do post" onerror="this.style.display='none'">
+                    <img src="${escapeHtml(imageUrl)}" alt="Imagem do post" onerror="this.style.display='none'">
                 </div>
             `;
-        } else if (p.video_url && p.video_url.trim() !== '' && p.video_url !== 'null') {
+        } else if (videoUrl) {
            mediaHtml = `
-    <div class="custom-video-player" data-video-url="${p.video_url}">
+    <div class="custom-video-player" data-video-url="${escapeHtml(videoUrl)}">
         <video preload="metadata" playsinline>
-            <source src="${p.video_url}" type="video/mp4">
-            <source src="${p.video_url}" type="video/webm">
+            <source src="${escapeHtml(videoUrl)}" type="video/mp4">
+            <source src="${escapeHtml(videoUrl)}" type="video/webm">
         </video>
 
         <!-- Botão central de play -->
@@ -1933,63 +2005,52 @@ async function updateCommentCount(postId) {
         }
 
         return `
-<div class="post-card" data-post-id="${p.id}" data-author-id="${p.author_id || ''}">
+<article class="post-card" data-post-id="${escapeHtml(p.id)}" data-author-id="${escapeHtml(p.author_id || '')}" data-post-url="${escapeHtml(postUrl)}">
     <!-- Cabeçalho -->
     <div class="post-header">
         <div class="post-author-avatar-wrapper">
-            <img src="${postAvatar}" class="post-author-avatar"
-                 alt="${escapeHtml(p.author_name || 'U')}"
-                 onerror="this.onerror=null; this.src='${AVATAR_PADRAO}'; this.addEventListener('error', function(){ this.style.display='none'; const fb=this.parentElement.querySelector('.post-author-fallback'); if(fb) fb.style.display='flex'; }, {once:true});">
+            <img src="${escapeHtml(postAvatar)}" class="post-author-avatar"
+                 alt="${escapeHtml(p.author_name || 'Usuário')}"
+                 onerror="this.onerror=null; this.src='${AVATAR_PADRAO}'; this.addEventListener('error', function(){ this.style.display='none'; var p=this.parentElement; if(p){var fb=p.querySelector('.post-author-fallback'); if(fb) fb.style.display='flex';} }, {once:true});">
             <div class="post-author-fallback" style="display:none; background:${stringToColor(p.author_id || p.id)};">${authorInitial}</div>
         </div>
         <div class="post-body">
             <div class="post-author-info">
                 <span class="post-author-name">${escapeHtml(p.author_name || 'Usuário')}</span>
                 <span class="post-date">${formatDate(p.created_at)}</span>
-                <button class="post-menu-btn" data-post-id="${p.id}" aria-label="Mais opções" title="Mais opções">
+                <button class="post-menu-btn" data-post-id="${escapeHtml(p.id)}" aria-label="Mais opções" title="Mais opções">
                     <i class="fa-solid fa-ellipsis"></i>
                 </button>
             </div>
-            <p class="post-text">${escapeHtml(p.content)}</p>
+            <a class="post-text-link" href="${escapeHtml(postUrl)}" aria-label="Abrir esta publicação">${escapeHtml(p.content || 'Abrir publicação')}</a>
             ${mediaHtml}
         </div>
     </div>
 
-    <!-- Rodapé: ações + botão Saiba Mais -->
+    <!-- Rodapé: ações + acesso ao post completo -->
     <div class="post-footer">
         <div class="post-actions">
-            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-post-id="${p.id}">
+            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-post-id="${escapeHtml(p.id)}" aria-label="${isLiked ? 'Remover curtida' : 'Curtir publicação'}, ${p.likes || 0} ${Number(p.likes) === 1 ? 'curtida' : 'curtidas'}">
                 <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i>
                 <span class="count">${p.likes || 0}</span>
             </button>
-            <button class="action-btn comment-toggle-btn" data-post-id="${p.id}">
+            <a class="action-btn comment-count-link" href="${escapeHtml(postUrl)}#conversationSection" data-post-id="${escapeHtml(p.id)}" aria-label="Abrir comentários desta publicação, ${p.comment_count || 0} ${Number(p.comment_count) === 1 ? 'comentário' : 'comentários'}">
                 <i class="fa-regular fa-comment"></i>
                 <span class="count">${p.comment_count || 0}</span>
-            </button>
-            <button class="action-btn">
+            </a>
+            <button class="action-btn" type="button" disabled title="Recurso em breve" aria-label="Repassar publicação em breve, 0 repostagens">
                 <i class="fa-solid fa-retweet"></i>
                 <span class="count">0</span>
             </button>
-            <button class="action-btn">
+            <button class="action-btn share-post-btn" type="button" data-post-id="${escapeHtml(p.id)}" aria-label="Compartilhar publicação">
                 <i class="fa-regular fa-share-from-square"></i>
             </button>
         </div>
-        <button class="btn-saiba-mais" onclick="window.open('${p.link_url || '#'}', '_blank')">
-            Saiba Mais
-        </button>
+        <a class="btn-saiba-mais" href="${escapeHtml(postUrl)}" aria-label="Abrir publicação completa">
+            Abrir publicação
+        </a>
     </div>
-
-    <!-- Seção de comentários -->
-    <div class="comments-section" id="comments-${p.id}" style="display:none;">
-        <div class="comments-list" id="comments-list-${p.id}">
-            <p style="color:#666;font-size:13px;padding:8px;">Carregando...</p>
-        </div>
-        <div class="add-comment">
-            <input placeholder="Escreva um comentário..." id="comment-input-${p.id}">
-            <button class="submit-comment-btn" data-post-id="${p.id}">Enviar</button>
-        </div>
-    </div>
-</div>`;
+</article>`;
     }).join('');
 
     setupPostEvents();
@@ -3080,8 +3141,8 @@ function renderMessages(container, messages) {
             <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${m.id}" data-sender-id="${m.sender_id}">
                 ${!isSent ? `
                     <div class="msg-avatar">
-                        <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
-                             onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
+                        <img src="${escapeHtml(avatarUrl)}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;"
+                             onerror="this.style.display='none';var p=this.parentElement;if(p){p.style.background='${userColor}';p.textContent='${escapeHtml(senderName.charAt(0).toUpperCase())}';p.style.display='flex';p.style.alignItems='center';p.style.justifyContent='center';p.style.color='#fff';p.style.fontWeight='700';p.style.borderRadius='50%';p.style.width='32px';p.style.height='32px';}">
                     </div>
                 ` : ''}
   <div class="msg-content" style="${isSent ? 'background: var(--cx-text, #1a1a2e); color: #fff;' : 'background: var(--cx-bg-soft, #faf9f6); color: var(--cx-text, #1a1a2e);'}">
@@ -3188,8 +3249,8 @@ function addMessageToChat(message) {
         <div class="chat-message ${isSent ? 'sent' : 'received'}" data-message-id="${message.id}" data-sender-id="${message.sender_id}" style="animation: fadeIn 0.3s ease;">
             ${!isSent ? `
                 <div class="msg-avatar">
-                    <img src="${avatarUrl}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" 
-                         onerror="this.style.display='none';this.parentElement.style.background='${userColor}';this.parentElement.textContent='${senderName.charAt(0).toUpperCase()}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.color='#fff';this.parentElement.style.fontWeight='700';this.parentElement.style.borderRadius='50%';this.parentElement.style.width='32px';this.parentElement.style.height='32px';">
+                    <img src="${escapeHtml(avatarUrl)}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;"
+                         onerror="this.style.display='none';var p=this.parentElement;if(p){p.style.background='${userColor}';p.textContent='${escapeHtml(senderName.charAt(0).toUpperCase())}';p.style.display='flex';p.style.alignItems='center';p.style.justifyContent='center';p.style.color='#fff';p.style.fontWeight='700';p.style.borderRadius='50%';p.style.width='32px';p.style.height='32px';}">
                 </div>
             ` : ''}
           <div class="msg-content" style="${isSent ? 'background: var(--cx-text, #1a1a2e); color: #fff;' : 'background: var(--cx-bg-soft, #faf9f6); color: var(--cx-text, #1a1a2e);'}">
@@ -3571,24 +3632,7 @@ async function sendMessage() {
                     console.log('📩 Novo comentário recebido:', newComment);
                     
                     if (newComment.author_id === currentUser?.id) return;
-                    
-                    const postId = newComment.post_id;
-                    await window.loadAndShowComments(postId);
-                    
-                    const countBtn = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .count`);
-                    if (countBtn) {
-                        const { data: postData } = await supabase
-                            .from('posts')
-                            .select('comment_count')
-                            .eq('id', postId)
-                            .single();
-                        
-                        if (postData) {
-                            countBtn.textContent = postData.comment_count || 0;
-                        }
-                    }
-                    
-                    showToast('💬 Novo comentário no post!', 'info', 2000);
+                    showToast('💬 Há um novo comentário em uma publicação!', 'info', 2500);
                 }
             )
             .subscribe();
@@ -4512,15 +4556,18 @@ window.openFriendChat = async function(conversationId, friendUsername, friendId)
         renderFriendRequests();
         subscribeToFriendships();
         
-        // Adicionar reações após os posts carregarem
-        setTimeout(addReactionsToPosts, 1000);
+        // Adicionar reações após os posts carregarem, quando o módulo estiver disponível.
+        const refreshPostReactions = function() {
+            if (typeof addReactionsToPosts === 'function') {
+                addReactionsToPosts();
+            }
+        };
+        setTimeout(refreshPostReactions, 1000);
         
         // Observer para adicionar reações em novos posts
         var feed = document.getElementById('postsFeed');
         if (feed) {
-            var observer = new MutationObserver(function() {
-                addReactionsToPosts();
-            });
+            var observer = new MutationObserver(refreshPostReactions);
             observer.observe(feed, { childList: true, subtree: true });
         }
         
@@ -5264,14 +5311,14 @@ async function handlePostMenu(e) {
 
             switch (action) {
                 case 'copy': {
-                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    const url = getPostDetailUrl(postId);
                     navigator.clipboard.writeText(url)
                         .then(() => showToast('🔗 Link copiado!', 'success'))
                         .catch(() => showToast('Erro ao copiar link', 'error'));
                     break;
                 }
                 case 'share': {
-                    const url = `${window.location.origin}/comunidade/comunidade.html#post-${postId}`;
+                    const url = getPostDetailUrl(postId);
                     if (navigator.share) {
                         navigator.share({ title: 'Post da Comunidade', url }).catch(() => {});
                     } else {

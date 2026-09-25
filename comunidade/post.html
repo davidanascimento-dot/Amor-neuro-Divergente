@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Publicação e comentários da Comunidade Amor NeuroDivergente.">
+    <title>Publicação — Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="comunidade.css">
+    <link rel="stylesheet" href="post.css">
+</head>
+<body class="post-detail-body">
+
+    <header class="header-glass" id="headerGlass">
+        <a href="/inicio.html" class="logo" aria-label="Amor NeuroDivergente — Página inicial">
+            <img src="/img/logo-LHN9gCw1.png" alt="" class="logo-img">
+            <span class="logo-text">Amor NeuroDivergente</span>
+        </a>
+
+        <a href="/comunidade/comunidade.html#forum" class="btn-voltar-site" id="backToCommunityBtn">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar à comunidade</span>
+        </a>
+
+        <a href="/login/login.html" class="header-profile-btn" id="headerProfileLink" aria-label="Abrir meu perfil">
+            <img src="/img/foto-padrão.jpg" alt="Meu perfil" class="header-avatar" id="headerAvatar">
+        </a>
+    </header>
+
+    <main class="post-detail-main" id="mainContent">
+        <nav class="post-breadcrumb" aria-label="Localização da publicação">
+            <a href="/comunidade/comunidade.html#forum">Comunidade</a>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            <span>Publicação</span>
+        </nav>
+
+        <section class="post-page-state" id="postPageState" aria-live="polite">
+            <span class="post-state-spinner" aria-hidden="true"></span>
+            <strong>Carregando publicação...</strong>
+            <span>Só um instante.</span>
+        </section>
+
+        <article class="post-detail-card" id="postDetailCard" hidden aria-labelledby="detailPostAuthor">
+            <header class="post-detail-header">
+                <a class="post-detail-author-avatar-link" id="detailAuthorLink" href="#">
+                    <img class="post-detail-avatar" id="detailPostAvatar" src="/img/foto-padrão.jpg" alt="">
+                    <span class="post-detail-avatar-fallback" id="detailAvatarFallback" aria-hidden="true"></span>
+                </a>
+
+                <div class="post-detail-author-info">
+                    <div class="post-detail-author-line">
+                        <a id="detailAuthorLinkName" href="#"><h1 id="detailPostAuthor">Autor</h1></a>
+                        <span class="post-detail-badge" id="detailPostBadge">Publicação</span>
+                    </div>
+                    <div class="post-detail-meta">
+                        <span id="detailPostHandle">@usuario</span>
+                        <span aria-hidden="true">·</span>
+                        <time id="detailPostDate">agora</time>
+                    </div>
+                </div>
+            </header>
+
+            <div class="post-detail-content" id="detailPostContent"></div>
+
+            <figure class="post-detail-media" id="detailPostMedia" hidden>
+                <img id="detailPostImage" src="" alt="Mídia da publicação" hidden>
+                <video id="detailPostVideo" src="" controls playsinline preload="metadata" hidden></video>
+            </figure>
+
+            <a class="post-external-link" id="detailExternalLink" href="#" target="_blank" rel="noopener noreferrer" hidden>
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                Abrir link da publicação
+            </a>
+
+            <footer class="post-detail-actions" aria-label="Ações da publicação">
+                <button class="post-detail-action" id="detailLikeBtn" type="button" aria-pressed="false">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    <span id="detailLikeCount">0</span>
+                </button>
+                <a class="post-detail-action" href="#conversationSection" id="detailCommentsLink">
+                    <i class="fa-regular fa-comment" aria-hidden="true"></i>
+                    <span id="detailCommentCount">0</span>
+                </a>
+                <button class="post-detail-action" id="detailShareBtn" type="button">
+                    <i class="fa-regular fa-share-from-square" aria-hidden="true"></i>
+                    <span>Compartilhar</span>
+                </button>
+            </footer>
+        </article>
+
+        <section class="conversation-card" id="conversationSection" aria-labelledby="conversationTitle" hidden>
+            <header class="conversation-header">
+                <div>
+                    <span class="conversation-eyebrow">CONVERSA</span>
+                    <h2 id="conversationTitle">
+                        Participe da conversa
+                        <span id="conversationCount">0</span>
+                    </h2>
+                </div>
+            </header>
+
+            <form class="comment-composer" id="commentForm">
+                <img class="comment-composer-avatar" id="commentComposerAvatar" src="/img/foto-padrão.jpg" alt="">
+                <div class="comment-composer-main">
+                    <label class="sr-only" for="commentInput">Escreva um comentário</label>
+                    <textarea id="commentInput" rows="2" maxlength="2000" placeholder="Participe da conversa..."></textarea>
+                    <div class="comment-composer-footer">
+                        <span id="commentCharCount">0/2000</span>
+                        <button class="comment-submit-btn" id="commentSubmitBtn" type="submit">Comentar</button>
+                    </div>
+                </div>
+            </form>
+
+            <p class="comment-login-prompt" id="commentLoginPrompt" hidden>
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                <a href="/login/login.html">Entre na sua conta</a> para participar da conversa.
+            </p>
+
+            <div class="conversation-toolbar">
+                <label class="comment-sort-label" for="commentSort">
+                    <span>Ordenar por:</span>
+                    <select id="commentSort">
+                        <option value="best">Melhores</option>
+                        <option value="recent">Mais recentes</option>
+                        <option value="oldest">Mais antigos</option>
+                    </select>
+                </label>
+
+                <label class="comment-search" for="commentSearch">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="commentSearch" placeholder="Buscar nos comentários" autocomplete="off">
+                </label>
+            </div>
+
+            <div class="comment-results-info" id="commentResultsInfo" aria-live="polite"></div>
+            <div class="comment-status" id="commentStatus" aria-live="polite">Carregando comentários...</div>
+            <ol class="comment-tree" id="commentTree" aria-label="Comentários da publicação"></ol>
+        </section>
+
+        <form class="inline-reply-form" id="inlineReplyForm" hidden>
+            <div class="inline-reply-heading">
+                <span id="inlineReplyLabel">Respondendo</span>
+                <button type="button" id="cancelInlineReplyBtn" aria-label="Cancelar resposta">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <label class="sr-only" for="inlineReplyInput">Escreva sua resposta</label>
+            <textarea id="inlineReplyInput" rows="3" maxlength="2000" placeholder="Escreva sua resposta..."></textarea>
+            <div class="inline-reply-footer">
+                <span id="inlineReplyCharCount">0/2000</span>
+                <button class="comment-submit-btn" id="inlineReplySubmitBtn" type="submit">Responder</button>
+            </div>
+        </form>
+    </main>
+
+    <noscript>
+        <p class="post-noscript">Ative o JavaScript para visualizar esta publicação e seus comentários.</p>
+    </noscript>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+    <script src="post.js"></script>
+</body>
+</html>

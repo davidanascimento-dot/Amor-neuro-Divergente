@@ -341,17 +341,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         scroll.innerHTML = allSavedPosts.map(post => {
-            const thumbUrl = post.image_url || null;
+            const thumbUrl = post.image_url ? getSafeImageUrl(post.image_url) : null;
             const content = post.content || '';
             const title = content.substring(0, 80) + (content.length > 80 ? '…' : '');
-            const avatar = post.author_avatar || profileUser.avatar_url || AVATAR_PADRAO;
+            const avatar = getSafeImageUrl(post.author_avatar || profileUser.avatar_url);
             const authorName = post.author_name || profileUser.username;
 
             return `
-                <div class="highlight-card" data-post-id="${post.id}" onclick="window.openHighlight('${post.id}')">
+                <a class="highlight-card" data-post-id="${escapeHtml(post.id)}" href="/comunidade/post.html?id=${encodeURIComponent(post.id)}">
                     <div class="highlight-card-thumb">
                         ${thumbUrl
-                            ? `<img src="${thumbUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;highlight-card-thumb-placeholder&quot;><i class=&quot;fa-regular fa-image&quot;></i></div>';">`
+                            ? `<img src="${escapeHtml(thumbUrl)}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;highlight-card-thumb-placeholder&quot;><i class=&quot;fa-regular fa-image&quot;></i></div>';">`
                             : `<div class="highlight-card-thumb-placeholder"><i class="fa-regular fa-image"></i></div>`}
                     </div>
                     <div class="highlight-card-body">
@@ -361,14 +361,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <span>@${escapeHtml((authorName || '').toLowerCase())}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             `;
         }).join('');
     }
 
     // Abrir o post clicado no fórum
     window.openHighlight = function(postId) {
-        window.location.href = `/comunidade/comunidade.html#post-${postId}`;
+        window.location.href = `/comunidade/post.html?id=${encodeURIComponent(postId)}`;
     };
 
     // =============================================
@@ -422,21 +422,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 7. CARD DE POST
     // =============================================
     function renderPostCard(post) {
-        const avatarUrl = post.author_avatar || profileUser.avatar_url || AVATAR_PADRAO;
+        const avatarUrl = getSafeImageUrl(post.author_avatar || profileUser.avatar_url);
         const authorName = post.author_name || profileUser.username;
         const authorHandle = (post.author_name || profileUser.username || '').toLowerCase();
+        const postUrl = `/comunidade/post.html?id=${encodeURIComponent(post.id)}`;
 
+        const imageUrl = post.image_url ? getSafeImageUrl(post.image_url) : null;
+        const videoUrl = post.video_url ? getSafeImageUrl(post.video_url) : null;
         let mediaHtml = '';
-        if (post.image_url && post.image_url.trim() !== '') {
-            mediaHtml = `<div class="user-post-image"><img src="${post.image_url}" alt="Imagem" onerror="this.style.display='none'"></div>`;
-        } else if (post.video_url && post.video_url.trim() !== '') {
-            mediaHtml = `<div class="user-post-image"><video controls preload="metadata" style="width:100%;display:block;"><source src="${post.video_url}" type="video/mp4"></video></div>`;
+        if (imageUrl) {
+            mediaHtml = `<div class="user-post-image"><img src="${escapeHtml(imageUrl)}" alt="Imagem" onerror="this.style.display='none'"></div>`;
+        } else if (videoUrl) {
+            mediaHtml = `<div class="user-post-image"><video controls preload="metadata" style="width:100%;display:block;"><source src="${escapeHtml(videoUrl)}" type="video/mp4"></video></div>`;
         }
 
         return `
-            <article class="user-post" data-post-id="${post.id}">
+            <article class="user-post" data-post-id="${escapeHtml(post.id)}">
                 <div class="user-post-header">
-                    <img class="user-post-avatar" src="${avatarUrl}" alt="${escapeHtml(authorName)}"
+                    <img class="user-post-avatar" src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(authorName)}"
                          onerror="this.src='${AVATAR_PADRAO}'">
                     <div class="user-post-info">
                         <span class="user-post-name">${escapeHtml(authorName)}</span>
@@ -444,13 +447,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="user-post-date">· ${formatDate(post.created_at)}</span>
                     </div>
                 </div>
-                <p class="user-post-text">${escapeHtml(post.content || '')}</p>
+                <a class="user-post-text user-post-open-link" href="${postUrl}">${escapeHtml(post.content || 'Abrir publicação')}</a>
                 ${mediaHtml}
                 <div class="user-post-actions">
-                    <button><i class="fa-regular fa-heart"></i> ${post.likes || 0}</button>
-                    <button><i class="fa-regular fa-comment"></i> ${post.comment_count || 0}</button>
-                    <button><i class="fa-solid fa-retweet"></i> 0</button>
-                    <button><i class="fa-regular fa-share-from-square"></i></button>
+                    <span><i class="fa-regular fa-heart"></i> ${post.likes || 0}</span>
+                    <a href="${postUrl}#conversationSection"><i class="fa-regular fa-comment"></i> ${post.comment_count || 0}</a>
+                    <span aria-label="Repassar em breve, 0 repostagens"><i class="fa-solid fa-retweet"></i> 0</span>
+                    <a href="${postUrl}" aria-label="Abrir publicação"><i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir</a>
                 </div>
             </article>
         `;
