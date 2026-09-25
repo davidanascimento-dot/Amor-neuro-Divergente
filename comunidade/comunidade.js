@@ -2734,14 +2734,8 @@ if (groupImageUploadArea) {
     // 17. CRIAR GRUPO
     // =============================================
     window.openCreateGroupModal = function() {
-        if (!currentUser) {
-            showToast('Faça login para criar um grupo', 'error');
-            return;
-        }
-        const modal = document.getElementById('createGroupModal');
-        if (modal) {
-            modal.removeAttribute('hidden');
-        }
+        // A criação e edição de grupos vive agora na vitrine independente.
+        window.location.href = '/comunidade/explorar-grupos.html?criar=1';
     };
 
     document.getElementById('openCreateGroupBtn')?.addEventListener('click', window.openCreateGroupModal);

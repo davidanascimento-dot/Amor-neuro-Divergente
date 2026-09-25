@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Explore comunidades do Amor NeuroDivergente.">
-    <title>Explore comunidades — Amor NeuroDivergente</title>
+    <meta name="description" content="Meus grupos e comunidades do Amor NeuroDivergente.">
+    <title>Meus grupos — Amor NeuroDivergente</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -12,42 +12,59 @@
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="conversas.css">
 </head>
-<body class="groups-page" data-page="groups">
+<body class="groups-page group-library-page" data-page="my-groups">
     <header class="conversas-header">
         <a class="conversas-brand" href="/inicio.html">
             <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
             <span>Amor NeuroDivergente</span>
         </a>
         <span class="conversas-header-spacer"></span>
-        <a class="conversas-back" href="/comunidade/comunidade.html"><i class="fa-solid fa-arrow-left"></i><span>Voltar à comunidade</span></a>
+        <a class="conversas-back" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-arrow-left"></i><span>Explorar comunidades</span></a>
         <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
             <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
         </a>
     </header>
 
-    <main class="groups-page-main group-explorer-main">
-        <div class="page-heading">
-            <div>
+    <main class="groups-page-main group-library-main">
+        <div class="group-library-layout">
+            <aside class="group-library-rail" aria-label="Navegação de grupos">
                 <span class="groups-kicker">COMUNIDADES</span>
-                <h1>Explore comunidades</h1>
-                <p>Encontre espaços para trocar experiências, apoio e informação.</p>
-            </div>
-            <div class="page-heading-actions">
-                <a class="cv-secondary" href="/comunidade/conversas.html"><i class="fa-regular fa-comment-dots"></i> Minhas conversas</a>
-            </div>
-        </div>
+                <a class="group-library-link active" href="/comunidade/meus-grupos.html"><i class="fa-solid fa-layer-group"></i> Meus grupos</a>
+                <a class="group-library-link" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-compass"></i> Explorar</a>
+                <a class="group-library-link" href="/comunidade/explorar-grupos.html#groupInviteForm"><i class="fa-solid fa-key"></i> Usar código</a>
+                <span class="group-library-rule"></span>
+                <button class="group-library-create" id="myGroupsCreateButton" type="button" aria-controls="groupEditor" aria-expanded="false"><i class="fa-solid fa-plus"></i> Criar comunidade</button>
+                <p class="group-library-note">Públicos e privados, no mesmo lugar.</p>
+            </aside>
 
-        <section class="groups-overview-bar" aria-label="Resumo dos grupos">
-            <div class="groups-overview-copy">
-                <span class="groups-kicker">SEUS ESPAÇOS</span>
-                <strong><span id="exploreMyGroupsCount">0</span> grupos seus</strong>
-                <p>Públicos, privados e comunidades que você criou.</p>
-            </div>
-            <div class="groups-overview-actions">
-                <a class="cv-secondary" href="/comunidade/meus-grupos.html"><i class="fa-solid fa-layer-group"></i> Abrir meus grupos</a>
-                <button class="cv-primary" id="exploreCreateButton" type="button" aria-controls="groupEditor" aria-expanded="false"><i class="fa-solid fa-plus"></i> Criar comunidade</button>
-            </div>
-        </section>
+            <section class="group-library-content" aria-labelledby="myGroupsHeading">
+                <div class="page-heading group-library-heading">
+                    <div>
+                        <span class="groups-kicker">SEU ESPAÇO</span>
+                        <h1 id="myGroupsHeading">Meus grupos</h1>
+                        <p id="myGroupsSubtitle">Grupos criados por você e comunidades das quais você participa.</p>
+                    </div>
+                    <div class="group-library-total" aria-live="polite"><strong id="myGroupsCount">0</strong><span>grupos</span></div>
+                </div>
+
+                <label class="group-library-search" for="myGroupsSearch">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="myGroupsSearch" type="search" placeholder="Buscar nos meus grupos..." autocomplete="off">
+                </label>
+                <div class="my-groups-filters" role="group" aria-label="Filtrar meus grupos">
+                    <button class="my-group-filter active" data-my-group-filter="all" type="button">Todos</button>
+                    <button class="my-group-filter" data-my-group-filter="created" type="button">Criados por mim</button>
+                    <button class="my-group-filter" data-my-group-filter="private" type="button"><i class="fa-solid fa-lock"></i> Privados</button>
+                    <button class="my-group-filter" data-my-group-filter="public" type="button"><i class="fa-solid fa-globe"></i> Públicos</button>
+                </div>
+
+                <section class="my-groups-grid" id="myGroupsGrid" aria-live="polite">
+                    <div class="groups-empty"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando seus grupos...</span></div>
+                </section>
+
+                <div class="group-library-footer-note"><i class="fa-solid fa-circle-info"></i> Use o código de convite dentro de cada grupo privado para chamar alguém.</div>
+            </section>
+        </div>
 
         <section class="group-editor" id="groupEditor" hidden aria-labelledby="exploreCreateTitle">
             <div class="group-editor-header">
@@ -93,56 +110,11 @@
                     </div>
                 </div>
                 <div class="group-editor-footer">
-                    <p class="group-form-note"><i class="fa-solid fa-shield-halved"></i> Você poderá editar o grupo depois, em Meus grupos.</p>
+                    <p class="group-form-note"><i class="fa-solid fa-shield-halved"></i> Você pode voltar aqui para editar quando quiser.</p>
                     <button class="cv-primary" id="createCommunitySubmit" type="submit"><i class="fa-solid fa-plus"></i> Criar comunidade</button>
                 </div>
             </form>
         </section>
-
-        <section class="explore-discover-section" aria-labelledby="discoverGroupsHeading">
-            <div class="explore-section-heading">
-                <div>
-                    <span class="groups-kicker">DESCUBRA</span>
-                    <h2 id="discoverGroupsHeading">Comunidades públicas</h2>
-                </div>
-                <span id="exploreResultCount">0 comunidades</span>
-            </div>
-            <div class="explore-toolbar">
-                <label class="explore-search" for="exploreSearch">
-                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input id="exploreSearch" type="search" placeholder="Buscar grupos por nome ou tema..." autocomplete="off">
-                </label>
-                <div class="explore-filters" role="tablist" aria-label="Categorias de comunidades">
-                    <button class="explore-filter active" data-explore-filter="all" role="tab" aria-selected="true" type="button">Todos</button>
-                    <button class="explore-filter" data-explore-filter="popular" role="tab" aria-selected="false" type="button">Mais visitadas</button>
-                    <button class="explore-filter" data-explore-filter="apoio" type="button">Apoio</button>
-                    <button class="explore-filter" data-explore-filter="tdah" type="button">TDAH</button>
-                    <button class="explore-filter" data-explore-filter="autismo" type="button">Autismo</button>
-                    <button class="explore-filter" data-explore-filter="ansiedade" type="button">Ansiedade</button>
-                    <button class="explore-filter" data-explore-filter="educacao" type="button">Educação</button>
-                    <button class="explore-filter" data-explore-filter="relacionamentos" type="button">Relacionamentos</button>
-                    <button class="explore-filter" data-explore-filter="hobbies" type="button">Hobbies</button>
-                    <button class="explore-filter" data-explore-filter="arte" type="button">Arte</button>
-                    <button class="explore-filter" data-explore-filter="ciencia" type="button">Ciência</button>
-                    <button class="explore-filter" data-explore-filter="direitos" type="button">Direitos</button>
-                    <button class="explore-filter" data-explore-filter="geral" type="button">Geral</button>
-                </div>
-            </div>
-            <section class="explore-grid" id="exploreGroupsGrid" aria-live="polite">
-                <div class="groups-empty"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando comunidades...</span></div>
-            </section>
-            <div class="explore-load-more"><button id="exploreLoadMore" type="button" hidden>Mostrar mais</button></div>
-        </section>
-
-        <form class="group-invite-box" id="groupInviteForm">
-            <div class="group-invite-icon"><i class="fa-solid fa-key"></i></div>
-            <div class="group-invite-copy"><strong>Recebeu um convite?</strong><span>Use o código para entrar em uma comunidade privada.</span></div>
-            <div class="group-invite-actions">
-                <label class="sr-only" for="groupInviteCode">Código do convite</label>
-                <input id="groupInviteCode" inputmode="numeric" maxlength="12" placeholder="Código" autocomplete="one-time-code">
-                <button class="cv-secondary" type="submit">Entrar</button>
-            </div>
-        </form>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

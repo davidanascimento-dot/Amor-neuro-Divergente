@@ -74,6 +74,7 @@
                     <h3>Descoberta</h3>
                     <p>Encontre uma comunidade pelo tema que combina com você.</p>
                     <a class="aside-link" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-compass"></i> Explorar comunidades <i class="fa-solid fa-arrow-right"></i></a>
+                    <a class="aside-link" href="/comunidade/meus-grupos.html"><i class="fa-solid fa-layer-group"></i> Meus grupos <i class="fa-solid fa-arrow-right"></i></a>
                     <a class="aside-link" href="/comunidade/perfil.html"><i class="fa-solid fa-user"></i> Ver meu perfil <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
                 <div class="aside-card">
@@ -83,21 +84,6 @@
             </aside>
         </section>
     </main>
-
-    <div class="cv-modal-backdrop" id="createConversationModal" hidden>
-        <section class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="createConversationTitle">
-            <div class="cv-modal-header">
-                <h2 id="createConversationTitle">Criar comunidade</h2>
-                <button class="cv-modal-close" id="closeCreateModal" type="button" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form class="cv-modal-body" id="createConversationForm">
-                <div class="cv-form-field"><label for="newCommunityName">Nome da comunidade</label><input id="newCommunityName" required maxlength="50" placeholder="Ex: Apoio TDAH"></div>
-                <div class="cv-form-field"><label for="newCommunityDescription">Descrição</label><textarea id="newCommunityDescription" maxlength="200" placeholder="Conte o propósito desta comunidade."></textarea></div>
-                <div class="cv-form-field"><label for="newCommunityCategory">Categoria</label><select id="newCommunityCategory"><option value="geral">Geral</option><option value="apoio">Apoio e acolhimento</option><option value="tdah">TDAH</option><option value="autismo">Autismo</option><option value="ansiedade">Ansiedade e depressão</option><option value="educacao">Educação e carreira</option><option value="relacionamentos">Relacionamentos</option><option value="hobbies">Hobbies e interesses</option><option value="arte">Arte e criatividade</option><option value="ciencia">Ciência e pesquisa</option><option value="direitos">Direitos e leis</option></select></div>
-                <button class="cv-primary" id="createCommunitySubmit" type="submit" style="width:100%"><i class="fa-solid fa-plus"></i> Criar comunidade</button>
-            </form>
-        </section>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
