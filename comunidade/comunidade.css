@@ -146,6 +146,7 @@ body {
     cursor: pointer;
     padding: 0;
     flex-shrink: 0;
+    text-decoration: none;
 }
 
 .header-glass .header-avatar {
@@ -201,6 +202,7 @@ body {
     font-family: 'Inter', sans-serif;
     white-space: nowrap;
     flex-shrink: 0;
+    text-decoration: none;
 }
 
 .subnav-tab i {
