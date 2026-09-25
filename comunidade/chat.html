@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sala de conversa do Amor NeuroDivergente.">
+    <title>Conversa — Amor NeuroDivergente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="conversas.css">
+</head>
+<body class="chat-page" data-page="chat">
+    <header class="conversas-header">
+        <a class="conversas-brand" href="/inicio.html">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+            <span>Amor NeuroDivergente</span>
+        </a>
+        <span class="conversas-header-spacer"></span>
+        <a class="conversas-back" href="/comunidade/conversas.html"><i class="fa-solid fa-arrow-left"></i><span>Todas as conversas</span></a>
+        <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
+        </a>
+    </header>
+
+    <main class="chat-page-main">
+        <div class="chat-page-bar">
+            <a class="cv-ghost" href="/comunidade/conversas.html"><i class="fa-solid fa-arrow-left"></i> Central de conversas</a>
+            <h1>Mensagens</h1>
+        </div>
+
+        <section class="chat-room" aria-label="Sala de conversa">
+            <header class="chat-room-header">
+                <a class="chat-mobile-back" href="/comunidade/conversas.html" aria-label="Voltar para conversas"><i class="fa-solid fa-arrow-left"></i></a>
+                <a class="chat-header-avatar" id="chatHeaderAvatarLink" href="/comunidade/perfil.html" aria-label="Abrir perfil ou comunidade">
+                    <span class="chat-header-avatar" id="chatHeaderAvatar"><i class="fa-solid fa-hashtag"></i></span>
+                </a>
+                <div class="chat-room-heading">
+                    <a id="chatRoomTitleLink" href="#"><span id="chatRoomTitle">Carregando...</span></a>
+                    <small id="chatRoomSubtitle">Carregando conversa...</small>
+                </div>
+                <a class="chat-room-header-action" id="chatRoomAction" href="#" title="Abrir detalhes" aria-label="Abrir detalhes"><i class="fa-solid fa-circle-info"></i></a>
+            </header>
+
+            <div class="chat-message-list" id="chatMessageList" aria-live="polite">
+                <div class="chat-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando mensagens...</span></div>
+            </div>
+
+            <form class="chat-composer" id="chatComposerForm">
+                <label for="chatComposerInput" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Mensagem</label>
+                <textarea id="chatComposerInput" rows="1" placeholder="Escreva uma mensagem..." maxlength="2000"></textarea>
+                <button class="chat-send" id="chatSendButton" type="submit" aria-label="Enviar mensagem"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+    <script src="conversas.js"></script>
+</body>
+</html>

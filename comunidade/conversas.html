@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Central de conversas do Amor NeuroDivergente.">
+    <title>Conversas — Amor NeuroDivergente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="conversas.css">
+</head>
+<body class="conversas-page" data-page="inbox">
+    <header class="conversas-header">
+        <a class="conversas-brand" href="/inicio.html">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+            <span>Amor NeuroDivergente</span>
+        </a>
+        <span class="conversas-header-spacer"></span>
+        <a class="conversas-back" href="/comunidade/comunidade.html"><i class="fa-solid fa-arrow-left"></i><span>Voltar à comunidade</span></a>
+        <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
+        </a>
+    </header>
+
+    <main class="page-main">
+        <div class="page-heading">
+            <div>
+                <h1>Conversas</h1>
+                <p>Amigos, canais e espaços de apoio em um só lugar, com calma e respeito.</p>
+            </div>
+            <div class="page-heading-actions">
+                <button class="cv-primary" id="openCreateConversationBtn" type="button"><i class="fa-solid fa-plus"></i> Criar novo</button>
+                <a class="cv-secondary" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-compass"></i> Explorar comunidades</a>
+            </div>
+        </div>
+
+        <section class="conversation-workspace" aria-label="Central de conversas">
+            <aside class="conversation-rail" aria-label="Lista de conversas">
+                <div class="conversation-rail-header">
+                    <h2>Suas conversas</h2>
+                    <button class="rail-new-button" id="openCreateConversationRailBtn" type="button" aria-label="Criar conversa" title="Criar conversa"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <div class="conversation-tabs" role="tablist" aria-label="Tipo de conversa">
+                    <button class="conversation-tab active" data-inbox-tab="channels" role="tab" aria-selected="true" type="button"><i class="fa-solid fa-hashtag"></i> Canais</button>
+                    <button class="conversation-tab" data-inbox-tab="friends" role="tab" aria-selected="false" type="button"><i class="fa-solid fa-user-group"></i> Amigos</button>
+                </div>
+                <label class="conversation-search" for="conversationSearch">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="conversationSearch" type="search" placeholder="Buscar conversa" autocomplete="off">
+                </label>
+                <div class="conversation-list" id="conversationList" aria-live="polite">
+                    <div class="conversation-empty"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando conversas...</span></div>
+                </div>
+            </aside>
+
+            <section class="conversation-empty-content" aria-live="polite">
+                <div class="empty-mascot"><i class="fa-solid fa-heart"></i></div>
+                <h2 id="inboxEmptyTitle">Selecione uma conversa para começar</h2>
+                <p id="inboxEmptyText">Escolha um amigo ou canal na lista ao lado.</p>
+                <a class="cv-primary" id="createCommunityShortcut" href="/comunidade/explorar-grupos.html?criar=1"><i class="fa-solid fa-plus"></i> Criar uma comunidade</a>
+            </section>
+
+            <aside class="conversation-aside" aria-label="Atalhos">
+                <div class="aside-card">
+                    <h3>Seu espaço</h3>
+                    <div class="aside-stat"><span>Canais</span><strong id="asideChannelCount">0</strong></div>
+                    <div class="aside-stat"><span>Amigos</span><strong id="asideFriendCount">0</strong></div>
+                    <div class="aside-stat"><span>Total</span><strong id="asideTotalCount">0</strong></div>
+                </div>
+                <div class="aside-card">
+                    <h3>Descoberta</h3>
+                    <p>Encontre uma comunidade pelo tema que combina com você.</p>
+                    <a class="aside-link" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-compass"></i> Explorar comunidades <i class="fa-solid fa-arrow-right"></i></a>
+                    <a class="aside-link" href="/comunidade/perfil.html"><i class="fa-solid fa-user"></i> Ver meu perfil <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="aside-card">
+                    <h3>Segurança</h3>
+                    <p>Conversas respeitosas e acolhedoras. Você pode sair de qualquer canal quando quiser.</p>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <div class="cv-modal-backdrop" id="createConversationModal" hidden>
+        <section class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="createConversationTitle">
+            <div class="cv-modal-header">
+                <h2 id="createConversationTitle">Criar comunidade</h2>
+                <button class="cv-modal-close" id="closeCreateModal" type="button" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form class="cv-modal-body" id="createConversationForm">
+                <div class="cv-form-field"><label for="newCommunityName">Nome da comunidade</label><input id="newCommunityName" required maxlength="50" placeholder="Ex: Apoio TDAH"></div>
+                <div class="cv-form-field"><label for="newCommunityDescription">Descrição</label><textarea id="newCommunityDescription" maxlength="200" placeholder="Conte o propósito desta comunidade."></textarea></div>
+                <div class="cv-form-field"><label for="newCommunityCategory">Categoria</label><select id="newCommunityCategory"><option value="geral">Geral</option><option value="apoio">Apoio e acolhimento</option><option value="tdah">TDAH</option><option value="autismo">Autismo</option><option value="ansiedade">Ansiedade e depressão</option><option value="educacao">Educação e carreira</option><option value="relacionamentos">Relacionamentos</option><option value="hobbies">Hobbies e interesses</option><option value="arte">Arte e criatividade</option><option value="ciencia">Ciência e pesquisa</option><option value="direitos">Direitos e leis</option></select></div>
+                <button class="cv-primary" id="createCommunitySubmit" type="submit" style="width:100%"><i class="fa-solid fa-plus"></i> Criar comunidade</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+    <script src="conversas.js"></script>
+</body>
+</html>

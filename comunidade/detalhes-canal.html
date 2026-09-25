@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detalhes de uma comunidade do Amor NeuroDivergente.">
+    <title>Comunidade — Amor NeuroDivergente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="conversas.css">
+</head>
+<body class="channel-page" data-page="channel">
+    <header class="conversas-header">
+        <a class="conversas-brand" href="/inicio.html">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+            <span>Amor NeuroDivergente</span>
+        </a>
+        <span class="conversas-header-spacer"></span>
+        <a class="conversas-back" href="/comunidade/conversas.html"><i class="fa-solid fa-arrow-left"></i><span>Voltar às conversas</span></a>
+        <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
+        </a>
+    </header>
+
+    <main class="channel-page-main">
+        <div class="channel-breadcrumb"><a href="/comunidade/explorar-grupos.html">Explorar comunidades</a><i class="fa-solid fa-chevron-right"></i><span id="channelBreadcrumbName">Comunidade</span></div>
+
+        <section class="channel-hero">
+            <div class="channel-hero-banner">
+                <img id="channelBanner" alt="" hidden>
+            </div>
+            <div class="channel-hero-bar">
+                <div class="channel-hero-avatar" id="channelAvatar">C</div>
+                <div class="channel-hero-copy">
+                    <h1 id="channelName">Comunidade</h1>
+                    <p id="channelCategory">Geral</p>
+                </div>
+                <div class="channel-hero-actions">
+                    <a class="cv-primary" id="openChannelChat" href="#"><i class="fa-solid fa-comments"></i> Abrir conversa</a>
+                    <a class="cv-secondary" id="openChannelFeed" href="#"><i class="fa-regular fa-newspaper"></i> Ver publicações</a>
+                    <button class="cv-primary" id="joinChannelButton" type="button" hidden><i class="fa-solid fa-right-to-bracket"></i> Unir-me</button>
+                    <button class="cv-secondary" id="copyChannelInvite" type="button"><i class="fa-solid fa-link"></i> Convite</button>
+                    <button class="cv-danger" id="leaveChannelButton" type="button"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="channel-content-grid">
+            <section class="channel-main-card">
+                <h2>Sobre esta comunidade</h2>
+                <p class="channel-description" id="channelDescription">Carregando descrição...</p>
+                <div class="channel-stats">
+                    <span class="channel-stat"><i class="fa-solid fa-users"></i> <strong id="channelMemberCount">0 membros</strong></span>
+                    <span class="channel-stat"><i class="fa-regular fa-calendar"></i> <span id="channelCreatedAt">Comunidade</span></span>
+                </div>
+                <div class="channel-main-card" style="margin-top:22px;box-shadow:none;background:var(--cv-surface-soft);">
+                    <h2>Antes de participar</h2>
+                    <ul class="channel-rules">
+                        <li><i class="fa-solid fa-heart"></i><span>Converse com acolhimento e respeito.</span></li>
+                        <li><i class="fa-solid fa-comments"></i><span>Compartilhe experiências sem julgamentos.</span></li>
+                        <li><i class="fa-solid fa-shield-halved"></i><span>Não compartilhe dados pessoais ou diagnósticos de terceiros.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <aside class="channel-side-card">
+                <h2>Membros</h2>
+                <div class="channel-members" id="channelMembersList">
+                    <div class="chat-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+    <script src="conversas.js"></script>
+</body>
+</html>

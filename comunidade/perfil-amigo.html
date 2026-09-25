@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de amigo — Amor NeuroDivergente</title>
+    <link rel="stylesheet" href="conversas.css">
+</head>
+<body class="profile-friend-page">
+    <main class="profile-friend-loading">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>Levando você para o perfil...</p>
+        <a class="cv-primary" id="profileFallbackLink" href="/comunidade/perfil.html">Abrir perfil</a>
+    </main>
+    <script>
+        (() => {
+            const id = new URLSearchParams(window.location.search).get('id');
+            const target = `/comunidade/perfil.html${id ? `?id=${encodeURIComponent(id)}` : ''}`;
+            document.getElementById('profileFallbackLink').href = target;
+            window.location.replace(target);
+        })();
+    </script>
+</body>
+</html>

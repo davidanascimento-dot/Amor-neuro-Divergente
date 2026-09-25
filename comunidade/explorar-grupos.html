@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore comunidades do Amor NeuroDivergente.">
+    <title>Explore comunidades — Amor NeuroDivergente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="conversas.css">
+</head>
+<body class="groups-page" data-page="groups">
+    <header class="conversas-header">
+        <a class="conversas-brand" href="/inicio.html">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+            <span>Amor NeuroDivergente</span>
+        </a>
+        <span class="conversas-header-spacer"></span>
+        <a class="conversas-back" href="/comunidade/comunidade.html"><i class="fa-solid fa-arrow-left"></i><span>Voltar à comunidade</span></a>
+        <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
+        </a>
+    </header>
+
+    <main class="groups-page-main">
+        <div class="page-heading">
+            <div>
+                <h1>Explore comunidades</h1>
+                <p>Encontre espaços para trocar experiências, apoio e informação.</p>
+            </div>
+            <div class="page-heading-actions">
+                <button class="cv-primary" id="exploreCreateButton" type="button"><i class="fa-solid fa-plus"></i> Criar comunidade</button>
+                <a class="cv-secondary" href="/comunidade/conversas.html"><i class="fa-regular fa-comment-dots"></i> Minhas conversas</a>
+            </div>
+        </div>
+
+        <div class="explore-toolbar">
+            <label class="explore-search" for="exploreSearch">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="exploreSearch" type="search" placeholder="Buscar grupos por nome ou tema..." autocomplete="off">
+            </label>
+            <div class="explore-filters" role="tablist" aria-label="Categorias de comunidades">
+                <button class="explore-filter active" data-explore-filter="all" role="tab" aria-selected="true" type="button">Todos</button>
+                <button class="explore-filter" data-explore-filter="popular" role="tab" aria-selected="false" type="button">Mais visitadas</button>
+                <button class="explore-filter" data-explore-filter="apoio" type="button">Apoio</button>
+                <button class="explore-filter" data-explore-filter="tdah" type="button">TDAH</button>
+                <button class="explore-filter" data-explore-filter="autismo" type="button">Autismo</button>
+                <button class="explore-filter" data-explore-filter="ansiedade" type="button">Ansiedade</button>
+                <button class="explore-filter" data-explore-filter="educacao" type="button">Educação</button>
+                <button class="explore-filter" data-explore-filter="relacionamentos" type="button">Relacionamentos</button>
+                <button class="explore-filter" data-explore-filter="hobbies" type="button">Hobbies</button>
+                <button class="explore-filter" data-explore-filter="arte" type="button">Arte</button>
+                <button class="explore-filter" data-explore-filter="ciencia" type="button">Ciência</button>
+                <button class="explore-filter" data-explore-filter="direitos" type="button">Direitos</button>
+                <button class="explore-filter" data-explore-filter="geral" type="button">Geral</button>
+            </div>
+        </div>
+
+        <div class="explore-section-heading">
+            <h2>Recomendado para você</h2>
+            <span id="exploreResultCount">0 comunidades</span>
+        </div>
+        <section class="explore-grid" id="exploreGroupsGrid" aria-live="polite">
+            <div class="groups-empty"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando comunidades...</span></div>
+        </section>
+        <div class="explore-load-more"><button id="exploreLoadMore" type="button" hidden>Mostrar mais</button></div>
+    </main>
+
+    <div class="cv-modal-backdrop" id="createConversationModal" hidden>
+        <section class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="exploreCreateTitle">
+            <div class="cv-modal-header">
+                <h2 id="exploreCreateTitle">Criar comunidade</h2>
+                <button class="cv-modal-close" id="closeExploreCreateModal" type="button" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form class="cv-modal-body" id="exploreCreateForm">
+                <div class="cv-form-field"><label for="newCommunityName">Nome da comunidade</label><input id="newCommunityName" required maxlength="50" placeholder="Ex: Apoio TDAH"></div>
+                <div class="cv-form-field"><label for="newCommunityDescription">Descrição</label><textarea id="newCommunityDescription" maxlength="200" placeholder="Conte o propósito desta comunidade."></textarea></div>
+                <div class="cv-form-field"><label for="newCommunityCategory">Categoria</label><select id="newCommunityCategory"><option value="geral">Geral</option><option value="apoio">Apoio e acolhimento</option><option value="tdah">TDAH</option><option value="autismo">Autismo</option><option value="ansiedade">Ansiedade e depressão</option><option value="educacao">Educação e carreira</option><option value="relacionamentos">Relacionamentos</option><option value="hobbies">Hobbies e interesses</option><option value="arte">Arte e criatividade</option><option value="ciencia">Ciência e pesquisa</option><option value="direitos">Direitos e leis</option></select></div>
+                <button class="cv-primary" id="createCommunitySubmit" type="submit" style="width:100%"><i class="fa-solid fa-plus"></i> Criar comunidade</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+    <script src="conversas.js"></script>
+</body>
+</html>

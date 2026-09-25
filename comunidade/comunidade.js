@@ -277,79 +277,45 @@ async function apiCreatePost(content, videoUrl) {
 // ================================================================
 
 async function apiCreatePrivateConversation(friendId) {
-    if (!currentUser) {
-        return { success: false, message: 'Usuário não autenticado' };
-    }
+    if (!currentUser || !friendId) return { success: false, message: 'Usuário ou amigo inválido' };
+    const myId = currentUser.id;
 
     try {
-        // TENTATIVA 1: Via RPC
-        const { data, error } = await supabase.rpc('create_private_conversation', {
-            p_friend_id: friendId
-        });
-        
-        if (!error && data) {
-            console.log('✅ Conversa criada via RPC:', data);
-            return data;
-        }
-        
-        console.warn('⚠️ RPC falhou, usando fallback direto:', error?.message);
-
-        // =============================================
-        // FALLBACK: Inserção direta no banco
-        // =============================================
-        const myId = currentUser.id;
-        
-        // Buscar nome do amigo
-        const { data: friendProfile } = await supabase
-            .from('profiles')
-            .select('username')
-            .eq('id', friendId)
-            .single();
-
-        const friendName = friendProfile?.username || 'Amigo';
-
-        // Criar ID único
-        const newConvId = crypto.randomUUID ? crypto.randomUUID() : 
-            'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-
-        // Inserir conversa
-        const { error: convErr } = await supabase
-            .from('conversations')
-            .insert({
-                id: newConvId,
-                name: friendName,
-                type: 'private',
-                created_by: myId,
-                created_at: new Date().toISOString()
-            });
-
-        if (convErr) {
-            console.error('❌ Erro ao criar conversa:', convErr);
-            return { success: false, message: convErr.message };
-        }
-
-        // Adicionar participantes
-        await supabase
+        const { data: participantRows } = await supabase
             .from('conversation_participants')
-            .insert([
-                { conversation_id: newConvId, user_id: myId, joined_at: new Date().toISOString() },
-                { conversation_id: newConvId, user_id: friendId, joined_at: new Date().toISOString() }
-            ]);
+            .select('conversation_id, user_id')
+            .in('user_id', [myId, friendId]);
+        const byConversation = new Map();
+        (participantRows || []).forEach(row => {
+            if (!byConversation.has(row.conversation_id)) byConversation.set(row.conversation_id, new Set());
+            byConversation.get(row.conversation_id).add(row.user_id);
+        });
+        const candidateIds = [...byConversation.entries()]
+            .filter(([, users]) => users.has(myId) && users.has(friendId))
+            .map(([id]) => id);
+        if (candidateIds.length) {
+            const { data: conversations } = await supabase.from('conversations').select('id, type').in('id', candidateIds);
+            const existing = (conversations || []).find(row => ['direct', 'private'].includes(String(row.type || '').toLowerCase()));
+            if (existing) return { success: true, conversation_id: existing.id, existing: true };
+        }
 
-        console.log('✅ Conversa privada criada via fallback! ID:', newConvId);
-
-        return {
-            success: true,
-            conversation_id: newConvId,
-            existing: false,
-            message: 'Conversa criada com sucesso'
-        };
-
+        const { data: friendProfile } = await supabase.from('profiles').select('username').eq('id', friendId).maybeSingle();
+        const newConvId = crypto.randomUUID ? crypto.randomUUID() : `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+        const now = new Date().toISOString();
+        const { error: convErr } = await supabase.from('conversations').insert({ id: newConvId, name: friendProfile?.username || 'Amigo', type: 'direct', created_by: myId, created_at: now });
+        if (convErr) throw convErr;
+        const { error: partErr } = await supabase.from('conversation_participants').insert([
+            { conversation_id: newConvId, user_id: myId, joined_at: now },
+            { conversation_id: newConvId, user_id: friendId, joined_at: now }
+        ]);
+        if (partErr) throw partErr;
+        return { success: true, conversation_id: newConvId, existing: false };
     } catch (error) {
-        console.error('❌ Erro inesperado:', error);
+        console.error('Erro ao criar conversa privada:', error);
         return { success: false, message: error.message };
     }
 }
@@ -1056,6 +1022,14 @@ function switchTab(tabId) {
 
 subnavTabs.forEach(tab => {
     tab.addEventListener('click', () => {
+        if (tab.dataset.tab === 'grupos') {
+            window.location.href = '/comunidade/explorar-grupos.html';
+            return;
+        }
+        if (tab.dataset.tab === 'conversa') {
+            window.location.href = '/comunidade/conversas.html';
+            return;
+        }
         switchTab(tab.dataset.tab);
     });
 });
@@ -2748,14 +2722,9 @@ if (groupImageUploadArea) {
                 .from('groups')
                 .select('name')
                 .eq('id', groupId)
-                .single();
-
+                .maybeSingle();
             if (error) throw error;
-
-            switchChat(groupId, group.name);
-            switchTab('conversa');
-            showToast(`Chat: ${group.name}`, 'success');
-
+            window.location.href = `/comunidade/chat.html?id=${encodeURIComponent(groupId)}&type=group&name=${encodeURIComponent(group?.name || 'Comunidade')}`;
         } catch (error) {
             showToast('Erro ao abrir chat', 'error');
         }
@@ -4212,24 +4181,17 @@ function carregarContagemInicial(postId, reactionType, btn) {
 // ================================================================
 
 window.openFriendChat = async function(conversationId, friendUsername, friendId) {
-    // Se já tem conversationId, usa direto
     if (conversationId) {
-        switchChat(conversationId, '@' + friendUsername);
-        switchTab('conversa');
+        window.location.href = `/comunidade/chat.html?id=${encodeURIComponent(conversationId)}&type=direct&friendId=${encodeURIComponent(friendId || '')}&name=${encodeURIComponent(friendUsername || 'Amigo')}`;
         return;
     }
-    
-    // Se não tem, cria uma nova conversa privada
+
     if (friendId) {
         showToast('📨 Criando conversa com ' + friendUsername + '...', 'info', 2000);
-        
         const result = await apiCreatePrivateConversation(friendId);
         if (result && result.success) {
             const chatId = result.conversation_id || result.id;
-            const chatName = '@' + friendUsername;
-            switchChat(chatId, chatName);
-            switchTab('conversa');
-            showToast('💬 Conversa com ' + friendUsername + ' iniciada!', 'success');
+            window.location.href = `/comunidade/chat.html?id=${encodeURIComponent(chatId)}&type=direct&friendId=${encodeURIComponent(friendId)}&name=${encodeURIComponent(friendUsername || 'Amigo')}`;
         } else {
             showToast(result?.message || 'Erro ao criar conversa.', 'error');
         }
@@ -4257,6 +4219,11 @@ window.openFriendChat = async function(conversationId, friendUsername, friendId)
     if (handleEl) handleEl.textContent = '@' + friendName.toLowerCase();
     if (avatarEl) {
         avatarEl.src = friendAvatar && friendAvatar !== AVATAR_PADRAO ? friendAvatar : AVATAR_PADRAO;
+        avatarEl.style.cursor = 'pointer';
+        avatarEl.title = 'Abrir perfil completo';
+        avatarEl.onclick = () => {
+            window.location.href = `/comunidade/perfil-amigo.html?id=${encodeURIComponent(friendId)}`;
+        };
     }
 
     // Botão "Conversar" - sempre disponível

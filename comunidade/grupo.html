@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comunidade — Amor NeuroDivergente.">
+    <title>Comunidade — Amor NeuroDivergente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="conversas.css">
+</head>
+<body class="groups-page" data-page="community">
+    <header class="conversas-header">
+        <a class="conversas-brand" href="/inicio.html">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+            <span>Amor NeuroDivergente</span>
+        </a>
+        <span class="conversas-header-spacer"></span>
+        <a class="conversas-back" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-arrow-left"></i><span>Explorar comunidades</span></a>
+        <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
+        </a>
+    </header>
+
+    <main class="community-page-main">
+        <div class="community-breadcrumb"><a href="/comunidade/explorar-grupos.html">Explore comunidades</a><i class="fa-solid fa-chevron-right"></i><span id="communityBreadcrumbName">Comunidade</span></div>
+        <section class="community-group-hero">
+            <div class="community-group-banner"><img id="communityGroupBanner" alt="" hidden></div>
+            <div class="community-group-hero-bar">
+                <div class="community-group-avatar" id="communityGroupAvatar">C</div>
+                <div class="community-group-hero-copy">
+                    <h1 id="communityGroupName">Comunidade</h1>
+                    <p id="communityGroupDescription">Carregando comunidade...</p>
+                </div>
+                <div class="community-group-actions">
+                    <a class="cv-primary" id="communityChatLink" href="#"><i class="fa-solid fa-comments"></i> Conversar</a>
+                    <a class="cv-secondary" id="communityDetailsLink" href="#"><i class="fa-solid fa-circle-info"></i> Detalhes</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="community-group-layout">
+            <aside class="community-sidebar-card">
+                <h2>Sobre</h2>
+                <p id="communityGroupAbout">Carregando descrição...</p>
+                <a class="community-sidebar-link" id="communityMembersLink" href="#"><i class="fa-solid fa-users"></i> Ver membros</a>
+                <a class="community-sidebar-link" href="/comunidade/conversas.html"><i class="fa-solid fa-arrow-left"></i> Voltar às conversas</a>
+            </aside>
+
+            <section class="community-feed-panel">
+                <div class="community-feed-header">
+                    <h2>Publicações da comunidade</h2>
+                    <span id="communityFeedCount">Carregando...</span>
+                </div>
+                <div class="community-feed" id="communityGroupFeed">
+                    <div class="community-feed-empty"><i class="fa-solid fa-spinner fa-spin"></i><p>Carregando publicações...</p></div>
+                </div>
+            </section>
+
+            <aside class="community-related-card">
+                <h2>Conversa da comunidade</h2>
+                <p>Troque mensagens com as pessoas que participam deste espaço.</p>
+                <a class="community-sidebar-link" id="communityChatLinkSide" href="#"><i class="fa-solid fa-comment-dots"></i> Abrir chat</a>
+                <h2 style="margin-top:22px;">Membros</h2>
+                <div id="communityMemberPreview"></div>
+            </aside>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.supabaseClient = supabase.createClient(
+            'https://qyixzontuhrxrrjrmzvy.supabase.co',
+            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
+        );
+    </script>
+    <script src="conversas.js"></script>
+</body>
+</html>
