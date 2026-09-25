@@ -1,15 +1,157 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="refresh" content="0; url=/inicio.html">
-	<title>Amor NeuroDivergente</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Amor NeuroDivergente — conteúdo, comunidade e acolhimento para pessoas neurodivergentes. Explore sem login.">
+    <meta name="theme-color" content="#f7f4f1">
+    <title>Amor NeuroDivergente — Um espaço para encontrar seu ritmo</title>
+    <link rel="icon" type="image/x-icon" href="/img/logo-LHN9gCw1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="landing.css">
 </head>
-<body>
-	<p>Carregando o Amor NeuroDivergente...</p>
-	<script>
-		window.location.replace('/inicio.html');
-	</script>
+<body class="landing-page">
+    <header class="landing-nav" id="landingNav">
+        <div class="landing-nav-inner">
+            <a class="landing-brand" href="#top" aria-label="Amor NeuroDivergente — início">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+                <span>Amor NeuroDivergente</span>
+            </a>
+            <nav class="landing-nav-links" id="landingNavLinks" aria-label="Navegação principal">
+                <a href="#entrega">O que tem aqui</a>
+                <a href="#sobre">Sobre</a>
+                <a href="/comunidade/comunidade.html">Comunidade</a>
+            </nav>
+            <div class="landing-nav-actions">
+                <a class="landing-login-link" href="/login/login.html">Entrar</a>
+                <a class="landing-create-button" href="/login/login.html?modo=criar">Criar conta</a>
+                <button class="landing-menu-toggle" id="landingMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="landingNavLinks">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="top">
+        <section class="landing-hero">
+            <div class="landing-container landing-hero-grid">
+                <div class="landing-hero-copy">
+                    <span class="landing-eyebrow"><i class="fa-solid fa-sparkles"></i> COMUNIDADE NEUROINCLUSIVA</span>
+                    <h1>Um espaço para se <em>entender</em>, se aceitar e se conectar.</h1>
+                    <p class="landing-hero-lead">Conteúdo, comunidade e acolhimento sobre neurodivergência. Explore tudo sem login — a conta é só para comentar e fazer parte.</p>
+                    <div class="landing-hero-actions">
+                        <a class="landing-primary-button" href="/inicio.html">Explorar sem login <i class="fa-solid fa-arrow-right"></i></a>
+                        <a class="landing-secondary-button" href="/login/login.html">Entrar na comunidade</a>
+                    </div>
+                    <div class="landing-open-note"><i class="fa-solid fa-lock-open"></i> Todo o conteúdo é aberto, gratuito e acessível.</div>
+                </div>
+                <div class="landing-hero-visual" aria-label="Pessoas conversando em um espaço acolhedor">
+                    <div class="hero-blob hero-blob-one"></div>
+                    <div class="hero-blob hero-blob-two"></div>
+                    <div class="hero-image-wrap">
+                        <img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.jpg" alt="Grupo de pessoas converse em um ambiente acolhedor">
+                    </div>
+                    <div class="hero-floating hero-floating-top"><span class="hero-floating-icon"><i class="fa-solid fa-heart"></i></span><span><strong>Você não precisa se explicar.</strong><small>Aqui, cada ritmo é respeitado.</small></span></div>
+                    <div class="hero-floating hero-floating-bottom"><span class="hero-mini-avatars"><i></i><i></i><i></i></span><span><strong>Uma comunidade real</strong><small>feita para pertencer e confiar.</small></span></div>
+                    <div class="hero-sticker"><span>sem pressa</span><i class="fa-solid fa-arrow-down"></i></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-delivery" id="entrega">
+            <div class="landing-container">
+                <div class="landing-section-heading">
+                    <div><span class="landing-eyebrow">SEM BARREIRA, NO SEU RITMO</span><h2>O que você encontra aqui</h2></div>
+                    <p>Quatro caminhos para explorar sem precisar se cadastrar.</p>
+                </div>
+                <div class="delivery-grid">
+                    <a class="delivery-card delivery-card-purple" href="/Explorar/Explorar.html">
+                        <span class="delivery-icon"><i class="fa-solid fa-compass"></i></span>
+                        <span class="delivery-number">01</span>
+                        <h3>Explorar</h3>
+                        <p>Guias, artigos e respostas para entender melhor o seu jeito de aprender.</p>
+                        <span class="delivery-link">Ver recursos <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                    <a class="delivery-card delivery-card-coral" href="/comunidade/comunidade.html">
+                        <span class="delivery-icon"><i class="fa-regular fa-comments"></i></span>
+                        <span class="delivery-number">02</span>
+                        <h3>Comunidade</h3>
+                        <p>Conversas, grupos e histórias de quem vive a neurodiversidade.</p>
+                        <span class="delivery-link">Entrar na comunidade <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                    <a class="delivery-card delivery-card-gold" href="/Direitos/direitos.html">
+                        <span class="delivery-icon"><i class="fa-solid fa-scale-balanced"></i></span>
+                        <span class="delivery-number">03</span>
+                        <h3>Seus direitos</h3>
+                        <p>Leis explicadas sem juridiquês para você entender melhor os seus direitos.</p>
+                        <span class="delivery-link">Conhecer direitos <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                    <a class="delivery-card delivery-card-blue" href="/inicio.html#acolheria">
+                        <span class="delivery-icon"><i class="fa-solid fa-robot"></i></span>
+                        <span class="delivery-number">04</span>
+                        <h3>AcolherIA</h3>
+                        <p>Uma assistente preparada para dúvidas, acolhimento e orientação.</p>
+                        <span class="delivery-link">Conversar com a AcolherIA <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-about" id="sobre">
+            <div class="landing-container landing-about-grid">
+                <div class="about-visual">
+                    <div class="about-image-card"><img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa estudando e escrevendo com calma"></div>
+                    <div class="about-quote-card"><i class="fa-solid fa-quote-left"></i><span>Aqui, ninguém precisa se explicar.</span></div>
+                    <span class="about-shape about-shape-one"></span><span class="about-shape about-shape-two"></span>
+                </div>
+                <div class="about-copy">
+                    <span class="landing-eyebrow">SOBRE O AMOR NEURODIVERGENTE</span>
+                    <h2>Informação que acolhe. Comunidade que entende.</h2>
+                    <p>O Amor NeuroDivergente nasceu para criar um lugar onde pessoas neurodivergentes encontrem informação de qualidade, apoio real e uma comunidade que respeita diferentes formas de estar no mundo.</p>
+                    <p>Você pode explorar tudo sem login. Se quiser comentar, publicar ou conversar com outras pessoas, criamos uma conta para você.</p>
+                    <div class="about-values">
+                        <div><i class="fa-solid fa-universal-access"></i><span><strong>Acessível de verdade</strong><small>VLibras, UserWay e fonte para dislexia.</small></span></div>
+                        <div><i class="fa-solid fa-heart"></i><span><strong>Acolhimento sem julgamento</strong><small>Linguagem simples e respeito por cada história.</small></span></div>
+                        <div><i class="fa-solid fa-lock-open"></i><span><strong>Livre e gratuito</strong><small>Você escolhe quando e como participar.</small></span></div>
+                    </div>
+                    <div class="about-stats"><div><strong>4</strong><span>lugares para explorar</span></div><div><strong>100%</strong><span>conteúdo aberto</span></div><div><strong>∞</strong><span>formas de pertencimento</span></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-stories" id="historias">
+            <div class="landing-container">
+                <div class="landing-section-heading centered-heading"><div><span class="landing-eyebrow>PERTENCER É IMPORTANTE</span><h2>Um lugar para cada história</h2></div><p>Você não precisa chegar sabendo tudo. A gente aprende junto.</p></div>
+                <div class="stories-grid">
+                    <article class="story-card"><div class="story-stars">★★★★★</div><p>“Encontrei palavras para explicar o que sentia e pessoas que não me julgam.”</p><div class="story-author"><span class="story-avatar">A</span><span><strong>Uma pessoa TDAH</strong><small>da comunidade</small></span></div></article>
+                    <article class="story-card story-card-highlight"><div class="story-stars">★★★★★</div><p>“O conteúdo é claro e a comunidade respeita o meu tempo. Isso já muda tudo.”</p><div class="story-author"><span class="story-avatar story-avatar-coral">L</span><span><strong>Uma pessoa autista</strong><small>da comunidade</small></span></div></article>
+                    <article class="story-card"><div class="story-stars">★★★★★</div><p>“Finalmente um lugar para falar sobre direitos sem precisar entrar em um tribunal.”</p><div class="story-author"><span class="story-avatar story-avatar-gold">R</span><span><strong>Mais uma pertencente</strong><small>da comunidade</small></span></div></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-cta-section">
+            <div class="landing-container landing-cta-card">
+                <div class="cta-sun" aria-hidden="true"></div>
+                <div class="cta-copy"><span class="landing-eyebrow">SEM PRESSA, DO SEU JEITO</span><h2>Pronto para encontrar seu ritmo?</h2><p>Explore tudo agora. Se quiser comentar e fazer parte da conversa, é só criar uma conta.</p></div>
+                <div class="cta-actions"><a class="landing-primary-button" href="/inicio.html">Explorar sem login <i class="fa-solid fa-arrow-right"></i></a><a class="landing-secondary-button landing-secondary-light" href="/login/login.html?modo=criar">Criar conta grátis</a></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="landing-footer">
+        <div class="landing-container landing-footer-grid">
+            <div class="footer-brand"><a class="landing-brand" href="#top"><img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente"><span>Amor NeuroDivergente</span></a><p>Conteúdo, comunidade e acolhimento para pessoas neurodivergentes.</p></div>
+            <div><h3>Explore</h3><a href="/Explorar/Explorar.html">Recursos</a><a href="/comunidade/comunidade.html">Comunidade</a><a href="/Direitos/direitos.html">Seus direitos</a></div>
+            <div><h3>Para começar</h3><a href="/inicio.html">Entrar no site</a><a href="/login/login.html">Entrar ou criar conta</a><a href="/inicio.html#acolheria">Conversar com a AcolherIA</a></div>
+            <div><h3>Compromisso</h3><p>Acessibilidade, respeito e escolha. Você não precisa entrar para conhecer.</p></div>
+        </div>
+        <div class="landing-container landing-footer-bottom"><span>© <span id="landingYear"></span> Amor NeuroDivergente</span><span>Feito para pessoas, não para métricas.</span></div>
+    </footer>
+
+    <script src="landing.js"></script>
 </body>
 </html>

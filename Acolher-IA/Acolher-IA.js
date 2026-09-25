@@ -268,6 +268,14 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         });
     });
 
+    // Deep link: a landing page pode abrir a AcolherIA diretamente.
+    if (window.location.hash === '#acolheria') {
+        setTimeout(openAcolheriaModal, 450);
+    }
+    window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#acolheria') openAcolheriaModal();
+    });
+
     // =============================================
     // EVENTOS - FECHAR O MODAL
     // =============================================

@@ -96,6 +96,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =============================================
+    // LOGIN OPCIONAL — O CONTEÚDO NÃO EXIGE CADASTRO
+    // =============================================
+    const optionalLoginModal = document.getElementById('optionalLoginModal');
+    const closeOptionalLogin = document.getElementById('closeOptionalLogin');
+    const continueWithLogin = document.getElementById('continueWithLogin');
+    const loginMode = new URLSearchParams(window.location.search).get('modo');
+
+    function openOptionalLogin() {
+        if (!optionalLoginModal) return;
+        optionalLoginModal.removeAttribute('hidden');
+        document.body.classList.add('optional-login-is-open');
+        requestAnimationFrame(() => optionalLoginModal.querySelector('button, a')?.focus());
+    }
+
+    function dismissOptionalLogin({ focusLogin = true } = {}) {
+        if (!optionalLoginModal) return;
+        optionalLoginModal.setAttribute('hidden', '');
+        document.body.classList.remove('optional-login-is-open');
+        if (focusLogin) document.getElementById('loginEmail')?.focus();
+    }
+
+    if (loginMode === 'criar') {
+        if (registerCard) registerCard.style.display = 'block';
+        if (loginCard) loginCard.style.display = 'none';
+    } else {
+        setTimeout(openOptionalLogin, 260);
+    }
+
+    closeOptionalLogin?.addEventListener('click', () => dismissOptionalLogin());
+    continueWithLogin?.addEventListener('click', () => dismissOptionalLogin());
+    optionalLoginModal?.addEventListener('click', event => {
+        if (event.target === optionalLoginModal) dismissOptionalLogin();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && optionalLoginModal && !optionalLoginModal.hasAttribute('hidden')) {
+            dismissOptionalLogin();
+        }
+    });
+
+    // =============================================
     // MOSTRAR/ESCONDER SENHA
     // =============================================
     document.querySelectorAll('.toggle-password').forEach(icon => {
@@ -343,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Enviando link...', 'info');
 
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/redefinir-senha.html`
+                redirectTo: `${window.location.origin}/login/redefinir-senha.html`
             });
 
             if (error) {

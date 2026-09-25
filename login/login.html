@@ -7,24 +7,47 @@
     <title>Login — Amor NeuroDivergente</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/landing.css">
     <link rel="stylesheet" href="login.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body class="login-page">
 
     <div class="login-container">
-        
+        <header class="landing-nav" id="landingNav">
+            <div class="landing-nav-inner">
+                <a class="landing-brand" href="/index.html#top" aria-label="Voltar para a landing page">
+                    <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+                    <span>Amor NeuroDivergente</span>
+                </a>
+                <nav class="landing-nav-links" id="landingNavLinks" aria-label="Navegação principal">
+                    <a href="/index.html#entrega">O que tem aqui</a>
+                    <a href="/index.html#sobre">Sobre</a>
+                    <a href="/comunidade/comunidade.html">Comunidade</a>
+                </nav>
+                <div class="landing-nav-actions">
+                    <a class="landing-login-link" href="/index.html#top"><i class="fa-solid fa-arrow-left"></i> Voltar à landing</a>
+                    <a class="landing-create-button" href="/login/login.html?modo=criar">Criar conta</a>
+                    <button class="landing-menu-toggle" id="landingMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="landingNavLinks">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="login-layout">
         <section class="form-section">
-            <a href="/inicio.html" class="btn-back-site" aria-label="Voltar para o site principal">
-                <i class="fa-solid fa-arrow-left"></i> Voltar para o site
+            <a href="/index.html#top" class="btn-back-site" aria-label="Voltar para a landing page">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para a landing
             </a>
 
             <div class="form-box" id="loginCard">
                 <div class="form-header">
-                    <h1>Faça seu login.</h1>
-                    <p class="subtitle">Seja bem-vindo de volta ao seu espaço seguro.</p>
+                    <span class="form-eyebrow">ACESSO SEGURO</span>
+                    <h1>Volte para o seu espaço.</h1>
+                    <p class="subtitle">Entre para continuar suas conversas e encontrar seu ritmo.</p>
                 </div>
                 
                 <form id="loginForm">
@@ -32,7 +55,7 @@
                         <label for="loginEmail">
                             <i class="fa-regular fa-envelope"></i> Email
                         </label>
-                        <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="off" required>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email" required>
                     </div>
 
                     <div class="input-group">
@@ -40,7 +63,7 @@
                             <i class="fa-solid fa-lock"></i> Senha
                         </label>
                         <div class="password-wrapper">
-                            <input type="password" id="loginPassword" placeholder="Sua senha" required>
+                            <input type="password" id="loginPassword" placeholder="Sua senha" autocomplete="current-password" required>
                             <i class="fa-regular fa-eye toggle-password" data-target="loginPassword"></i>
                         </div>
                     </div>
@@ -61,12 +84,18 @@
                         <i class="fa-solid fa-shield-halved"></i> Acesso Administrativo
                     </a>
                 </div>
+
+                <div class="login-trust" aria-label="Compromissos da plataforma">
+                    <span><i class="fa-solid fa-lock"></i> Seus dados protegidos</span>
+                    <span><i class="fa-solid fa-comments"></i> Comunidade respeitosa</span>
+                </div>
             </div>
 
             <div class="form-box" id="registerCard" style="display: none;">
                 <div class="form-header">
-                    <h1>Criar conta.</h1>
-                    <p class="subtitle">Junte-se à nossa comunidade acolhedora.</p>
+                    <span class="form-eyebrow">JUNTE-SE A NÓS</span>
+                    <h1>Crie seu espaço.</h1>
+                    <p class="subtitle">Uma comunidade feita para acolher diferentes formas de estar no mundo.</p>
                 </div>
                 
                 <form id="registerForm">
@@ -89,7 +118,7 @@
                     <div class="input-group">
                         <label for="regPassword"><i class="fa-solid fa-lock"></i> Senha</label>
                         <div class="password-wrapper">
-                            <input type="password" id="regPassword" placeholder="Crie uma senha" required>
+                            <input type="password" id="regPassword" placeholder="Crie uma senha" autocomplete="new-password" required>
                             <i class="fa-regular fa-eye toggle-password" data-target="regPassword"></i>
                         </div>
                     </div>
@@ -97,10 +126,15 @@
                     <div class="input-group">
                         <label for="regConfirmPassword"><i class="fa-solid fa-lock"></i> Confirmar</label>
                         <div class="password-wrapper">
-                            <input type="password" id="regConfirmPassword" placeholder="Confirme sua senha" required>
+                            <input type="password" id="regConfirmPassword" placeholder="Confirme sua senha" autocomplete="new-password" required>
                             <i class="fa-regular fa-eye toggle-password" data-target="regConfirmPassword"></i>
                         </div>
                     </div>
+
+                    <label class="terms-row" for="termsCheck">
+                        <input type="checkbox" id="termsCheck" required>
+                        <span>Li e concordo com os <a href="#">Termos de Uso</a> e a política de privacidade.</span>
+                    </label>
 
                     <button type="submit" class="btn-login">Criar conta</button>
                 </form>
@@ -113,9 +147,10 @@
             <div class="form-box" id="adminCard" style="display: none;">
                 <div class="form-header">
                     <div class="admin-badge">
-                        <i class="fa-solid fa-shield-halved"></i> Painel Restrito
+                        <i class="fa-solid fa-shield-halved"></i> PAINEL RESTRITO
                     </div>
-                    <h1>Acesso Admin.</h1>
+                    <h1>Acesso administrativo.</h1>
+                    <p class="subtitle">Área reservada para a equipe da comunidade.</p>
                 </div>
                 
                 <form id="adminForm">
@@ -143,23 +178,55 @@
             </div>
         </section>
 
-        <section class="illustration-section">
-            <div class="illustration-overlay">
-                <img src="/img/logo-LHN9gCw1.png" alt="Logo Amor NeuroDivergente" class="side-giant-logo">
-
-                <div class="illustration-content">
-                    <h2>Amor NeuroDivergente</h2>
-                    <p>Um espaço seguro, previsível e acolhedor para mentes singulares.</p>
-                    <div class="illustration-features">
-                        <span><i class="fa-solid fa-heart"></i> Acolhimento</span>
-                        <span><i class="fa-solid fa-brain"></i> Neurodiversidade</span>
-                        <span><i class="fa-solid fa-people-group"></i> Comunidade</span>
-                    </div>
+        <section class="illustration-section" aria-label="Um espaço acolhedor para a comunidade">
+            <div class="visual-stage">
+                <div class="visual-orb visual-orb-one"></div>
+                <div class="visual-orb visual-orb-two"></div>
+                <div class="visual-photo-frame">
+                    <img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa lendo e escrevendo em um ambiente tranquilo" class="visual-photo">
+                    <div class="visual-photo-caption"><i class="fa-solid fa-sparkles"></i> Um momento só seu</div>
+                </div>
+                <div class="visual-floating-card visual-floating-card-top">
+                    <span class="floating-icon"><i class="fa-solid fa-heart"></i></span>
+                    <span><strong>Você pode ser você.</strong><small>Sem julgamentos aqui.</small></span>
+                </div>
+                <div class="visual-floating-card visual-floating-card-bottom">
+                    <span class="floating-avatars"><i class="fa-solid fa-circle"></i><i class="fa-solid fa-circle"></i><i class="fa-solid fa-circle"></i></span>
+                    <span><strong>+2 mil pessoas</strong><small>encontrando seu espaço</small></span>
+                </div>
+                <div class="visual-note"><i class="fa-solid fa-quote-left"></i><span>Todo mundo tem um jeito próprio de aprender e de pertencer.</span></div>
+            </div>
+            <div class="illustration-content">
+                <span class="visual-eyebrow">BEM-VINDO DE VOLTA</span>
+                <h2>Um lugar para encontrar seu ritmo.</h2>
+                <p>Experiências, conversas e recursos para uma comunidade mais acolhedora e diferente.</p>
+                <div class="illustration-features">
+                    <span><i class="fa-solid fa-heart"></i> Acolhimento</span>
+                    <span><i class="fa-solid fa-brain"></i> Neurodiversidade</span>
+                    <span><i class="fa-solid fa-people-group"></i> Comunidade</span>
                 </div>
             </div>
         </section>
+        </main>
 
     </div>
+<!-- Modal de acesso opcional: o conteúdo público não exige login -->
+<div class="optional-login-modal" id="optionalLoginModal" hidden>
+    <div class="optional-login-dialog" role="dialog" aria-modal="true" aria-labelledby="optionalLoginTitle" aria-describedby="optionalLoginDescription">
+        <button class="optional-login-close" id="closeOptionalLogin" type="button" aria-label="Fechar aviso"><i class="fa-solid fa-xmark"></i></button>
+        <div class="optional-login-icon"><i class="fa-solid fa-lock-open"></i></div>
+        <span class="form-eyebrow">ACESSO OPCIONAL</span>
+        <h2 id="optionalLoginTitle">Você não precisa fazer login.</h2>
+        <p id="optionalLoginDescription">Todo o conteúdo é aberto e gratuito. A conta é só para comentar, publicar e conversar com a comunidade.</p>
+        <div class="optional-login-note"><i class="fa-solid fa-heart"></i><span>Explore com calma. Você escolhe quando quer entrar.</span></div>
+        <div class="optional-login-actions">
+            <a class="btn-login" href="/inicio.html"><i class="fa-solid fa-compass"></i> Explorar sem login</a>
+            <button class="optional-login-secondary" id="continueWithLogin" type="button"><i class="fa-solid fa-arrow-right"></i> Fazer login mesmo assim</button>
+        </div>
+        <small class="optional-login-footnote">Você pode fechar esta janela quando quiser.</small>
+    </div>
+</div>
+
 <!-- ================= MODAL ESQUECI SENHA ================= -->
 <div id="forgotModal" class="modal-overlay" style="display:none;">
     <div class="modal-box">
@@ -203,6 +270,7 @@
     <script>
         window.supabaseClient = supabase.createClient('https://qyixzontuhrxrrjrmzvy.supabase.co', 'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE');
     </script>
+    <script src="/landing.js"></script>
     <script src="login.js"></script>
 </body>
 </html>

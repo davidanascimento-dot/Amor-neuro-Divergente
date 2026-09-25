@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redefinir senha — Amor NeuroDivergente</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="login.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,9 +14,17 @@
         .reset-wrapper { width: 100%; max-width: 460px; padding: 20px; }
     </style>
 </head>
-<body>
+<body class="reset-page">
 
     <div class="reset-wrapper">
+        <div class="reset-topbar">
+            <a class="login-brand" href="/inicio.html" aria-label="Voltar para a Amor NeuroDivergente">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+                <span>Amor NeuroDivergente</span>
+            </a>
+            <a class="btn-back-site" href="/login/login.html"><i class="fa-solid fa-arrow-left"></i> Voltar para o login</a>
+        </div>
+
         <div class="form-box" id="resetCard">
             <div class="form-header">
                 <h1>Nova senha.</h1>
@@ -48,7 +56,7 @@
             </form>
 
             <div class="register-link">
-                <a href="/login.html">← Voltar ao login</a>
+                <a href="/login/login.html">← Voltar ao login</a>
             </div>
         </div>
 
@@ -65,13 +73,13 @@
                 <p class="subtitle">Este link expirou ou já foi usado. Solicite outro.</p>
             </div>
             <div class="register-link">
-                <a href="/login.html">← Voltar ao login</a>
+                <a href="/login/login.html">← Voltar ao login</a>
             </div>
         </div>
     </div>
 
     <script>
-        const supabase = supabase.createClient(
+        const supabaseClient = supabase.createClient(
             'https://qyixzontuhrxrrjrmzvy.supabase.co',
             'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
         );
@@ -122,7 +130,7 @@
         // O Supabase entrega o token no hash da URL (#access_token=...&type=recovery)
         // O SDK processa isso automaticamente quando a página carrega.
         // Escutamos o evento PASSWORD_RECOVERY para confirmar que é válido.
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if (event === 'PASSWORD_RECOVERY') {
                 loadingCard.style.display = 'none';
                 resetCard.style.display = 'block';
@@ -132,7 +140,7 @@
         // Fallback: se após 2s nada aconteceu, decide se mostra form ou erro
         setTimeout(async () => {
             if (resetCard.style.display === 'block') return;
-            const { data } = await supabase.auth.getSession();
+            const { data } = await supabaseClient.auth.getSession();
             if (data.session) {
                 loadingCard.style.display = 'none';
                 resetCard.style.display = 'block';
@@ -159,16 +167,16 @@
 
             showToast('Salvando...', 'info');
 
-            const { error } = await supabase.auth.updateUser({ password: pwd });
+            const { error } = await supabaseClient.auth.updateUser({ password: pwd });
 
             if (error) {
                 console.error(error);
                 showToast('Erro: ' + error.message, 'error');
             } else {
                 showToast('Senha alterada com sucesso!', 'success');
-                await supabase.auth.signOut();
+                await supabaseClient.auth.signOut();
                 setTimeout(() => {
-                    window.location.href = '/login.html';
+                    window.location.href = '/login/login.html';
                 }, 1500);
             }
         });
