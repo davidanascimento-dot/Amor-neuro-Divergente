@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         myGroupQuery: '',
         visibleGroups: 12,
         editingGroupId: null,
+        deletingGroupId: null,
         uploadedGroupMedia: { avatar: null, banner: null },
         removedGroupMedia: { avatar: false, banner: false },
         groupsRpcV2: false,
@@ -39,6 +40,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const $ = id => document.getElementById(id);
     const pageUrl = new URL(window.location.href);
+
+    // O tema é compartilhado por toda a comunidade (ver theme.js).
+    if (window.ComunidadeTheme) {
+        window.ComunidadeTheme.init();
+    } else {
+        console.warn('theme.js não carregou: o modo escuro ficará indisponível nesta página.');
+    }
 
     function escapeHtml(value) {
         if (value === null || value === undefined) return '';
@@ -1220,6 +1228,210 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    function isDefaultGroup(group) {
+        return group?.id === CHAT_DEFAULT || String(group?.name || '').trim().toLowerCase() === 'geral';
+    }
+
+    // Exclusão é irreversível: fica apenas com quem criou a comunidade.
+    // No servidor a RPC também aceita administradores do grupo e a moderação.
+    function canDeleteGroup(group) {
+        return Boolean(group) && group.is_owner === true && !isDefaultGroup(group);
+    }
+
+    function storagePathFromUrl(url, userId) {
+        if (!url || !userId) return null;
+        const marker = '/storage/v1/object/public/';
+        const index = String(url).indexOf(marker);
+        if (index === -1) return null;
+        const [filePath] = String(url).slice(index + marker.length).split('?');
+        const parts = filePath.split('/').filter(Boolean);
+        if (parts.length < 4 || parts[0] !== 'groups' || parts[1] !== userId) return null;
+        return parts.join('/');
+    }
+
+    async function removeGroupMediaFiles(group) {
+        const urls = [group?.banner_url, group?.image_url, group?.avatar_url].filter(Boolean);
+        for (const url of urls) {
+            const path = storagePathFromUrl(url, state.user?.id);
+            if (!path) continue;
+            for (const bucket of GROUP_IMAGE_BUCKETS) {
+                try {
+                    await supabase.storage.from(bucket).remove([path]);
+                } catch (error) {
+                    console.warn('Não foi possível remover a imagem do grupo:', error);
+                }
+            }
+        }
+    }
+
+    async function deleteGroupWithCleanup(group) {
+        // A linha do grupo vem primeiro: se a política de RLS negar, nada é apagado pela metade.
+        const removed = await supabase.from('groups').delete().eq('id', group.id).select('id');
+        if (removed.error) throw removed.error;
+        if (!removed.data?.length) {
+            throw new Error('A exclusão depende da migração 10_delete_group.sql. Execute-a no Supabase e tente de novo.');
+        }
+        // conversas, mensagens e memberships não têm FK para groups.
+        const steps = [
+            ['messages', query => query.delete().eq('conversation_id', group.id)],
+            ['conversation_participants', query => query.delete().eq('conversation_id', group.id)],
+            ['conversations', query => query.delete().eq('id', group.id)],
+            ['group_members', query => query.delete().eq('group_id', group.id)],
+            ['group_invites', query => query.delete().eq('group_id', group.id)]
+        ];
+        for (const [table, apply] of steps) {
+            try {
+                const { error } = await apply(supabase.from(table));
+                if (error) console.warn(`Falha ao limpar ${table}:`, error.message);
+            } catch (error) {
+                console.warn(`Falha ao limpar ${table}:`, error);
+            }
+        }
+    }
+
+    async function deleteGroup(group) {
+        if (!state.user?.id) {
+            showToast('Faça login para excluir a comunidade.', 'warning');
+            return false;
+        }
+        if (!canDeleteGroup(group)) {
+            showToast('Apenas o criador da comunidade pode excluí-la.', 'warning');
+            return false;
+        }
+
+        let result = await safeRpc('delete_group', { p_group_id: group.id });
+        if (result.error && !isMissingRpcError(result.error)) throw result.error;
+        if (!result.error && result.data?.success === false) throw new Error(result.data.error || 'Não foi possível excluir a comunidade.');
+
+        if (result.error) {
+            // Schema anterior à migração 10: tenta a rota da moderação e depois a limpeza direta.
+            result = await safeRpc('admin_delete_group', { p_group_id: group.id });
+            if (!result.error && result.data?.success === false) {
+                result = { error: new Error(result.data?.error || 'A moderação não conseguiu excluir a comunidade.') };
+            }
+            if (result.error) await deleteGroupWithCleanup(group);
+        }
+
+        state.groups = state.groups.filter(item => item.id !== group.id);
+        await removeGroupMediaFiles(group);
+        return true;
+    }
+
+    function ensureDeleteGroupPanel() {
+        let panel = $('groupDeletePanel');
+        if (panel) return panel;
+        panel = document.createElement('section');
+        panel.id = 'groupDeletePanel';
+        panel.className = 'group-delete-panel';
+        panel.hidden = true;
+        panel.setAttribute('role', 'region');
+        panel.setAttribute('aria-labelledby', 'groupDeleteTitle');
+        panel.innerHTML = `
+            <div class="group-delete-header">
+                <div>
+                    <span class="groups-kicker">AÇÃO IRREVERSÍVEL</span>
+                    <h2 id="groupDeleteTitle">Excluir comunidade</h2>
+                </div>
+                <button class="group-editor-close" id="closeGroupDeletePanel" type="button" aria-label="Fechar confirmação"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="group-delete-warning"><i class="fa-solid fa-triangle-exclamation"></i><span id="groupDeleteMessage">Esta ação não pode ser desfeita.</span></p>
+            <ul class="group-delete-list">
+                <li>Publicações, conversas e mensagens da comunidade</li>
+                <li>Convites por código e a lista de membros</li>
+                <li>O banner e a foto da comunidade</li>
+            </ul>
+            <form class="group-delete-form" id="groupDeleteForm">
+                <label class="group-delete-confirm-label" for="groupDeleteConfirmInput">
+                    <span id="groupDeleteConfirmLabel">Digite o nome da comunidade para confirmar</span>
+                    <input id="groupDeleteConfirmInput" type="text" autocomplete="off" placeholder="Nome da comunidade" maxlength="50">
+                </label>
+                <div class="group-delete-actions">
+                    <button class="cv-secondary" id="cancelGroupDelete" type="button">Cancelar</button>
+                    <button class="cv-danger" id="confirmGroupDelete" type="submit" disabled><i class="fa-solid fa-trash-can"></i> Excluir definitivamente</button>
+                </div>
+            </form>`;
+        const host = document.querySelector('.groups-page-main, .channel-page-main, .community-page-main, main') || document.body;
+        host.appendChild(panel);
+        $('closeGroupDeletePanel')?.addEventListener('click', closeDeleteGroupPanel);
+        $('cancelGroupDelete')?.addEventListener('click', closeDeleteGroupPanel);
+        $('groupDeleteConfirmInput')?.addEventListener('input', syncDeleteGroupConfirm);
+        $('groupDeleteForm')?.addEventListener('submit', confirmDeleteGroup);
+        return panel;
+    }
+
+    function syncDeleteGroupConfirm() {
+        const group = getGroup(state.deletingGroupId);
+        const typed = ($('groupDeleteConfirmInput')?.value || '').trim();
+        const matches = Boolean(group) && typed.toLowerCase() === String(group.name || '').trim().toLowerCase();
+        const button = $('confirmGroupDelete');
+        if (button) button.disabled = !matches;
+    }
+
+    function openDeleteGroupPanel(group) {
+        if (!state.user?.id) {
+            showToast('Faça login para excluir a comunidade.', 'warning');
+            return;
+        }
+        if (!canDeleteGroup(group)) {
+            showToast('Apenas o criador da comunidade pode excluí-la.', 'warning');
+            return;
+        }
+        const panel = ensureDeleteGroupPanel();
+        state.deletingGroupId = group.id;
+        const memberCount = Number(group.members || 0);
+        $('groupDeleteMessage').textContent = `“${group.name}” será excluída para sempre, junto com ${memberCount} ${memberCount === 1 ? 'membro' : 'membros'} e todo o conteúdo da comunidade.`;
+        $('groupDeleteConfirmLabel').textContent = `Digite “${group.name}” para confirmar`;
+        $('groupDeleteConfirmInput').value = '';
+        $('confirmGroupDelete').disabled = true;
+        panel.hidden = false;
+        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        $('groupDeleteConfirmInput')?.focus();
+    }
+
+    function closeDeleteGroupPanel() {
+        state.deletingGroupId = null;
+        const panel = $('groupDeletePanel');
+        if (panel) panel.hidden = true;
+    }
+
+    async function confirmDeleteGroup(event) {
+        event.preventDefault();
+        const group = getGroup(state.deletingGroupId);
+        if (!group) {
+            closeDeleteGroupPanel();
+            showToast('Comunidade não encontrada.', 'error');
+            return;
+        }
+        const typed = ($('groupDeleteConfirmInput')?.value || '').trim();
+        if (typed.toLowerCase() !== String(group.name || '').trim().toLowerCase()) {
+            showToast('Digite exatamente o nome da comunidade para confirmar.', 'warning');
+            return;
+        }
+
+        const button = $('confirmGroupDelete');
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...';
+        }
+        try {
+            const name = group.name;
+            await deleteGroup(group);
+            closeDeleteGroupPanel();
+            showToast(`A comunidade “${name}” foi excluída.`, 'success');
+            if (page === 'channel' || page === 'community') {
+                window.location.href = '/comunidade/meus-grupos.html';
+                return;
+            }
+            renderMyGroups();
+            renderExploreGroups();
+        } catch (error) {
+            console.error('Erro ao excluir a comunidade:', error);
+            showToast(error.message || 'Não foi possível excluir a comunidade.', 'error');
+            syncDeleteGroupConfirm();
+            if (button) button.innerHTML = '<i class="fa-solid fa-trash-can"></i> Excluir definitivamente';
+        }
+    }
+
     async function joinChannelFromDetails(group) {
         if (!state.user?.id) {
             showToast('Faça login para entrar na comunidade.', 'warning');
@@ -1268,9 +1480,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         $('copyChannelInvite').hidden = !canManage;
         $('editChannelButton').hidden = !canManage;
         $('editChannelButton').href = `/comunidade/meus-grupos.html?editar=${encodeURIComponent(group.id)}`;
+        $('deleteChannelButton') && ($('deleteChannelButton').hidden = !canDeleteGroup(group));
         $('joinChannelButton')?.addEventListener('click', () => joinChannelFromDetails(group));
         $('copyChannelInvite')?.addEventListener('click', () => copyChannelInvite(group));
         $('leaveChannelButton')?.addEventListener('click', () => leaveChannel(group));
+        $('deleteChannelButton')?.addEventListener('click', () => openDeleteGroupPanel(group));
         await loadChannelMembers(group);
     }
 
@@ -1289,20 +1503,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         const canManage = group.is_owner === true || group.is_admin === true;
         const category = categoryLabel(group.category);
         const privacyLabel = group.is_private ? 'Privada' : 'Pública';
-        const manageBadge = canManage ? '<span class="explore-card-owner"><i class="fa-solid fa-star"></i> Criador</span>' : '';
+        const memberCount = Number(group.members || 0);
+        const manageBadge = canManage
+            ? '<span class="explore-card-owner"><i class="fa-solid fa-star"></i> Criador</span>'
+            : `<span class="explore-card-joiners"><i class="fa-regular fa-users"></i> ${memberCount} ${memberCount === 1 ? 'pessoa entrou' : 'pessoas entraram'}</span>`;
         const primaryAction = isMember
-            ? `<a class="cv-secondary" href="${internalGroupUrl(group.id)}">Visitar</a>`
+            ? `<a class="explore-card-action-main" href="${internalGroupUrl(group.id)}"><i class="fa-solid fa-arrow-right"></i> Visitar</a>`
             : group.is_private
-                ? '<span class="cv-ghost group-invite-hint"><i class="fa-solid fa-lock"></i> Convite necessário</span>'
-                : `<button class="cv-primary" type="button" data-join-group="${escapeHtml(group.id)}">Unir-se</button>`;
+                ? '<span class="explore-card-action-hint"><i class="fa-solid fa-lock"></i> Convite necessário</span>'
+                : `<button class="explore-card-action-main is-join" type="button" data-join-group="${escapeHtml(group.id)}"><i class="fa-solid fa-right-to-bracket"></i> Unir-se</button>`;
         const chatAction = isMember
-            ? `<a class="cv-secondary" href="${channelUrl({ id: group.id, name })}" aria-label="Abrir conversa de ${escapeHtml(name)}"><i class="fa-regular fa-comments"></i></a>`
+            ? `<a class="explore-card-action-icon" href="${channelUrl({ id: group.id, name })}" aria-label="Abrir conversa de ${escapeHtml(name)}"><i class="fa-regular fa-comments"></i></a>`
             : '';
         const inviteAction = canManage && group.is_private
-            ? `<a class="cv-secondary" href="${groupUrl(group.id)}" aria-label="Ver código de ${escapeHtml(name)}"><i class="fa-solid fa-key"></i></a>`
+            ? `<a class="explore-card-action-icon" href="${groupUrl(group.id)}" aria-label="Ver código de ${escapeHtml(name)}"><i class="fa-solid fa-key"></i></a>`
             : '';
         const editAction = canManage
-            ? `<button class="cv-secondary" type="button" data-edit-group="${escapeHtml(group.id)}" aria-label="Editar ${escapeHtml(name)}"><i class="fa-solid fa-pen"></i></button>`
+            ? `<button class="explore-card-action-edit" type="button" data-edit-group="${escapeHtml(group.id)}" aria-label="Editar ${escapeHtml(name)}">editar</button>`
+            : '';
+        const deleteAction = canDeleteGroup(group)
+            ? `<button class="explore-card-delete" type="button" data-delete-group="${escapeHtml(group.id)}" aria-label="Excluir ${escapeHtml(name)}" title="Excluir comunidade"><i class="fa-solid fa-trash-can"></i></button>`
             : '';
 
         return `<article class="explore-card${mine ? ' my-group-card' : ''}" data-group-id="${escapeHtml(group.id)}">
@@ -1310,13 +1530,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ${banner ? `<img src="${escapeHtml(banner)}" alt="Banner de ${escapeHtml(name)}" loading="lazy">` : ''}
                 <span class="explore-card-avatar">${avatar ? `<img src="${escapeHtml(avatar)}" alt="Foto de ${escapeHtml(name)}">` : escapeHtml(initial(name))}</span>
                 <span class="explore-card-privacy ${group.is_private ? 'is-private' : 'is-public'}"><i class="fa-solid ${group.is_private ? 'fa-lock' : 'fa-globe'}"></i> ${privacyLabel}</span>
+                ${deleteAction}
             </div>
             <div class="explore-card-body">
-                <div class="explore-card-title-row"><h3><a href="${internalGroupUrl(group.id)}">${escapeHtml(name)}</a></h3>${manageBadge}</div>
-                <span class="explore-card-category"># ${escapeHtml(category)}</span>
+                <div class="explore-card-title-row">
+                    <h3><a href="${internalGroupUrl(group.id)}">${escapeHtml(name)}</a></h3>
+                    ${manageBadge}
+                </div>
                 <p class="explore-card-description">${escapeHtml(group.description || 'Um espaço para compartilhar experiências e encontrar apoio.')}</p>
-                <span class="explore-card-meta"><i class="fa-regular fa-users"></i> ${Number(group.members || 0)} membros</span>
-                <div class="explore-card-actions">${primaryAction}${chatAction}${inviteAction}${editAction}</div>
+                <div class="explore-card-meta">
+                    <span class="explore-card-members"><i class="fa-regular fa-users"></i> ${memberCount} ${memberCount === 1 ? 'Membro' : 'Membros'}</span>
+                    <span class="explore-card-category"># ${escapeHtml(category)}</span>
+                </div>
+                <div class="explore-card-actions">${primaryAction}${editAction}${chatAction}${inviteAction}</div>
             </div>
         </article>`;
     }
@@ -1522,6 +1748,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 joinGroupFromExplore(joinButton.dataset.joinGroup);
                 return;
             }
+            const deleteButton = event.target.closest('[data-delete-group]');
+            if (deleteButton) {
+                openDeleteGroupPanel(getGroup(deleteButton.dataset.deleteGroup));
+                return;
+            }
             const editButton = event.target.closest('[data-edit-group]');
             if (editButton) {
                 window.location.href = `/comunidade/meus-grupos.html?editar=${encodeURIComponent(editButton.dataset.editGroup)}`;
@@ -1540,6 +1771,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const joinButton = event.target.closest('[data-join-group]');
             if (joinButton) {
                 joinGroupFromExplore(joinButton.dataset.joinGroup);
+                return;
+            }
+            const deleteButton = event.target.closest('[data-delete-group]');
+            if (deleteButton) {
+                openDeleteGroupPanel(getGroup(deleteButton.dataset.deleteGroup));
                 return;
             }
             const editButton = event.target.closest('[data-edit-group]');
@@ -1634,6 +1870,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         });
         $('myGroupsGrid')?.addEventListener('click', event => {
+            const deleteButton = event.target.closest('[data-delete-group]');
+            if (deleteButton) {
+                openDeleteGroupPanel(getGroup(deleteButton.dataset.deleteGroup));
+                return;
+            }
             const editButton = event.target.closest('[data-edit-group]');
             if (editButton) {
                 openEditModal(editButton.dataset.editGroup);

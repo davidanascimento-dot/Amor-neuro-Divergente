@@ -2967,3 +2967,211 @@ body {
         display: none;
     }
 }
+/* ==========================================================================
+   BOTÃO DE TEMA NO HEADER
+   ========================================================================== */
+
+.header-theme-toggle {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 38px;
+    padding: 0;
+    border: 1px solid var(--cx-border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--cx-text-soft);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.header-theme-toggle:hover {
+    border-color: var(--cx-gold);
+    background: var(--cx-gold-bg);
+    color: var(--cx-gold);
+}
+
+/* ==========================================================================
+   MODO ESCURO — fórum, eventos, grupos e chat da comunidade
+   Mesma preferência do resto do site: theme.js aplica a11y-dark-mode
+   no <html> e no <body>, com a chave localStorage "a11y_darkMode".
+   ========================================================================== */
+
+html.a11y-dark-mode,
+body.a11y-dark-mode {
+    --primary: #a77ef0;
+    --primary-dark: #c9a9ff;
+    --primary-light: rgba(167, 126, 240, .2);
+    --gradient-main: linear-gradient(135deg, #7c4fd8, #b06ad8);
+
+    --bg-primary: #0f0f1a;
+    --bg-secondary: #16162a;
+    --bg-hover: #23233a;
+    --bg-card: #1a1a2e;
+    --border-color: #2f2f4a;
+    --text-primary: #f3eff8;
+    --text-secondary: #c7c0d8;
+    --text-muted: #948da6;
+
+    --cx-bg: #0f0f1a;
+    --cx-bg-soft: #1a1a2e;
+    --cx-border: #2f2f4a;
+    --cx-border-soft: #26263d;
+    --cx-text: #f3eff8;
+    --cx-text-soft: #c7c0d8;
+    --cx-muted: #948da6;
+    --cx-muted-soft: #6f6884;
+    --cx-gold: #dcb87c;
+    --cx-gold-soft: #3b3423;
+    --cx-gold-bg: #241f16;
+
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    --shadow-hover: 0 10px 34px rgba(0, 0, 0, .5);
+    color-scheme: dark;
+}
+
+body.a11y-dark-mode {
+    background: var(--cx-bg);
+    color: var(--cx-text);
+}
+
+body.a11y-dark-mode .header-glass {
+    border-bottom: 1px solid rgba(47, 47, 74, .9);
+    background: rgba(20, 20, 38, .92);
+}
+
+body.a11y-dark-mode .community-subnav {
+    border-bottom: 1px solid var(--cx-border);
+    background: rgba(20, 20, 38, .92);
+}
+
+body.a11y-dark-mode .subnav-tab:hover {
+    background: var(--bg-hover);
+    color: var(--cx-gold);
+}
+
+body.a11y-dark-mode .subnav-tab.active {
+    background: #3a2f5c;
+    color: #fff;
+}
+
+body.a11y-dark-mode .btn-voltar-site:hover {
+    background: var(--cx-gold-bg);
+}
+
+/* Botões e avatares que usam a cor de texto como fundo sólido */
+body.a11y-dark-mode .btn-create-post,
+body.a11y-dark-mode .btn-quick-post,
+body.a11y-dark-mode .add-comment button,
+body.a11y-dark-mode .group-card-actions .btn-join,
+body.a11y-dark-mode .chat-send-btn,
+body.a11y-dark-mode .btn-submit,
+body.a11y-dark-mode .x-btn-primary,
+body.a11y-dark-mode .floating-hub-toggle,
+body.a11y-dark-mode .btn-add-friend.add,
+body.a11y-dark-mode .btn-add-to-group,
+body.a11y-dark-mode .btn-invite-action,
+body.a11y-dark-mode .btn-chat-friend {
+    background: #6d3bd1;
+    color: #fff;
+}
+
+body.a11y-dark-mode .btn-create-post:hover,
+body.a11y-dark-mode .btn-quick-post:hover,
+body.a11y-dark-mode .chat-send-btn:hover,
+body.a11y-dark-mode .btn-submit:hover,
+body.a11y-dark-mode .x-btn-primary:hover {
+    background: #8a63e0;
+}
+
+body.a11y-dark-mode .btn-saiba-mais:hover {
+    background: #2b2442;
+}
+
+body.a11y-dark-mode .add-comment button:hover {
+    background: #000;
+}
+
+body.a11y-dark-mode .chat-message.sent .msg-content {
+    background: #4a3a72;
+    color: #f3eff8;
+}
+
+body.a11y-dark-mode .chat-message.received .msg-content {
+    background: #23233a;
+}
+
+body.a11y-dark-mode .post-menu-dropdown {
+    border-color: var(--cx-border);
+    background: #23233a;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, .55);
+}
+
+body.a11y-dark-mode .post-menu-item {
+    color: var(--cx-text);
+}
+
+body.a11y-dark-mode .post-menu-item i {
+    color: var(--cx-muted);
+}
+
+body.a11y-dark-mode .post-menu-item:hover {
+    background: var(--bg-hover);
+}
+
+body.a11y-dark-mode .post-author-fallback,
+body.a11y-dark-mode .friend-avatar-fallback,
+body.a11y-dark-mode .msg-avatar,
+body.a11y-dark-mode .channel-icon {
+    color: #f3eff8;
+}
+
+body.a11y-dark-mode .action-btn.liked {
+    border-color: #7f1d1d;
+    background: #2a1618;
+    color: #ff9d9d;
+}
+
+body.a11y-dark-mode .group-card-actions .btn-leave:hover {
+    border-color: #7f1d1d;
+    background: #2a1618;
+    color: #ff9d9d;
+}
+
+body.a11y-dark-mode .event-join-btn.confirmed {
+    border-color: #14532d;
+    background: #12251a;
+    color: #86efac;
+}
+
+body.a11y-dark-mode .modal-container,
+body.a11y-dark-mode .x-modal,
+body.a11y-dark-mode .floating-hub-menu {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+}
+
+body.a11y-dark-mode .modal-overlay,
+body.a11y-dark-mode .floating-overlay {
+    background: rgba(8, 8, 16, .72);
+}
+
+body.a11y-dark-mode .hub-action:hover {
+    background: var(--bg-hover);
+    color: var(--cx-text);
+}
+
+body.a11y-dark-mode .post-card:hover,
+body.a11y-dark-mode .group-card:hover,
+body.a11y-dark-mode .event-card:hover,
+body.a11y-dark-mode .friend-item:hover,
+body.a11y-dark-mode .channel-item:hover {
+    background: var(--bg-hover);
+}
+
+body.a11y-dark-mode .timeline-avatar,
+body.a11y-dark-mode .msg-avatar,
+body.a11y-dark-mode .post-author-avatar-wrapper {
+    border-color: var(--cx-bg-soft);
+}

@@ -1033,6 +1033,34 @@ subnavTabs.forEach(tab => {
         switchTab(tab.dataset.tab);
     });
 });
+
+// A segunda nav das páginas de grupos aponta para #forum e #eventos:
+// as telas já são renderizadas no boot, aqui só marcamos a aba correta.
+const HASH_TABS = ['forum', 'grupos', 'eventos', 'conversa'];
+
+function showHashTab() {
+    const tabId = String(window.location.hash || '').replace('#', '').toLowerCase();
+    if (!HASH_TABS.includes(tabId)) return;
+    if (tabId === 'grupos') {
+        window.location.href = '/comunidade/explorar-grupos.html';
+        return;
+    }
+    if (tabId === 'conversa') {
+        window.location.href = '/comunidade/conversas.html';
+        return;
+    }
+    subnavTabs.forEach(tab => {
+        const isActive = tab.dataset.tab === tabId;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', String(isActive));
+    });
+    communityScreens.forEach(screen => {
+        screen.classList.toggle('active', screen.id === `screen-${tabId}`);
+    });
+}
+
+showHashTab();
+window.addEventListener('hashchange', showHashTab);
    
 // =============================================
 // loadAndShowComments - VERSÃO DEFINITIVA

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="conversas.css">
+    <script src="theme.js"></script>
 </head>
 <body class="groups-page" data-page="groups">
     <header class="conversas-header">
@@ -19,11 +20,24 @@
             <span>Amor NeuroDivergente</span>
         </a>
         <span class="conversas-header-spacer"></span>
+        <button class="conversas-header-action theme-toggle" type="button" data-a11y="darkMode" aria-pressed="false" aria-label="Ativar modo escuro" title="Ativar modo escuro"><i class="fa-regular fa-moon"></i></button>
         <a class="conversas-back" href="/comunidade/comunidade.html"><i class="fa-solid fa-arrow-left"></i><span>Voltar à comunidade</span></a>
         <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
             <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
         </a>
     </header>
+
+    <!-- ============================================
+         NAV SECUNDÁRIA — Fórum / Grupos / Eventos / Conversa
+         ============================================ -->
+    <nav class="community-subnav" aria-label="Seções da comunidade">
+        <div class="community-subnav-inner">
+            <a class="subnav-tab" href="/comunidade/comunidade.html#forum"><i class="fa-regular fa-message"></i><span>Fórum</span></a>
+            <a class="subnav-tab active" href="/comunidade/explorar-grupos.html" aria-current="page"><i class="fa-solid fa-users"></i><span>Grupos</span></a>
+            <a class="subnav-tab" href="/comunidade/comunidade.html#eventos"><i class="fa-regular fa-calendar"></i><span>Eventos</span></a>
+            <a class="subnav-tab" href="/comunidade/conversas.html"><i class="fa-regular fa-comment-dots"></i><span>Conversa</span></a>
+        </div>
+    </nav>
 
     <main class="groups-page-main group-explorer-main">
         <div class="page-heading">

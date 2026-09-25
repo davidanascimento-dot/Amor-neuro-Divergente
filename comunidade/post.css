@@ -874,3 +874,40 @@
         transition: none;
     }
 }
+
+/* ==========================================================================
+   MODO ESCURO — publicação e comentários
+   ========================================================================== */
+
+body.a11y-dark-mode .post-detail-body {
+    --cx-muted: #948da6;
+    --cx-gold: #dcb87c;
+    background:
+        radial-gradient(circle at 15% 0%, rgba(184, 147, 90, .1), transparent 28rem),
+        var(--cx-bg);
+    color: var(--cx-text);
+}
+
+body.a11y-dark-mode .post-error-state,
+body.a11y-dark-mode .conversation-card,
+body.a11y-dark-mode .post-detail-action,
+body.a11y-dark-mode .comment-search:focus-within,
+body.a11y-dark-mode .inline-reply-form textarea,
+body.a11y-dark-mode .inline-reply-form textarea:focus,
+body.a11y-dark-mode .post-noscript {
+    border-color: var(--cx-border);
+    background: var(--cx-bg-soft);
+    color: var(--cx-text);
+}
+
+body.a11y-dark-mode .post-detail-action.is-liked {
+    border-color: #7f1d1d;
+    background: #2a1618;
+    color: #ff9d9d;
+}
+
+body.a11y-dark-mode .comment-login-prompt {
+    border-color: #4a3a1c;
+    background: #241f16;
+    color: #e6cf9f;
+}

@@ -1252,3 +1252,55 @@
     text-align: center;
     font-style: italic;
 }
+/* ==========================================================================
+   MODO ESCURO — perfil
+   Tokens locais do .profile-page + superfícies que estavam fixas em branco.
+   ========================================================================== */
+
+body.a11y-dark-mode .profile-page {
+    --pf-bg: #1a1a2e;
+    --pf-bg-soft: #22223a;
+    --pf-bg-hover: #2b2b45;
+    --pf-border: #2f2f4a;
+    --pf-text: #f3eff8;
+    --pf-text-soft: #c7c0d8;
+    --pf-muted: #948da6;
+    --pf-gold: #dcb87c;
+    background: #0f0f1a;
+    color: var(--pf-text);
+}
+
+body.a11y-dark-mode .btn-hero-primary {
+    background: #6d3bd1;
+    color: #fff;
+}
+
+body.a11y-dark-mode .btn-hero-secondary,
+body.a11y-dark-mode .btn-hero-secondary:hover {
+    background: rgba(34, 34, 58, .92);
+    color: #f3eff8;
+}
+
+body.a11y-dark-mode .profile-about-card,
+body.a11y-dark-mode .profile-inner-tabs,
+body.a11y-dark-mode .user-post,
+body.a11y-dark-mode .empty-state,
+body.a11y-dark-mode .profile-stats-card,
+body.a11y-dark-mode .edit-modal {
+    border-color: var(--pf-border);
+    background: var(--pf-bg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .38);
+}
+
+body.a11y-dark-mode .edit-field textarea:focus,
+body.a11y-dark-mode .edit-field input:focus,
+body.a11y-dark-mode .comment-search:focus-within {
+    background: var(--pf-bg-soft);
+    border-color: var(--pf-gold);
+}
+
+body.a11y-dark-mode .suggestion-follow-button.is-following:hover:not(:disabled) {
+    border-color: #7f1d1d;
+    background: #2a1618;
+    color: #ff9d9d;
+}
