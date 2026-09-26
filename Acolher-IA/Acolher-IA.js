@@ -1,6 +1,6 @@
 /**
- * INICIO.JS — Apenas AcolherIA Modal
- * Chat com API Groq + Modal interativo
+ * Acolher-IA.js — Painel lateral (drawer) da AcolherIA
+ * Chat com API Groq + painel lateral à direita
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -211,44 +211,57 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     }
 
     // =============================================
-    // ABRIR E FECHAR O MODAL
+    // ABRIR E FECHAR O PAINEL LATERAL
     // =============================================
 
-    function openAcolheriaModal() {
-        if (acolheriaOverlay && acolheriaOverlayBg) {
-            acolheriaOverlay.hidden = false;
-            acolheriaOverlayBg.hidden = false;
-            document.body.style.overflow = 'hidden';
-            
-            // Limpa o chat anterior se estiver vazio, mas mantém a mensagem de boas-vindas
-            if (acolheriaChatBody && acolheriaChatBody.children.length === 0) {
-                addModalMessage(getModalWelcomeMessage(), false);
-            }
-            
-            setTimeout(() => {
-                if (acolheriaInput) acolheriaInput.focus();
-            }, 400);
+    function openAcolheriaPanel() {
+        if (!acolheriaOverlay) return;
+        const jaAberto = !acolheriaOverlay.hidden;
+
+        acolheriaOverlay.hidden = false;
+        if (acolheriaOverlayBg) acolheriaOverlayBg.hidden = false;
+        acolheriaOverlay.setAttribute('role', 'dialog');
+        acolheriaOverlay.setAttribute('aria-modal', 'false');
+        acolheriaOverlay.setAttribute('aria-label', 'Conversa com a AcolherIA');
+
+        // Limpa o chat anterior se estiver vazio, mas mantém a mensagem de boas-vindas
+        if (acolheriaChatBody && acolheriaChatBody.children.length === 0) {
+            addModalMessage(getModalWelcomeMessage(), false);
         }
+
+        if (jaAberto) return;
+
+        setTimeout(() => {
+            if (acolheriaInput) acolheriaInput.focus();
+        }, 320);
     }
 
-    function closeAcolheriaModal() {
-        if (acolheriaOverlay && acolheriaOverlayBg) {
-            acolheriaOverlay.hidden = true;
-            acolheriaOverlayBg.hidden = true;
-            document.body.style.overflow = '';
-            removeModalTyping();
-        }
+    function closeAcolheriaPanel() {
+        if (!acolheriaOverlay) return;
+        acolheriaOverlay.hidden = true;
+        if (acolheriaOverlayBg) acolheriaOverlayBg.hidden = true;
+        removeModalTyping();
     }
+
+    function isAcolheriaOpen() {
+        return Boolean(acolheriaOverlay && !acolheriaOverlay.hidden);
+    }
+
+    // Mantém os nomes antigos funcionando caso algum HTML use onclick inline.
+    window.openAcolheriaPanel = openAcolheriaPanel;
+    window.closeAcolheriaPanel = closeAcolheriaPanel;
+    window.openAcolheriaModal = openAcolheriaPanel;
+    window.closeAcolheriaModal = closeAcolheriaPanel;
 
     // =============================================
-    // EVENTOS - ABRIR O MODAL
+    // EVENTOS - ABRIR O PAINEL
     // =============================================
 
     // Sidebar
     document.querySelectorAll('.sidebar-link[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            openAcolheriaModal();
+            openAcolheriaPanel();
         });
     });
 
@@ -256,7 +269,7 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     document.querySelectorAll('.header-links a[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            openAcolheriaModal();
+            openAcolheriaPanel();
         });
     });
 
@@ -264,33 +277,39 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     document.querySelectorAll('.hub-action[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            openAcolheriaModal();
+            openAcolheriaPanel();
         });
     });
 
-    // Deep link: a landing page pode abrir a AcolherIA diretamente.
-    if (window.location.hash === '#acolheria') {
-        setTimeout(openAcolheriaModal, 450);
+    // Deep link: a landing page e as configurações podem abrir direto.
+    const ACOLHERIA_HASHES = ['#acolheria', '#acolheriaoverlay'];
+
+    function hashTargetsAcolheria() {
+        return ACOLHERIA_HASHES.includes(String(window.location.hash || '').toLowerCase());
+    }
+
+    if (hashTargetsAcolheria()) {
+        setTimeout(openAcolheriaPanel, 450);
     }
     window.addEventListener('hashchange', () => {
-        if (window.location.hash === '#acolheria') openAcolheriaModal();
+        if (hashTargetsAcolheria()) openAcolheriaPanel();
     });
 
     // =============================================
-    // EVENTOS - FECHAR O MODAL
+    // EVENTOS - FECHAR O PAINEL
     // =============================================
 
     if (acolheriaClose) {
-        acolheriaClose.addEventListener('click', closeAcolheriaModal);
+        acolheriaClose.addEventListener('click', closeAcolheriaPanel);
     }
 
     if (acolheriaOverlayBg) {
-        acolheriaOverlayBg.addEventListener('click', closeAcolheriaModal);
+        acolheriaOverlayBg.addEventListener('click', closeAcolheriaPanel);
     }
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && acolheriaOverlay && !acolheriaOverlay.hidden) {
-            closeAcolheriaModal();
+        if (e.key === 'Escape' && isAcolheriaOpen()) {
+            closeAcolheriaPanel();
         }
     });
 
@@ -340,5 +359,5 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     `;
     document.head.appendChild(pulseStyle);
 
-    console.log('💬 AcolherIA Modal inicializada com API Groq!');
+    console.log('💬 AcolherIA painel lateral inicializada com API Groq!');
 });
