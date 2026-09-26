@@ -866,8 +866,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!groupId) throw new Error('A comunidade foi salva sem um identificador válido.');
             let inviteCode = result.data?.invite_code || null;
             if (isPrivate && !inviteCode) {
-                const inviteResult = await safeRpc('generate_group_invite', { p_group_id: groupId });
-                if (!inviteResult.error && inviteResult.data?.success) inviteCode = inviteResult.data.code;
+                const inviteResult = await generateGroupInviteCode(groupId);
+                if (inviteResult.success) inviteCode = inviteResult.code;
+                else console.warn('Comunidade privada sem código de convite:', inviteResult.error);
             }
 
             closeCreateModal();
@@ -1111,21 +1112,163 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderChannelMembers((profiles || []).map(profile => ({ ...profile, is_admin: profile.id === group.created_by })), group);
     }
 
-    async function copyChannelInvite(group) {
+    const INVITE_CODE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+    function randomInviteCode() {
+        return String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+    }
+
+    // Aceita "12345", "12 345", "12-345" e links antigos com ?code=12345.
+    function normalizeInviteCode(value) {
+        const raw = String(value || '').trim();
+        if (!raw) return '';
+        const fromLink = raw.match(/[?&](?:code|convite|codigo)=(\d{5})\b/i);
+        if (fromLink) return fromLink[1];
+        const digits = raw.replace(/\D/g, '');
+        return digits.length === 5 ? digits : '';
+    }
+
+    // Mesmo sistema de código do fórum: RPC primeiro, inserção direta em group_invites como reserva.
+    // Nunca devolve link — sempre um código numérico de 5 dígitos.
+    async function generateGroupInviteCode(groupId) {
+        if (!groupId) return { success: false, error: 'Comunidade sem identificador.' };
+
+        const rpcResult = await safeRpc('generate_group_invite', { p_group_id: groupId });
+        if (!rpcResult.error && rpcResult.data?.success && rpcResult.data.code) {
+            return rpcResult.data;
+        }
+        console.warn('RPC generate_group_invite indisponível, gerando código direto:',
+            rpcResult.error?.message || rpcResult.data?.error);
+
+        const userId = state.user?.id;
+        if (!userId) return { success: false, error: 'Faça login para gerar o código de convite.' };
+
+        const expiresAt = new Date(Date.now() + INVITE_CODE_TTL_MS).toISOString();
+
         try {
-            const { data, error } = await supabase.rpc('generate_group_invite', { p_group_id: group.id });
-            if (error || !data?.success) throw new Error(error?.message || 'Não foi possível gerar o convite.');
-            const copied = await copyText(data.code);
-            showToast(copied ? `Código ${data.code} copiado para a área de transferência.` : `Código do convite: ${data.code}`, 'success', copied ? 3600 : 6500);
+            // Reaproveita o código ativo antes de invalidar o anterior.
+            const { data: activeInvite, error: activeError } = await supabase
+                .from('group_invites')
+                .select('code, expires_at')
+                .eq('group_id', groupId)
+                .eq('active', true)
+                .gt('expires_at', new Date().toISOString())
+                .order('expires_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (!activeError && activeInvite?.code) {
+                return { success: true, code: activeInvite.code, expires_at: activeInvite.expires_at || expiresAt };
+            }
+
+            // Desativa os convites antigos e cria um novo com código livre.
+            await supabase.from('group_invites').update({ active: false }).eq('group_id', groupId);
+
+            for (let attempt = 0; attempt < 8; attempt += 1) {
+                const code = randomInviteCode();
+                const { error: insertError } = await supabase
+                    .from('group_invites')
+                    .insert({
+                        group_id: groupId,
+                        code,
+                        created_by: userId,
+                        active: true,
+                        expires_at: expiresAt
+                    });
+                if (!insertError) return { success: true, code, expires_at: expiresAt };
+                if (!/duplicate|unique/i.test(insertError.message || '')) {
+                    throw new Error(insertError.message);
+                }
+            }
+            throw new Error('Não foi possível gerar um código único.');
         } catch (error) {
-            console.warn('Convite não gerado:', error);
-            try {
-                await navigator.clipboard?.writeText(window.location.href);
-                showToast('Link do canal copiado.', 'success');
-            } catch (clipboardError) {
-                showToast('Não foi possível copiar o convite.', 'error');
+            console.error('Falha ao gerar o código de convite:', error);
+            return { success: false, error: 'Não foi possível gerar o código de convite no momento.' };
+        }
+    }
+
+    // Usa o código de 5 dígitos. group_members só libera INSERT via
+    // SECURITY DEFINER, então as duas RPCs são a única forma de entrar.
+    async function redeemGroupInviteCode(code) {
+        const attempts = state.groupsRpcV2
+            ? ['redeem_group_invite', 'use_invite_code']
+            : ['use_invite_code', 'redeem_group_invite'];
+        let lastMessage = 'Convite inválido ou expirado.';
+
+        for (const name of attempts) {
+            const result = await safeRpc(name, { p_code: code });
+            if (result.error) {
+                lastMessage = result.error;
+                continue;
+            }
+            if (result.data?.success) return result.data;
+            return { success: false, error: result.data?.error || lastMessage };
+        }
+
+        if (isMissingRpcError(lastMessage)) {
+            return {
+                success: false,
+                error: 'Função de convite não instalada no banco. Rode sql/11_invite_code_system.sql no Supabase e recarregue o schema.'
+            };
+        }
+        return { success: false, error: lastMessage?.message || 'Não foi possível usar este convite.' };
+    }
+
+    async function copyChannelInvite(group) {
+        if (!group?.id) {
+            showToast('Comunidade sem identificador válido.', 'error');
+            return;
+        }
+        const button = $('copyChannelInvite');
+        const originalHtml = button ? button.innerHTML : '';
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando...';
+        }
+        try {
+            const invite = await generateGroupInviteCode(group.id);
+            if (!invite?.success || !invite.code) {
+                throw new Error(invite?.error || 'Não foi possível gerar o código de convite.');
+            }
+            showChannelInviteCode(invite.code, group);
+            const copied = await copyText(invite.code);
+            showToast(
+                copied
+                    ? `Código ${invite.code} copiado para a área de transferência.`
+                    : `Código do convite: ${invite.code}`,
+                'success',
+                copied ? 3600 : 6500
+            );
+        } catch (error) {
+            console.warn('Código de convite não gerado:', error);
+            showToast(error.message || 'Não foi possível gerar o código de convite.', 'error', 5200);
+        } finally {
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalHtml;
             }
         }
+    }
+
+    function showChannelInviteCode(code, group) {
+        if (!code) return;
+        let panel = $('channelInviteCode');
+        if (!panel) {
+            panel = document.createElement('div');
+            panel.id = 'channelInviteCode';
+            panel.className = 'group-invite-result channel-invite-code';
+            const stats = $('channelMemberCount')?.closest('.channel-stats');
+            if (stats) stats.insertAdjacentElement('afterend', panel);
+            else $('channelDescription')?.insertAdjacentElement('afterend', panel);
+        }
+        const name = group?.name ? ` de ${escapeHtml(group.name)}` : '';
+        panel.innerHTML = `<i class="fa-solid fa-key"></i><span>Código de convite${name}: <strong>${escapeHtml(code)}</strong></span><button type="button" id="copyChannelInviteCode">Copiar código</button>`;
+        panel.hidden = false;
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        $('copyChannelInviteCode')?.addEventListener('click', async () => {
+            const copied = await copyText(code);
+            showToast(copied ? 'Código copiado.' : `Código: ${code}`, copied ? 'success' : 'info');
+        });
     }
 
     async function joinGroup(group) {
@@ -1798,26 +1941,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 showToast('Faça login para usar um código de convite.', 'warning');
                 return;
             }
-            const code = $('groupInviteCode')?.value.trim();
-            if (!code) return;
+            const input = $('groupInviteCode');
+            const code = normalizeInviteCode(input?.value);
+            if (!code) {
+                showToast('Digite o código de 5 dígitos da comunidade.', 'warning');
+                return;
+            }
+            if (input) input.value = code;
             const button = event.currentTarget.querySelector('button');
             if (button) button.disabled = true;
             try {
-                let result = state.groupsRpcV2
-                    ? await safeRpc('redeem_group_invite', { p_code: code })
-                    : { data: null, error: { message: 'Grupo V2 ainda não ativado.' } };
-                if (result.error && isMissingRpcError(result.error)) {
-                    result = await safeRpc('use_invite_code', { p_code: code });
-                }
-                if (result.error) throw result.error;
-                if (result.data?.success === false) throw new Error(result.data.error || 'Convite inválido ou expirado.');
+                const result = await redeemGroupInviteCode(code);
+                if (!result.success) throw new Error(result.error);
                 await getGroups();
                 renderMyGroups();
                 renderExploreGroups();
-                $('groupInviteCode').value = '';
-                showToast(`Você entrou em ${result.data?.group_name || 'uma nova comunidade'}.`, 'success');
+                if (input) input.value = '';
+                showToast(`Você entrou em ${result.group_name || 'uma nova comunidade'}.`, 'success');
             } catch (error) {
-                showToast(error.message || 'Não foi possível usar este convite.', 'error');
+                showToast(error.message || 'Não foi possível usar este convite.', 'error', isMissingRpcError(error) ? 8000 : 4800);
             } finally {
                 if (button) button.disabled = false;
             }

@@ -2890,6 +2890,23 @@ a {
     cursor: pointer;
 }
 
+.channel-invite-code[hidden] {
+    display: none;
+}
+
+.channel-invite-code strong {
+    display: inline-block;
+    padding: 3px 12px;
+    border: 1px dashed var(--cv-purple);
+    border-radius: 10px;
+    background: var(--cv-surface-soft);
+    font-family: 'Atkinson Hyperlegible', Consolas, monospace;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .3em;
+    text-indent: .3em;
+}
+
 .group-editor {
     margin: 22px 0 4px;
     padding: 22px 0 4px;

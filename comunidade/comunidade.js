@@ -762,171 +762,45 @@ async function apiCreatePrivateConversation(friendId) {
     }
 
    // =============================================
-// API USE INVITE CODE - CORRIGIDO
+// API USE INVITE CODE
 // =============================================
-async function apiUseInviteCode(code) {
-    // Tentar via RPC primeiro
-    const { data, error } = await supabase.rpc('use_invite_code', { p_code: code });
-    if (!error && data) {
-        return data;
+    // Aceita "12345", "12 345", "12-345" e links antigos com ?code=12345.
+    function normalizeInviteCode(value) {
+        const raw = String(value || '').trim();
+        if (!raw) return '';
+        const fromLink = raw.match(/[?&](?:code|convite|codigo)=(\d{5})\b/i);
+        if (fromLink) return fromLink[1];
+        const digits = raw.replace(/\D/g, '');
+        return digits.length === 5 ? digits : '';
     }
-    
-    console.warn('⚠️ RPC use_invite_code falhou, tentando fallback direto:', error?.message);
 
-    // FALLBACK: Utilizar convite diretamente via tabelas
-    try {
-        // 1. Buscar convite pelo código
-        const { data: invite, error: inviteErr } = await supabase
-            .from('group_invites')
-            .select('*, group_invites_uses(count)')
-            .eq('code', code)
-            .maybeSingle();
-
-        if (inviteErr) {
-            console.error('❌ Erro ao buscar convite:', inviteErr.message);
-            return { success: false, error: `Erro ao verificar código: ${inviteErr.message}` };
+    async function apiUseInviteCode(rawCode) {
+        const code = normalizeInviteCode(rawCode);
+        if (!code) {
+            return { success: false, error: 'Código de convite deve ter 5 dígitos numéricos.' };
         }
 
-        if (!invite) {
-            return { success: false, error: 'Código de convite não encontrado.' };
+        // group_members só permite INSERT via SECURITY DEFINER (RLS),
+        // então entrar no grupo depende destas RPCs. Se estiverem ausentes
+        // no banco, não existe caminho client-side: é preciso rodar
+        // sql/11_invite_code_system.sql no Supabase.
+        for (const rpcName of ['use_invite_code', 'redeem_group_invite']) {
+            const { data, error } = await supabase.rpc(rpcName, { p_code: code });
+            if (!error && data) {
+                if (data.success) return data;
+                return { success: false, error: data.error || 'Convite inválido ou expirado.' };
+            }
+            if (!/does not exist|not found|schema cache|failed to parse/i.test(error?.message || '')) {
+                return { success: false, error: error?.message || 'Não foi possível usar este convite.' };
+            }
+            console.warn(`⚠️ RPC ${rpcName} não encontrada, tentando a próxima...`);
         }
-
-        // ✅ Verificar se está ativo
-        if (invite.active === false) {
-            return { success: false, error: 'Este código de convite foi desativado.' };
-        }
-
-        // ✅ Verificar expiração
-        if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
-            return { success: false, error: 'Este código de convite já expirou.' };
-        }
-
-        // ✅ Verificar se já usou
-        const { data: existingUse, error: useErr } = await supabase
-            .from('group_invites_uses')
-            .select('id')
-            .eq('invite_id', invite.id)
-            .eq('user_id', currentUser?.id)
-            .maybeSingle();
-
-        if (existingUse) {
-            return { success: false, error: 'Você já usou este código de convite.' };
-        }
-
-        // ✅ Verificar limite de uso
-        const { data: uses, error: countErr } = await supabase
-            .from('group_invites_uses')
-            .select('id', { count: 'exact' })
-            .eq('invite_id', invite.id);
-
-        const useCount = uses?.length || 0;
-        const MAX_USES = 10;
-
-        if (useCount >= MAX_USES) {
-            // Desativar convite
-            await supabase
-                .from('group_invites')
-                .update({ active: false })
-                .eq('id', invite.id);
-            
-            return { success: false, error: 'Este código de convite atingiu o limite de uso.' };
-        }
-
-        // 2. Buscar detalhes do grupo
-        const { data: group, error: groupErr } = await supabase
-            .from('groups')
-            .select('*')
-            .eq('id', invite.group_id)
-            .single();
-
-        if (groupErr || !group) {
-            return { success: false, error: 'Grupo não encontrado.' };
-        }
-
-        // 3. Verificar se já é membro
-        const { data: alreadyMember, error: memberErr } = await supabase
-            .from('group_members')
-            .select('id')
-            .eq('group_id', invite.group_id)
-            .eq('user_id', currentUser?.id)
-            .maybeSingle();
-
-        if (alreadyMember) {
-            return { success: false, error: 'Você já é membro deste grupo.' };
-        }
-
-        // 4. Adicionar ao grupo
-        const { error: insertMemberErr } = await supabase
-            .from('group_members')
-            .insert({
-                group_id: invite.group_id,
-                user_id: currentUser?.id,
-                joined_at: new Date().toISOString()
-            });
-
-        if (insertMemberErr) {
-            return { success: false, error: insertMemberErr.message };
-        }
-
-        // 5. Adicionar à conversa
-        await supabase
-            .from('conversation_participants')
-            .insert({
-                conversation_id: invite.group_id,
-                user_id: currentUser?.id,
-                joined_at: new Date().toISOString()
-            });
-
-        // 6. ✅ Registrar uso do convite
-        await supabase
-            .from('group_invites_uses')
-            .insert({
-                invite_id: invite.id,
-                user_id: currentUser?.id,
-                used_at: new Date().toISOString()
-            });
-
-        // 7. Incrementar contador de membros
-        await supabase
-            .from('groups')
-            .update({ members: (group.members || 0) + 1 })
-            .eq('id', invite.group_id);
-
-        // 8. Verificar se atingiu o limite
-        const { data: updatedUses, error: updatedErr } = await supabase
-            .from('group_invites_uses')
-            .select('id', { count: 'exact' })
-            .eq('invite_id', invite.id);
-
-        const updatedCount = updatedUses?.length || 0;
-
-        if (updatedCount >= MAX_USES) {
-            await supabase
-                .from('group_invites')
-                .update({ active: false })
-                .eq('id', invite.id);
-        }
-
-        // 9. Mensagem de sistema
-        await supabase.from('messages').insert({
-            conversation_id: invite.group_id,
-            sender_id: currentUser?.id,
-            sender_name: '🔔 Sistema',
-            content: `📢 Novo membro entrou no grupo: ${group.name}! Seja bem-vindo(a)! 🎉`,
-            created_at: new Date().toISOString()
-        });
 
         return {
-            success: true,
-            group_id: invite.group_id,
-            group_name: group.name,
-            message: 'Você entrou no grupo com sucesso!'
+            success: false,
+            error: 'Função de convite não instalada no banco. Rode sql/11_invite_code_system.sql no Supabase e recarregue o schema.'
         };
-    } catch (fallbackErr) {
-        console.error('❌ Exceção no fallback:', fallbackErr);
-        return { success: false, error: fallbackErr.message };
     }
-}
 
     // =============================================
     // 7. ESCAPE HTML E FORMATADORES
@@ -4482,12 +4356,13 @@ window.openFriendChat = async function(conversationId, friendUsername, friendId)
 
     document.getElementById('submitInviteCodeBtn')?.addEventListener('click', async () => {
         const input = document.getElementById('inviteCodeInput');
-        const code = input?.value.trim();
+        const code = normalizeInviteCode(input?.value);
 
-        if (!code || code.length !== 5 || isNaN(code)) {
+        if (!code) {
             showToast('Código de convite deve ter 5 dígitos numéricos.', 'warning');
             return;
         }
+        if (input) input.value = code;
 
         const res = await apiUseInviteCode(code);
         if (res && res.success) {
