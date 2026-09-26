@@ -633,44 +633,76 @@ a {
    SALA DE CHAT
    ========================================================================== */
 
-.chat-page-main {
-    width: min(1100px, 100%);
-    margin: 0 auto;
-    padding: 24px clamp(12px, 3vw, 36px) 36px;
-}
+/* ==========================================================================
+   SALA DE CHAT — TELA INTEIRA
+   --------------------------------------------------------------------------
+   A sala ocupa 100% da viewport. Sem cartão flutuante: sem margem externa,
+   sem borda, sem raio, sem sombra e sem fundo próprio. Quem está numa conversa
+   não precisa de moldura, só de espaço para ler e escrever.
 
-.chat-page-bar {
+   A coluna de texto continua com largura de leitura confortável (900px) via
+   padding lateral elástico — assim o app ocupa tudo, mas a linha não fica
+   longue demais em monitor grande.
+   ========================================================================== */
+
+body.chat-page {
+    height: 100dvh;
+    overflow: hidden;
     display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
+    flex-direction: column;
 }
 
-.chat-page-bar h1 {
+.chat-page-main {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: none;
     margin: 0;
-    font-size: 18px;
-    font-weight: 800;
+    padding: 0;
+    display: flex;
 }
 
 .chat-room {
-    min-height: calc(100dvh - 180px);
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border: 1px solid var(--cv-border);
-    border-radius: 20px;
-    background: var(--cv-surface);
-    box-shadow: var(--cv-shadow);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
 .chat-room-header {
-    min-height: 76px;
+    flex-shrink: 0;
+    min-height: 68px;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 18px;
+    padding: 10px max(16px, calc((100% - 900px) / 2));
     border-bottom: 1px solid var(--cv-border);
-    background: var(--cv-surface);
+    background: transparent;
+}
+
+.chat-message-list {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 24px max(16px, calc((100% - 900px) / 2));
+    background: transparent;
+}
+
+.chat-composer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 9px;
+    padding: 13px max(16px, calc((100% - 900px) / 2)) 16px;
+    border-top: 0;
+    background: transparent;
 }
 
 .chat-header-avatar {
@@ -722,14 +754,6 @@ a {
 
 .chat-mobile-back {
     display: none;
-}
-
-.chat-message-list {
-    min-height: 0;
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px clamp(14px, 4vw, 44px);
-    background: #fcfbfa;
 }
 
 .chat-date-divider {
@@ -823,15 +847,6 @@ a {
 
 .mine .chat-message-time {
     text-align: right;
-}
-
-.chat-composer {
-    display: flex;
-    align-items: flex-end;
-    gap: 9px;
-    padding: 13px 16px;
-    border-top: 1px solid var(--cv-border);
-    background: var(--cv-surface);
 }
 
 .chat-composer textarea {
@@ -2692,8 +2707,7 @@ a {
         grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
     }
 
-    .channel-page-main,
-    .chat-page-main {
+    .channel-page-main {
         padding: 12px 9px 25px;
     }
 
@@ -2748,17 +2762,10 @@ a {
         padding: 16px;
     }
 
-    .chat-page-bar {
-        margin: 0 4px 10px;
-    }
-
-    .chat-page-bar h1 {
-        font-size: 15px;
-    }
-
-    .chat-room {
-        min-height: calc(100dvh - 130px);
-        border-radius: 15px;
+    .chat-room-header,
+    .chat-message-list {
+        padding-left: 14px;
+        padding-right: 14px;
     }
 
     .chat-room-header {

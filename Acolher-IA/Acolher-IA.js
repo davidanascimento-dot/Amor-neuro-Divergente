@@ -21,17 +21,77 @@ document.addEventListener('DOMContentLoaded', () => {
     // FUNÇÕES DO CHAT
     // =============================================
 
-    // Lista negra de tópicos
+    // Lista negra de tópicos.
+    // IMPORTANTE: crise (suicídio/automutilação) NÃO entra aqui. Bloquear
+    // esses termos deixava quem estava em crise recebendo "desculpe, não
+    // posso responder a isso" — exatamente o oposto do acolhimento. Crise
+    // é tratada pelo módulo de segurança, que abre o painel de apoio.
     const modalBlockedTopics = [
         'porno', 'pornô', 'pornografia', 'sexo', 'sexual', 'nudez', 'nudes',
-        'violência', 'armas', 'drogas', 'crime', 'hack', 'golpe', 'aposta',
-        'cassino', 'bet', 'tigrinho', 'assassinato', 'suicídio', 'automutilação',
+        'armas', 'drogas', 'crime', 'hack', 'golpe', 'aposta',
+        'cassino', 'bet', 'tigrinho', 'assassinato',
         'pedofilia', 'estupro', 'terrorismo', 'racismo', 'homofobia', 'misoginia'
     ];
 
     function isBlockedModalTopic(message) {
         const msg = message.toLowerCase();
         return modalBlockedTopics.some(topic => msg.includes(topic.toLowerCase()));
+    }
+
+    // =====================================================================
+    // SEGURANÇA — camada 1 (determinística, instantânea)
+    // =====================================================================
+
+    const MARCA_CRISE = '[[CRISE]]';
+
+    // Em crise, a pessoa precisa ver o recurso antes de qualquer explicação.
+    const MENSAGEM_CRISE = `Percebo que você está passando por um momento muito pesado, e quero ficar aqui com você.
+
+Você não precisa atravessar isso sozinho(a), e não precisa ter a resposta agora. Abri ao lado o **Apoio Imediato** — tem o CVV (188), que atende de graça, 24 horas, e você pode ligar sem explicar nada.
+
+Se você está em risco agora, ligue **188** ou **192**. Eu fico aqui. 💜`;
+
+    // As duas camadas (palavras-chave e modelo) podem concordar no mesmo
+    // turno. Sem esta trava, quem está em crise lia a mesma mensagem de
+    // acolhimento duas vezes seguidas — e na crise isso parece defeito.
+    let criseMostrada = false;
+
+    function nivelMaisAlto(a, b) {
+        const ordem = { nenhum: 0, moderado: 1, alto: 2 };
+        return (ordem[b] || 0) > (ordem[a] || 0) ? b : a;
+    }
+
+    function escutarSeguranca(texto) {
+        if (!window.AcolheriaSeguranca) return;
+        criseMostrada = false;
+
+        // Lê o turno e a conversa inteira: crise quase nunca cabe numa
+        // mensagem só, então a soma do histórico também conta.
+        const leitura = window.AcolheriaSeguranca.registrarTurno(texto);
+        const nivel = nivelMaisAlto(leitura.nivel, leitura.conversa.nivel);
+        if (nivel === 'nenhum') return;
+
+        mostrarCrise(nivel, leitura.motivo || leitura.conversa.motivo);
+    }
+
+    function mostrarCrise(nivel, motivo) {
+        if (!criseMostrada) {
+            addModalMessage(MENSAGEM_CRISE, false);
+            criseMostrada = true;
+        }
+        if (window.AcolheriaSeguranca) {
+            window.AcolheriaSeguranca.abrir(nivel);
+            console.warn('🛡️ Painel de apoio aberto:', nivel, motivo);
+        }
+    }
+
+    // Camada 2: o modelo pode detectar risco que as palavras-chave não pegaram.
+    // Ele sinaliza com um marcador no início da resposta.
+    function verificarMarcaCrise(resposta) {
+        if (!String(resposta || '').includes(MARCA_CRISE)) return resposta;
+        const limpo = resposta.replace(new RegExp(`\\s*${MARCA_CRISE.replace(/[[\]]/g, '\\$&')}`, 'g'), '').trim();
+        mostrarCrise('alto', 'sinalizado pelo modelo');
+        return limpo;
     }
 
     // Função para obter descrição do projeto
@@ -85,6 +145,15 @@ Não foi possível processar sua pergunta no momento. Por favor, tente novamente
 Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     }
 
+    function escapeHtmlForBubble(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     // Adicionar mensagem ao chat
     function addModalMessage(text, isUser = false) {
         if (!acolheriaChatBody) return;
@@ -99,10 +168,16 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         const bubble = document.createElement('div');
         bubble.className = 'acolheria-bubble';
         
-        let formattedText = text
+        // Formatação mínima de markdown. O modelo usa títulos (###) e listas
+        // com frequência; sem isso o "###" aparecia literal na bolha.
+        const esc = escapeHtmlForBubble(text);
+        const formattedText = esc
+            .replace(/^#{1,3}\s*(.+)$/gm, '<strong>$1</strong>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/^[ \t]*[-*]\s+/gm, '• ')
             .replace(/\n/g, '<br>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
+            .replace(/(<br>)+•/g, '<br>•');
+
         bubble.innerHTML = formattedText;
 
         messageDiv.appendChild(avatar);
@@ -142,8 +217,12 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
 
     // Gerar resposta via API Groq
     async function generateModalResponse(message) {
-        // Verifica se o tópico é bloqueado
-        if (isBlockedModalTopic(message)) {
+        // Crise tem precedência absoluta: nunca cai no bloqueio de tópico.
+        const risco = window.AcolheriaSeguranca
+            ? window.AcolheriaSeguranca.avaliarRisco(message)
+            : { nivel: 'nenhum' };
+
+        if (risco.nivel === 'nenhum' && isBlockedModalTopic(message)) {
             return getBlockedTopicResponse();
         }
 
@@ -169,7 +248,7 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
                 throw new Error('Resposta vazia');
             }
 
-            return resposta;
+            return verificarMarcaCrise(resposta);
 
         } catch (error) {
             console.error('❌ Falha na API Groq:', error.message);
@@ -191,6 +270,9 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         addModalMessage(text, true);
         acolheriaInput.value = '';
         acolheriaInput.style.height = 'auto';
+
+        // Detecção instantânea: o painel abre sem esperar a rede.
+        escutarSeguranca(text);
 
         // Mostra "digitando..."
         showModalTyping();
@@ -346,6 +428,26 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
             }
         });
     });
+
+    // =============================================
+    // SEGURANÇA — camada 1 e 2
+    // =============================================
+
+    if (window.AcolheriaSeguranca) {
+        // Ajuda sempre acessível, mesmo fora de crise (prática recomendada).
+        // Criado ANTES de ligarUI() para que o listener seja registrado.
+        const nota = document.querySelector('.acolheria-footer-note');
+        if (nota && !document.getElementById('acolheriaSemAjuda')) {
+            const sos = document.createElement('button');
+            sos.type = 'button';
+            sos.id = 'acolheriaSemAjuda';
+            sos.className = 'acolheria-sos';
+            sos.innerHTML = '<i class="fa-solid fa-life-ring"></i> Preciso de ajuda agora';
+            nota.insertAdjacentElement('afterend', sos);
+        }
+
+        window.AcolheriaSeguranca.ligarUI();
+    }
 
     // =============================================
     // ANIMAÇÃO PULSE PARA O DIGITANDO
