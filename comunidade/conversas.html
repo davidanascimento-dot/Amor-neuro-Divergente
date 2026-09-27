@@ -27,35 +27,19 @@
         </a>
     </header>
 
-    <!-- ============================================
-         NAV SECUNDÁRIA — Fórum / Grupos / Eventos / Conversa
-         ============================================ -->
-    <nav class="community-subnav" aria-label="Seções da comunidade">
-        <div class="community-subnav-inner">
-            <a class="subnav-tab" href="/comunidade/comunidade.html#forum"><i class="fa-regular fa-message"></i><span>Fórum</span></a>
-            <a class="subnav-tab" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-users"></i><span>Grupos</span></a>
-            <a class="subnav-tab" href="/comunidade/comunidade.html#eventos"><i class="fa-regular fa-calendar"></i><span>Eventos</span></a>
-            <a class="subnav-tab active" href="/comunidade/conversas.html" aria-current="page"><i class="fa-regular fa-comment-dots"></i><span>Conversa</span></a>
-        </div>
-    </nav>
-
     <main class="page-main">
-        <div class="page-heading">
-            <div>
-                <h1>Conversas</h1>
-                <p>Amigos, canais e espaços de apoio em um só lugar, com calma e respeito.</p>
-            </div>
-            <div class="page-heading-actions">
-                <button class="cv-primary" id="openCreateConversationBtn" type="button"><i class="fa-solid fa-plus"></i> Criar novo</button>
-                <a class="cv-secondary" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-compass"></i> Explorar comunidades</a>
-            </div>
-        </div>
-
         <section class="conversation-workspace" aria-label="Central de conversas">
-            <aside class="conversation-rail" aria-label="Lista de conversas">
+            <!-- Fica visível só quando a lista está recolhida. -->
+            <button class="conversation-rail-expand" id="conversationRailExpand" type="button" aria-label="Expandir lista de conversas" title="Expandir lista"><i class="fa-solid fa-angles-right"></i></button>
+
+            <!-- A lista pode ser recolhida para dar espaço à conversa. -->
+            <aside class="conversation-rail" id="conversationRail" aria-label="Lista de conversas">
                 <div class="conversation-rail-header">
                     <h2>Suas conversas</h2>
-                    <button class="rail-new-button" id="openCreateConversationRailBtn" type="button" aria-label="Criar conversa" title="Criar conversa"><i class="fa-solid fa-plus"></i></button>
+                    <div class="conversation-rail-actions">
+                        <button class="rail-new-button" id="openCreateConversationRailBtn" type="button" aria-label="Criar conversa" title="Criar conversa"><i class="fa-solid fa-plus"></i></button>
+                        <button class="rail-toggle-button" id="conversationRailToggle" type="button" aria-label="Recolher lista de conversas" aria-expanded="true" title="Recolher lista"><i class="fa-solid fa-angles-left"></i></button>
+                    </div>
                 </div>
                 <div class="conversation-tabs" role="tablist" aria-label="Tipo de conversa">
                     <button class="conversation-tab active" data-inbox-tab="channels" role="tab" aria-selected="true" type="button"><i class="fa-solid fa-hashtag"></i> Canais</button>
@@ -70,32 +54,88 @@
                 </div>
             </aside>
 
-            <section class="conversation-empty-content" aria-live="polite">
-                <div class="empty-mascot"><i class="fa-solid fa-heart"></i></div>
+            <!-- Quando não há conversa aberta, o estado vazio ocupa a área. -->
+            <section class="conversation-empty-content" id="conversationEmptyContent" aria-live="polite">
+                <div class="empty-mascot">
+                    <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
+                </div>
                 <h2 id="inboxEmptyTitle">Selecione uma conversa para começar</h2>
                 <p id="inboxEmptyText">Escolha um amigo ou canal na lista ao lado.</p>
                 <a class="cv-primary" id="createCommunityShortcut" href="/comunidade/explorar-grupos.html?criar=1"><i class="fa-solid fa-plus"></i> Criar uma comunidade</a>
             </section>
 
-            <aside class="conversation-aside" aria-label="Atalhos">
-                <div class="aside-card">
-                    <h3>Seu espaço</h3>
-                    <div class="aside-stat"><span>Canais</span><strong id="asideChannelCount">0</strong></div>
-                    <div class="aside-stat"><span>Amigos</span><strong id="asideFriendCount">0</strong></div>
-                    <div class="aside-stat"><span>Total</span><strong id="asideTotalCount">0</strong></div>
+            <!-- A conversa abre aqui, sem sair da página. Reaproveita as
+                 mesmas functions que o chat.html usava. -->
+            <section class="chat-room conversation-chat" id="conversationChat" hidden aria-label="Conversa aberta">
+                <header class="chat-room-header">
+                    <button class="chat-mobile-back" id="conversationChatBack" type="button" aria-label="Voltar para a lista de conversas"><i class="fa-solid fa-arrow-left"></i></button>
+                    <a class="chat-header-avatar" id="chatHeaderAvatarLink" href="/comunidade/perfil.html" aria-label="Abrir perfil ou comunidade">
+                        <span class="chat-header-avatar" id="chatHeaderAvatar"><i class="fa-solid fa-hashtag"></i></span>
+                    </a>
+                    <div class="chat-room-heading">
+                        <a id="chatRoomTitleLink" href="#"><span id="chatRoomTitle">Carregando...</span></a>
+                        <small id="chatRoomSubtitle">Carregando conversa...</small>
+                    </div>
+                    <a class="chat-room-header-action" id="chatRoomAction" href="#" title="Abrir detalhes" aria-label="Abrir detalhes"><i class="fa-solid fa-circle-info"></i></a>
+                    <div class="chat-menu-wrap">
+                        <button class="chat-room-header-action" id="chatMenuBtn" type="button" title="Mais opções" aria-label="Mais opções" aria-haspopup="menu" aria-expanded="false" aria-controls="chatMenu"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        <div class="chat-menu" id="chatMenu" role="menu" aria-label="Opções da conversa" hidden></div>
+                    </div>
+                </header>
+
+                <div class="chat-message-list" id="chatMessageList" aria-live="polite"></div>
+
+                <!-- Envio de imagem/vídeo em andamento. -->
+                <div class="media-upload-bar" id="mediaUploadBar" hidden>
+                    <i class="fa-solid fa-image" aria-hidden="true"></i>
+                    <span data-media-status>Enviando 0%</span>
+                    <div class="media-upload-track" aria-hidden="true"><div class="media-upload-fill" data-media-progress></div></div>
                 </div>
-                <div class="aside-card">
-                    <h3>Descoberta</h3>
-                    <p>Encontre uma comunidade pelo tema que combina com você.</p>
-                    <a class="aside-link" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-compass"></i> Explorar comunidades <i class="fa-solid fa-arrow-right"></i></a>
-                    <a class="aside-link" href="/comunidade/meus-grupos.html"><i class="fa-solid fa-layer-group"></i> Meus grupos <i class="fa-solid fa-arrow-right"></i></a>
-                    <a class="aside-link" href="/comunidade/perfil.html"><i class="fa-solid fa-user"></i> Ver meu perfil <i class="fa-solid fa-arrow-right"></i></a>
+
+                <input type="file" id="mediaFileInput" class="sr-only" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime,video/ogg" tabindex="-1" aria-hidden="true">
+
+            <!-- Confirmação do apagar, disparada ao segurar a mensagem. -->
+            <div class="cv-modal-backdrop" id="apagarMensagemModal" role="dialog" aria-modal="true" aria-labelledby="apagarMensagemTitulo" hidden>
+                <div class="cv-modal">
+                    <div class="cv-modal-header">
+                        <h2 id="apagarMensagemTitulo">Apagar mensagem?</h2>
+                    </div>
+                    <div class="cv-modal-body">
+                        <p class="apagar-mensagem-texto">Esta mensagem some para todo mundo. Não dá para desfazer.</p>
+                        <div class="apagar-mensagem-acoes">
+                            <button type="button" class="cv-secondary" id="apagarMensagemNao">Cancelar</button>
+                            <button type="button" class="cv-danger" id="apagarMensagemSim">Apagar</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="aside-card">
-                    <h3>Segurança</h3>
-                    <p>Conversas respeitosas e acolhedoras. Você pode sair de qualquer canal quando quiser.</p>
+            </div>
+
+                <!-- Gravando: mostra o tempo e deixa cancelar. -->
+                <div class="audio-bar audio-bar-recording" id="audioRecordBar" hidden>
+                    <span class="audio-dot" aria-hidden="true"></span>
+                    <span class="audio-bar-label">Gravando</span>
+                    <span class="audio-bar-time" id="audioGravandoTempo" role="timer" aria-live="off">0:00</span>
+                    <span class="audio-bar-hint">máx. 5 min</span>
+                    <button type="button" class="audio-bar-btn" id="audioCancelBtn" aria-label="Cancelar gravação"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" class="audio-bar-btn is-primary" id="audioStopBtn" aria-label="Parar gravação"><i class="fa-solid fa-check"></i></button>
                 </div>
-            </aside>
+
+                <!-- Prévia: ouve antes de mandar. -->
+                <div class="audio-bar audio-bar-preview" id="audioPreviewBar" hidden>
+                    <button type="button" class="audio-bar-btn" id="audioPreviewDiscard" aria-label="Descartar gravação"><i class="fa-solid fa-trash-can"></i></button>
+                    <audio class="audio-preview-el" data-preview-el preload="metadata" controls aria-label="Prévia do áudio gravado"></audio>
+                    <span class="audio-bar-time" data-preview-time>0:00</span>
+                    <button type="button" class="audio-bar-btn is-primary" id="audioPreviewSend" aria-label="Enviar áudio">Enviar</button>
+                </div>
+
+                <form class="chat-composer" id="chatComposerForm">
+                    <label for="chatComposerInput" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Mensagem</label>
+                    <textarea id="chatComposerInput" rows="1" placeholder="Escreva uma mensagem..." maxlength="2000"></textarea>
+                    <button class="chat-media-attach" id="mediaAttachBtn" type="button" aria-label="Enviar imagem ou vídeo" title="Enviar imagem ou vídeo"><i class="fa-solid fa-paperclip"></i></button>
+                    <button class="chat-audio-record" id="audioRecordBtn" type="button" aria-label="Gravar mensagem de áudio" title="Gravar áudio"><i class="fa-solid fa-microphone"></i></button>
+                    <button class="chat-send" id="chatSendButton" type="submit" aria-label="Enviar mensagem"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </section>
         </section>
     </main>
 

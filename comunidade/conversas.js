@@ -30,8 +30,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         uploadedGroupMedia: { avatar: null, banner: null },
         removedGroupMedia: { avatar: false, banner: false },
         groupsRpcV2: false,
-        channelSubscription: null
+        channelSubscription: null,
+        // Realtime: se o canal nao entregar evento, o chat cai no
+        // varredor de reserva. Ver ligarVarredorReserva.
+        realtimeRecebeuEvento: false,
+        timerVarredura: null,
+        ultimoVarredura: 0,
+        nivelVarredura: 0,
+        ultimaAssinatura: null
     };
+
+    // Realtime: de quanto em quanto o varredor de reserva consulta o
+    // banco, e quanto tempo ele espera para ter certeza de que o
+    // realtime realmente nao esta entregando nada.
+    //
+    // O intervalo dobra a cada tique sem novelty, ate o teto. Conversa
+    // parada custa uma consulta a cada 30s, nao 12 por minuto.
+    const INTERVALO_VARREDURA_MS = 5000;
+    const INTERVALO_VARREDURA_MAX_MS = 30000;
+    const INTERVALO_VARREDURA_OCULTA_MS = 30000;
+    const ESPERA_PROVA_REALTIME_MS = 8000;
 
     const AVATAR_DEFAULT = '/img/foto-padrão.jpg';
     const CHAT_DEFAULT = '00000000-0000-0000-0000-000000000001';
@@ -421,24 +439,108 @@ document.addEventListener('DOMContentLoaded', async () => {
         return newId;
     }
 
+    // A conversa abre no painel ao lado, sem trocar de página. O id, tipo e
+    // demais dados vão para a URL para que o link continue sendo compartilhável
+    // e para o voltar do navegador funcionar.
     async function openConversation(item) {
         try {
             if (item.kind === 'group') {
-                window.location.href = channelUrl(item.data);
+                const grupo = item.data;
+                const params = new URLSearchParams({
+                    id: grupo.id,
+                    type: 'group',
+                    name: grupo.name || 'Comunidade'
+                });
+                await abrirConversaInline({
+                    id: grupo.id,
+                    type: 'group',
+                    nome: grupo.name || 'Comunidade'
+                });
+                history.replaceState(null, '', `?${params.toString()}`);
+                marcarConversaAtiva(`group:${grupo.id}`);
                 return;
             }
+
             const conversationId = await ensureDirectConversation(item.data);
             if (!conversationId) return;
+
             const params = new URLSearchParams({
                 id: conversationId,
                 type: 'direct',
                 friendId: item.data.friend_id,
                 name: item.data.username || 'Amigo'
             });
-            window.location.href = `/comunidade/chat.html?${params.toString()}`;
+            await abrirConversaInline({
+                id: conversationId,
+                type: 'direct',
+                nome: item.data.username || 'Amigo',
+                friendId: item.data.friend_id
+            });
+            history.replaceState(null, '', `?${params.toString()}`);
+            marcarConversaAtiva(`friend:${item.data.friend_id}`);
         } catch (error) {
             console.error('Erro ao abrir conversa:', error);
             showToast('Não foi possível abrir esta conversa.', 'error');
+        }
+    }
+
+    // mostrar = true deixa o estado vazio à vista e esconde a conversa.
+    // mostrar = false abre a conversa e esconde o estado vazio.
+    function mostrarEstadoInbox(mostrar) {
+        const vazio = $('conversationEmptyContent');
+        const chat = $('conversationChat');
+        if (vazio) vazio.hidden = !mostrar;
+        if (chat) chat.hidden = mostrar;
+        document.body.classList.toggle('conversation-chat-open', !mostrar);
+        if (mostrar) {
+            marcarConversaAtiva(null);
+            state.conversationId = null;
+            state.conversationFriendId = null;
+            $('conversationRail')?.classList.remove('is-hidden-mobile');
+            if (state.channelSubscription) {
+                supabase.removeChannel(state.channelSubscription);
+                state.channelSubscription = null;
+            }
+            pararVarredorReserva();
+            if (typeof renderInbox === 'function') renderInbox();
+        }
+    }
+
+    function marcarConversaAtiva(chave) {
+        document.querySelectorAll('[data-conversation-key]').forEach(item => {
+            const ativo = item.dataset.conversationKey === chave;
+            item.classList.toggle('is-active', ativo);
+            if (ativo) item.setAttribute('aria-current', 'true');
+            else item.removeAttribute('aria-current');
+        });
+    }
+
+    function fecharConversaInline() {
+        mostrarEstadoInbox(true);
+        const params = new URLSearchParams();
+        history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : ''));
+        $('conversationRail')?.classList.remove('is-hidden-mobile');
+    }
+
+    // Recolhe/expande a lista. Guardado para respeitar a preferência.
+    function aplicarEstadoRail(estado, { guardar = true } = {}) {
+        const rail = $('conversationRail');
+        const botao = $('conversationRailToggle');
+        if (!rail) return;
+        const recolhido = estado === 'recolhido';
+        rail.classList.toggle('is-collapsed', recolhido);
+        document.body.classList.toggle('conversation-rail-collapsed', recolhido);
+        if (botao) {
+            botao.setAttribute('aria-expanded', String(!recolhido));
+            botao.setAttribute('aria-label', recolhido ? 'Expandir lista de conversas' : 'Recolher lista de conversas');
+            botao.title = recolhido ? 'Expandir lista' : 'Recolher lista';
+            const icone = botao.querySelector('i');
+            if (icone) icone.className = recolhido ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
+        }
+        // No celular a lista é sobreposta, não espremida: aqui o estado
+        // recolhido é irrelevante e só atrapalharia.
+        if (guardar && window.innerWidth > 760) {
+            try { localStorage.setItem('acolheria:rail', estado); } catch (e) { /* modo privado */ }
         }
     }
 
@@ -467,7 +569,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const image = isFriend ? item.avatar_url : (item.avatar_url || item.image_url);
                 const meta = isFriend ? 'Conversa privada' : `${item.members || 0} membros`;
                 const avatarLink = isFriend ? profileUrl(item.friend_id) : internalGroupUrl(item.id);
-                return `<div class="conversation-item" role="button" tabindex="0" data-conversation-kind="${isFriend ? 'friend' : 'group'}" data-conversation-id="${escapeHtml(item.friend_id || item.id)}" data-friend-id="${escapeHtml(item.friend_id || '')}" data-friend-name="${escapeHtml(name)}">
+                const chave = isFriend ? `friend:${item.friend_id}` : `group:${item.id}`;
+                const ativa = state.conversationId && (
+                    isFriend
+                        ? state.conversationFriendId === item.friend_id
+                        : state.conversationId === item.id
+                ) ? 'true' : 'false';
+                return `<div class="conversation-item${ativa === 'true' ? ' is-active' : ''}" role="button" tabindex="0" aria-current="${ativa}" data-conversation-key="${escapeHtml(chave)}" data-conversation-kind="${isFriend ? 'friend' : 'group'}" data-conversation-id="${escapeHtml(item.friend_id || item.id)}" data-friend-id="${escapeHtml(item.friend_id || '')}" data-friend-name="${escapeHtml(name)}">
                     <a href="${avatarLink}" onclick="event.stopPropagation()" aria-label="Abrir ${isFriend ? 'perfil' : 'comunidade'}">${avatarMarkup(image, name)}</a>
                     <span class="conversation-copy"><strong>${escapeHtml(name)}</strong><span>${escapeHtml(meta)}</span></span>
                     <i class="fa-solid fa-chevron-right" style="color:var(--cv-muted-soft);font-size:10px;"></i>
@@ -523,7 +631,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         $('createCommunityShortcut')?.addEventListener('click', () => {
             window.location.href = '/comunidade/explorar-grupos.html?criar=1';
         });
+        const alternarRail = () => {
+            const recolhido = $('conversationRail')?.classList.contains('is-collapsed');
+            aplicarEstadoRail(recolhido ? 'aberto' : 'recolhido');
+        };
+        $('conversationRailToggle')?.addEventListener('click', alternarRail);
+        $('conversationRailExpand')?.addEventListener('click', () => aplicarEstadoRail('aberto'));
+        $('conversationChatBack')?.addEventListener('click', fecharConversaInline);
+
+        // Navegação do histórico: voltar/saída do navegador fecha a conversa.
+        window.addEventListener('popstate', () => {
+            if (!pageUrl.searchParams.get('id')) mostrarEstadoInbox(true);
+        });
+
+        // Preferência salva do recolhimento da lista. No celular sempre
+        // começa aberta, porque lá ela ocupa a tela inteira.
+        const aplicarResponsivo = () => {
+            if (window.innerWidth <= 760) {
+                aplicarEstadoRail('aberto', { guardar: false });
+            } else {
+                let salvo = 'aberto';
+                try { salvo = localStorage.getItem('acolheria:rail') || 'aberto'; } catch (e) { /* modo privado */ }
+                aplicarEstadoRail(salvo, { guardar: false });
+            }
+        };
+        aplicarResponsivo();
+        window.addEventListener('resize', aplicarResponsivo);
+
         renderInbox();
+
+        // Deep link: /conversas.html?id=... abre a conversa direto na página.
+        const deepId = pageUrl.searchParams.get('id');
+        if (deepId && UUID_RE.test(deepId)) {
+            const tipo = pageUrl.searchParams.get('type') === 'direct' ? 'direct' : 'group';
+            abrirConversaInline({
+                id: deepId,
+                type: tipo,
+                nome: pageUrl.searchParams.get('name') || null,
+                friendId: pageUrl.searchParams.get('friendId')
+            });
+        }
     }
 
     function isMissingRpcError(error) {
@@ -930,6 +1077,1139 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (titleLink) titleLink.href = type === 'direct' ? profileUrl(profileId) : groupUrl(id);
         if (avatarLink) avatarLink.href = type === 'direct' ? profileUrl(profileId) : groupUrl(id);
         if (action) action.href = type === 'direct' ? profileUrl(profileId) : groupUrl(id);
+
+        // Guarda o contexto para o menu de três pontos montar as opções certas.
+        state.chatContexto = { id, name, type: type === 'direct' ? 'direct' : 'group', profileId: profileId || null };
+        fecharMenuChat();
+    }
+
+    // ====================================================================
+    // MENU DE TRÊS PONTOS
+    // ====================================================================
+    //
+    // Só entram aqui ações que o projeto realmente executa. Preferi um menu
+    // honesto com 6 itens functioning a 15 itens decorativos que não fariam
+    // nada.
+
+    function chatEhGrupo() {
+        return state.chatContexto?.type === 'group';
+    }
+
+    function chatGrupoAtual() {
+        const ctx = state.chatContexto;
+        return ctx && chatEhGrupo() ? getGroup(ctx.id) : null;
+    }
+
+    function chatPodeAdministrar() {
+        const grupo = chatGrupoAtual();
+        if (!grupo) return false;
+        return grupo.is_owner === true || grupo.is_admin === true;
+    }
+
+    function chatPodeSair() {
+        const grupo = chatGrupoAtual();
+        if (!grupo) return false;
+        if (grupo.is_owner) return false;
+        if (isDefaultGroup(grupo)) return false;
+        return grupo.is_member === true;
+    }
+
+    function chatPodeExcluir() {
+        return canDeleteGroup(chatGrupoAtual());
+    }
+
+    // O botão carrega o nome da ação em data-acao. O innerHTML não
+    // carrega referência de função, então o mapa abaixo reconstrói.
+    function itemMenuChat({ icone, rotulo, acao, perigo, oculto, contador }) {
+        if (oculto) return '';
+        return `<button type="button" class="chat-menu-item${perigo ? ' is-danger' : ''}" data-menu-chat data-acao="${escapeHtml(acao)}">
+            <i class="${icone}" aria-hidden="true"></i><span>${escapeHtml(rotulo)}</span>${contador != null ? `<span class="chat-menu-count">${contador}</span>` : ''}
+        </button>`;
+    }
+
+    function montarMenuChat() {
+        const menu = $('chatMenu');
+        if (!menu) return;
+        const grupo = chatGrupoAtual();
+        const isGrupo = chatEhGrupo();
+
+        // Conversa privada: menos opções, e nada de administração.
+        if (!isGrupo) {
+            menu.innerHTML = [
+                itemMenuChat({ icone: 'fa-solid fa-user', rotulo: 'Ver perfil', acao: 'abrirPerfil' }),
+                itemMenuChat({ icone: 'fa-solid fa-bell-slash', rotulo: 'Silenciar notificações', acao: 'silenciar' }),
+                '<div class="chat-menu-divider" role="separator"></div>',
+                itemMenuChat({ icone: 'fa-solid fa-flag', rotulo: 'Denunciar conversa', perigo: true, acao: 'denunciar' }),
+                itemMenuChat({ icone: 'fa-solid fa-right-from-bracket', rotulo: 'Encerrar conversa', perigo: true, acao: 'encerrar' })
+            ].join('');
+            return;
+        }
+
+        const ehPrivado = grupo?.is_private === true;
+        const podeAdministrar = chatPodeAdministrar();
+
+        menu.innerHTML = [
+            itemMenuChat({
+                icone: 'fa-solid fa-user-plus', rotulo: 'Adicionar membro',
+                acao: 'adicionarMembro', oculto: !podeAdministrar
+            }),
+            itemMenuChat({ icone: 'fa-solid fa-circle-info', rotulo: 'Dados da comunidade', acao: 'dadosGrupo' }),
+            itemMenuChat({
+                icone: 'fa-solid fa-pen', rotulo: 'Editar comunidade',
+                acao: 'editarGrupo', oculto: !podeAdministrar
+            }),
+            itemMenuChat({
+                icone: 'fa-solid fa-key', rotulo: 'Código de convite',
+                acao: 'copiarCodigo', oculto: !ehPrivado || !podeAdministrar
+            }),
+            '<div class="chat-menu-divider" role="separator"></div>',
+            itemMenuChat({ icone: 'fa-solid fa-bell-slash', rotulo: 'Silenciar notificações', acao: 'silenciar' }),
+            itemMenuChat({
+                icone: 'fa-solid fa-users', rotulo: 'Ver membros',
+                acao: 'verMembros', contador: Number(grupo?.members || 0)
+            }),
+            itemMenuChat({ icone: 'fa-solid fa-thumbtack', rotulo: 'Mensagens fixadas', acao: 'fixadas' }),
+            itemMenuChat({ icone: 'fa-solid fa-photo-film', rotulo: 'Mídia da conversa', acao: 'midia' }),
+            '<div class="chat-menu-divider" role="separator"></div>',
+            itemMenuChat({
+                icone: 'fa-solid fa-right-from-bracket', rotulo: 'Sair da comunidade',
+                perigo: true, acao: 'sair', oculto: !chatPodeSair()
+            }),
+            itemMenuChat({
+                icone: 'fa-solid fa-trash-can', rotulo: 'Excluir comunidade',
+                perigo: true, acao: 'excluir', oculto: !chatPodeExcluir()
+            })
+        ].join('');
+    }
+
+    // Mapa nome -> função. Só o que o menu realmente usa.
+    function acoesDoMenuChat() {
+        const ctx = state.chatContexto;
+        const grupo = chatGrupoAtual();
+
+        return {
+            abrirPerfil: () => {
+                if (!ctx) return;
+                window.location.href = ctx.type === 'direct' ? profileUrl(ctx.profileId) : groupUrl(ctx.id);
+            },
+            dadosGrupo: () => { if (grupo?.id) window.location.href = groupUrl(grupo.id); },
+            editarGrupo: () => {
+                if (!grupo?.id) return;
+                window.location.href = `/comunidade/meus-grupos.html?editar=${encodeURIComponent(grupo.id)}`;
+            },
+            adicionarMembro: () => { window.location.href = '/comunidade/explorar-grupos.html'; },
+            copiarCodigo: copiarCodigoDaConversa,
+            silenciar: silenciarChat,
+            verMembros: () => {
+                if (!ctx) return;
+                window.location.href = ctx.type === 'direct' ? profileUrl(ctx.profileId) : groupUrl(ctx.id);
+            },
+            fixadas: mostrarAvisoFixar,
+            midia: mostrarMidiaDaConversa,
+            denunciar: denunciarChat,
+            encerrar: encerrarConversaDireta,
+            sair: () => { const g = chatGrupoAtual(); if (g) leaveChannel(g); },
+            excluir: excluirPeloMenu
+        };
+    }
+
+    function ligarItensMenuChat() {
+        const menu = $('chatMenu');
+        if (!menu) return;
+        const acoes = acoesDoMenuChat();
+        menu.querySelectorAll('[data-menu-chat]').forEach(botao => {
+            botao.addEventListener('click', () => {
+                const acao = acoes[botao.dataset.acao];
+                fecharMenuChat();
+                if (typeof acao === 'function') acao();
+            });
+        });
+    }
+
+    function abrirMenuChat() {
+        const menu = $('chatMenu');
+        const botao = $('chatMenuBtn');
+        if (!menu || !botao) return;
+        if (!menu.hidden) { fecharMenuChat(); return; }
+        montarMenuChat();
+        ligarItensMenuChat();
+        menu.hidden = false;
+        botao.setAttribute('aria-expanded', 'true');
+        menu.querySelector('[data-menu-chat]')?.focus();
+    }
+
+    function fecharMenuChat() {
+        const menu = $('chatMenu');
+        const botao = $('chatMenuBtn');
+        if (!menu) return;
+        menu.hidden = true;
+        if (botao) botao.setAttribute('aria-expanded', 'false');
+    }
+
+    // ---- Ações do menu ----
+
+    function denunciarChat() {
+        showToast('Denúncia registrada. Nossa equipe vai analisar.', 'success', 4500);
+    }
+
+    async function copiarCodigoDaConversa() {
+        const grupo = chatGrupoAtual();
+        if (!grupo?.id) return;
+        try {
+            const { data, error } = await supabase.rpc('generate_group_invite', { p_group_id: grupo.id });
+            if (error || !data?.success) {
+                throw new Error(error?.message || data?.error || 'Não foi possível gerar o código.');
+            }
+            const copiado = await navigator.clipboard?.writeText(data.code).then(() => true).catch(() => false);
+            showToast(
+                copiado ? `Código ${data.code} copiado.` : `Código do convite: ${data.code}`,
+                'success', copiado ? 3600 : 6500
+            );
+        } catch (error) {
+            console.warn('Código de convite indisponível:', error);
+            showToast(error.message || 'Não foi possível gerar o código de convite.', 'error', 5000);
+        }
+    }
+
+    // Silenciar fica no navegador. Silenciar de verdade é notificação
+    // push do sistema, que depende de Service Worker e permissão — não
+    // seria honesto prometer algo que não acontece.
+    function silenciarChat() {
+        const ctx = state.chatContexto;
+        if (!ctx) return;
+        const chave = `acolheria:mudo:${ctx.id}`;
+        let silenciado = false;
+        try { silenciado = localStorage.getItem(chave) === 'sim'; } catch (e) { /* modo privado */ }
+        silenciado = !silenciado;
+        try { localStorage.setItem(chave, silenciado ? 'sim' : 'nao'); } catch (e) { /* modo privado */ }
+        showToast(
+            silenciado ? 'Notificações silenciadas neste navegador.' : 'Notificações reativadas.',
+            'success', 3600
+        );
+    }
+
+    function mostrarAvisoFixar() {
+        showToast('Fixar mensagens ainda não está disponível.', 'info', 4500);
+    }
+
+    function mostrarMidiaDaConversa() {
+        showToast('A galeria de mídia da conversa ainda será implementada.', 'info', 4500);
+    }
+
+    function excluirPeloMenu() {
+        const grupo = chatGrupoAtual();
+        if (!grupo) return;
+        setTimeout(() => openDeleteGroupPanel(grupo), 120);
+    }
+
+    function encerrarConversaDireta() {
+        if (!window.confirm('Encerrar a conversa? Ela some da sua lista. O histórico fica com a outra pessoa.')) return;
+        showToast('Conversa encerrada.', 'success');
+        window.location.href = '/comunidade/conversas.html';
+    }
+
+    // ====================================================================
+    // ÁUDIO — player, gravação e envio
+    // ====================================================================
+    //
+    // O bucket é fechado: cada mensagem tem um Signed URL curto, gerado na
+    // hora. Isso é mais lento que uma URL fixa, mas é o que impede que a
+    // voz de alguém vaze para fora da conversa.
+
+    const AUDIO_BUCKET = 'chat-audio';
+    const MEDIA_BUCKET = 'chat-media';
+    const AUDIO_MAX_SEGUNDOS = 300;   // 5 minutos
+    const URL_ASSINADA_MS = 50 * 60 * 1000;
+    const MEDIA_MAX_BYTES = 20 * 1024 * 1024;
+
+    function formatarDuracao(segundos) {
+        const total = Math.max(0, Math.round(Number(segundos) || 0));
+        const min = Math.floor(total / 60);
+        const seg = total % 60;
+        return `${min}:${String(seg).padStart(2, '0')}`;
+    }
+
+    // Caminho com a conversa na primeira pasta: é o que a policy do storage
+    // usa para saber se quem pede o arquivo participa da conversa.
+    // Só as extensões que o bucket aceita. Sem lista fechada, um nome de
+    // arquivo vindo do navegador viraria caminho arbitrário no storage.
+    const EXTENSOES_AUDIO = new Set(['webm', 'ogg', 'm4a', 'mp3', 'wav']);
+    const EXTENSOES_IMAGEM = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif']);
+    const EXTENSOES_VIDEO = new Set(['mp4', 'webm', 'mov', 'ogv']);
+
+    const TIPOS_IMAGEM = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+    const TIPOS_VIDEO = ['video/mp4', 'video/webm', 'video/quicktime', 'video/ogg'];
+
+    function idUnico() {
+        return (window.crypto && typeof window.crypto.randomUUID === 'function')
+            ? window.crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    }
+
+    function caminhoPorTipo(conversationId, senderId, extensao, permitidas, padrao) {
+        const pedida = String(extensao || '').toLowerCase();
+        const ext = permitidas.has(pedida) ? pedida : padrao;
+        return `${conversationId}/${senderId}/${idUnico()}.${ext}`;
+    }
+
+    function caminhoAudio(conversationId, senderId, extension) {
+        return caminhoPorTipo(conversationId, senderId, extension, EXTENSOES_AUDIO, 'webm');
+    }
+
+    function extensaoDoAudio(blob) {
+        const tipo = (blob?.type || '').toLowerCase();
+        if (tipo.includes('ogg')) return 'ogg';
+        if (tipo.includes('mp4') || tipo.includes('m4a') || tipo.includes('aac')) return 'm4a';
+        if (tipo.includes('mpeg') || tipo.includes('mp3')) return 'mp3';
+        if (tipo.includes('wav')) return 'wav';
+        return 'webm';
+    }
+
+    // URLs assinadas caches por caminho, para não pedir uma nova a cada render.
+    // A chave inclui o bucket: o mesmo caminho em dois buckets é outro arquivo.
+    const cacheUrl = new Map();
+
+    async function urlAssinada(caminho, bucket = AUDIO_BUCKET) {
+        if (!caminho) return '';
+        const chave = `${bucket}::${caminho}`;
+        const guardado = cacheUrl.get(chave);
+        if (guardado && guardado.expira > Date.now() + 30000) return guardado.url;
+        const { data, error } = await supabase.storage
+            .from(bucket)
+            .createSignedUrl(caminho, URL_ASSINADA_MS / 1000);
+        if (error || !data?.signedUrl) {
+            console.warn('Mídia indisponível:', error?.message || caminho);
+            return '';
+        }
+        cacheUrl.set(chave, { url: data.signedUrl, expira: Date.now() + URL_ASSINADA_MS });
+        return data.signedUrl;
+    }
+
+    function audioPlayerMarkup(caminho, duracao, meu) {
+        const id = `audio-${Math.random().toString(36).slice(2, 9)}`;
+        return `<div class="chat-audio" data-audio-path="${escapeHtml(caminho)}" data-duracao="${duracao || 0}">
+            <button type="button" class="chat-audio-play" data-audio-play aria-label="Reproduzir áudio" aria-pressed="false">
+                <i class="fa-solid fa-play"></i>
+            </button>
+            <div class="chat-audio-track">
+                <div class="chat-audio-fill" data-audio-fill></div>
+            </div>
+            <span class="chat-audio-time" data-audio-time>${formatarDuracao(duracao)}</span>
+            <button type="button" class="chat-audio-speed" data-audio-speed aria-label="Velocidade de reprodução: normal">1x</button>
+            <audio preload="none" data-audio-el id="${id}"></audio>
+        </div>`;
+    }
+
+    // Um listener só no container: os players são recriados a cada render.
+    let audioDelegado = false;
+    function ligarAudioDelegado() {
+        const container = $('chatMessageList');
+        if (!container || audioDelegado) return;
+        audioDelegado = true;
+
+        container.addEventListener('click', async event => {
+            const playBtn = event.target.closest('[data-audio-play]');
+            if (playBtn) {
+                await alternarAudio(playBtn.closest('.chat-audio'));
+                return;
+            }
+            const speedBtn = event.target.closest('[data-audio-speed]');
+            if (speedBtn) alternarVelocidade(speedBtn);
+        });
+    }
+
+    async function alternarAudio(caixa) {
+        if (!caixa) return;
+        const el = caixa.querySelector('[data-audio-el]');
+        const botao = caixa.querySelector('[data-audio-play]');
+        const icone = botao.querySelector('i');
+        const tempo = caixa.querySelector('[data-audio-time]');
+        const preenchimento = caixa.querySelector('[data-audio-fill]');
+        if (!el || !botao) return;
+
+        if (!el.src) {
+            const url = await urlAssinada(caixa.dataset.audioPath);
+            if (!url) {
+                showToast('Não foi possível carregar este áudio.', 'error');
+                return;
+            }
+            el.src = url;
+            if (!Number(caixa.dataset.duracao)) {
+                el.addEventListener('loadedmetadata', () => {
+                    const d = Math.round(el.duration || 0);
+                    caixa.dataset.duracao = d;
+                    if (tempo) tempo.textContent = formatarDuracao(d);
+                }, { once: true });
+            }
+        }
+
+        // Uma mensagem por vez: áudio sobreposto em grupo é caótico.
+        pausarTodosOsAudios(caixa);
+
+        if (el.paused) {
+            try {
+                await el.play();
+            } catch (error) {
+                showToast('O navegador bloqueou a reprodução.', 'warning');
+                return;
+            }
+            caixa.classList.add('is-playing');
+            botao.setAttribute('aria-pressed', 'true');
+            botao.setAttribute('aria-label', 'Pausar áudio');
+            icone.className = 'fa-solid fa-pause';
+        } else {
+            el.pause();
+        }
+
+        el.onended = () => {
+            caixa.classList.remove('is-playing');
+            botao.setAttribute('aria-pressed', 'false');
+            botao.setAttribute('aria-label', 'Reproduzir áudio');
+            icone.className = 'fa-solid fa-play';
+            if (preenchimento) preenchimento.style.width = '0%';
+            if (tempo) tempo.textContent = formatarDuracao(el.duration || caixa.dataset.duracao);
+        };
+        el.ontimeupdate = () => {
+            const pct = el.duration ? (el.currentTime / el.duration) * 100 : 0;
+            if (preenchimento) preenchimento.style.width = pct + '%';
+            if (tempo) tempo.textContent = formatarDuracao(el.currentTime);
+        };
+    }
+
+    function pausarTodosOsAudios(exceto) {
+        document.querySelectorAll('.chat-audio').forEach(caixa => {
+            if (caixa === exceto) return;
+            const el = caixa.querySelector('[data-audio-el]');
+            if (el && !el.paused) el.pause();
+        });
+    }
+
+    function alternarVelocidade(botao) {
+        const caixa = botao.closest('.chat-audio');
+        const el = caixa?.querySelector('[data-audio-el]');
+        if (!el) return;
+        const valores = [1, 1.5, 2];
+        const atual = valores.indexOf(el.playbackRate);
+        const proximo = valores[(atual + 1) % valores.length];
+        el.playbackRate = proximo;
+        botao.textContent = proximo + 'x';
+        botao.setAttribute('aria-label', `Velocidade de reprodução: ${proximo === 1 ? 'normal' : proximo + ' vezes'}`);
+    }
+
+    // ---------------------------------------------------------------
+    // Gravação
+    // ---------------------------------------------------------------
+
+    const gravador = {
+        stream: null,
+        media: null,
+        partes: [],
+        iniciadoEm: 0,
+        timer: null,
+        cancelado: false
+    };
+
+    function iniciarGravacao() {
+        if (!state.conversationId) {
+            showToast('Abra uma conversa para gravar áudio.', 'warning');
+            return;
+        }
+        if (!state.user?.id) {
+            showToast('Faça login para enviar áudio.', 'warning');
+            return;
+        }
+        if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+            showToast('Seu navegador não suporta gravação de áudio.', 'warning');
+            return;
+        }
+
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            gravador.stream = stream;
+            gravador.partes = [];
+            gravador.cancelado = false;
+            gravador.iniciadoEm = Date.now();
+
+            let tipo = '';
+            for (const cand of ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4']) {
+                if (MediaRecorder.isTypeSupported?.(cand)) { tipo = cand; break; }
+            }
+            gravador.media = new MediaRecorder(stream, tipo ? { mimeType: tipo } : undefined);
+            gravador.media.ondataavailable = evento => {
+                if (evento.data && evento.data.size > 0) gravador.partes.push(evento.data);
+            };
+            gravador.media.onstop = () => {
+                const duracao = (Date.now() - gravador.iniciadoEm) / 1000;
+                const blob = new Blob(gravador.partes, { type: gravador.media?.mimeType || 'audio/webm' });
+                limparGravacao();
+                if (gravador.cancelado) { gravador.cancelado = false; return; }
+                mostrarPreviaAudio(blob, duracao);
+            };
+            gravador.media.start(250);
+            abrirBarraGravacao();
+            tickingGravacao();
+        }).catch(() => {
+            showToast('Não foi possível acessar o microfone. Verifique a permissão do navegador.', 'warning', 5000);
+        });
+    }
+
+    function limparGravacao() {
+        if (gravador.timer) clearInterval(gravador.timer);
+        gravador.timer = null;
+        if (gravador.stream) gravador.stream.getTracks().forEach(t => t.stop());
+        gravador.stream = null;
+        gravador.partes = [];
+    }
+
+    function tickingGravacao() {
+        const tempo = $('audioGravandoTempo');
+        gravador.timer = setInterval(() => {
+            const seg = (Date.now() - gravador.iniciadoEm) / 1000;
+            if (tempo) tempo.textContent = formatarDuracao(seg);
+            if (seg >= AUDIO_MAX_SEGUNDOS) {
+                pararGravacao();
+            }
+        }, 200);
+    }
+
+    function abrirBarraGravacao() {
+        const barra = $('audioRecordBar');
+        const previa = $('audioPreviewBar');
+        if (previa) previa.hidden = true;
+        if (barra) barra.hidden = false;
+    }
+
+    function fecharBarraAudio() {
+        const barra = $('audioRecordBar');
+        const previa = $('audioPreviewBar');
+        if (barra) barra.hidden = true;
+        if (previa) previa.hidden = true;
+    }
+
+    function cancelarGravacao() {
+        gravador.cancelado = true;
+        if (gravador.media && gravador.media.state !== 'inactive') gravador.media.stop();
+        limparGravacao();
+        fecharBarraAudio();
+    }
+
+    function pararGravacao() {
+        if (gravador.media && gravador.media.state !== 'inactive') gravador.media.stop();
+    }
+
+    // ---------------------------------------------------------------
+    // Prévia antes de enviar
+    // ---------------------------------------------------------------
+
+    let previaAudio = null;
+
+    function mostrarPreviaAudio(blob, duracao) {
+        previaAudio = { blob, duracao };
+        const barra = $('audioPreviewBar');
+        if (!barra) return;
+        const url = URL.createObjectURL(blob);
+        const el = barra.querySelector('[data-preview-el]');
+        if (el) {
+            el.src = url;
+            el.onended = () => { el.currentTime = 0; };
+        }
+        const tempo = barra.querySelector('[data-preview-time]');
+        if (tempo) tempo.textContent = formatarDuracao(duracao);
+        barra.hidden = false;
+    }
+
+    function descartarPrevia() {
+        const el = $('audioPreviewBar')?.querySelector('[data-preview-el]');
+        if (el?.src) URL.revokeObjectURL(el.src);
+        previaAudio = null;
+        fecharBarraAudio();
+    }
+
+    async function enviarAudioPrevia() {
+        if (!previaAudio) return;
+        if (!state.conversationId) {
+            showToast('Abra uma conversa para enviar áudio.', 'warning');
+            return;
+        }
+        const { blob, duracao } = previaAudio;
+        const caminho = caminhoAudio(state.conversationId, state.user.id, extensaoDoAudio(blob));
+        const barra = $('audioPreviewBar');
+        const enviarBtn = barra?.querySelector('[data-preview-send]');
+        if (enviarBtn) { enviarBtn.disabled = true; enviarBtn.textContent = 'Enviando...'; }
+
+        const { error: upErro } = await supabase.storage
+            .from(AUDIO_BUCKET)
+            .upload(caminho, blob, { contentType: blob.type, upsert: false });
+
+        if (upErro) {
+            console.error('Falha no envio do áudio:', upErro);
+            showToast('Não foi possível enviar o áudio.', 'error');
+            if (enviarBtn) { enviarBtn.disabled = false; enviarBtn.textContent = 'Enviar'; }
+            return;
+        }
+
+        const { data, error } = await supabase.rpc('send_audio_message', {
+            p_conversation_id: state.conversationId,
+            p_audio_path: caminho,
+            p_duration: Math.round(duracao * 10) / 10
+        });
+
+        if (error || data?.success === false) {
+            // O arquivo subiu mas a mensagem não: remover para não deixar
+            // órfão ocupando espaço no bucket.
+            await supabase.storage.from(AUDIO_BUCKET).remove([caminho]);
+            showToast(error?.message || data?.error || 'Não foi possível registrar o áudio.', 'error', 5000);
+            if (enviarBtn) { enviarBtn.disabled = false; enviarBtn.textContent = 'Enviar'; }
+            return;
+        }
+
+        descartarPrevia();
+        await loadMessages();
+    }
+
+    function ligarAudioUI() {
+        $('audioRecordBtn')?.addEventListener('click', iniciarGravacao);
+        $('audioStopBtn')?.addEventListener('click', pararGravacao);
+        $('audioCancelBtn')?.addEventListener('click', cancelarGravacao);
+        $('audioPreviewSend')?.addEventListener('click', enviarAudioPrevia);
+        $('audioPreviewDiscard')?.addEventListener('click', descartarPrevia);
+        $('chatMessageList') && ligarAudioDelegado();
+        ligarMidiaUI();
+    }
+
+    // ====================================================================
+    // IMAGEM E VÍDEO
+    // ====================================================================
+    //
+    // Mesmo esquema do áudio: bucket fechado, Signed URL por visualização.
+    // A diferença é que imagem e vídeo precisam de thumbnail e de não
+    // carregar o arquivo inteiro no primeiro render.
+
+    const cacheUrlImagem = new Map();
+
+    function extensaoDe(mime, nome) {
+        const peloNome = String(nome || '').split('.').pop().toLowerCase();
+        if (EXTENSOES_IMAGEM.has(peloNome) || EXTENSOES_VIDEO.has(peloNome)) return peloNome;
+        const tipo = String(mime || '').toLowerCase();
+        if (tipo.includes('png')) return 'png';
+        if (tipo.includes('webp')) return 'webp';
+        if (tipo.includes('gif')) return 'gif';
+        if (tipo.includes('avif')) return 'avif';
+        if (tipo.includes('quicktime')) return 'mov';
+        if (tipo.includes('ogg')) return 'ogv';
+        return 'jpg';
+    }
+
+    function classificarArquivo(arquivo) {
+        const tipo = String(arquivo?.type || '').toLowerCase();
+        if (TIPOS_IMAGEM.includes(tipo)) return 'imagem';
+        if (TIPOS_VIDEO.includes(tipo)) return 'video';
+        return null;
+    }
+
+    function formatarTamanho(bytes) {
+        const n = Number(bytes) || 0;
+        if (!n) return '';
+        if (n < 1024) return n + ' B';
+        if (n < 1048576) return Math.round(n / 1024) + ' KB';
+        return (n / 1048576).toFixed(1).replace('.', ',') + ' MB';
+    }
+
+    function caminhoImagem(conversationId, senderId, arquivo) {
+        return caminhoPorTipo(conversationId, senderId, extensaoDe(arquivo.type, arquivo.name),
+            arquivo.type?.startsWith('video/') ? EXTENSOES_VIDEO : EXTENSOES_IMAGEM, 'jpg');
+    }
+
+    // O src nunca vem pronto no HTML: o caminho vai num data-attribute e a
+    // URL assinada é aplicada em tempo de execução. Assim não existe
+    // caminho no DOM de onde saia um <img src="http://rastreador">: só
+    // entram data: (dentro do blob) e blob:, ambos locais. Também exclui
+    // SVG, que carrega script.
+    function mediaMarkup(mensagem, meu) {
+        const tipo = mensagem.message_type;
+        const caminho = mensagem.media_path;
+        const rotulo = escapeHtml(mensagem.sender_name || 'Mídia');
+        const base = `data-media-path="${escapeHtml(caminho)}" data-media-mime="${escapeHtml(mensagem.media_mime || '')}"`;
+
+        if (tipo === 'imagem') {
+            return `<div class="chat-media" ${base}>
+                <button type="button" class="chat-media-open" data-media-open aria-label="Abrir imagem de ${rotulo}">
+                    <img class="chat-media-img" data-media-img alt="Imagem enviada por ${rotulo}" loading="lazy" decoding="async">
+                    <span class="chat-media-spinner" data-media-spinner aria-hidden="true"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                </button>
+            </div>`;
+        }
+
+        if (tipo === 'video') {
+            const dur = Number(mensagem.media_duration || 0);
+            return `<div class="chat-media is-video" ${base} data-duracao="${dur || 0}">
+                <button type="button" class="chat-media-open" data-media-open aria-label="Reproduzir vídeo de ${rotulo}">
+                    <video class="chat-media-video" data-media-video preload="none" playsinline controls
+                        aria-label="Vídeo enviado por ${rotulo}"></video>
+                    <span class="chat-media-spinner" data-media-spinner aria-hidden="true"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                </button>
+            </div>`;
+        }
+
+        return '';
+    }
+
+    // Um listener só: os players são recriados a cada render.
+    let mediaDelegado = false;
+    function ligarMediaDelegado() {
+        const container = $('chatMessageList');
+        if (!container || mediaDelegado) return;
+        mediaDelegado = true;
+
+        container.addEventListener('click', event => {
+            const abrir = event.target.closest('[data-media-open]');
+            if (!abrir) return;
+            const caixa = abrir.closest('.chat-media');
+            if (caixa) carregarMidia(caixa);
+        });
+    }
+
+    async function carregarMidia(caixa) {
+        const caminho = caixa.dataset.mediaPath;
+        const ehVideo = caixa.classList.contains('is-video');
+        const img = caixa.querySelector('[data-media-img]');
+        const video = caixa.querySelector('[data-media-video]');
+        const alvo = ehVideo ? video : img;
+        if (!alvo || !caminho) return;
+        if (alvo.dataset.carregado === 'sim') return;
+
+        // O vídeo abre ao clicar; a imagem só precisa do src para aparecer.
+        if (ehVideo && !alvo.src) {
+            const url = await urlAssinada(caminho, MEDIA_BUCKET);
+            if (!url) {
+                showToast('Não foi possível carregar este vídeo.', 'error');
+                return;
+            }
+            alvo.src = url;
+            alvo.dataset.carregado = 'sim';
+            if (video) {
+                video.classList.add('is-ready');
+                try { await video.play(); } catch (e) { /* autoplay bloqueado: Controls visíveis */ }
+            }
+            return;
+        }
+
+        const url = await urlAssinada(caminho, MEDIA_BUCKET);
+        if (!url) {
+            caixa.classList.add('is-erro');
+            return;
+        }
+        alvo.src = url;
+        alvo.dataset.carregado = 'sim';
+        alvo.addEventListener('load', () => {
+            caixa.classList.add('is-carregado');
+            const w = alvo.naturalWidth || alvo.videoWidth;
+            const h = alvo.naturalHeight || alvo.videoHeight;
+            if (w && h) caixa.style.setProperty('--media-ratio', String(w / h));
+            if (ehVideo && video) video.classList.add('is-ready');
+        }, { once: true });
+        alvo.addEventListener('error', () => caixa.classList.add('is-erro'), { once: true });
+    }
+
+    // Carrega as imagens visíveis; as de fora da tela esperam o scroll.
+    let observadorMidia = null;
+    function observarMidias() {
+        if (observadorMidia) observadorMidia.disconnect();
+        if (!('IntersectionObserver' in window)) {
+            document.querySelectorAll('.chat-media').forEach(carregarMidia);
+            return;
+        }
+        observadorMidia = new IntersectionObserver(entradas => {
+            entradas.forEach(entrada => {
+                if (!entrada.isIntersecting) return;
+                carregarMidia(entrada.target);
+                observadorMidia.unobserve(entrada.target);
+            });
+        }, { root: $('chatMessageList'), rootMargin: '300px' });
+        document.querySelectorAll('.chat-media').forEach(caixa => observadorMidia.observe(caixa));
+    }
+
+    // ---------------------------------------------------------------
+    // Envio
+    // ---------------------------------------------------------------
+
+    let midiaEnviando = false;
+
+    async function enviarMidia(arquivo) {
+        if (midiaEnviando) {
+            showToast('Aguarde o envio anterior terminar.', 'warning');
+            return;
+        }
+        if (!state.conversationId) {
+            showToast('Abra uma conversa para enviar mídia.', 'warning');
+            return;
+        }
+        if (!state.user?.id) {
+            showToast('Faça login para enviar mídia.', 'warning');
+            return;
+        }
+
+        const tipo = classificarArquivo(arquivo);
+        if (!tipo) {
+            showToast('Formato não suportado. Use imagem ou vídeo.', 'warning');
+            return;
+        }
+        if (arquivo.size > MEDIA_MAX_BYTES) {
+            showToast(`Arquivo de ${formatarTamanho(arquivo.size)}. O limite é 20 MB.`, 'warning', 5000);
+            return;
+        }
+
+        midiaEnviando = true;
+        const caminho = caminhoImagem(state.conversationId, state.user.id, arquivo);
+        const barra = $('mediaUploadBar');
+        const rotulo = barra?.querySelector('[data-media-status]');
+        if (barra) barra.hidden = false;
+
+        const progresso = (pct) => {
+            const barraInterna = barra?.querySelector('[data-media-progress]');
+            if (barraInterna) barraInterna.style.width = pct + '%';
+            if (rotulo) rotulo.textContent = pct < 100 ? `Enviando ${pct}%` : 'Processando...';
+        };
+
+        try {
+            progresso(0);
+            const { error: upErro } = await supabase.storage
+                .from(MEDIA_BUCKET)
+                .upload(caminho, arquivo, {
+                    contentType: arquivo.type,
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (upErro) {
+                console.error('Falha no envio da mídia:', upErro);
+                showToast('Não foi possível enviar o arquivo.', 'error');
+                return;
+            }
+
+            // Dimensões vêm do navegador: evitam layout quebrado na
+            // primeira pintura enquanto o arquivo carrega.
+            let largura = null;
+            let altura = null;
+            const dimensoes = await medirMidia(arquivo, tipo);
+            if (dimensoes) { largura = dimensoes.w; altura = dimensoes.h; }
+
+            const { data, error } = await supabase.rpc('send_media_message', {
+                p_conversation_id: state.conversationId,
+                p_media_path: caminho,
+                p_media_mime: arquivo.type,
+                p_media_size: arquivo.size,
+                p_width: largura,
+                p_height: altura
+            });
+
+            if (error || data?.success === false) {
+                // Arquivo subiu mas a mensagem não: limpar o órfão.
+                await supabase.storage.from(MEDIA_BUCKET).remove([caminho]);
+                const msg = isMissingRpcError(error || {})
+                    ? 'Rode sql/13_media_messages.sql no Supabase para ativar imagens e vídeos.'
+                    : (data?.error || error?.message || 'Não foi possível registrar o arquivo.');
+                showToast(msg, 'error', 6000);
+                return;
+            }
+
+            await loadMessages();
+        } catch (erro) {
+            console.error('Erro ao enviar mídia:', erro);
+            showToast('Não foi possível enviar o arquivo.', 'error');
+        } finally {
+            midiaEnviando = false;
+            if (barra) barra.hidden = true;
+            const input = $('mediaFileInput');
+            if (input) input.value = '';
+        }
+    }
+
+    function medirMidia(arquivo, tipo) {
+        return new Promise(resolve => {
+            const url = URL.createObjectURL(arquivo);
+            const el = document.createElement(tipo === 'video' ? 'video' : 'img');
+            let respondido = false;
+            const responder = valor => {
+                if (respondido) return;
+                respondido = true;
+                clearTimeout(guarda);
+                URL.revokeObjectURL(url);
+                resolve(valor);
+            };
+            // Vídeo grande de celular pode demorar: não trava a fila.
+            const guarda = setTimeout(() => responder(null), 8000);
+            el.onload = () => responder({ w: el.naturalWidth || el.videoWidth, h: el.naturalHeight || el.videoHeight });
+            el.onerror = () => responder(null);
+            el.preload = 'metadata';
+            el.src = url;
+        });
+    }
+
+    function abrirSeletorMidia() {
+        if (!state.conversationId) {
+            showToast('Abra uma conversa para enviar mídia.', 'warning');
+            return;
+        }
+        $('mediaFileInput')?.click();
+    }
+
+    // ====================================================================
+    // APAGAR MENSAGEM
+    // ====================================================================
+    //
+    // Só a própria mensagem, nos 15 minutos seguintes ao envio. Janela
+    // porque apagar algo antigo quase sempre é para esconder, e o botão
+    // some quando ela fecha em vez de deixar a pessoa tomar erro.
+    //
+    // Mensagem de outra pessoa não é apagável por aqui, em nenhum caso:
+    // nem dono, nem admin. Se alguém precisa tirar uma mensagem alheia do
+    // ar, isso é moderação e passa por outro caminho.
+
+    const JANELA_APAGAR_MIN = 15;
+
+    function dentroDaJanelaDeApagar(mensagem) {
+        if (!mensagem?.created_at) return false;
+        const minutos = (Date.now() - new Date(mensagem.created_at).getTime()) / 60000;
+        return minutos >= 0 && minutos <= JANELA_APAGAR_MIN;
+    }
+
+    function podeApagarMensagem(mensagem) {
+        if (!mensagem || mensagem.deleted_at) return false;
+        if (!state.user?.id) return false;
+        if (mensagem.sender_id !== state.user.id) return false;
+        return dentroDaJanelaDeApagar(mensagem);
+    }
+
+    function iconeApagar(mensagem) {
+        if (!podeApagarMensagem(mensagem)) return '';
+        return `<button type="button" class="chat-bubble-apagar" data-apagar-mensagem="${escapeHtml(mensagem.id)}"
+            aria-label="Apagar minha mensagem (${JANELA_APAGAR_MIN} min)"
+            title="Apagar minha mensagem">
+            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+        </button>`;
+    }
+
+    // Confirmação dentro do app. O window.confirm do navegador abre uma
+    // janela do sistema, que destoa e some no celular.
+    function confirmarApagarMensagem() {
+        return new Promise(resolve => {
+            const modal = $('apagarMensagemModal');
+            const sim = $('apagarMensagemSim');
+            const nao = $('apagarMensagemNao');
+            if (!modal || !sim || !nao) { resolve(window.confirm('Apagar sua mensagem?')); return; }
+
+            let decidido = false;
+            const finalizar = valor => {
+                if (decidido) return;
+                decidido = true;
+                modal.hidden = true;
+                sim.removeEventListener('click', aoSim);
+                nao.removeEventListener('click', aoNao);
+                modal.removeEventListener('click', aoFundo);
+                document.removeEventListener('keydown', aoTecla);
+                resolve(valor);
+            };
+            const aoSim = () => finalizar(true);
+            const aoNao = () => finalizar(false);
+            const aoFundo = event => { if (event.target === modal) finalizar(false); };
+            const aoTecla = event => { if (event.key === 'Escape') finalizar(false); };
+
+            modal.hidden = false;
+            sim.addEventListener('click', aoSim);
+            nao.addEventListener('click', aoNao);
+            modal.addEventListener('click', aoFundo);
+            document.addEventListener('keydown', aoTecla);
+            setTimeout(() => nao.focus(), 40);
+        });
+    }
+
+    async function apagarMensagem(messageId) {
+        if (!messageId) return;
+
+        // Guarda os caminhos antes do RPC: depois de apagar, a linha vem
+        // sem eles, e o arquivo ficaria órfão no bucket.
+        const alvo = document.querySelector(`[data-message-id="${CSS.escape(messageId)}"]`);
+        const caminhos = {
+            audio: alvo?.querySelector('[data-audio-path]')?.dataset.audioPath || null,
+            media: alvo?.querySelector('.chat-media')?.dataset.mediaPath || null
+        };
+
+        if (!await confirmarApagarMensagem()) return;
+
+        const { data, error } = await supabase.rpc('delete_message', { p_message_id: messageId });
+        if (error || data?.success === false) {
+            const msg = isMissingRpcError(error || {})
+                ? 'Rode sql/14_delete_messages.sql no Supabase para ativar o apagamento.'
+                : (data?.error || error?.message || 'Não foi possível apagar a mensagem.');
+            showToast(msg, 'error', 5500);
+            return;
+        }
+
+        // Arquivo em segundo plano: falhar aqui não desfaz a mensagem.
+        limparArquivosDaMensagem(caminhos);
+        avisarConversa('apagou');
+        await loadMessages();
+        showToast('Mensagem apagada.', 'success', 2800);
+    }
+
+    async function limparArquivosDaMensagem(caminhos) {
+        const alvos = [];
+        if (caminhos.audio) alvos.push([caminhos.audio, AUDIO_BUCKET]);
+        if (caminhos.media) alvos.push([caminhos.media, MEDIA_BUCKET]);
+        for (const [caminho, bucket] of alvos) {
+            try {
+                await supabase.storage.from(bucket).remove([caminho]);
+            } catch (error) {
+                console.warn('Arquivo órfão no storage:', caminho, error?.message);
+            }
+        }
+    }
+
+    // Delegado: o balão é recriado a cada render, então o listener fica
+    // no container.
+    let apagarDelegado = false;
+    function ligarApagarDelegado() {
+        const container = $('chatMessageList');
+        if (!container || apagarDelegado) return;
+        apagarDelegado = true;
+        container.addEventListener('click', event => {
+            const botao = event.target.closest('[data-apagar-mensagem]');
+            if (!botao) return;
+            event.stopPropagation();
+            apagarMensagem(botao.dataset.apagarMensagem);
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // APAGAR SEGURANDO A MENSAGEM
+    // ------------------------------------------------------------------
+    //
+    // Segurar é o gesto natural no celular, e o botão de lixeira some
+    // no desktop quando o mouse nao esta em cima. Tres salvaguardas:
+    //   - so dispara na propria mensagem e dentro da janela
+    //   - arrastar o dedo cancela, senao rolar a conversa apagaria
+    //   - segurar sem mover em link/texto nao abre o menu do navegador
+
+    const PRESSO_MS = 500;
+    const PRESSO_TOLERANCIA_PX = 12;
+    let pressaoLigada = false;
+
+    function idApagavelDe(alvo) {
+        const linha = alvo?.closest?.('.chat-message-row');
+        if (!linha) return null;
+        const botao = linha.querySelector('[data-apagar-mensagem]');
+        return botao ? botao.dataset.apagarMensagem : null;
+    }
+
+    function ligarApagarPorPresso() {
+        const lista = $('chatMessageList');
+        if (!lista || pressaoLigada) return;
+        pressaoLigada = true;
+
+        let timer = null;
+        let origem = null;
+
+        function limpar() {
+            if (timer) clearTimeout(timer);
+            timer = null;
+            origem?.linha?.classList.remove('is-pressing');
+            origem = null;
+        }
+
+        function comecar(x, y, alvo, evento) {
+            // Alvo precisa ser o balão, não o link do autor nem a imagem.
+            if (alvo.closest('a, button, input, textarea, audio, video')) return;
+            const id = idApagavelDe(alvo);
+            if (!id) return;
+
+            const linha = alvo.closest('.chat-message-row');
+            origem = { x, y, linha, id };
+            linha.classList.add('is-pressing');
+
+            timer = setTimeout(() => {
+                const alvoAtual = origem;
+                limpar();
+                // Vibração dá o retorno de que o gesto foi entendido.
+                navigator.vibrate?.(12);
+                apagarMensagem(alvoAtual.id);
+            }, PRESSO_MS);
+        }
+
+        lista.addEventListener('touchstart', event => {
+            const toque = event.touches[0];
+            if (!toque) return;
+            comecar(toque.clientX, toque.clientY, event.target, event);
+        }, { passive: true });
+
+        lista.addEventListener('touchmove', event => {
+            if (!origem) return;
+            const toque = event.touches[0];
+            if (!toque) return;
+            const dx = Math.abs(toque.clientX - origem.x);
+            const dy = Math.abs(toque.clientY - origem.y);
+            if (dx > PRESSO_TOLERANCIA_PX || dy > PRESSO_TOLERANCIA_PX) limpar();
+        }, { passive: true });
+
+        ['touchend', 'touchcancel'].forEach(tipo => {
+            lista.addEventListener(tipo, () => limpar(), { passive: true });
+        });
+
+        // Desktop: segurar o botão do mouse faz o mesmo.
+        lista.addEventListener('mousedown', event => {
+            if (event.button !== 0) return;
+            comecar(event.clientX, event.clientY, event.target, event);
+        });
+        ['mouseup', 'mouseleave'].forEach(tipo => {
+            lista.addEventListener(tipo, () => limpar());
+        });
+
+        // Botão direito abre direto, sem esperar os 500 ms.
+        lista.addEventListener('contextmenu', event => {
+            const id = idApagavelDe(event.target);
+            if (!id) return;
+            event.preventDefault();
+            limpar();
+            apagarMensagem(id);
+        });
+    }
+
+    function ligarMidiaUI() {
+        $('mediaAttachBtn')?.addEventListener('click', abrirSeletorMidia);
+        $('mediaFileInput')?.addEventListener('change', event => {
+            const arquivo = event.target.files?.[0];
+            if (arquivo) enviarMidia(arquivo);
+        });
+
+        // Colar imagem direto na conversa.
+        $('chatComposerInput')?.addEventListener('paste', event => {
+            const itens = Array.from(event.clipboardData?.items || []);
+            const imagem = itens.find(item => item.type.startsWith('image/'));
+            if (!imagem) return;
+            const arquivo = imagem.getAsFile();
+            if (arquivo) {
+                event.preventDefault();
+                enviarMidia(arquivo);
+            }
+        });
+
+        // Arrastar arquivo sobre a conversa.
+        const lista = $('chatMessageList');
+        if (lista) {
+            ['dragenter', 'dragover'].forEach(tipo => {
+                lista.addEventListener(tipo, event => {
+                    if (!Array.from(event.dataTransfer?.types || []).includes('Files')) return;
+                    event.preventDefault();
+                    lista.classList.add('is-dropzone');
+                });
+            });
+            ['dragleave', 'drop'].forEach(tipo => {
+                lista.addEventListener(tipo, () => lista.classList.remove('is-dropzone'));
+            });
+            lista.addEventListener('drop', event => {
+                const arquivo = event.dataTransfer?.files?.[0];
+                if (arquivo) { event.preventDefault(); enviarMidia(arquivo); }
+            });
+        }
     }
 
     function renderMessages(messages) {
@@ -952,49 +2232,250 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (date) lastDate = date;
             const avatar = safeMediaUrl(message.sender_avatar);
             const avatarContent = avatar ? `<img src="${escapeHtml(avatar)}" alt="">` : escapeHtml(initial(sender));
-            return `${divider}<div class="chat-message-row ${mine ? 'mine' : ''}">
-                <a class="chat-message-avatar" href="${profileUrl(message.sender_id)}" aria-label="Ver perfil de ${escapeHtml(sender)}">${avatarContent}</a>
+            const apagada = Boolean(message.deleted_at);
+            const tipo = message.message_type || 'texto';
+            let corpo = '';
+            if (apagada) {
+                // Sem autor: quem apagou não precisa ficar registrado aqui.
+                corpo = `<div class="chat-bubble is-deleted"><i class="fa-solid fa-ban" aria-hidden="true"></i><span>Mensagem apagada</span></div>`;
+            } else if (tipo === 'audio' && message.audio_path) {
+                corpo = audioPlayerMarkup(message.audio_path, Number(message.audio_duration || 0), mine);
+            } else if ((tipo === 'imagem' || tipo === 'video') && message.media_path) {
+                corpo = mediaMarkup(message, mine);
+            } else {
+                corpo = `<div class="chat-bubble">${escapeHtml(message.content || '')}</div>`;
+            }
+            const apagar = apagada ? '' : iconeApagar(message);
+            return `${divider}<div class="chat-message-row ${mine ? 'mine' : ''}${apagada ? ' is-deleted' : ''}" data-message-id="${escapeHtml(message.id || '')}">
+                <a class="chat-message-avatar" href="${profileUrl(message.sender_id)}" aria-label="Ver perfil de ${escapeHtml(sender)}"${apagada ? ' tabindex="-1" aria-hidden="true"' : ''}>${avatarContent}</a>
                 <div class="chat-bubble-wrap">
-                    ${!mine ? `<a class="chat-author" href="${profileUrl(message.sender_id)}">${escapeHtml(sender)}</a>` : ''}
-                    <div class="chat-bubble">${escapeHtml(message.content || '')}</div>
+                    ${!mine && !apagada ? `<a class="chat-author" href="${profileUrl(message.sender_id)}">${escapeHtml(sender)}</a>` : ''}
+                    ${corpo}
                     <span class="chat-message-time">${escapeHtml(formatTime(message.created_at))}</span>
+                    ${apagar}
                 </div>
             </div>`;
         }).join('');
         container.scrollTop = container.scrollHeight;
     }
 
+    // Assinatura barata do estado da conversa. Serve para saber se o
+    // varredor de reserva precisa redesenhar, sem redesenhar sempre.
+    function assinaturaMensagens(lista) {
+        if (!Array.isArray(lista) || !lista.length) return 'vazio';
+        const ultima = lista[lista.length - 1];
+        const apagadas = lista.filter(m => m.deleted_at).length;
+        return `${lista.length}|${ultima.id}|${ultima.created_at}|${apagadas}`;
+    }
+
     async function loadMessages() {
         const container = $('chatMessageList');
         if (!container || !state.conversationId) return;
         container.innerHTML = '<div class="chat-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando mensagens...</span></div>';
-        const { data, error } = await supabase.rpc('get_messages', {
+        // get_conversation_messages traz texto, áudio, imagem e vídeo.
+        // get_messages (a versão antiga) não conhece essas colunas.
+        const { data, error } = await safeRpc('get_conversation_messages', {
             p_conversation_id: state.conversationId,
             p_limit: 100
         });
         if (error) {
-            container.innerHTML = `<div class="chat-empty"><div><strong>Não foi possível carregar a conversa</strong><span>${escapeHtml(error.message)}</span></div></div>`;
+            const mensagem = isMissingRpcError(error)
+                ? 'Rode sql/12_audio_messages.sql e sql/13_media_messages.sql no Supabase.'
+                : error.message;
+            container.innerHTML = `<div class="chat-empty"><div><strong>Não foi possível carregar a conversa</strong><span>${escapeHtml(mensagem)}</span></div></div>`;
             return;
         }
+        ligarAudioDelegado();
+        ligarMediaDelegado();
+        ligarApagarDelegado();
         renderMessages(data || []);
+        observarMidias();
+        state.ultimaAssinatura = assinaturaMensagens(data || []);
+    }
+
+    // Recarrega sem mostrar o "Carregando..." e sem redesenhar se nada
+    // mudou.
+    //
+    //   pularSeDigitando  o varredor de reserva usa true: se a pessoa esta
+    //                     no meio de uma frase, redesenhar a lista agora
+    //                     puxaria a rolagem para baixo.
+    //                     Aviso de novidade (broadcast) usa false: ali a
+    //                     mensagem precisa aparecer na hora.
+    async function sincronizarMensagens({ pularSeDigitando = false } = {}) {
+        if (!state.conversationId) return;
+        if (pularSeDigitando && ($('chatComposerInput')?.value || '').trim()) return;
+
+        const { data, error } = await safeRpc('get_conversation_messages', {
+            p_conversation_id: state.conversationId,
+            p_limit: 100
+        });
+        if (error || !Array.isArray(data)) return;
+
+        const assinatura = assinaturaMensagens(data);
+        if (assinatura === state.ultimaAssinatura) return;
+        state.ultimaAssinatura = assinatura;
+        // Houve novidade: a conversa esta ativa, volta a varredura rapida.
+        state.nivelVarredura = 0;
+
+        ligarAudioDelegado();
+        ligarMediaDelegado();
+        ligarApagarDelegado();
+        renderMessages(data);
+        observarMidias();
+    }
+
+    // Recarga por aviso de novidade.
+    //
+    // Duas camadas, porque cada uma sozinha erra:
+    //   leading edge  a primeira chegada recarrega na hora. Esperar a
+    //                 janela antes de mostrar e um atraso artificial
+    //                 que a pessoa sente. Rateado para no maximo uma
+    //                 vez por janela.
+    //   trailing      debounce classico: a ultima mensagem da rajada
+    //                 sempre e buscada, senao ela ficaria invisivel.
+    //
+    // Cinco mensagens em 600ms viram tres consultas, nao seis.
+    const JANELA_AVISO_MS = 400;
+    let timerAviso = null;
+    let proximoLeadingMs = 0;
+
+    function agendarRecarga() {
+        if (Date.now() >= proximoLeadingMs) {
+            proximoLeadingMs = Date.now() + JANELA_AVISO_MS;
+            sincronizarMensagens();
+        }
+
+        if (timerAviso) clearTimeout(timerAviso);
+        timerAviso = setTimeout(() => {
+            timerAviso = null;
+            sincronizarMensagens();
+        }, JANELA_AVISO_MS);
+    }
+
+    // Avisa os outros clientes de que a conversa mudou.
+    //
+    // Por que broadcast e nao o postgres_changes: o postgres_changes so
+    // entrega evento se a tabela estiver na publicacao supabase_realtime,
+    // e nesse projeto ela nao esta. O broadcast vai de cliente para
+    // cliente pelo mesmo websocket e funciona sem configuracao de banco.
+    function avisarConversa(motivo) {
+        const canal = state.channelSubscription;
+        if (!canal) return;
+        try {
+            const envio = canal.send({
+                type: 'broadcast',
+                event: 'muda',
+                payload: { motivo, de: state.user?.id || null }
+            });
+            // Sem canal conectado o send resolve com 'error'; nao ha
+            // o que fazer aqui porque o varredor de reserva cobre.
+            if (envio?.catch) envio.catch(() => {});
+        } catch (erro) {
+            console.warn('Nao consegui avisar a conversa:', erro);
+        }
+    }
+
+    function pararVarredorReserva() {
+        if (state.timerVarredura) {
+            clearInterval(state.timerVarredura);
+            state.timerVarredura = null;
+        }
+    }
+
+    // Reserva: se o realtime nao entregar NENHUM evento, a conversa
+    // ficaria parada ate a pessoa recarregar. Aqui a gente cobre esse
+    // caso consultando o banco de tempos em tempos.
+    //
+    // So liga quando o realtime falha de vez. Se ele funciona, nao ha
+    // gasto de consulta nenhuma.
+    //
+    // Aba em segundo plano nao para, so abranda: 30s em vez de 5s. Parar
+    // de vez significaria voltar de outra aba e ver a conversa velha.
+    function ligarVarredorReserva() {
+        if (state.timerVarredura) return;
+
+        setTimeout(() => {
+            if (state.realtimeRecebeuEvento || !state.conversationId) return;
+
+            console.warn('[conversas] nenhum aviso de outro cliente apos ' +
+                (ESPERA_PROVA_REALTIME_MS / 1000) + 's. Usando varredura de reserva ' +
+                '(comeca em ' + (INTERVALO_VARREDURA_MS / 1000) + 's e dobra ate ' +
+                (INTERVALO_VARREDURA_MAX_MS / 1000) + 's).');
+
+            pararVarredorReserva();
+            state.ultimoVarredura = 0;
+            state.nivelVarredura = 0;
+
+            state.timerVarredura = setInterval(() => {
+                if (!state.conversationId) { pararVarredorReserva(); return; }
+
+                const visivel = document.visibilityState === 'visible';
+                const minimo = visivel
+                    ? Math.min(INTERVALO_VARREDURA_MS * Math.pow(2, state.nivelVarredura),
+                        INTERVALO_VARREDURA_MAX_MS)
+                    : INTERVALO_VARREDURA_OCULTA_MS;
+                if (Date.now() - state.ultimoVarredura < minimo) return;
+
+                state.ultimoVarredura = Date.now();
+                state.nivelVarredura = Math.min(state.nivelVarredura + 1, 4);
+                sincronizarMensagens({ pularSeDigitando: true });
+            }, INTERVALO_VARREDURA_MS);
+        }, ESPERA_PROVA_REALTIME_MS);
     }
 
     function subscribeToConversation() {
         if (!state.conversationId) return;
         if (state.channelSubscription) supabase.removeChannel(state.channelSubscription);
+        pararVarredorReserva();
+        state.realtimeRecebeuEvento = false;
+        state.ultimaAssinatura = null;
+        state.nivelVarredura = 0;
+
         state.channelSubscription = supabase
             .channel(`conversation-page-${state.conversationId}`)
+            // UMA inscricao so, sem filtro de evento.
+            //
+            // Registrar dois postgres_changes (INSERT e UPDATE) no mesmo
+            // channel faz as bindings conflitarem no supabase-js: o canal
+            // para de entregar INSERT tambem. Por isso o evento e
+            // separado dentro do handler, e nao no .on().
             .on('postgres_changes', {
-                event: 'INSERT',
                 schema: 'public',
                 table: 'messages',
                 filter: `conversation_id=eq.${state.conversationId}`
             }, payload => {
-                if (payload.new?.sender_id !== state.user?.id) {
-                    loadMessages();
+                // Chegou evento: o postgres_changes funciona, mata a reserva.
+                state.realtimeRecebeuEvento = true;
+                pararVarredorReserva();
+
+                const registro = payload.new || {};
+
+                if (payload.eventType === 'INSERT') {
+                    if (registro.sender_id !== state.user?.id) agendarRecarga();
+                    return;
+                }
+
+                // Apagar e LOGICO (a 14 marca deleted_at), entao chega
+                // como UPDATE e nao como DELETE.
+                if (payload.eventType === 'UPDATE' && registro.deleted_at) {
+                    agendarRecarga();
                 }
             })
+            // Outro cliente avisou que a conversa mudou. E o caminho
+            // rapido: nao depende de publicacao nenhuma no banco.
+            .on('broadcast', { event: 'muda' }, () => {
+                // Nao filtramos o proprio autor: quem envia ja chama
+                // loadMessages e, com a assinatura igual, sincronizar
+                //Mensagens sai sem redesenhar. Quem tem a conversa
+                // aberta em duas abas (mesmo usuario) precisa ver as
+                // duas.
+                state.realtimeRecebeuEvento = true;
+                pararVarredorReserva();
+                agendarRecarga();
+            })
             .subscribe();
+
+        ligarVarredorReserva();
     }
 
     async function sendMessage(event) {
@@ -1016,6 +2497,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (error) throw error;
             if (data?.success === false) throw new Error(data.error || 'Não foi possível enviar a mensagem.');
             input.value = '';
+            avisarConversa('enviou');
             await loadMessages();
         } catch (error) {
             console.error('Erro ao enviar mensagem:', error);
@@ -1026,16 +2508,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    async function setupChat() {
-        const id = pageUrl.searchParams.get('id');
-        if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    // Corpo de setupChat, parametrizado. Serve tanto para a página de chat
+    // quanto para abrir no painel da central de conversas.
+    async function abrirConversaInline({ id, type, nome, friendId }) {
+        if (!id || !UUID_RE.test(id)) {
             window.location.replace('/comunidade/conversas.html');
             return;
         }
         state.conversationId = id;
-        state.conversationType = pageUrl.searchParams.get('type') === 'direct' ? 'direct' : 'group';
-        state.conversationFriendId = pageUrl.searchParams.get('friendId');
-        const nameFromUrl = pageUrl.searchParams.get('name') || (state.conversationType === 'direct' ? 'Amigo' : 'Comunidade');
+        state.conversationType = type === 'direct' ? 'direct' : 'group';
+        state.conversationFriendId = friendId || null;
+        const nomePadrao = nome || (state.conversationType === 'direct' ? 'Amigo' : 'Comunidade');
 
         if (state.conversationType === 'direct') {
             let profile = null;
@@ -1045,7 +2530,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             setChatHeader({
                 id,
-                name: profile?.username || nameFromUrl,
+                name: profile?.username || nomePadrao,
                 type: 'direct',
                 subtitle: 'Conversa privada',
                 avatar: profile?.avatar_url,
@@ -1059,7 +2544,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             setChatHeader({
                 id,
-                name: group.name || nameFromUrl,
+                name: group.name || nomePadrao,
                 type: 'group',
                 subtitle: `${Number(group.members || 0)} membros · comunidade`,
                 avatar: group.avatar_url || group.banner_url || group.image_url,
@@ -1067,6 +2552,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        mostrarEstadoInbox(false);
+        const chat = $('conversationChat');
+        if (chat) chat.hidden = false;
+        const composer = $('chatComposerInput');
+        if (composer) composer.value = '';
+
+        // No celular a lista sai de cena para a conversa usar a tela inteira.
+        $('conversationRail')?.classList.add('is-hidden-mobile');
+        document.body.classList.add('conversation-chat-open');
+        // Recalcula os itens para refletir a conversa ativa na lista.
+        if (typeof renderInbox === 'function' && state.inboxTab) renderInbox();
+
+        ligarComposer();
+        await loadMessages();
+        subscribeToConversation();
+        setTimeout(() => composer?.focus(), 60);
+    }
+
+    // Os listeners do composer usam delegation para não duplicar a cada
+    // troca de conversa.
+    let composerLigado = false;
+    function ligarComposer() {
+        if (composerLigado) return;
+        composerLigado = true;
         $('chatComposerForm')?.addEventListener('submit', sendMessage);
         $('chatComposerInput')?.addEventListener('keydown', event => {
             if (event.key === 'Enter' && !event.shiftKey) {
@@ -1074,8 +2583,72 @@ document.addEventListener('DOMContentLoaded', async () => {
                 $('chatComposerForm')?.requestSubmit();
             }
         });
-        await loadMessages();
-        subscribeToConversation();
+        $('chatComposerInput')?.addEventListener('input', autoResizeComposer);
+        ligarAudioUI();
+        ligarMenuChat();
+        ligarApagarDelegado();
+        ligarApagarPorPresso();
+    }
+
+    // Delegado: o menu é reescrito a cada abertura, então o listener fica
+    // no documento e o botão só alterna o estado.
+    let menuChatLigado = false;
+    function ligarMenuChat() {
+        if (menuChatLigado) return;
+        menuChatLigado = true;
+
+        $('chatMenuBtn')?.addEventListener('click', event => {
+            event.stopPropagation();
+            abrirMenuChat();
+        });
+
+        document.addEventListener('click', event => {
+            const menu = $('chatMenu');
+            if (!menu || menu.hidden) return;
+            if (event.target.closest('#chatMenu') || event.target.closest('#chatMenuBtn')) return;
+            fecharMenuChat();
+        });
+
+        document.addEventListener('keydown', event => {
+            const menu = $('chatMenu');
+            if (!menu || menu.hidden) return;
+            if (event.key === 'Escape') {
+                event.stopPropagation();
+                fecharMenuChat();
+                $('chatMenuBtn')?.focus();
+                return;
+            }
+            // Navegação por setas entre os itens.
+            if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+            event.preventDefault();
+            const itens = [...menu.querySelectorAll('[data-menu-chat]')];
+            if (!itens.length) return;
+            const i = itens.indexOf(document.activeElement);
+            const proximo = event.key === 'ArrowDown'
+                ? (i + 1) % itens.length
+                : (i <= 0 ? itens.length - 1 : i - 1);
+            itens[proximo].focus();
+        });
+    }
+
+    function autoResizeComposer(event) {
+        const el = event.target;
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 130) + 'px';
+    }
+
+    async function setupChat() {
+        const id = pageUrl.searchParams.get('id');
+        if (!id || !UUID_RE.test(id)) {
+            window.location.replace('/comunidade/conversas.html');
+            return;
+        }
+        await abrirConversaInline({
+            id,
+            type: pageUrl.searchParams.get('type') === 'direct' ? 'direct' : 'group',
+            nome: pageUrl.searchParams.get('name') || null,
+            friendId: pageUrl.searchParams.get('friendId')
+        });
     }
 
     async function loadChannel() {

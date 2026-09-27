@@ -43,15 +43,60 @@
                     <small id="chatRoomSubtitle">Carregando conversa...</small>
                 </div>
                 <a class="chat-room-header-action" id="chatRoomAction" href="#" title="Abrir detalhes" aria-label="Abrir detalhes"><i class="fa-solid fa-circle-info"></i></a>
+                <div class="chat-menu-wrap">
+                    <button class="chat-room-header-action" id="chatMenuBtn" type="button" title="Mais opções" aria-label="Mais opções" aria-haspopup="menu" aria-expanded="false" aria-controls="chatMenu"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    <div class="chat-menu" id="chatMenu" role="menu" aria-label="Opções da conversa" hidden></div>
+                </div>
             </header>
 
             <div class="chat-message-list" id="chatMessageList" aria-live="polite">
                 <div class="chat-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando mensagens...</span></div>
             </div>
 
+            <div class="media-upload-bar" id="mediaUploadBar" hidden>
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                <span data-media-status>Enviando 0%</span>
+                <div class="media-upload-track" aria-hidden="true"><div class="media-upload-fill" data-media-progress></div></div>
+            </div>
+
+            <input type="file" id="mediaFileInput" class="sr-only" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime,video/ogg" tabindex="-1" aria-hidden="true">
+
+            <div class="cv-modal-backdrop" id="apagarMensagemModal" role="dialog" aria-modal="true" aria-labelledby="apagarMensagemTitulo" hidden>
+                <div class="cv-modal">
+                    <div class="cv-modal-header">
+                        <h2 id="apagarMensagemTitulo">Apagar mensagem?</h2>
+                    </div>
+                    <div class="cv-modal-body">
+                        <p class="apagar-mensagem-texto">Esta mensagem some para todo mundo. Não dá para desfazer.</p>
+                        <div class="apagar-mensagem-acoes">
+                            <button type="button" class="cv-secondary" id="apagarMensagemNao">Cancelar</button>
+                            <button type="button" class="cv-danger" id="apagarMensagemSim">Apagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-bar audio-bar-recording" id="audioRecordBar" hidden>
+                <span class="audio-dot" aria-hidden="true"></span>
+                <span class="audio-bar-label">Gravando</span>
+                <span class="audio-bar-time" id="audioGravandoTempo" role="timer" aria-live="off">0:00</span>
+                <span class="audio-bar-hint">máx. 5 min</span>
+                <button type="button" class="audio-bar-btn" id="audioCancelBtn" aria-label="Cancelar gravação"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" class="audio-bar-btn is-primary" id="audioStopBtn" aria-label="Parar gravação"><i class="fa-solid fa-check"></i></button>
+            </div>
+
+            <div class="audio-bar audio-bar-preview" id="audioPreviewBar" hidden>
+                <button type="button" class="audio-bar-btn" id="audioPreviewDiscard" aria-label="Descartar gravação"><i class="fa-solid fa-trash-can"></i></button>
+                <audio class="audio-preview-el" data-preview-el preload="metadata" controls aria-label="Prévia do áudio gravado"></audio>
+                <span class="audio-bar-time" data-preview-time>0:00</span>
+                <button type="button" class="audio-bar-btn is-primary" id="audioPreviewSend" aria-label="Enviar áudio">Enviar</button>
+            </div>
+
             <form class="chat-composer" id="chatComposerForm">
                 <label for="chatComposerInput" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Mensagem</label>
                 <textarea id="chatComposerInput" rows="1" placeholder="Escreva uma mensagem..." maxlength="2000"></textarea>
+                <button class="chat-media-attach" id="mediaAttachBtn" type="button" aria-label="Enviar imagem ou vídeo" title="Enviar imagem ou vídeo"><i class="fa-solid fa-paperclip"></i></button>
+                <button class="chat-audio-record" id="audioRecordBtn" type="button" aria-label="Gravar mensagem de áudio" title="Gravar áudio"><i class="fa-solid fa-microphone"></i></button>
                 <button class="chat-send" id="chatSendButton" type="submit" aria-label="Enviar mensagem"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </section>
