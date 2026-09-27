@@ -169,10 +169,37 @@
                 <section class="profile-stats-card suggested-profiles-card" id="suggestedProfilesCard" aria-labelledby="suggestedProfilesTitle" aria-busy="false" hidden>
                     <h3 class="stats-card-title" id="suggestedProfilesTitle">Quem seguir</h3>
                     <ul class="suggested-profiles-list" id="suggestedProfilesList" aria-live="polite"></ul>
-                    <a href="/comunidade/conversas.html" class="stats-link suggested-profiles-more">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        Encontrar mais pessoas
-                    </a>
+
+                    <button type="button" class="stats-link suggested-profiles-more" id="suggestedProfilesMore"
+                            aria-expanded="false" aria-controls="suggestedProfilesPanel">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <span id="suggestedProfilesMoreLabel">Encontrar mais pessoas</span>
+                        <i class="fa-solid fa-chevron-down suggested-profiles-caret" aria-hidden="true"></i>
+                    </button>
+
+                    <div class="suggested-profiles-panel" id="suggestedProfilesPanel" hidden>
+                        <div class="suggested-profiles-search">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                            <label class="sr-only" for="suggestedProfilesSearch">Buscar pessoas</label>
+                            <input type="search" id="suggestedProfilesSearch"
+                                   placeholder="Buscar por nome ou @usuario"
+                                   autocomplete="off" maxlength="40">
+                        </div>
+
+                        <p class="suggested-profiles-summary" id="suggestedProfilesSummary" role="status"></p>
+                        <ul class="suggested-profiles-list suggested-profiles-list-full"
+                            id="suggestedProfilesFullList" aria-live="polite"></ul>
+
+                        <p class="suggested-profiles-empty" id="suggestedProfilesEmpty" hidden>
+                            Nenhuma pessoa encontrada.
+                        </p>
+
+                        <p class="suggested-profiles-note" id="suggestedProfilesNote" hidden></p>
+
+                        <button type="button" class="suggested-profiles-loadmore" id="suggestedProfilesLoadMore" hidden>
+                            Carregar mais
+                        </button>
+                    </div>
                 </section>
 
                 <div class="profile-stats-card">

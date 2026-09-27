@@ -696,6 +696,246 @@
 }
 
 /* --------------------------------------------------------------
+   ENCONTRAR MAIS PESSOAS (painel que expande do card)
+   -------------------------------------------------------------- */
+.suggested-profiles-card.is-expanded {
+    padding-bottom: 4px;
+}
+
+/* O botão herda o visual de .stats-link, que foi feito para <a>.
+   Precisa zerar o que o navegador faz com <button>. */
+button.suggested-profiles-more {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--pf-border);
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+button.suggested-profiles-more:hover {
+    color: var(--pf-verified);
+}
+
+button.suggested-profiles-more:focus-visible {
+    outline: 2px solid var(--pf-verified);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.suggested-profiles-caret {
+    margin-left: auto;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+
+button.suggested-profiles-more[aria-expanded="true"] .suggested-profiles-caret {
+    transform: rotate(180deg);
+}
+
+.suggested-profiles-panel {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--pf-border);
+}
+
+.suggested-profiles-panel[hidden] {
+    display: none;
+}
+
+.suggested-profiles-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    height: 34px;
+    border: 1px solid var(--pf-border);
+    border-radius: 8px;
+    background: var(--pf-bg-soft);
+    color: #6f6862;
+}
+
+.suggested-profiles-search:focus-within {
+    border-color: var(--pf-verified);
+    background: var(--pf-bg);
+}
+
+.suggested-profiles-search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: none;
+    color: var(--pf-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    outline: none;
+}
+
+.suggested-profiles-search input::placeholder {
+    color: #6f6862;
+}
+
+.suggested-profiles-summary,
+.suggested-profiles-note,
+.suggested-profiles-empty {
+    margin: 10px 0 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #6f6862;
+}
+
+.suggested-profiles-note,
+.suggested-profiles-empty {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--pf-bg-soft);
+    text-align: center;
+}
+
+.suggested-profiles-note[hidden],
+.suggested-profiles-empty[hidden] {
+    display: none;
+}
+
+/* Linha da lista completa: nome, motivo, bio e as três ações. */
+.suggested-profile-item-full {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 12px 0;
+}
+
+.suggested-profile-item-full .suggested-profile-link {
+    align-items: flex-start;
+}
+
+.suggested-profile-motivo,
+.suggested-profile-bio {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.suggested-profile-motivo {
+    color: var(--pf-verified);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.suggested-profile-bio {
+    color: #6f6862;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.suggested-profile-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.suggestion-friend-button,
+.suggestion-chat-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    min-width: 68px;
+    padding: 0 10px;
+    border: 1px solid var(--pf-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--pf-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.suggestion-friend-button:hover:not(:disabled),
+.suggestion-chat-button:hover {
+    border-color: var(--pf-text);
+    transform: translateY(-1px);
+}
+
+.suggestion-friend-button.is-pending {
+    color: #6f6862;
+    border-style: dashed;
+    cursor: default;
+}
+
+/* Pedido que veio da outra pessoa: chama atenção sem parecer clicável. */
+.suggestion-friend-button.is-incoming {
+    color: #1d6f8b;
+    border-color: #a8d4e4;
+    border-style: solid;
+}
+
+.suggestion-friend-button.is-friends {
+    background: #eaf7ee;
+    border-color: #b7e0c4;
+    color: #1f6b3a;
+    cursor: default;
+}
+
+.suggestion-chat-button {
+    min-width: 34px;
+    padding: 0;
+    font-size: 13px;
+}
+
+.suggestion-friend-button:focus-visible,
+.suggestion-chat-button:focus-visible {
+    outline: 2px solid var(--pf-verified);
+    outline-offset: 2px;
+}
+
+.suggestion-friend-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+.suggested-profiles-loadmore {
+    width: 100%;
+    margin-top: 10px;
+    height: 34px;
+    border: 1px solid var(--pf-border);
+    border-radius: 999px;
+    background: var(--pf-bg-soft);
+    color: var(--pf-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.suggested-profiles-loadmore:hover:not(:disabled) {
+    background: var(--pf-bg);
+    border-color: var(--pf-text);
+}
+
+.suggested-profiles-loadmore[hidden] {
+    display: none;
+}
+
+.suggested-profiles-loadmore:focus-visible {
+    outline: 2px solid var(--pf-verified);
+    outline-offset: 2px;
+}
+
+body.a11y-dark-mode .suggestion-friend-button.is-friends {
+    background: #17301f;
+    border-color: #2c5a3c;
+    color: #8fdcab;
+}
+
+/* --------------------------------------------------------------
    MODAL DE EDIÇÃO
    -------------------------------------------------------------- */
 .edit-overlay {

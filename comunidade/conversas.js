@@ -2651,6 +2651,42 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Encontra (ou cria) a conversa particular e troca a URL pelo id real,
+    // para o link Continue funcionando e o voltar do navegador se comportar.
+    async function abrirConversaComPessoa(friendId, nome) {
+        if (!state.user?.id) {
+            showToast('Faça login para iniciar uma conversa.', 'warning');
+            window.location.replace('/comunidade/conversas.html');
+            return;
+        }
+
+        try {
+            let apelido = nome;
+            if (!apelido) {
+                const { data } = await supabase
+                    .from('profiles')
+                    .select('username')
+                    .eq('id', friendId)
+                    .maybeSingle();
+                apelido = data?.username || 'Amigo';
+            }
+
+            const conversationId = await ensureDirectConversation({
+                friend_id: friendId,
+                username: apelido
+            });
+            if (!conversationId) throw new Error('não foi possível abrir a conversa');
+
+            const destino = `/comunidade/conversas.html?id=${encodeURIComponent(conversationId)}` +
+                `&type=direct&name=${encodeURIComponent(apelido)}&friendId=${encodeURIComponent(friendId)}`;
+            window.location.replace(destino);
+        } catch (erro) {
+            console.error('❌ Não consegui abrir a conversa privada:', erro);
+            showToast('Não foi possível abrir a conversa com essa pessoa.', 'error', 5000);
+            window.location.replace('/comunidade/conversas.html');
+        }
+    }
+
     async function loadChannel() {
         const id = pageUrl.searchParams.get('id');
         if (!id) {
@@ -3625,6 +3661,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function init() {
         await loadSession();
         await getGroups();
+
+        // "Conversar com @fulano" chega com o id da PESSOA, sem o id da
+        // conversa: ela ainda nao existe. Resolve (ou cria) e troca a URL
+        // pelo id real, para o link continuar valendo e o voltar do
+        // navegador se comportar. Vale tanto em conversas.html quanto em
+        // chat.html, por isso fica aqui antes do desvio por pagina.
+        const friendParam = pageUrl.searchParams.get('friend');
+        if (friendParam && UUID_RE.test(friendParam) && !pageUrl.searchParams.get('id')) {
+            await abrirConversaComPessoa(friendParam, pageUrl.searchParams.get('name'));
+            return;
+        }
+
         if (page === 'inbox') {
             await Promise.all([getFriends(), getChannels()]);
             setupInbox();

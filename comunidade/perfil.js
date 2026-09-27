@@ -484,182 +484,418 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // =============================================
-    // 8.1. SUGESTÕES — QUEM SEGUIR
+    // 8.1. QUEM SEGUIR / ENCONTRAR MAIS PESSOAS
+    //
+    // O card mostra 3 suggestions. O botao "Encontrar mais pessoas"
+    // expande a lista completa, com busca, as tres acoes (seguir,
+    // adicionar, conversar) e o estado de cada relacao.
+    //
+    // A lista vem de discover_people (sql/16), que ja ordena por
+    // relevancia: grupos em comum, seguidores em comum, quem te segue.
+    // Sem essa RPC o app continua funcionando no modo antigo, sem
+    // o painel, e avisa o que falta rodar.
     // =============================================
-    async function loadFollowSuggestions() {
-        const card = document.getElementById('suggestedProfilesCard');
-        const list = document.getElementById('suggestedProfilesList');
-        if (!currentUser || !card || !list) return;
+    const PAGINA_PESSOAS = 12;
+    const PREVIA_PESSOAS = 3;
 
-        card.removeAttribute('hidden');
-        card.setAttribute('aria-busy', 'true');
+    let pessoas = [];            // lista completa em memoria
+    let totalPessoas = 0;
+    let paginaPessoas = 0;       // quantas paginas ja vieram
+    let painelAberto = false;
+    let buscaPessoas = '';
+    let timerBusca = null;
+    let semDiscoverRpc = false;
 
-        try {
-            const { data: profiles, error: profilesError } = await supabase
-                .from('profiles')
-                .select('id, username, avatar_url')
-                .order('created_at', { ascending: false })
-                .limit(24);
-
-            if (profilesError) throw profilesError;
-
-            const candidates = (profiles || []).filter(profile =>
-                profile &&
-                isValidUuid(profile.id) &&
-                profile.id !== currentUser.id &&
-                profile.id !== targetUserId
-            );
-
-            if (!candidates.length) {
-                card.hidden = true;
-                return;
-            }
-
-            const candidateIds = candidates.map(profile => profile.id);
-            const { data: followingRows, error: followingError } = await supabase
-                .from('follows')
-                .select('followed_id')
-                .eq('follower_id', currentUser.id)
-                .in('followed_id', candidateIds);
-
-            if (followingError) {
-                console.warn('⚠️ Não foi possível carregar os seguimentos:', followingError);
-            } else {
-                followedUserIds.clear();
-                (followingRows || []).forEach(row => {
-                    if (row.followed_id) followedUserIds.add(row.followed_id);
-                });
-            }
-
-            suggestedProfiles = candidates
-                .filter(profile => !followedUserIds.has(profile.id))
-                .slice(0, 3)
-                .map(profile => ({
-                    id: profile.id,
-                    username: cleanUsername(profile.username),
-                    avatar_url: getSafeImageUrl(profile.avatar_url),
-                    is_following: false
-                }));
-
-            if (!suggestedProfiles.length) {
-                card.hidden = true;
-                list.replaceChildren();
-                return;
-            }
-
-            renderSuggestedProfiles();
-        } catch (err) {
-            console.warn('⚠️ Erro ao carregar sugestões de perfis:', err);
-            card.hidden = true;
-            list.replaceChildren();
-        } finally {
-            card.setAttribute('aria-busy', 'false');
-        }
+    // O mesmo aviso de "Rode sql/XX" que o chat usa.
+    function isMissingRpcError(error) {
+        return /does not exist|not found|schema cache|failed to parse/i.test(String(error?.message || ''));
     }
 
+    function normalizarPessoa(row) {
+        return {
+            id: row.id,
+            username: cleanUsername(row.username) || 'Sem nome',
+            full_name: row.full_name || '',
+            pronouns: row.pronouns || '',
+            bio: row.bio || '',
+            location: row.location || '',
+            avatar_url: getSafeImageUrl(row.avatar_url),
+            is_verified: Boolean(row.is_verified),
+            followers_count: Number(row.followers_count) || 0,
+            following_count: Number(row.following_count) || 0,
+            posts_count: Number(row.posts_count) || 0,
+            is_following: Boolean(row.is_following),
+            is_followed_by: Boolean(row.is_followed_by),
+            friendship_status: row.friendship_status || null,
+            is_requester: Boolean(row.is_requester),
+            mutual_count: Number(row.mutual_count) || 0,
+            shared_groups_count: Number(row.shared_groups_count) || 0
+        };
+    }
+
+    // =============================================
+    // 8.1.1 CARREGAR
+    // =============================================
+    // O botão "Carregar mais" volta ao estado normal em todo caminho de
+    // saída. Sem isso, uma saída antecipada deixa ele preso em
+    // "Carregando..." para sempre, sem nenhuma tecla para destravar.
+    function resetarBotaoMais(texto = 'Carregar mais') {
+        const mais = document.getElementById('suggestedProfilesLoadMore');
+        if (!mais) return;
+        mais.disabled = false;
+        mais.textContent = texto;
+    }
+
+    async function buscarPessoas({ reiniciar = false } = {}) {
+        if (!currentUser || semDiscoverRpc) {
+            resetarBotaoMais();
+            return;
+        }
+
+        if (reiniciar) {
+            paginaPessoas = 0;
+            pessoas = [];
+        }
+
+        const lista = document.getElementById('suggestedProfilesFullList');
+        const mais = document.getElementById('suggestedProfilesLoadMore');
+        if (mais) {
+            mais.disabled = true;
+            mais.textContent = 'Carregando...';
+        }
+
+        const { data, error } = await supabase.rpc('discover_people', {
+            p_limit: PAGINA_PESSOAS,
+            p_offset: paginaPessoas * PAGINA_PESSOAS,
+            p_query: buscaPessoas || null
+        });
+
+        if (error) {
+            if (isMissingRpcError(error)) {
+                // Quem decide o que mostrar e quem chamou: o card inicial
+                // cai na previa antiga, o painel so avisa.
+                semDiscoverRpc = true;
+                resetarBotaoMais();
+                return;
+            }
+            console.warn('⚠️ Erro ao buscar pessoas:', error);
+            resetarBotaoMais();
+            showToast('Não foi possível buscar pessoas agora.', 'error');
+            return;
+        }
+
+        const linhas = Array.isArray(data) ? data : [];
+        paginaPessoas += 1;
+        if (linhas.length) {
+            totalPessoas = Number(linhas[0].total_count) || totalPessoas;
+            const conhecidas = new Set(pessoas.map(p => p.id));
+            linhas.forEach(row => {
+                const pessoa = normalizarPessoa(row);
+                if (conhecidas.has(pessoa.id)) return;
+                conhecidas.add(pessoa.id);
+                pessoas.push(pessoa);
+            });
+        }
+
+        renderizarPessoas();
+        if (lista) lista.setAttribute('aria-busy', 'false');
+    }
+
+    function mostrarAvisoDiscover() {
+        const note = document.getElementById('suggestedProfilesNote');
+        const painel = document.getElementById('suggestedProfilesPanel');
+        if (painel) painel.hidden = true;
+        if (!note) return;
+        note.hidden = false;
+        note.textContent = 'A lista completa precisa de sql/16_descobrir_pessoas.sql no Supabase.';
+    }
+
+    // =============================================
+    // 8.1.2 RENDER
+    // =============================================
     function renderSuggestedProfiles() {
         const list = document.getElementById('suggestedProfilesList');
         if (!list) return;
 
+        // A previa mostra quem ainda dá para seguir ou adicionar. Se todo
+        // mundo da previa ja esta conectado, completa com os proximos da
+        // lista para o card nunca ficar vazio sem motivo.
+        const conectaveis = pessoas.filter(p => !p.is_following && p.friendship_status !== 'accepted');
+        const previa = (conectaveis.length ? conectaveis : pessoas).slice(0, PREVIA_PESSOAS);
+
+        suggestedProfiles = previa;
+
+        if (!previa.length) {
+            const card = document.getElementById('suggestedProfilesCard');
+            if (card) card.hidden = true;
+            list.replaceChildren();
+            return;
+        }
+
         const fragment = document.createDocumentFragment();
-
-        suggestedProfiles.forEach(user => {
-            const item = document.createElement('li');
-            item.className = 'suggested-profile-item';
-
-            const profileLink = document.createElement('a');
-            profileLink.className = 'suggested-profile-link';
-            profileLink.href = `/comunidade/perfil.html?id=${encodeURIComponent(user.id)}`;
-            profileLink.setAttribute('aria-label', `Ver perfil de ${user.username}`);
-
-            const avatar = document.createElement('img');
-            avatar.className = 'suggested-profile-avatar';
-            avatar.src = user.avatar_url;
-            avatar.alt = '';
-            avatar.loading = 'lazy';
-            avatar.decoding = 'async';
-            avatar.addEventListener('error', () => {
-                avatar.src = AVATAR_PADRAO;
-            }, { once: true });
-
-            const info = document.createElement('span');
-            info.className = 'suggested-profile-info';
-
-            const name = document.createElement('span');
-            name.className = 'suggested-profile-name';
-            name.textContent = user.username;
-
-            const handle = document.createElement('span');
-            handle.className = 'suggested-profile-handle';
-            handle.textContent = `@${user.username.toLowerCase()}`;
-
-            info.append(name, handle);
-            profileLink.append(avatar, info);
-
-            const followButton = document.createElement('button');
-            followButton.type = 'button';
-            followButton.className = 'suggestion-follow-button';
-            followButton.dataset.userId = user.id;
-            updateFollowButton(followButton, user, user.is_following);
-
-            item.append(profileLink, followButton);
-            fragment.appendChild(item);
-        });
-
+        previa.forEach(pessoa => fragment.appendChild(criarItemPessoa(pessoa, { compacto: true })));
         list.replaceChildren(fragment);
     }
 
-    function updateFollowButton(button, user, isFollowing, isBusy = false) {
-        button.disabled = isBusy;
-        button.classList.toggle('is-following', isFollowing);
-        button.setAttribute('aria-pressed', String(isFollowing));
-        button.setAttribute('aria-label', `${isFollowing ? 'Deixar de seguir' : 'Seguir'} ${user.username}`);
-        button.title = isFollowing ? 'Deixar de seguir' : 'Seguir';
-        button.textContent = isBusy ? '...' : (isFollowing ? 'Seguindo' : 'Seguir');
+    function renderizarPessoas() {
+        renderSuggestedProfiles();
+        if (!painelAberto) return;
+
+        const list = document.getElementById('suggestedProfilesFullList');
+        const vazio = document.getElementById('suggestedProfilesEmpty');
+        const resumo = document.getElementById('suggestedProfilesSummary');
+        const mais = document.getElementById('suggestedProfilesLoadMore');
+
+        if (resumo) {
+            const total = pessoas.length;
+            resumo.textContent = buscaPessoas
+                ? `${total} resultado${total === 1 ? '' : 's'} para "${buscaPessoas}"`
+                : (totalPessoas > total
+                    ? `Mostrando ${total} de ${totalPessoas} pessoas`
+                    : `${totalPessoas || total} pessoa${(totalPessoas || total) === 1 ? '' : 's'} na comunidade`);
+        }
+
+        if (vazio) vazio.hidden = pessoas.length > 0;
+
+        if (list) {
+            const fragment = document.createDocumentFragment();
+            pessoas.forEach(pessoa => fragment.appendChild(criarItemPessoa(pessoa, { compacto: false })));
+            list.replaceChildren(fragment);
+        }
+
+        if (mais) {
+            const falta = pessoas.length < totalPessoas;
+            mais.hidden = !falta;
+            mais.disabled = false;
+            mais.textContent = `Carregar mais (${Math.max(0, totalPessoas - pessoas.length)} restantes)`;
+        }
     }
 
-    async function toggleFollowSuggestion(userId, button) {
-        if (!currentUser || !isValidUuid(userId) || userId === currentUser.id || button.disabled) return;
+    // Uma linha da lista. No modo compacto (previa) some a segunda linha
+    // de contexto e o botao de conversar, para o card nao virar uma parede.
+    function criarItemPessoa(pessoa, { compacto }) {
+        const item = document.createElement('li');
+        item.className = compacto ? 'suggested-profile-item' : 'suggested-profile-item suggested-profile-item-full';
+        item.dataset.userId = pessoa.id;
 
-        const user = suggestedProfiles.find(profile => profile.id === userId);
-        if (!user) return;
+        const link = document.createElement('a');
+        link.className = 'suggested-profile-link';
+        link.href = `/comunidade/perfil.html?id=${encodeURIComponent(pessoa.id)}`;
+        link.setAttribute('aria-label', `Ver perfil de ${pessoa.username}`);
 
-        const wasFollowing = followedUserIds.has(userId);
-        const willFollow = !wasFollowing;
-        updateFollowButton(button, user, willFollow, true);
+        const avatar = document.createElement('img');
+        avatar.className = 'suggested-profile-avatar';
+        avatar.src = pessoa.avatar_url || AVATAR_PADRAO;
+        avatar.alt = '';
+        avatar.loading = 'lazy';
+        avatar.decoding = 'async';
+        avatar.addEventListener('error', () => { avatar.src = AVATAR_PADRAO; }, { once: true });
 
-        const request = wasFollowing
-            ? supabase
-                .from('follows')
-                .delete()
+        const info = document.createElement('span');
+        info.className = 'suggested-profile-info';
+
+        const nome = document.createElement('span');
+        nome.className = 'suggested-profile-name';
+        nome.textContent = pessoa.full_name || pessoa.username;
+
+        const handle = document.createElement('span');
+        handle.className = 'suggested-profile-handle';
+        handle.textContent = `@${pessoa.username.toLowerCase()}`;
+
+        info.append(nome, handle);
+
+        if (!compacto) {
+            const motivo = motivoDeConexao(pessoa);
+            if (motivo) {
+                const dica = document.createElement('span');
+                dica.className = 'suggested-profile-motivo';
+                dica.textContent = motivo;
+                info.append(dica);
+            }
+
+            if (pessoa.bio) {
+                const bio = document.createElement('span');
+                bio.className = 'suggested-profile-bio';
+                bio.textContent = pessoa.bio;
+                info.append(bio);
+            }
+        }
+
+        link.append(avatar, info);
+
+        const acoes = document.createElement('div');
+        acoes.className = 'suggested-profile-actions';
+
+        const seguir = document.createElement('button');
+        seguir.type = 'button';
+        seguir.className = 'suggestion-follow-button';
+        seguir.dataset.acao = 'seguir';
+        seguir.dataset.userId = pessoa.id;
+        atualizarBotaoSeguir(seguir, pessoa);
+
+        acoes.append(seguir);
+
+        if (!compacto) {
+            const adicionar = document.createElement('button');
+            adicionar.type = 'button';
+            adicionar.className = 'suggestion-friend-button';
+            adicionar.dataset.acao = 'amizade';
+            adicionar.dataset.userId = pessoa.id;
+            atualizarBotaoAmizade(adicionar, pessoa);
+            acoes.append(adicionar);
+
+            const conversar = document.createElement('a');
+            conversar.className = 'suggestion-chat-button';
+            conversar.href = `/comunidade/conversas.html?friend=${encodeURIComponent(pessoa.id)}&name=${encodeURIComponent(pessoa.username)}`;
+            conversar.setAttribute('aria-label', `Conversar com ${pessoa.username}`);
+            conversar.title = 'Conversar';
+            conversar.innerHTML = '<i class="fa-regular fa-comment-dots" aria-hidden="true"></i>';
+            acoes.append(conversar);
+        }
+
+        item.append(link, acoes);
+        return item;
+    }
+
+    // O que a pessoa tem em comum com voce. Serve para a lista fazer
+    // sentido: "3 grupos em comum" explica por que ela apareceu.
+    function motivoDeConexao(pessoa) {
+        const partes = [];
+        if (pessoa.shared_groups_count > 0) {
+            const n = pessoa.shared_groups_count;
+            partes.push(`${n} grupo${n === 1 ? '' : 's'} em comum`);
+        }
+        if (pessoa.mutual_count > 0) {
+            const n = pessoa.mutual_count;
+            // "conexão" no plural vira "conexões": o acento cai no o.
+            partes.push(`${n} conex${n === 1 ? 'ão' : 'ões'} em comum`);
+        }
+        if (pessoa.is_followed_by) partes.push('segue você');
+        if (!partes.length) {
+            if (pessoa.posts_count > 0) partes.push(`${pessoa.posts_count} publicaç${pessoa.posts_count === 1 ? 'ão' : 'ões'}`);
+            else partes.push('da comunidade');
+        }
+        return partes.join(' · ');
+    }
+
+    // =============================================
+    // 8.1.3 AÇÕES
+    // =============================================
+    function atualizarBotaoSeguir(botao, pessoa, ocupado = false) {
+        const seguindo = pessoa.is_following;
+        botao.disabled = ocupado;
+        botao.classList.toggle('is-following', seguindo);
+        botao.setAttribute('aria-pressed', String(seguindo));
+        botao.setAttribute('aria-label', `${seguindo ? 'Deixar de seguir' : 'Seguir'} ${pessoa.username}`);
+        botao.title = seguindo ? 'Deixar de seguir' : 'Seguir';
+        botao.textContent = ocupado ? '...' : (seguindo ? 'Seguindo' : 'Seguir');
+    }
+
+    function atualizarBotaoAmizade(botao, pessoa, ocupado = false) {
+        const status = pessoa.friendship_status;
+        // 'pending' sem is_requester significa que o PEDIDO VEIO DA OUTRA
+        // PESSOA. Nao ha como responder daqui: o botao desliga e manda
+        // para o perfil, onde a solicitacao aparece.
+        const veioDeles = status === 'pending' && !pessoa.is_requester;
+        botao.disabled = ocupado || status === 'accepted' || status === 'blocked' || veioDeles;
+        botao.classList.toggle('is-pending', status === 'pending');
+        botao.classList.toggle('is-friends', status === 'accepted');
+        botao.classList.toggle('is-incoming', veioDeles);
+
+        let rotulo = 'Adicionar';
+        if (status === 'accepted') rotulo = 'Amigos';
+        else if (status === 'pending') rotulo = veioDeles ? 'Te pediu' : 'Solicitado';
+        else if (status === 'blocked') rotulo = 'Indisponível';
+
+        botao.setAttribute('aria-label', `${rotulo}: ${pessoa.username}`);
+        botao.title = veioDeles
+            ? 'Esta pessoa enviou um pedido de amizade. Abra o perfil para aceitar ou recusar.'
+            : rotulo;
+        botao.textContent = ocupado ? '...' : rotulo;
+    }
+
+    function acharPessoa(userId) {
+        return pessoas.find(p => p.id === userId)
+            || suggestedProfiles.find(p => p.id === userId)
+            || null;
+    }
+
+    // Redesenha so a linha de quem agiu: a lista inteira nao precisa
+    // recarregar, e recarregar perderia o foco do botao.
+    function atualizarLinha(userId) {
+        const pessoa = acharPessoa(userId);
+        if (!pessoa) return;
+        document.querySelectorAll(`[data-user-id="${CSS.escape(userId)}"]`).forEach(node => {
+            if (!node.dataset || !node.dataset.userId) return;
+            const item = node.closest('.suggested-profile-item');
+            if (!item) return;
+            const seguir = item.querySelector('[data-acao="seguir"]');
+            const amizade = item.querySelector('[data-acao="amizade"]');
+            if (seguir) atualizarBotaoSeguir(seguir, pessoa);
+            if (amizade) atualizarBotaoAmizade(amizade, pessoa);
+        });
+    }
+
+    async function alternarSeguir(userId, botao) {
+        if (!currentUser || !isValidUuid(userId) || userId === currentUser.id) return;
+        const pessoa = acharPessoa(userId);
+        if (!pessoa || botao.disabled) return;
+
+        const estavaSeguindo = pessoa.is_following;
+        const vaiSeguir = !estavaSeguindo;
+        atualizarBotaoSeguir(botao, pessoa, true);
+
+        const pedido = vaiSeguir
+            ? supabase.from('follows').insert({ follower_id: currentUser.id, followed_id: userId })
+            : supabase.from('follows').delete()
                 .eq('follower_id', currentUser.id)
-                .eq('followed_id', userId)
-            : supabase
-                .from('follows')
-                .insert({ follower_id: currentUser.id, followed_id: userId });
+                .eq('followed_id', userId);
 
-        const { error } = await request;
-
+        const { error } = await pedido;
         if (error) {
             console.error('❌ Erro ao atualizar seguimento:', error);
-            updateFollowButton(button, user, wasFollowing);
+            atualizarBotaoSeguir(botao, pessoa);
             showToast('Não foi possível atualizar o seguimento. Tente novamente.', 'error');
             return;
         }
 
-        if (willFollow) followedUserIds.add(userId);
-        else followedUserIds.delete(userId);
+        pessoa.is_following = vaiSeguir;
+        if (vaiSeguir) followedUserIds.add(userId); else followedUserIds.delete(userId);
 
-        user.is_following = willFollow;
-        updateFollowButton(button, user, willFollow);
-        updateProfileFollowStats(userId, willFollow);
+        atualizarBotaoSeguir(botao, pessoa);
+        atualizarLinha(userId);
+        atualizarEstatisticasPerfil(userId, vaiSeguir);
         showToast(
-            willFollow ? `Agora você segue @${user.username}` : `Você deixou de seguir @${user.username}`,
+            vaiSeguir ? `Agora você segue @${pessoa.username}` : `Você deixou de seguir @${pessoa.username}`,
             'success'
         );
     }
 
-    function updateProfileFollowStats(userId, isFollowing) {
+    async function pedirAmizade(userId, botao) {
+        if (!currentUser || !isValidUuid(userId) || userId === currentUser.id) return;
+        const pessoa = acharPessoa(userId);
+        if (!pessoa || botao.disabled) return;
+
+        atualizarBotaoAmizade(botao, pessoa, true);
+
+        const { data, error } = await supabase.rpc('send_friend_request', { p_receiver_id: userId });
+
+        if (error || data?.success === false) {
+            const msg = data?.error || error?.message || 'Não foi possível enviar o pedido de amizade.';
+            console.warn('⚠️ Pedido de amizade não enviado:', msg);
+            atualizarBotaoAmizade(botao, pessoa);
+            showToast(msg, 'error', 5000);
+            return;
+        }
+
+        pessoa.friendship_status = 'pending';
+        pessoa.is_requester = true;
+        atualizarBotaoAmizade(botao, pessoa);
+        atualizarLinha(userId);
+        showToast(`Pedido de amizade enviado para @${pessoa.username}.`, 'success');
+    }
+
+    function atualizarEstatisticasPerfil(userId, isFollowing) {
         if (!profileUser) return;
 
         const delta = isFollowing ? 1 : -1;
@@ -672,13 +908,162 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    document.getElementById('suggestedProfilesList')?.addEventListener('click', event => {
-        const button = event.target instanceof Element
-            ? event.target.closest('.suggestion-follow-button')
-            : null;
-        if (!button) return;
-        toggleFollowSuggestion(button.dataset.userId, button);
-    });
+    // =============================================
+    // 8.1.4 EXPANDIR / RECOLHER
+    // =============================================
+    function aplicarEstadoPainel() {
+        const painel = document.getElementById('suggestedProfilesPanel');
+        const botao = document.getElementById('suggestedProfilesMore');
+        const rotulo = document.getElementById('suggestedProfilesMoreLabel');
+        const card = document.getElementById('suggestedProfilesCard');
+
+        if (painel) painel.hidden = !painelAberto;
+        if (botao) botao.setAttribute('aria-expanded', String(painelAberto));
+        if (card) card.classList.toggle('is-expanded', painelAberto);
+
+        if (rotulo) {
+            const total = totalPessoas || pessoas.length;
+            rotulo.textContent = painelAberto
+                ? 'Mostrar menos'
+                : (total > suggestedProfiles.length
+                    ? `Encontrar mais pessoas (${Math.max(0, total - suggestedProfiles.length)})`
+                    : 'Encontrar mais pessoas');
+        }
+    }
+
+    async function alternarPainel() {
+        if (semDiscoverRpc) {
+            mostrarAvisoDiscover();
+            return;
+        }
+        painelAberto = !painelAberto;
+        aplicarEstadoPainel();
+        if (!painelAberto) return;
+
+        // A primeira pagina ja veio no carregamento do card, entao aqui
+        // normalmente so falta desenhar. So busca de novo se estiver vazio.
+        if (pessoas.length) {
+            renderizarPessoas();
+            return;
+        }
+
+        const list = document.getElementById('suggestedProfilesFullList');
+        if (list) list.setAttribute('aria-busy', 'true');
+        await buscarPessoas({ reiniciar: true });
+    }
+
+    function agendarBusca() {
+        if (timerBusca) clearTimeout(timerBusca);
+        timerBusca = setTimeout(async () => {
+            await buscarPessoas({ reiniciar: true });
+        }, 280);
+    }
+
+    // Um delegador so para as duas listas: os botoes nascem e morrem a
+    // cada render, e listener em cada botao vazaria.
+    function registrarAcoesPessoas(container) {
+        if (!container) return;
+        container.addEventListener('click', event => {
+            const alvo = event.target instanceof Element ? event.target : null;
+            if (!alvo) return;
+            const botao = alvo.closest('[data-acao]');
+            if (!botao || !container.contains(botao)) return;
+            event.preventDefault();
+            const userId = botao.dataset.userId;
+            if (botao.dataset.acao === 'seguir') alternarSeguir(userId, botao);
+            else if (botao.dataset.acao === 'amizade') pedirAmizade(userId, botao);
+        });
+    }
+
+    // =============================================
+    // 8.1.5 LISTAGEM ANTES (o card abre, a lista espera pelo clique)
+    // =============================================
+    async function loadFollowSuggestions() {
+        const card = document.getElementById('suggestedProfilesCard');
+        const list = document.getElementById('suggestedProfilesList');
+        if (!currentUser || !card || !list) return;
+
+        registrarAcoesPessoas(list);
+        registrarAcoesPessoas(document.getElementById('suggestedProfilesFullList'));
+
+        const botaoMais = document.getElementById('suggestedProfilesMore');
+        if (botaoMais && !botaoMais.dataset.ligado) {
+            botaoMais.dataset.ligado = '1';
+            botaoMais.addEventListener('click', alternarPainel);
+        }
+
+        const busca = document.getElementById('suggestedProfilesSearch');
+        if (busca && !busca.dataset.ligado) {
+            busca.dataset.ligado = '1';
+            busca.addEventListener('input', event => {
+                buscaPessoas = String(event.target.value || '').trim();
+                agendarBusca();
+            });
+        }
+
+        const mais = document.getElementById('suggestedProfilesLoadMore');
+        if (mais && !mais.dataset.ligado) {
+            mais.dataset.ligado = '1';
+            mais.addEventListener('click', () => buscarPessoas());
+        }
+
+        card.removeAttribute('hidden');
+        card.setAttribute('aria-busy', 'true');
+
+        try {
+            await buscarPessoas({ reiniciar: true });
+
+            if (semDiscoverRpc) {
+                await carregarPreviaLegada();
+                return;
+            }
+
+            if (!pessoas.length) {
+                card.hidden = true;
+                return;
+            }
+            aplicarEstadoPainel();
+        } catch (err) {
+            console.warn('⚠️ Erro ao carregar sugestões de perfis:', err);
+            card.hidden = true;
+            list.replaceChildren();
+        } finally {
+            card.setAttribute('aria-busy', 'false');
+        }
+    }
+
+    // Sem a discover_people (ainda nao rodou o sql/16), mantem o
+    // comportamento antigo: 3 perfis novos com so botao de Seguir.
+    async function carregarPreviaLegada() {
+        const list = document.getElementById('suggestedProfilesList');
+        const aviso = document.getElementById('suggestedProfilesNote');
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .order('created_at', { ascending: false })
+                .limit(24);
+            if (error) throw error;
+
+            pessoas = (data || [])
+                .filter(p => p && isValidUuid(p.id) && p.id !== currentUser.id)
+                .map(p => normalizarPessoa({ ...p, is_following: false }));
+
+            if (aviso) {
+                aviso.hidden = false;
+                aviso.textContent = 'Rode sql/16_descobrir_pessoas.sql para ver todas as pessoas, com busca e pedido de amizade.';
+            }
+            const botaoMais = document.getElementById('suggestedProfilesMore');
+            if (botaoMais) botaoMais.hidden = true;
+
+            renderSuggestedProfiles();
+        } catch (err) {
+            console.warn('⚠️ Erro ao carregar Suggestions legadas:', err);
+            const card = document.getElementById('suggestedProfilesCard');
+            if (card) card.hidden = true;
+            if (list) list.replaceChildren();
+        }
+    }
 
     // =============================================
     // 9. ABAS INTERNAS
