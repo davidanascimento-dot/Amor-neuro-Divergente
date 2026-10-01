@@ -2268,6 +2268,94 @@ body.text-decreased { font-size: 0.9rem; }
     color: var(--text-dark);
 }
 
+/* --------------------------------------------------------------
+   AVISO DE QUE É IA + CONTATOS DE AJUDA
+
+   Ficam acima da conversa, sempre visíveis enquanto o modal está
+   aberto. Antes o número só aparecia depois que a conversa começava,
+   e nada dizia que a IA não substitui profissional.
+
+   Usam as mesmas variáveis do resto do modal, então o modo escuro
+   (que redefine as variáveis) acompanha sem regra extra.
+   -------------------------------------------------------------- */
+.acolheria-ai-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0;
+    padding: 11px 16px;
+    background: var(--primary-light);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    line-height: 1.55;
+    flex-shrink: 0;
+}
+
+.acolheria-ai-aviso > i {
+    margin-top: 2px;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.acolheria-ai-aviso strong {
+    font-weight: 700;
+}
+
+.acolheria-ajuda-rapida {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.acolheria-ajuda-titulo {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.acolheria-ajuda-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.acolheria-ajuda-link:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.acolheria-ajuda-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.acolheria-ajuda-nota {
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--text-dark);
+    opacity: 0.7;
+}
+
 .acolheria-modal-body {
     flex: 1;
     overflow-y: auto;

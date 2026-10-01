@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="carrossel.css">
     <!-- 🆕 Estilos das novas seções -->
     <link rel="stylesheet" href="Explorar/Explorar.css">
+  <link rel="stylesheet" href="/movimento-reduzido.css">
 </head>
 
 <body>
@@ -36,6 +37,42 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
+            <!-- Aviso permanente, antes da conversa.
+                 O prompt da IA ja diz que ela nao substitui profissional,
+                 mas isso nao aparecia na tela. O rotulo "Especialista em
+                 neurodivergencia" gerava confianca demais para uma
+                 maquina responder. -->
+            <p class="acolheria-ai-aviso" id="acolheriaAiAviso">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                <span><strong>Isto é uma inteligência artificial.</strong>
+                Ela ajuda com informação e acolhimento, mas <strong>não faz
+                diagnóstico e não substitui profissional</strong> de saúde.
+                Nada aqui é orientação médica, psicológica ou jurídica.</span>
+            </p>
+
+            <!-- Contatos de ajuda. O painel de seguranca ja tinha CVV e
+                 SAMU com tel:188 e tel:192, mas so aparecia depois que a
+                 conversa comecava. Quem chega em "Desabafar" ou "Crise
+                 sensorial" precisa ver o numero antes de perguntar. -->
+            <div class="acolheria-ajuda-rapida" id="acolheriaAjudaRapida">
+                <span class="acolheria-ajuda-titulo">Precisa de ajuda agora?</span>
+                <a class="acolheria-ajuda-link" href="tel:188">
+                    <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                    CVV&nbsp;188
+                    <span class="acolheria-ajuda-nota">gratuito, 24h</span>
+                </a>
+                <a class="acolheria-ajuda-link" href="tel:192">
+                    <i class="fa-solid fa-truck-medical" aria-hidden="true"></i>
+                    SAMU&nbsp;192
+                    <span class="acolheria-ajuda-nota">emergência</span>
+                </a>
+                <button type="button" class="acolheria-ajuda-link is-caps" id="acolheriaCapsBusca">
+                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                    CAPS&nbsp;UBS
+                    <span class="acolheria-ajuda-nota">perto de você</span>
+                </button>
+            </div>
+
             <div class="acolheria-modal-body" id="acolheriaChatBody"></div>
             <div class="acolheria-suggestions" id="acolheriaSuggestions">
                 <button class="acolheria-suggestion" data-prompt="O que é TDAH?">TDAH</button>
@@ -53,7 +90,8 @@
                     </button>
                 </div>
                 <div class="acolheria-footer-note">
-                    <i class="fa-regular fa-circle-check"></i> AcolherIA • Especialista em neurodivergência
+                    <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                    AcolherIA — assistente virtual. Não substitui atendimento humano.
                 </div>
             </div>
         </div>
@@ -78,8 +116,13 @@
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
             <div class="profile-detail" id="profileDetail" hidden>
-                <p id="sidebarUserEmail">carregando@email.com</p>
-                <a href="/configurações/configurações.html" class="profile-link">Editar perfil</a>
+                <!-- Escondido por padrão: sem sessão não existe e-mail.
+                     O texto "carregando@email.com" ficava na tela para
+                     sempre, porque o JS só preenche o campo quando há
+                     login — para quem não entrou, era um "carregando"
+                     que nunca terminava. -->
+                <p id="sidebarUserEmail" hidden></p>
+                <a href="/configurações/configurações.html" class="profile-link" id="sidebarEditarPerfil" hidden>Editar perfil</a>
             </div>
         </div>
 
@@ -93,7 +136,12 @@
         <div class="sidebar-secondary">
             <a href="loja/loja.html" class="sidebar-link small"><i class="fa-solid fa-bag-shopping"></i> Loja</a>
             <a href="apoiar/apoiar.html" class="sidebar-link small"><i class="fa-regular fa-heart"></i> Apoiar</a>
-            <a href="login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+            <!-- "Entrar" é o estado padrão real (quase todo mundo entra
+                 sem conta, o próprio login avisa que o conteúdo é
+                 aberto). O auth-global.js troca por "Sair" quando há
+                 sessão. Escrever "Sair" aqui mostrava a ação errada a
+                 quem só estava lendo. -->
+            <a href="login/login.html" class="sidebar-link small" id="logoutBtn" data-logged="false"><i class="fa-solid fa-right-to-bracket"></i> Entrar</a>
         </div>
     </aside>
 
@@ -889,5 +937,6 @@
     });
     </script>
 
+<script src="/pular-conteudo.js"></script>
 </body>
 </html>

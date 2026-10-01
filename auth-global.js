@@ -175,8 +175,29 @@
             const emailTargets = ['dropdownUserEmail', 'sidebarUserEmail'];
             emailTargets.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.textContent = email;
+                if (el) {
+                    el.textContent = email;
+                    // Só existe quando há sessão. Sem isso o placeholder
+                    // do HTML ("carregando@email.com") continuava na tela
+                    // de quem não entrou.
+                    el.hidden = false;
+                }
             });
+
+            const editar = document.getElementById('sidebarEditarPerfil');
+            if (editar) editar.hidden = false;
+        } else {
+            // Sem sessão: e-mail e "Editar perfil" não têm o que mostrar.
+            // "Editar perfil" seria beco sem saída para quem não tem conta.
+            ['dropdownUserEmail', 'sidebarUserEmail'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = '';
+                    el.hidden = true;
+                }
+            });
+            const editar = document.getElementById('sidebarEditarPerfil');
+            if (editar) editar.hidden = true;
         }
 
         // --- Atualiza botão "Sair/Entrar" da sidebar ---

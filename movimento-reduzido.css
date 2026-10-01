@@ -1,0 +1,103 @@
+/* ==========================================================================
+   LINK "PULAR PARA O CONTEÚDO"
+
+   Criado pelo pular-conteudo.js. Fica fora da tela até o Tab encostar
+   nele. Sem display:none, porque um elemento escondido não recebe
+   foco e o link nunca apareceria.
+
+   top em -100px, e não left:-9999px: elementos fora da tela pela
+   horizontal fazem o navegador rolar a página para a esquerda ao
+   focar, o que é pior que o problema que estamos resolvendo.
+   ========================================================================== */
+.pular-conteudo {
+    position: absolute;
+    top: -100px;
+    left: 8px;
+    z-index: 9999;
+    padding: 12px 20px;
+    border-radius: 0 0 10px 10px;
+    background: var(--pf-verified, #1d9bf0);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    transition: top 0.18s ease;
+}
+
+.pular-conteudo:focus,
+.pular-conteudo:focus-visible {
+    top: 0;
+    outline: 3px solid #1a1a2e;
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   MOVIMENTO-REDUZIDO.CSS — respeita "reduzir movimento" do sistema
+
+   Por que um arquivo só, em vez de uma regra em cada CSS do site:
+   a preferência vive no sistema operacional da pessoa, não numa
+   configuração nossa. Ela precisa valer em TODA página, inclusive
+   nas que ninguém lembra de mexer. Uma regra por arquivo sempre
+   ficava faltando alguma — antes deste arquivo, só 7 dos 19 CSS
+   tinham prefers-reduced-motion, e o da home cobria um único elemento.
+
+   Como funciona: em vez de `animation: none`, a duração vai a quase
+   zero. Assim a animação ainda "termina" e o JS que espera o evento
+   animationend continua funcionando. Zerar de verdade quebraria
+   carrossel, modal e menu.
+
+   Como ativar no celular (iPhone/Android): Ajustes > Acessibilidade >
+   "Reduzir movimento" / "Remover animações".
+
+   Como ativar no computador: Configurações > Acessibilidade >
+   "Efeitos visuais" > Animations = None.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        /* Duracao quase zero em vez de "none": a animacao ainda termina e
+           dispara animationend. Hoje nenhum JS escuta esse evento, mas
+           zerar a animacao inteira quebraria qualquer carrossel ou modal
+           que passe a depender dele no futuro.
+
+           Combinado com iteration-count: 1, as animacoes infinitas (o
+           pulso de 4s, o arco-iris de 3s girando 360 graus) param depois
+           de um quadro imperceptivel. */
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* O painel de seguranca abria deslizando de lado. */
+    .acolheria-safety {
+        transition: none;
+    }
+
+    /* Carrossel e sliders: sem deslizar, o conteudo troca de posicao. */
+    .carousel-item,
+    .slide,
+    .slider,
+    [class*="carousel"] *,
+    [class*="slider"] * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* UmUtils fallback: respeita também a classe que o site usava antes
+   (a11y-reduce-motion), para quem ligava pelo botão antigo. */
+.a11y-reduce-motion *,
+.a11y-reduce-motion *::before,
+.a11y-reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
