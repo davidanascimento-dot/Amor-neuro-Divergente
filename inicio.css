@@ -3434,6 +3434,251 @@ border: 1px solid var(--primary);
 
 
 /* =============================================
+   BANNER DA ACOLHERIA — Lia
+
+   Mesmo formato do .community-card: a arte DE FUNDO e o texto por cima.
+
+   A primeira versão tinha a Lia numa coluna de imagem ao lado do texto.
+   Isso comia metade da largura, deixava a descrição espremida em 4
+   linhas curtas e o bloco ficava desproporcional. Como este formato vai
+   se repetir em outros banners da home, o que sobra de espaço precisa
+   ser para a leitura, não para uma foto.
+
+   As classes não se misturam com as da comunidade: se um dia um dos
+   dois mudar de layout, o outro não vai junto sem querer.
+   ============================================= */
+.acolheria-banner-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.acolheria-card {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  /* O texto é o que manda na altura. min-height só evita que um texto
+     curto vire uma tira fina. */
+  min-height: 300px;
+  padding: 48px 44px;
+  color: #ffffff;
+  border-radius: 4px;
+
+  /* Três camadas, de trás para frente:
+
+     1. véu escuro. Fecha à esquerda, onde fica o texto, e clareia no
+        meio-direita, onde fica a Lia — ela precisa aparecer, não ser
+        encoberta. A ponta direita escurece de novo de propósito: ali
+        moram os botões flutuantes (UserWay, VLibras, hub de ajuda).
+     2. a arte: o RETRATO inteiro (avatar), não o corpo inteiro e sem
+        corte.
+        - `contain` e não `cover`: a arte é quadrada e o banner é largo.
+          `cover` esticaria até cortar o rosto. `auto 150%` cortava
+          também — o coque encostava no topo e o queixo sumia embaixo.
+          `contain` é a única das três que garante a imagem inteira em
+          qualquer largura, inclusive quando o card fica mais alto que
+          largo (tela estreita).
+        - `right 90px`: respiro medido. Os botões flutuantes (UserWay
+          44px, hub 64px) ocupam os últimos 88px da tela, no canto
+          inferior direito. Com 34px, eles cobriam a borda do desenho
+          dela. Com 90px o traço inteiro passa livre dos dois.
+     3. gradiente roxo de rede, para o bloco não ficar preto antes de a
+        arte carregar.
+
+     Não há fade: ele só existia para disfarçar o corte do busto. Sem
+     corte, não há o que esconder.
+
+     A URL chega na variável --img-fundo, aplicada por JS: CSS não lê
+     arquivo de configuração. Sem JS, cai na camada 3. */
+  background:
+    linear-gradient(100deg,
+      rgba(24, 13, 38, 0.97) 0%,
+      rgba(24, 13, 38, 0.93) 36%,
+      rgba(24, 13, 38, 0.52) 64%,
+      rgba(24, 13, 38, 0.26) 86%,
+      rgba(24, 13, 38, 0.60) 100%),
+    var(--img-fundo, none) right 90px center / contain no-repeat,
+    linear-gradient(135deg, rgba(48, 24, 60, 0.96), rgba(24, 16, 42, 0.98)) center / cover no-repeat;
+}
+
+.acolheria-card-content {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  /* Param antes do busto. Com o retrato em `auto 150%` ele ocupa uns
+     570px à direita; 500px de texto deixa a borda esquerda do traço
+     cair sob o véu escuro, e não em cima da letra. */
+  max-width: 500px;
+}
+
+/* Uma tag só, discreta. Antes eram duas ("AcolherIA" e "Lia"), e o
+   nome do sistema competia com o da personagem no mesmo peso. */
+.acolheria-badge-nome {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(196, 153, 248, 0.16);
+  border: 1px solid rgba(196, 153, 248, 0.45);
+  color: #d9c2ff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.acolheria-badge-nome > i {
+  font-size: 0.8rem;
+}
+
+/* O título é o elemento principal do banner. */
+.acolheria-card-subtitle {
+  margin: 4px 0 0;
+  color: #ffffff !important;
+  font-size: clamp(1.45rem, 2.6vw, 1.95rem) !important;
+  font-weight: 300;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.acolheria-card-subtitle strong {
+  font-weight: 800;
+  /* A Lia ganha a cor da marca: é ela que o título está anunciando. */
+  color: #c499f8 !important;
+}
+
+.acolheria-card-description {
+  max-width: 460px !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: 0.96rem !important;
+  line-height: 1.55 !important;
+  opacity: 0.9;
+}
+
+/* Aviso de que é IA: obrigatório, mas em nota miúda. Ficava no meio do
+   texto e competia com a chamada. */
+.acolheria-card-nota {
+  max-width: 480px;
+  margin: 2px 0 0;
+  padding-left: 11px;
+  border-left: 2px solid rgba(196, 153, 248, 0.4);
+  color: #ffffff;
+  opacity: 0.62;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.acolheria-card-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 9px;
+  margin-top: 10px !important;
+  padding: 12px 28px !important;
+  border: none;
+  border-radius: 999px !important;
+  background-color: #c499f8 !important;
+  color: #1e1030 !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700 !important;
+  font-size: 0.97rem !important;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+  /* Sombra já no estado normal: no escuro, um botão chapado some. */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.34);
+}
+
+.acolheria-card-btn:hover {
+  background-color: #ddc2ff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.44);
+}
+
+.acolheria-card-btn:active {
+  transform: translateY(0);
+}
+
+.acolheria-card-btn:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Empilha só em telefone.
+
+   O primeiro rascunho empilhava em 820px e o resultado ficava estranho:
+   o card da AcolherIA ficava com o dobro da altura do card da comunidade
+   na mesma largura, e os dois blocos de destaque paravam de ler como par.
+   O .community-card não tem regra responsiva nenhuma, então ele continua
+   deitado até ficar apertado de verdade. Aqui o limite é o mesmo.
+
+   Em tela estreita o card tem ~340px de largura. O retrato não cabe ao
+   lado do texto em nenhum tamanho útil, então ele vira textura: encolhe
+   e perde força atrás de um véu quase opaco. Continua reconhecido como
+   retrato, sem roubar leitura. */
+@media (max-width: 640px) {
+  .acolheria-card {
+    padding: 28px 22px;
+    min-height: 0;
+    background:
+      linear-gradient(180deg,
+        rgba(24, 13, 38, 0.82) 0%,
+        rgba(24, 13, 38, 0.92) 55%,
+        rgba(24, 13, 38, 0.97) 100%),
+      var(--img-fundo, none) right 0 center / contain no-repeat,
+      linear-gradient(135deg, rgba(48, 24, 60, 0.96), rgba(24, 16, 42, 0.98)) center / cover no-repeat;
+  }
+
+  .acolheria-card-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .acolheria-card-description {
+    max-width: 100% !important;
+  }
+}
+
+/* Entre 641px e 1024px não cabe retrato, texto e folga dos widgets ao
+   mesmo tempo: 400px de texto + 326px de retrato + 88px dos botões dá
+   814px, e o card nessa faixa tem menos que isso.
+
+   A escolha foi dar o espaço para o texto e para os widgets: o retrato
+   ganha 60px de respiro em vez de 20, e o texto limita a 52% da largura
+   disponível. O retrato continua inteiro, aparecendo inteiro, à direita.
+   O véu fecha mais à esquerda porque o texto divide a faixa com ele. */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .acolheria-card {
+    padding: 38px 32px;
+    background:
+      linear-gradient(100deg,
+        rgba(24, 13, 38, 0.97) 0%,
+        rgba(24, 13, 38, 0.95) 48%,
+        rgba(24, 13, 38, 0.62) 78%,
+        rgba(24, 13, 38, 0.40) 100%),
+      var(--img-fundo, none) right 60px center / contain no-repeat,
+      linear-gradient(135deg, rgba(48, 24, 60, 0.96), rgba(24, 16, 42, 0.98)) center / cover no-repeat;
+  }
+
+  .acolheria-card-content {
+    max-width: 52%;
+  }
+
+  .acolheria-card-subtitle {
+    font-size: 1.12rem;
+  }
+}
+
+/* =============================================
    LINKS RESTRITOS (bloqueados para visitantes)
    ============================================= */
 a.is-locked {

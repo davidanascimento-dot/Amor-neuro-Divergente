@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="direitos.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
+  <script src="/imagens.js"></script>
 </head>
 
 <body>
@@ -450,19 +451,36 @@
              CONTATO
              ============================================= -->
         <section class="rights-contact" id="contato">
-            <div class="rights-contact__card">
-                <div class="rights-contact__icon"><i class="fa-solid fa-robot"></i></div>
+            <!-- Mesmo modelo do card da home: arte de fundo, texto por
+                 cima, sem coluna de ícone. O ícone de robô ocupava 80px
+                 de largura e empurrava o texto para o meio, longe do
+                 respiro que a Lia precisa. -->
+            <div class="rights-contact__card" data-img-fundo="acolheria-card-bg">
                 <div class="rights-contact__content">
+                    <span class="acolheria-badge-nome">
+                        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                        Assistente Virtual
+                    </span>
+
                     <h2>Ainda com dúvidas sobre seus direitos?</h2>
-                    <p>Converse com a <strong>AcolherIA</strong>, nossa assistente especializada em neurodivergência. Ela pode te orientar sobre leis, benefícios e como agir em situações específicas.</p>
+
+                    <p>Converse com a <strong>Lia</strong> sobre leis, benefícios e como agir em situações específicas.</p>
+
                     <div class="rights-contact__actions">
                         <a href="/chat-Ia/chat-Ia.html" class="btn-primary">
-                            Conversar com AcolherIA <i class="fa-solid fa-arrow-right"></i>
+                            <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+                            Conversar com a Lia
                         </a>
                         <a href="/comunidade/comunidade.html" class="btn-secondary">
                             Entrar na comunidade
                         </a>
                     </div>
+
+                    <p class="acolheria-card-nota">
+                        AcolherIA é uma inteligência artificial. Ajuda com informação
+                        e acolhimento, mas não faz diagnóstico e não substitui
+                        profissional de saúde.
+                    </p>
                 </div>
             </div>
         </section>

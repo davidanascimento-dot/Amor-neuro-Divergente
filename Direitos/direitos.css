@@ -1122,76 +1122,175 @@ body.a11y-reduce-motion .rights-nav__chip i {
    CONTATO / CTA FINAL
    ========================================= */
 .rights-contact {
-    padding: 20px 48px 80px;
+    /* Sem padding lateral: o card encosta nas bordas da tela, de ponta a
+       ponta. O respiro do texto vem do padding interno do card. */
+    padding: 20px 0 80px;
 }
+/* Mesmo modelo do card da home (inicio.css, .acolheria-card): arte de
+   fundo ancorada à direita, texto por cima, retrato inteiro e sem corte.
+
+   As cores são as da ÁREA, não as da home. A base é o gradiente roxo que
+   já existia aqui (#1f1235 → #3b1a5c → #4b1e6e), o véu usa rgba(15,10,30)
+   — o mesmo tom do overlay do .rights-banner, que é a base escura da
+   página — e o destaque é o lavanda #a78bfa, par do #7c3aed do site.
+
+   O radial roxo do canto superior direito foi removido: ele existia para
+   dar profundidade a um card que era só texto. Com a arte atrás, só
+   sujava o rosto.
+
+   As camadas, de trás para frente:
+     1. véu escuro: fecha à esquerda (texto) e clareia à direita (retrato);
+        a ponta escurece de novo porque ali moram os botões flutuantes.
+     2. o retrato, com `contain`: a arte é quadrada e o banner é largo, e
+        qualquer outra medida corta. `cover` estica e perde o rosto;
+        `auto 150%` e `auto 180%` cortam por cima e por baixo (o coque
+        encostava no topo, o queixo sumia embaixo). `contain` é a única
+        que mostra a imagem inteira em qualquer largura — inclusive
+        quando o card fica mais alto que largo, como no telefone.
+        `right 90px`: respiro medido. Os botões flutuantes (UserWay
+        44px, hub 64px) ocupam os últimos 88px da tela, no canto
+        inferior direito. Com 34px, eles cobriam a borda do desenho
+        dela. Com 90px o traço inteiro passa livre dos dois.
+     3. gradiente roxo da área, para o bloco não ficar preto antes da
+        arte carregar.
+
+   Não há fade: ele só existia para disfarçar o corte do busto.
+
+   A URL chega em --img-fundo, aplicada por /imagens.js: CSS não lê
+   arquivo de configuração. Sem JS, cai na camada 3. */
 .rights-contact__card {
-    max-width: 1000px;
-    margin: 0 auto;
-    background: linear-gradient(135deg, #1f1235 0%, #3b1a5c 60%, #4b1e6e 100%);
-    border-radius: 24px;
-    padding: 56px 48px;
+    max-width: none;
+    border-radius: 0;
+    /* Padding interno fluido: em tela larga o texto não encosta na
+       borda, e o card continua de ponta a ponta. */
+    padding: 56px max(28px, 6vw);
+    min-height: 300px;
     display: flex;
     align-items: center;
-    gap: 36px;
     color: #fff;
     position: relative;
     overflow: hidden;
-}
-.rights-contact__card::before {
-    content: '';
-    position: absolute;
-    top: -100px; right: -100px;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(167,139,250,0.25) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-}
-.rights-contact__icon {
-    flex-shrink: 0;
-    width: 80px; height: 80px;
-    background: rgba(255,255,255,0.12);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 34px;
-    color: #e9d5ff;
-    position: relative;
-    z-index: 1;
+    background:
+        linear-gradient(100deg,
+            rgba(15, 10, 30, 0.97) 0%,
+            rgba(15, 10, 30, 0.93) 36%,
+            rgba(15, 10, 30, 0.52) 64%,
+            rgba(15, 10, 30, 0.26) 86%,
+            rgba(15, 10, 30, 0.60) 100%),
+        var(--img-fundo, none) right 90px center / contain no-repeat,
+        linear-gradient(135deg, #1f1235 0%, #3b1a5c 60%, #4b1e6e 100%) center / cover no-repeat;
 }
 .rights-contact__content {
-    flex: 1;
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    /* Param antes do busto, como na home. */
+    max-width: 520px;
 }
 .rights-contact h2 {
-    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+    margin: 4px 0 0;
+    font-size: clamp(1.45rem, 2.6vw, 1.95rem) !important;
     font-weight: 800;
-    margin: 0 0 10px;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
     color: #fff;
 }
-.rights-contact p {
-    font-size: 15px;
-    color: #d8ccf0;
-    line-height: 1.65;
-    margin: 0 0 22px;
-    max-width: 620px;
+/* Só a descrição. A regra era `.rights-contact p`, que também pegava a
+   nota da AcolherIA e a deixava com 15px em vez de 11.8px: `.rights-contact
+   p` tem especificidade (0,1,1) com !important, e `.acolheria-card-nota`
+   (0,1,0) não vencia. */
+.rights-contact__content > p:not(.acolheria-card-nota) {
+    margin: 0 !important;
+    max-width: 460px !important;
+    font-size: 15.36px !important;
+    line-height: 1.55 !important;
+    color: #fff;
+    opacity: 0.9;
 }
-.rights-contact p strong { color: #fff; }
+.rights-contact__content > p:not(.acolheria-card-nota) strong { color: #a78bfa; }
+
+/* Tag e nota vêm de inicio.css. Aqui só a cor, para casar com a área:
+   mesmos valores do .rights-banner__eyebrow. */
+.rights-contact .acolheria-badge-nome {
+    background: rgba(124, 58, 237, 0.25);
+    border-color: rgba(167, 139, 250, 0.4);
+    color: #e9d5ff;
+}
+.rights-contact .acolheria-card-nota {
+    border-left-color: rgba(167, 139, 250, 0.4);
+}
+
 .rights-contact__actions {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    margin-top: 10px;
 }
+
+/* O CTA principal deixa de usar --btn-gradient (sépia #a8836a → #eba66d
+   com texto branco: 2.6:1, e no roxo do card lia como botão amarronzado).
+   Agora é lavanda com texto em roxo profundo — a mesma troca de papel do
+   banner da home, mas na cor da área. */
+.rights-contact__actions .btn-primary {
+    background: #c4b5fd;
+    color: #2e1065;
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(15, 10, 30, 0.45);
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+.rights-contact__actions .btn-primary:hover {
+    background: #ddd6fe;
+    color: #2e1065;
+    box-shadow: 0 10px 26px rgba(15, 10, 30, 0.55);
+}
+.rights-contact__actions .btn-primary:hover i { transform: none; }
+.rights-contact__actions .btn-primary:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
 .rights-contact__actions .btn-secondary {
     color: #fff;
-    border-color: rgba(255,255,255,0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 12px 28px;
 }
 .rights-contact__actions .btn-secondary:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-color: #fff;
     color: #fff;
+}
+.rights-contact__actions .btn-secondary:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
+/* Tela larga: o card vai de ponta a ponta, então num monitor de 1440px ou
+   mais o retrato ficava pequeno numa faixa de 1300px — sobrava um vazio
+   de 250px entre o texto e a Lia.
+
+   A arte não pode ser ampliada: com `contain` ela já ocupa a altura
+   inteira do card, e aumentar a Percentagem volta a cortar o retrato. O
+   que dá para fazer é aumentar a ALTURA do card, o que deixa a arte
+   maior sem cortar nada. */
+@media (min-width: 1200px) {
+    .rights-contact__card {
+        min-height: 380px;
+        background:
+            linear-gradient(100deg,
+                rgba(15, 10, 30, 0.97) 0%,
+                rgba(15, 10, 30, 0.93) 36%,
+                rgba(15, 10, 30, 0.52) 64%,
+                rgba(15, 10, 30, 0.26) 86%,
+                rgba(15, 10, 30, 0.60) 100%),
+            var(--img-fundo, none) right 90px center / contain no-repeat,
+            linear-gradient(135deg, #1f1235 0%, #3b1a5c 60%, #4b1e6e 100%) center / cover no-repeat;
+    }
 }
 
 /* =========================================
@@ -1477,8 +1576,25 @@ body.a11y-reduce-motion .btn-secondary {
     .editorial-card--reverse .editorial-card__media { order: 0; }
     .editorial-card--reverse .editorial-card__panel { order: 0; }
     .editorial-card__media { min-height: 240px; }
-    .rights-contact__card { flex-direction: column; text-align: center; padding: 40px 32px; }
-    .rights-contact__actions { justify-content: center; }
+
+    /* Não cabe retrato, texto e folga dos widgets ao mesmo tempo nessa
+       faixa. O espaço vai para o texto (52% da largura) e para os
+       widgets (60px de respiro, em vez de 20). O retrato continua
+       inteiro à direita. */
+    .rights-contact__card {
+        padding: 40px 32px;
+        background:
+            linear-gradient(100deg,
+                rgba(15, 10, 30, 0.97) 0%,
+                rgba(15, 10, 30, 0.95) 48%,
+                rgba(15, 10, 30, 0.62) 78%,
+                rgba(15, 10, 30, 0.40) 100%),
+            var(--img-fundo, none) right 60px center / contain no-repeat,
+            linear-gradient(135deg, #1f1235 0%, #3b1a5c 60%, #4b1e6e 100%) center / cover no-repeat;
+    }
+    .rights-contact__content { max-width: 52%; }
+    .rights-contact h2 { font-size: 1.12rem; }
+    .rights-contact__content > p:not(.acolheria-card-nota) { max-width: 100% !important; }
 }
 
 @media (max-width: 900px) {
@@ -1516,7 +1632,11 @@ body.a11y-reduce-motion .btn-secondary {
     .case-box { padding: 28px; }
     .case-form-row { flex-direction: column; }
     .rights-faq { padding: 60px 24px; }
-    .rights-contact { padding: 20px 24px 60px; }
+    /* Sem padding lateral também aqui. Esta regra vem depois da regra
+       base da seção e sobrescrevia os 24px, então o card ficava com
+       margem nas laterais mesmo em tela estreita — não encostava
+       nas bordas como o resto do bloco. */
+    .rights-contact { padding: 20px 0 60px; }
 }
 
 @media (max-width: 768px) {
@@ -1548,7 +1668,25 @@ body.a11y-reduce-motion .btn-secondary {
     .editorial-card__title { font-size: 1.15rem; }
     .editorial-card__media { min-height: 200px; }
     .rights-faq__head h2 { font-size: 1.4rem; }
-    .rights-contact__icon { width: 60px; height: 60px; font-size: 26px; }
+
+    /* Em telefone o card fica mais alto que largo. `contain` resolve
+       sozinho: ele passa a limitar pela LARGURA, então o retrato inteiro
+       aparece, encaixado, em vez de ser cortado nas laterais. */
+    .rights-contact__card {
+        padding: 32px 22px;
+        min-height: 0;
+        background:
+            linear-gradient(180deg,
+                rgba(15, 10, 30, 0.82) 0%,
+                rgba(15, 10, 30, 0.92) 55%,
+                rgba(15, 10, 30, 0.97) 100%),
+            var(--img-fundo, none) right 0 center / contain no-repeat,
+            linear-gradient(135deg, #1f1235 0%, #3b1a5c 60%, #4b1e6e 100%) center / cover no-repeat;
+    }
+    .rights-contact h2 { font-size: 1.1rem; }
+    .rights-contact__actions { width: 100%; }
+    .rights-contact__actions .btn-primary,
+    .rights-contact__actions .btn-secondary { flex: 1 1 auto; justify-content: center; }
 
     .footer-main { grid-template-columns: 1fr; }
 }

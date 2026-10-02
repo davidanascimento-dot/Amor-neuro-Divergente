@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" width="900" height="1100" role="img" aria-label="Espaço reservado para a Lia">
+  <defs>
+    <style>
+      .tr { fill: none; stroke: #7c3aed; stroke-width: 5; stroke-dasharray: 16 12; }
+      .tx { fill: #a78bfa; font-family: 'Segoe UI', system-ui, sans-serif; }
+      .sm { fill: #8b7fb8; font-family: 'Segoe UI', system-ui, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="900" height="1100" fill="#17112b"/>
+  <rect class="tr" x="30" y="30" width="840" height="1040" rx="28"/>
+
+  <!-- cabeça -->
+  <circle cx="450" cy="430" r="150" fill="none" stroke="#6d5aa8" stroke-width="4" opacity=".55"/>
+  <!-- corpo -->
+  <path d="M 250 1020 C 250 800, 340 720, 450 720 C 560 720, 650 800, 650 1020"
+        fill="none" stroke="#6d5aa8" stroke-width="4" opacity=".55"/>
+
+  <!-- olhos -->
+  <circle cx="400" cy="415" r="26" fill="none" stroke="#6d5aa8" stroke-width="4" opacity=".55"/>
+  <circle cx="500" cy="415" r="26" fill="none" stroke="#6d5aa8" stroke-width="4" opacity=".55"/>
+
+  <text class="tx" x="450" y="640" font-size="62" font-weight="700" text-anchor="middle">Lia</text>
+  <text class="sm" x="450" y="682" font-size="22" text-anchor="middle">espaço reservado para a imagem</text>
+
+  <text class="sm" x="450" y="930" font-size="19" text-anchor="middle">coloque o arquivo em /img/lia/</text>
+  <text class="sm" x="450" y="960" font-size="19" text-anchor="middle">ou troque o caminho em /imagens.js</text>
+</svg>

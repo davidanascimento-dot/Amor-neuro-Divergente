@@ -159,11 +159,30 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         if (!acolheriaChatBody) return;
 
         const messageDiv = document.createElement('div');
-        messageDiv.className = `acolheria-msg ${isUser ? 'acolheria-msg-user' : ''}`;
+        messageDiv.className = `acolheria-msg ${isUser ? 'acolheria-msg-user' : 'acolheria-msg-assistente'}`;
 
         const avatar = document.createElement('div');
         avatar.className = 'acolheria-avatar';
-        avatar.innerHTML = isUser ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-robot"></i>';
+        if (isUser) {
+            avatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+        } else {
+            // Avatar da Lia. Sem o arquivo da Lia em /img/lia/, o onerror
+            // devolve o robô genérico e a conversa continua normal.
+            const caminho = (window.IMAGENS || {})['lia-avatar'];
+            if (caminho) {
+                avatar.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = caminho;
+                img.alt = 'Lia';
+                img.setAttribute('data-img-slot', 'lia-avatar');
+                img.addEventListener('error', () => {
+                    avatar.innerHTML = '<i class="fa-solid fa-robot"></i>';
+                }, { once: true });
+                avatar.appendChild(img);
+            } else {
+                avatar.innerHTML = '<i class="fa-solid fa-robot"></i>';
+            }
+        }
 
         const bubble = document.createElement('div');
         bubble.className = 'acolheria-bubble';
@@ -339,24 +358,19 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     // EVENTOS - ABRIR O PAINEL
     // =============================================
 
-    // Sidebar
-    document.querySelectorAll('.sidebar-link[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            openAcolheriaPanel();
-        });
-    });
-
-    // Header
-    document.querySelectorAll('.header-links a[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            openAcolheriaPanel();
-        });
-    });
-
-    // Hub
-    document.querySelectorAll('.hub-action[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
+    // Qualquer link para a página da Lia abre o painel em vez de navegar.
+    //
+    // A página /chat-Ia/chat-Ia.html NÃO EXISTE no projeto. Um clique
+    // nela levava ao 404 "Arquivo não encontrado".
+    //
+    // Antes isso era interceptado em três lugares só: .sidebar-link,
+    // .header-links a e .hub-action. Tudo que usasse aquele href com
+    // outra classe escapava — o botão do card de Direitos, o link do
+    // rodapé e o do menu de cada página. São 48 links em 20 arquivos.
+    //
+    // Um seletor único resolve todos de uma vez e continua valendo para
+    // botões novos, sem precisar lembrar de acrescentar aqui.
+    document.querySelectorAll('a[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             openAcolheriaPanel();
@@ -606,6 +620,90 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
 
     injetarEstiloAvisoIA();
     injetarAvisoIA();
+
+    // =============================================
+    // AVATAR DA LIA NO CHAT
+    //
+    // O cabeçalho e o balão da assistente usavam um ícone de robô genérico.
+    // A Lia é a personagem do projeto: usar a imagem dela aqui é o que faz
+    // "vou perguntar para a Lia" ter alguém do outro lado.
+    //
+    // O caminho vem do slot "lia-avatar" em /imagens.js. Sem o arquivo
+    // lá, o robô continua sendo o reserva — a troca não quebra a página.
+    // =============================================
+    function aplicarAvatarLia() {
+        var caminho = (window.IMAGENS || {})['lia-avatar'];
+
+        // A arte da Lia é quadrada (1024x1024). O avatar precisa sair
+        // redondo e do tamanho da caixa, senão a imagem crua estoura o
+        // cabeçalho. O `i` que estava aqui tinha 36px e borda
+        // arredondada; a <img> precisa da mesma caixa, não do tamanho
+        // natural dela.
+        const cab = document.querySelector('.acolheria-modal-title > i, .acolheria-modal-title > img.acolheria-lia-avatar');
+        if (cab && caminho) {
+            const img = document.createElement('img');
+            img.src = caminho;
+            img.alt = 'Lia, assistente virtual';
+            img.className = 'acolheria-lia-avatar';
+            img.setAttribute('data-img-slot', 'lia-avatar');
+            img.addEventListener('error', () => {
+                img.replaceWith(Object.assign(document.createElement('i'), { className: 'fa-solid fa-robot' }));
+            }, { once: true });
+            cab.replaceWith(img);
+        }
+
+        if (!document.getElementById('acolheriaLiaAvatarStyle')) {
+            const style = document.createElement('style');
+            style.id = 'acolheriaLiaAvatarStyle';
+            style.textContent = `
+                /* Cabeçalho: mesmo quadrado do ícone que ficava aqui antes. */
+                .acolheria-lia-avatar {
+                    width: 36px;
+                    height: 36px;
+                    flex-shrink: 0;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    object-position: center 22%;
+                    display: block;
+                    border: 1px solid var(--border-color, #e8e3dd);
+                    background: var(--primary-light, #ede9fe);
+                }
+
+                /* Balões da assistente. O seletor tem que bater com a
+                   classe que addModalMessage põe na div: ela é
+                   acolheria-msg-assistente. A versão anterior procurava
+                   .is-assistente e nunca casou, então o avatar ficava
+                   sem estilo nenhum dentro do balão. */
+                .acolheria-msg-assistente .acolheria-avatar {
+                    overflow: hidden;
+                    padding: 0;
+                    border: 1px solid var(--border-color, #e8e3dd);
+                }
+                .acolheria-msg-assistente .acolheria-avatar img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    /* A Lia é desenhada de cabeça e ombros: o centro do
+                       quadro é o peito, que não diz nada. O foco vai
+                       para a cara. */
+                    object-position: center 20%;
+                    display: block;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    if (window.aplicarImagens) window.aplicarImagens();
+    aplicarAvatarLia();
+
+    // Botões da Lia na página inicial: o do card e o da faixa larga.
+    // Só existem lá, então não há listener órfão nas outras páginas.
+    ['btn-acolheria-banner', 'btn-acolheria-faixa'].forEach(function (id) {
+        document.getElementById(id)?.addEventListener('click', () => {
+            openAcolheriaPanel();
+        });
+    });
 
     // =============================================
     // SEGURANÇA — camada 1 e 2

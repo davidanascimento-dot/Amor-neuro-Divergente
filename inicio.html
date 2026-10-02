@@ -18,6 +18,7 @@
     <!-- 🆕 Estilos das novas seções -->
     <link rel="stylesheet" href="Explorar/Explorar.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
+  <script src="/imagens.js"></script>
 </head>
 
 <body>
@@ -827,6 +828,54 @@
             </div>
         </section>
 
+        <!-- =============================================
+             BANNER DA ACOLHERIA — Lia
+
+             Mesmo formato do card da comunidade: a arte DE FUNDO e o
+             texto por cima. Antes a Lia ocupava uma coluna de imagem ao
+             lado, o que comia metade da largura e espremia o texto. Como
+             o formato vai se repetir em outros banners, o espaço
+             precisa sobrar para a leitura.
+
+             O fundo vem do slot "acolheria-card-bg" em /imagens.js.
+             É aplicado por JS porque CSS não lê arquivo de configuração.
+             ============================================= -->
+        <section class="acolheria-banner-section">
+            <div class="acolheria-card" data-img-fundo="acolheria-card-bg">
+                <div class="acolheria-card-content">
+                    <!-- Uma tag só. "AcolherIA" e "Lia" juntas eram
+                         redundantes: o nome do sistema e o da personagem
+                         competindo no mesmo lugar. O nome do assistant
+                         ficou no título e o da persona na tag. -->
+                    <span class="acolheria-badge-nome">
+                        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                        Assistente Virtual
+                    </span>
+
+                    <h3 class="acolheria-card-subtitle">
+                        Conheça a <strong>Lia</strong>, assistente do Amor NeuroDivergente
+                    </h3>
+
+                    <p class="acolheria-card-description">
+                        Converse, tire dúvidas e encontre caminhos no site.
+                        No seu tempo, do seu jeito.
+                    </p>
+
+                    <button type="button" class="acolheria-card-btn" id="btn-acolheria-banner">
+                        <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+                        Conversar com a Lia
+                    </button>
+
+                    <!-- O aviso de que é IA é obrigatório, mas não é
+                         argumento de venda. Fica em nota miúda, no fim. -->
+                    <p class="acolheria-card-nota">
+                        AcolherIA é uma inteligência artificial. Ajuda com informação
+                        e acolhimento, mas não faz diagnóstico e não substitui
+                        profissional de saúde.
+                    </p>
+                </div>
+            </div>
+        </section>
         <!-- =============================================
              FOOTER
              ============================================= -->
