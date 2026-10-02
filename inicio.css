@@ -761,7 +761,31 @@ body.a11y-reduce-motion .logo-text {
             gap: 12px;
         }
 
-        .nav-btn {
+        /* Botão de pausar o avanço automático do carrossel.
+   Só aparece quando existe; o estado é marcado por .is-pausado. */
+.nav-btn-pausa .icone-play {
+    display: none;
+}
+
+.nav-btn-pausa.is-pausado .icone-pausar {
+    display: none;
+}
+
+.nav-btn-pausa.is-pausado .icone-play {
+    display: block;
+}
+
+.nav-btn-pausa.is-pausado {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.nav-btn-pausa:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.nav-btn {
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -3261,6 +3285,26 @@ body.a11y-dark-mode .acolheria-sos {
 
 .whoweare-content p strong {
     color: var(--primary);
+}
+
+/* O stat-number agora é um ícone, não um número. A rule original usava
+   font-size grande e peso de número; sem número, isso só deixaria o
+   ícone enorme e desproporcional. */
+.whoweare-stats .stat-number {
+    font-size: 30px;
+    line-height: 1;
+    color: var(--primary);
+}
+
+.whoweare-stats .stat-label {
+    line-height: 1.45;
+}
+
+.whoweare-stats-nota {
+    margin: 10px 0 20px;
+    color: var(--text-dark);
+    opacity: 0.6;
+    font-size: 12px;
 }
 
 .whoweare-stats {

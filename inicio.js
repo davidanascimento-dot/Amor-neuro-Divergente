@@ -13,10 +13,24 @@ const track = document.getElementById('track');
 
         const totalSlides = 6;
         let currentIndex = 0;
-        const slideDuration = 3000; // Tempo de troca automática: 5 segundos
+        const slideDuration = 3000; // Tempo de troca automática: 3 segundos
         let autoPlayTimer = null;
         let progressAnimation = null;
         let startTime = null;
+
+        // Avanço automático ligado por padrão, mas só enquanto a pessoa
+        // não pedir para parar — nem pelo botão, nem pelo recurso
+        // "reduzir movimento" do sistema.
+        let autoplayPaused = false;
+        let mediaReducirMovimento = null;
+        let reduzirMovimento = false;
+
+        try {
+            mediaReducirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)');
+            reduzirMovimento = mediaReducirMovimento.matches;
+        } catch (erro) {
+            // Navegador sem matchMedia: segue com o autoplay normal.
+        }
 
         function updateCarousel() {
             track.style.transform = `translateX(-${currentIndex * 100}vw)`;
@@ -52,6 +66,17 @@ const track = document.getElementById('track');
 
         function resetAutoPlay() {
             clearInterval(autoPlayTimer);
+            clearInterval(progressAnimation);
+
+            // Quem pede "reduzir movimento" no sistema não quer conteúdo
+            // andando sozinho. O botão de pausar também conta: sem ele,
+            // quem não tem o recurso de sistema ligado fica preso vendo
+            // os slides passarem.
+            if (autoplayPaused || reduzirMovimento) {
+                atualizarBotaoPausa();
+                return;
+            }
+
             startProgressBar();
             autoPlayTimer = setInterval(nextSlide, slideDuration);
         }
@@ -76,12 +101,57 @@ const track = document.getElementById('track');
             resetAutoPlay();
         });
 
+        // =============================================
+        // BOTÃO DE PAUSAR
+        //
+        // Sem ele, quem tem sensibilidade sensorial e não liga o
+        // "reduzir movimento" do sistema não tem como parar o
+        // movimento: só tirando o mouse do carrossel, e num celular
+        // não existe mouse.
+        // =============================================
+        const pauseBtn = document.getElementById('pauseBtn');
+
+        function atualizarBotaoPausa() {
+            if (!pauseBtn) return;
+            const pausado = autoplayPaused || reduzirMovimento;
+            pauseBtn.setAttribute('aria-pressed', String(autoplayPaused));
+            pauseBtn.setAttribute(
+                'aria-label',
+                pausado ? 'Retomar o avanço automático' : 'Pausar o avanço automático'
+            );
+            pauseBtn.title = pausado
+                ? 'Retomar o avanço automático'
+                : 'Pausar o avanço automático';
+            pauseBtn.classList.toggle('is-pausado', pausado);
+        }
+
+        pauseBtn?.addEventListener('click', () => {
+            autoplayPaused = !autoplayPaused;
+            atualizarBotaoPausa();
+            resetAutoPlay();
+        });
+
+        // A preferência do sistema pode mudar com a aba aberta (o usuário
+        // liga "reduzir movimento" nas configurações do sistema).
+        try {
+            mediaReducirMovimento.addEventListener('change', () => {
+                reduzirMovimento = mediaReducirMovimento.matches;
+                atualizarBotaoPausa();
+                resetAutoPlay();
+            });
+        } catch (erro) {
+            // Navegador antigo sem addEventListener na MediaQueryList.
+            // O estado inicial já foi lido acima, então segue normal.
+        }
+
         // Iniciar carrossel
+        atualizarBotaoPausa();
         resetAutoPlay();
     }
 document.addEventListener('DOMContentLoaded', () => {
 
     const body = document.body;
+
 
     // =============================================
     // 0. SINCRONIZAÇÃO DE PERFIL

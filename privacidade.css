@@ -1,0 +1,389 @@
+/* ==========================================================================
+   PRIVACIDADE.CSS — Termos de Uso e Política de Privacidade
+
+   São duas páginas de leitura longa e sem pressesa. As decisões aqui vão
+   no sentido contrário do resto do site: fonte um pouco maior, linha
+   mais alta, texto justificado em blocos de leitura confortáveis e
+   bastante contraste.
+
+   Um documento cansativo é exatamente o que faz alguém abandonar a
+   leitura de um texto que precisa ser lido.
+   ========================================================================== */
+
+.doc-page {
+    --doc-txt: #2a2a3d;
+    --doc-suave: #5c5c72;
+    --doc-borda: #ddd8d0;
+    --doc-fundo: #faf8f5;
+    --doc-fundo-box: #ffffff;
+    --doc-alerta: #b4304a;
+    --doc-alerta-fundo: #fdf0f2;
+
+    background: var(--doc-fundo);
+    color: var(--doc-txt);
+    font-family: 'Inter', system-ui, sans-serif;
+    /* Base 17px: o corpo do site usa 15-16px, que fica pequeno para
+       texto corrido longo. */
+    font-size: 17px;
+    line-height: 1.75;
+    margin: 0;
+    padding: 0 20px 80px;
+}
+
+.doc-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 28px 0 8px;
+    color: var(--doc-suave);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.doc-voltar:hover,
+.doc-voltar:focus-visible {
+    color: #6d28d9;
+    text-decoration: underline;
+}
+
+.doc-voltar:focus-visible {
+    outline: 2px solid #6d28d9;
+    outline-offset: 3px;
+}
+
+.doc-main {
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+/* ---------- cabeçalho ---------- */
+.doc-header {
+    padding: 12px 0 28px;
+    border-bottom: 2px solid var(--doc-borda);
+}
+
+.doc-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #ede9fe;
+    color: #5b21b6;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.doc-header h1 {
+    margin: 18px 0 14px;
+    color: #1a1a2e;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.doc-lead {
+    margin: 0 0 18px;
+    color: var(--doc-txt);
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.doc-lead strong {
+    color: #4c1d95;
+}
+
+.doc-meta {
+    margin: 0;
+    color: var(--doc-suave);
+    font-size: 14px;
+}
+
+/* ---------- aviso de revisão jurídica ---------- */
+.doc-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 28px 0 8px;
+    padding: 18px 20px;
+    border-left: 4px solid #d97706;
+    border-radius: 0 10px 10px 0;
+    background: #fffbeb;
+    color: #78350f;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.doc-aviso > i {
+    margin-top: 3px;
+    color: #d97706;
+    flex-shrink: 0;
+}
+
+.doc-aviso a {
+    color: #78350f;
+    font-weight: 700;
+}
+
+/* ---------- sumário ---------- */
+.doc-sumario {
+    margin: 28px 0 12px;
+    padding: 20px 24px;
+    border: 1px solid var(--doc-borda);
+    border-radius: 12px;
+    background: var(--doc-fundo-box);
+}
+
+.doc-sumario > strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #1a1a2e;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.doc-sumario ol {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2;
+    column-gap: 28px;
+}
+
+.doc-sumario li {
+    margin-bottom: 6px;
+    break-inside: avoid;
+}
+
+.doc-sumario a {
+    color: #5b21b6;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.doc-sumario a:hover,
+.doc-sumario a:focus-visible {
+    text-decoration: underline;
+}
+
+.doc-sumario a:focus-visible {
+    outline: 2px solid #6d28d9;
+    outline-offset: 2px;
+}
+
+/* ---------- seções ---------- */
+.doc-main section {
+    padding: 26px 0;
+    border-bottom: 1px solid var(--doc-borda);
+    /* Evita que o título fique colado no topo ao pular com o teclado. */
+    scroll-margin-top: 20px;
+}
+
+.doc-main section:last-of-type {
+    border-bottom: none;
+}
+
+.doc-main h2 {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 16px;
+    color: #1a1a2e;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.doc-main h2 > i {
+    color: #7c3aed;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.doc-main h3 {
+    margin: 24px 0 10px;
+    color: #2a2a3d;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.doc-main p {
+    margin: 0 0 14px;
+    /* Justificado ajuda em linha longa, mas com hyphens para não abrir
+       buracos enormes no meio da frase. */
+    text-align: justify;
+    hyphens: auto;
+}
+
+.doc-main ul {
+    margin: 0 0 16px;
+    padding-left: 24px;
+}
+
+.doc-main li {
+    margin-bottom: 9px;
+    padding-left: 4px;
+}
+
+.doc-main li::marker {
+    color: #7c3aed;
+}
+
+.doc-main strong {
+    color: #1a1a2e;
+    font-weight: 700;
+}
+
+.doc-main a {
+    color: #5b21b6;
+    font-weight: 600;
+}
+
+.doc-main a:focus-visible {
+    outline: 2px solid #6d28d9;
+    outline-offset: 2px;
+}
+
+.doc-main code {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #f1eefb;
+    color: #4c1d95;
+    font-size: 0.88em;
+}
+
+.doc-nota {
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: #f5f3ff;
+    color: #3b2f6b;
+    font-size: 16px;
+}
+
+/* ---------- bloco de emergência ---------- */
+.doc-alerta {
+    padding: 20px 22px;
+    border: 2px solid var(--doc-alerta);
+    border-radius: 12px;
+    background: var(--doc-alerta-fundo);
+}
+
+.doc-alerta p {
+    text-align: left;
+}
+
+.doc-alerta p:first-child {
+    margin-top: 0;
+    color: #8c1c33;
+    font-size: 18px;
+}
+
+.doc-alerta ul {
+    margin-bottom: 14px;
+}
+
+.doc-alerta a {
+    color: #8c1c33;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+/* ---------- rodapé ---------- */
+.doc-footer {
+    max-width: 780px;
+    margin: 40px auto 0;
+    padding-top: 24px;
+    border-top: 2px solid var(--doc-borda);
+    text-align: center;
+}
+
+.doc-footer a {
+    color: #5b21b6;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.doc-footer a:hover,
+.doc-footer a:focus-visible {
+    text-decoration: underline;
+}
+
+/* ---------- tela pequena ---------- */
+@media (max-width: 640px) {
+    .doc-page {
+        font-size: 16px;
+        padding: 0 16px 56px;
+    }
+
+    .doc-sumario ol {
+        columns: 1;
+    }
+
+    .doc-main h2 {
+        font-size: 21px;
+    }
+
+    /* Justificar em tela estreita abre espaços enormes entre as
+       palavras. Volta para alinhado à esquerda. */
+    .doc-main p {
+        text-align: left;
+    }
+}
+
+/* ---------- modo escuro ---------- */
+body.a11y-dark-mode .doc-page {
+    --doc-txt: #d9d5e4;
+    --doc-suave: #a9a2bd;
+    --doc-borda: #3a3652;
+    --doc-fundo: #14142a;
+    --doc-fundo-box: #1e1e38;
+    --doc-alerta: #f08098;
+    --doc-alerta-fundo: #2a1420;
+}
+
+body.a11y-dark-mode .doc-header h1,
+body.a11y-dark-mode .doc-main h2,
+body.a11y-dark-mode .doc-main strong,
+body.a11y-dark-mode .doc-sumario > strong {
+    color: #f3eff8;
+}
+
+body.a11y-dark-mode .doc-eyebrow {
+    background: #2a1f4d;
+    color: #c4b5fd;
+}
+
+body.a11y-dark-mode .doc-lead strong,
+body.a11y-dark-mode .doc-main a,
+body.a11y-dark-mode .doc-footer a,
+body.a11y-dark-mode .doc-sumario a {
+    color: #c4b5fd;
+}
+
+body.a11y-dark-mode .doc-aviso {
+    background: #2b2313;
+    color: #fcd34d;
+    border-left-color: #f59e0b;
+}
+
+body.a11y-dark-mode .doc-aviso a {
+    color: #fcd34d;
+}
+
+body.a11y-dark-mode .doc-nota {
+    background: #241f45;
+    color: #ddd6fe;
+}
+
+body.a11y-dark-mode .doc-main code {
+    background: #2a2447;
+    color: #c4b5fd;
+}
+
+body.a11y-dark-mode .doc-alerta p:first-child,
+body.a11y-dark-mode .doc-alerta a {
+    color: #fda4af;
+}

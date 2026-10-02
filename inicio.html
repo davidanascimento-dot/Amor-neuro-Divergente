@@ -270,6 +270,17 @@
                 </div>
 
                 <div class="nav-buttons">
+                    <!-- Pausar o avanço automático.
+                         Antes só existia a pausa ao passar o mouse, que
+                         não ajuda quem navega por teclado ou por celular.
+                         Também é o único jeito de parar o movimento
+                         para quem tem sensibilidade sensorial. -->
+                    <button class="nav-btn nav-btn-pausa" id="pauseBtn"
+                            aria-label="Pausar o avanço automático"
+                            aria-pressed="false" title="Pausar o avanço automático">
+                        <svg class="icone-pausar" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+                        <svg class="icone-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
                     <button class="nav-btn" id="prevBtn" aria-label="Anterior">
                         <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
                     </button>
@@ -758,7 +769,7 @@
                             <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop" alt="Desafios - Metas e transformação pessoal" />
                         </div>
                         <a href="comunidade/comunidade.html" class="book-title">Comunidade</a>
-                        <span class="book-category">Pequenos passos para transformar seu dia</span>
+                        <span class="book-category">Fórum, grupos e conversas</span>
                     </div>
 
                     <div class="book-card">
@@ -766,7 +777,7 @@
                             <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66" alt="Seus Direitos - Leis e benefícios" />
                         </div>
                         <a href="Recursos/recursos.html" class="book-title">Artigos</a>
-                        <span class="book-category">Leis e benefícios traduzidos</span>
+                        <span class="book-category">Autismo, TDAH, dislexia e saúde</span>
                     </div>
                 </div>
             </div>
@@ -783,24 +794,43 @@
                     <p>O <strong>Amor NeuroDivergente</strong> nasceu da necessidade de um lugar onde a informação sobre neurodiversidade fosse acessível, as ferramentas de organização fossem visuais e a comunidade fosse acolhedora.</p>
                     <p>Somos um ecossistema digital que une <strong>conhecimento, ferramentas práticas e conexão humana</strong> — tudo pensado para respeitar o ritmo, as necessidades sensoriais e a autonomia de cada pessoa.</p>
                     <p>Nosso compromisso é com a <strong>tradução de direitos</strong>, a <strong>desconstrução do capacitismo</strong> e a <strong>celebração da diversidade neurológica</strong> como uma parte natural e valiosa da experiência humana.</p>
-                    <div class="whoweare-stats">
+                    <!--
+                         Aqui havia "+2.000 / +50 / +30", escritos à mão no
+                         HTML. Número que não dá para conferir passa impressão
+                         de exagero — e esta homepage não tem acesso ao banco,
+                         então não existe como contar de verdade sem mudar a
+                         arquitetura da página.
+
+                         Em vez de trocar por um número menor e igualmente
+                         inventado, o bloco virou o que o site de fato oferece.
+                    -->
+                    <div class="whoweare-stats" id="whoweareStats">
                         <div class="stat-item">
-                            <span class="stat-number">+2.000</span>
-                            <span class="stat-label">pessoas acolhidas</span>
+                            <span class="stat-number"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i></span>
+                            <span class="stat-label">direitos traduzidos<br>e explicados</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number">+50</span>
-                            <span class="stat-label">artigos publicados</span>
+                            <span class="stat-number"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
+                            <span class="stat-label">artigos por tema<br>e por formato</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number">+30</span>
-                            <span class="stat-label">eventos realizados</span>
+                            <span class="stat-number"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
+                            <span class="stat-label">comunidade com<br>fórum e grupos</span>
                         </div>
                     </div>
-                    <a href="/comunidade/comunidade.html" class="btn-glow">Conheça o time <i class="fa-solid fa-arrow-right"></i></a>
+                    <p class="whoweare-stats-nota">
+                        Todo o conteúdo é aberto: você pode ler sem criar conta.
+                    </p>
+        
                 </div>
                 <div class="whoweare-image">
-                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=500&fit=crop" alt="Equipe Amor NeuroDivergente" loading="lazy">
+                    <!-- Foto de banco de imagens. O alt antigo dizia
+                         "Equipe Amor NeuroDivergente", o que faz uma
+                         imagem genérica parecer o time real do projeto.
+                         Descrito pelo que realmente é. -->
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=500&fit=crop"
+                         alt="Pessoas conversando em grupo, representando a comunidade do site"
+                         loading="lazy">
                 </div>
             </div>
         </section>
@@ -843,7 +873,7 @@
                 <div class="footer-col"><h4>Apoie</h4><a href="/loja/loja.html">Loja</a><a href="/doações/doações.html">Doações</a></div>
                 <div class="footer-col"><h4>Redes</h4><div class="social-links"><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a><a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a></div></div>
             </div>
-            <div class="footer-bottom"><a href="#">Política de Privacidade</a><a href="#">Termos de Uso</a><p>© 2026 Amor NeuroDivergente</p></div>
+            <div class="footer-bottom"><a href="/privacidade.html">Política de Privacidade</a><a href="/termos.html">Termos de Uso</a><p>© 2026 Amor NeuroDivergente</p></div>
         </footer>
 
     </main>
@@ -870,39 +900,7 @@
     </div>
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
-<script src="https://cdn.userway.org/widget.js"
-        data-account="QQqIFghR0i"
-        data-position="3"
-        data-offset="20, 160"></script>
-
-<script>
-  (function () {
-    function fix() {
-      const el = document.querySelector('#userwayAccessibilityIcon, .userway_buttons_wrapper');
-      if (el) {
-        el.style.setProperty('right', '0px', 'important');
-        el.style.setProperty('bottom', '50px', 'important');
-        el.style.setProperty('top', 'auto', 'important');
-        el.style.setProperty('left', 'auto', 'important');
-      }
-    }
-    const t = setInterval(fix, 300);
-    setTimeout(() => clearInterval(t), 10000);
-    new MutationObserver(fix).observe(document.body, { childList: true, subtree: true });
-  })();
-</script>
-    <!-- VLibras -->
-    <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
     </div>
-
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
-    </script>
 
     <!-- JavaScript -->
     <script src="inicio.js"></script>
@@ -938,5 +936,7 @@
     </script>
 
 <script src="/pular-conteudo.js"></script>
+<script src="/userway.js"></script>
+<script src="/vlibras.js"></script>
 </body>
 </html>
