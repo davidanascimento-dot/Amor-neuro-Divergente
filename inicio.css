@@ -3320,60 +3320,28 @@ body.a11y-dark-mode .whoweare-content .section-badge {
 }
 
 
-/* Container Principal */
-.community-preview-section {
-  display: flex ;
-  justify-content: center ;
-  align-items: center;
-}
+/* ------------------------------------------------------------------
+   BANNER DA COMUNIDADE — regras retiradas
 
-/* Cartão com Fundo de Montanha e Escurecimento */
-.community-card {
-  position: relative ;
-  width: 100% ;
-  overflow: hidden;
-  display: flex ;
-  align-items: center ;
-  padding: 40px 30px ;
-  color: #ffffff ;
-  
-  /* Imagem de fundo com overlay roxo escuro/translúcido */
-  background: 
-    linear-gradient(rgba(35, 18, 42, 0.72), rgba(35, 18, 42, 0.72)),
-    url("/img/banner-comunidade.png") center/cover no-repeat !important;
-}
+   A <section class="community-preview-section"> saiu da home: os dois
+   banners já usavam o mesmo formato (arte de fundo, texto por cima) e
+   este ainda carregava a foto da mulher numa coluna ao lado, que comia
+   metade da largura. Quem chega na comunidade continua entrando pelo
+   menu, pelo hub de ajuda e pelo rodapé.
 
-/* Área da Imagem/Pessoa (Esquerda) */
-.community-visual {
-  flex: 1 ;
-  display: flex ;
-  justify-content: center;
-  align-items: flex-end ;
-  max-width: 40% ;
-}
+   Sairam junto: .community-preview-section, .community-card,
+   .community-visual, .banner-comunidade, .community-content,
+   .community-badges, .badge-teal, .badge-purple, .community-subtitle,
+   .community-description e .community-btn.
 
-.banner-comunidade {
-  max-width: 100% ;
-  height: auto ;
-  object-fit: contain ;
-}
+   Quando o banner único entrar, ele nasce no formato da AcolherIA, com
+   data-img-fundo: texto por cima da arte, sem foto ao lado.
+   ------------------------------------------------------------------ */
 
-/* Área de Texto (Direita) */
-.community-content {
-  flex: 1.2 ;
-  display: flex ;
-  flex-direction: column ;
-  align-items: flex-start ;
-  gap: 14px ;
-}
-
-/* Badges / Destaques "Neuro" e "Comunidade" */
-.community-badges {
-  display: flex ;
-  flex-direction: column ;
-  align-items: flex-start ;
-}
-
+/* .badge continua aqui de propósito: morava dentro do bloco do banner da
+   comunidade, mas é utilitário e continua em uso em 11 páginas (fórum,
+   perfil, blog, loja, explorar, apoio, recursos e direitos). Sem esta
+   regra, quem define .badge na própria folha passa a valer. */
 .badge {
   display: inline-block ;
   padding: 6px 18px ;
@@ -3383,55 +3351,6 @@ body.a11y-dark-mode .whoweare-content .section-badge {
   color: #ffffff !important;
   letter-spacing: 0.5px ;
 }
-
-.badge-teal {
-    background-color: #0596684f;
-border: 1px solid var(--accent-mint);
-
-}
-
-.badge-purple {
-    background-color: rgba(216, 112, 147, 0.479);
-border: 1px solid var(--primary);
-}
-
-/* Subtítulo: "Sua porta de entrada para o AmorNeuroDivergente" */
-.community-subtitle {
-  font-size: 1.1rem ;
-  font-weight: 400 ;
-  line-height: 1.4 ;
-  margin: 6px 0 0 0 ;
-  color: #ffffff !important;
-}
-
-.community-subtitle strong {
-  font-weight: 700 ;
-  color: #ffffff !important;
-}
-
-/* Descrição: "Quer aprender a base prática..." */
-.community-description {
-  font-size: 0.92rem !important;
-  color: #ffffff !important;
-  line-height: 1.5 !important;
-  max-width: 440px !important;
-  margin: 0 !important;
-}
-
-/* Botão */
-.community-btn {
-  display: inline-block !important;
-  background-color: #c499f8 !important;
-  color: #ffffff !important;
-  padding: 10px 60px !important;
-  border-radius: 6px !important;
-  text-decoration: none !important;
-  font-weight: 700 !important;
-  font-size: 1rem !important;
-  margin-top: 8px !important;
-  transform: translateX(500px) !important;
-}
-
 
 /* =============================================
    BANNER DA ACOLHERIA — Lia

@@ -801,40 +801,32 @@
         </section>
 
         <!-- =============================================
-             CTA COMUNIDADE
+             BANNER DA COMUNIDADE — temporariamente fora
+
+             Havia aqui um segundo banner, com a arte da comunidade numa
+             coluna de imagem ao lado do texto. Os dois já usavam o mesmo
+             formato (arte de fundo, texto por cima), mas este ainda
+             carregava a foto da mulher, que é o que estava atrapalhando:
+             com a arte ocupando metade da largura, sobrava pouco para a
+             leitura e o botão ficava empurrado para fora do bloco.
+
+             Enquanto o banner único não entra, quem chega na comunidade
+             continua entrando pelo menu, pelo hub de ajuda e pelo rodapé.
+
+             Para voltar, é só restaurar a <section class="community-card">
+             neste ponto: as classes e o CSS continuam prontos, sem a foto.
+             O banner definitivo vai juntar os dois assuntos num só
+             bloco, só com os textos por cima da arte.
              ============================================= -->
-        <section class="community-preview-section">
-            <div class="community-card">
-                <div class="community-visual">
-                    <img src="/img/mulher.png" alt="Comunidade NeuroDivergente" class="banner-comunidade">
-                </div>
-
-                <div class="community-content">
-                    <div class="community-badges">
-                        <span class="badge badge-teal">Neuro</span>
-                        <span class="badge badge-purple">Comunidade</span>
-                    </div>
-
-                    <h3 class="community-subtitle">
-                        Sua porta de entrada para o <strong>AmorNeuroDivergente</strong>
-                    </h3>
-
-                    <p class="community-description">
-                        Quer aprender a base prática da nossa metodologia e ainda ter a possibilidade de fazer parte da Rede? Inscreva-se agora!
-                    </p>
-
-                    <a href="/comunidade/comunidade.html" class="community-btn" id="btn-comunidade">Entre Já</a>
-                </div>
-            </div>
-        </section>
 
         <!-- =============================================
              BANNER DA ACOLHERIA — Lia
 
-             Mesmo formato do card da comunidade: a arte DE FUNDO e o
-             texto por cima. Antes a Lia ocupava uma coluna de imagem ao
-             lado, o que comia metade da largura e espremia o texto. Como
-             o formato vai se repetir em outros banners, o espaço
+             Agora é o banner único da home, no formato que serve para
+             os próximos: a arte DE FUNDO e o texto por cima, sem foto
+             ao lado do texto. Antes a Lia ocupava uma coluna de imagem
+             ao lado, o que comia metade da largura e espremia o texto.
+             Como o formato vai se repetir em outros banners, o espaço
              precisa sobrar para a leitura.
 
              O fundo vem do slot "acolheria-card-bg" em /imagens.js.

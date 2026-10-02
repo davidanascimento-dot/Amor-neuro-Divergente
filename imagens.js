@@ -17,7 +17,6 @@
    lia-retrato          Banner da AcolherIA na página inicial
    lia-banner           Faixa larga da home (bloco "converse com a Lia")
    lia-avatar           Cabeçalho e balão do chat da AcolherIA
-   comunidade-visual    Lado esquerdo do banner da NeuroComunidade
 
    Os prefixos "banner-area-*" são as faixas largas da LANDING PAGE
    (uma por área: Explorar, Comunidade, Direitos, AcolherIA). Também
@@ -40,7 +39,11 @@
         'lia-avatar': '/img/lia/avatar-lia.png',
 
         // ---- NeuroComunidade -------------------------------------------
-        'comunidade-visual': '/img/mulher.png',
+        // Sem arte própria por enquanto: o banner da comunidade saiu da
+        // home e o bloco definitivo (comunidade + AcolherIA no mesmo
+        // banner) ainda vai ser montado. Quando ele entrar, o caminho da
+        // arte entra aqui e a <section> usa data-img-fundo, como a da
+        // AcolherIA — texto por cima da arte, sem foto ao lado.
 
         // ---- Landing page: uma faixa por área --------------------------
         // A arte entra como FUNDO do bloco (data-img-fundo), com o texto
