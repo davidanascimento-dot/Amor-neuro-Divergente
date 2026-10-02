@@ -86,51 +86,212 @@ button { font: inherit; cursor: pointer; }
 
 /* Seções e entrega */
 .landing-section { padding: 100px 0; }
-.landing-delivery { background: #f5f0ff; }
-.landing-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 25px; margin-bottom: 31px; }
+.landing-areas { background: #f5f0ff; }
+.landing-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 25px; margin-bottom: 34px; }
 .landing-section-heading h2, .about-copy h2, .landing-cta-card h2 { margin-top: 10px; color: var(--landing-ink); font-family: "Playfair Display", Georgia, serif; font-size: clamp(32px, 4vw, 48px); letter-spacing: -.045em; line-height: 1.08; }
-.landing-section-heading p { max-width: 285px; color: var(--landing-muted); font-size: 13px; line-height: 1.55; }
-.delivery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.delivery-card { position: relative; min-height: 290px; display: flex; flex-direction: column; overflow: hidden; padding: 22px; border: 1px solid rgba(255,255,255,.8); border-radius: 18px; background: rgba(255,255,255,.72); transition: transform .22s, box-shadow .22s, border-color .22s; }
-.delivery-card:hover { transform: translateY(-5px); border-color: transparent; box-shadow: var(--landing-shadow); }
-.delivery-card-purple { background: #eee8ff; }
-.delivery-card-coral { background: #fff0eb; }
-.delivery-card-gold { background: #fff7e8; }
-.delivery-card-blue { background: #eaf5ff; }
-.delivery-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: rgba(255,255,255,.75); color: var(--landing-purple); font-size: 18px; }
-.delivery-card-coral .delivery-icon { color: var(--landing-coral); }
-.delivery-card-gold .delivery-icon { color: var(--landing-gold); }
-.delivery-card-blue .delivery-icon { color: var(--landing-blue); }
-.delivery-number { position: absolute; top: 20px; right: 21px; color: rgba(32,27,59,.24); font-size: 11px; font-weight: 800; }
-.delivery-card h3 { margin-top: 30px; color: var(--landing-ink); font-size: 20px; font-weight: 800; }
-.delivery-card p { margin-top: 9px; color: var(--landing-ink-soft); font-size: 12px; line-height: 1.55; }
-.delivery-link { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 20px; color: var(--landing-purple); font-size: 11px; font-weight: 800; }
-.delivery-card-coral .delivery-link { color: #d65f51; }
-.delivery-card-gold .delivery-link { color: #a87829; }
-.delivery-card-blue .delivery-link { color: #3a7eb4; }
+.landing-section-heading p { max-width: 320px; color: var(--landing-muted); font-size: 13px; line-height: 1.55; }
 
-/* Sobre */
-.landing-about { background: var(--landing-bg); }
-.landing-about-grid { display: grid; grid-template-columns: minmax(350px, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(45px, 8vw, 100px); }
-.about-visual { position: relative; min-height: 480px; }
-.about-image-card { position: absolute; top: 8%; right: 8%; width: 77%; height: 76%; overflow: hidden; border: 8px solid #fff; border-radius: 30px 30px 100px 30px; box-shadow: 0 25px 50px rgba(70,43,100,.14); transform: rotate(-2deg); }
-.about-image-card img { width: 100%; height: 100%; object-fit: cover; }
-.about-quote-card { position: absolute; z-index: 3; right: 0; bottom: 11%; display: flex; align-items: flex-start; gap: 9px; max-width: 205px; padding: 14px; border-radius: 14px; background: var(--landing-ink); color: #fff; font-family: "Playfair Display", Georgia, serif; font-size: 12px; line-height: 1.35; transform: rotate(3deg); }
-.about-quote-card i { color: #ffad9e; }
-.about-shape { position: absolute; border-radius: 50%; }
-.about-shape-one { top: 0; left: 2%; width: 115px; height: 115px; background: #eee8ff; }
-.about-shape-two { bottom: 1%; left: 5%; width: 72px; height: 72px; background: #fff0eb; }
-.about-copy > p { max-width: 600px; margin-top: 18px; color: var(--landing-ink-soft); font-size: 14px; line-height: 1.7; }
-.about-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 27px; }
-.about-values > div { display: flex; align-items: flex-start; gap: 9px; padding: 12px; border: 1px solid var(--landing-border); border-radius: 13px; background: #fff; }
-.about-values i { color: var(--landing-coral); font-size: 15px; }
-.about-values strong, .about-values small { display: block; }
-.about-values strong { color: var(--landing-ink); font-size: 11px; }
-.about-values small { margin-top: 4px; color: var(--landing-muted); font-size: 9px; line-height: 1.4; }
-.about-stats { display: flex; gap: 27px; margin-top: 31px; padding-top: 22px; border-top: 1px solid var(--landing-border); }
-.about-stats div { display: flex; flex-direction: column; gap: 3px; }
-.about-stats strong { color: var(--landing-purple); font-family: "Playfair Display", Georgia, serif; font-size: 29px; }
-.about-stats span { color: var(--landing-muted); font-size: 10px; }
+/* =============================================
+   BANNERS DAS ÁREAS
+
+   Substituem os quatro quadrados coloridos. Cada área é uma faixa larga:
+   a arte DE FUNDO e o texto por cima, no mesmo formato do card da Lia no
+   fim da home. O texto ocupa meia faixa, e o lado alterna a cada área —
+   é isso que tira o aspecto de "quatro cartões iguais".
+
+   A arte entra por --img-fundo, aplicado por /imagens.js, porque CSS não
+   lê arquivo de configuração. Sem JS, fica só o gradiente da área.
+   ============================================= */
+.area-banner-list { display: flex; flex-direction: column; gap: 20px; }
+
+.area-banner {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    /* O texto é o que manda na altura. O min-height só evita que uma
+       faixa com pouquinho texto vire um tira fina. */
+    min-height: 320px;
+    padding: 46px clamp(28px, 4.4vw, 58px);
+    border-radius: 26px;
+    color: #fff;
+    background:
+        var(--img-fundo, none) right center / cover no-repeat,
+        linear-gradient(135deg, #452a7d, #241741) center / cover no-repeat;
+    box-shadow: 0 18px 44px rgba(48, 32, 78, .13);
+}
+
+/* O véu que segura a leitura do texto branco: acima da foto, abaixo do
+   texto. Fica num pseudo-elemento para poder inverter o lado sem repetir
+   o gradiente inteiro.
+   Cuidado com o z-index: negativo aqui esconderia o véu ATRÁS da foto, e
+   a faixa viraria só a imagem com texto branco em cima. Por isso é 0, e o
+   conteúdo do texto é que sobe para 2. */
+.area-banner::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background: linear-gradient(100deg,
+        rgba(23, 13, 40, .96) 0%,
+        rgba(23, 13, 40, .9) 36%,
+        rgba(23, 13, 40, .56) 66%,
+        rgba(23, 13, 40, .26) 100%);
+}
+
+.area-banner:hover .area-banner-link { box-shadow: 0 15px 30px rgba(0, 0, 0, .34); }
+/* Faixa invertida: texto à direita, arte à esquerda. */
+.area-banner.is-reversed { background-position: left center, center; }
+.area-banner.is-reversed::before { background: linear-gradient(260deg, rgba(23, 13, 40, .96) 0%, rgba(23, 13, 40, .9) 36%, rgba(23, 13, 40, .56) 66%, rgba(23, 13, 40, .26) 100%); }
+
+.area-banner-content { position: relative; z-index: 2; max-width: 545px; display: flex; flex-direction: column; align-items: flex-start; gap: 13px; }
+.area-banner.is-reversed .area-banner-content { margin-left: auto; }
+
+/* Número da área, no canto oposto ao texto. Grande e apagado: ordena a
+   leitura sem competir com o título. */
+.area-banner-number { position: absolute; right: clamp(20px, 3vw, 44px); bottom: -8px; z-index: 0; color: rgba(255, 255, 255, .17); font-family: "Playfair Display", Georgia, serif; font-size: clamp(62px, 9vw, 118px); font-weight: 700; letter-spacing: -.05em; line-height: .78; }
+.area-banner.is-reversed .area-banner-number { right: auto; left: clamp(20px, 3vw, 44px); }
+
+.area-banner-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 15px; border: 1px solid var(--area-soft, rgba(255,255,255,.4)); border-radius: 999px; background: rgba(255, 255, 255, .1); color: var(--area-soft, #fff); font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.area-banner-tag i { font-size: 11px; }
+
+.area-banner-title { margin: 0; color: #fff; font-family: "Playfair Display", Georgia, serif; font-size: clamp(27px, 3.3vw, 41px); font-weight: 700; letter-spacing: -.035em; line-height: 1.1; text-wrap: balance; }
+
+.area-banner-text { max-width: 50ch; margin: 0; color: rgba(255, 255, 255, .87); font-size: 14px; line-height: 1.65; }
+
+.area-banner-points { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 0; padding: 0; list-style: none; }
+.area-banner-points li { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border: 1px solid rgba(255, 255, 255, .17); border-radius: 999px; background: rgba(255, 255, 255, .08); color: rgba(255, 255, 255, .92); font-size: 11.5px; font-weight: 600; }
+.area-banner-points i { color: var(--area-accent, #fff); font-size: 9.5px; }
+
+.area-banner-link { display: inline-flex; align-items: center; gap: 9px; min-height: 46px; margin-top: 4px; padding: 0 24px; border-radius: 999px; background: var(--area-accent, #fff); color: #1e1030; font-size: 13px; font-weight: 800; box-shadow: 0 10px 24px rgba(0, 0, 0, .28); transition: box-shadow .2s; }
+.area-banner:hover .area-banner-link { box-shadow: 0 15px 30px rgba(0, 0, 0, .34); }
+.area-banner-link i { font-size: 11px; }
+.area-banner-link:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* Aviso da IA: obrigatório, mas em nota miúda. */
+.area-banner-nota { max-width: 500px; margin: 2px 0 0; padding-left: 12px; border-left: 2px solid var(--area-soft, rgba(255, 255, 255, .4)); color: #fff; opacity: .62; font-size: 11.5px; line-height: 1.55; }
+
+/* Uma cor de destaque por área. O véu é sempre o mesmo roxo escuro: quem
+   segura a leitura do texto é ele, e trocar isso por área obrigaria a
+   recalcular contraste quatro vezes. */
+.area-banner-explorar { --area-accent: #c4a6ff; --area-soft: #ded0ff; }
+.area-banner-comunidade { --area-accent: #8ee7cd; --area-soft: #bcf1e2; }
+.area-banner-direitos { --area-accent: #f4cd85; --area-soft: #ffe4b4; }
+.area-banner-acolheria { --area-accent: #c499f8; --area-soft: #ddc6ff; }
+
+/* O banner da AcolherIA é arte de RETRATO em PNG com fundo transparente,
+   não foto de paisagem. `cover` esticaria até cortar o rosto, então aqui
+   a arte entra inteira (`contain`), encostada no lado de fora. O mesmo
+   cuidado do card da Lia no fim da home. */
+.area-banner-art { background: var(--img-fundo, none) right 34px center / contain no-repeat, linear-gradient(135deg, #4b2c86, #241741) center / cover no-repeat; }
+.area-banner-art.is-reversed { background: var(--img-fundo, none) left 34px center / contain no-repeat, linear-gradient(135deg, #4b2c86, #241741) center / cover no-repeat; }
+/* O retrato é um traço claro sobre fundo escuro: o véu pode ser mais
+   aberto do lado dele, senão o desenho some. */
+.area-banner-art::before { background: linear-gradient(100deg, rgba(23, 13, 40, .96) 0%, rgba(23, 13, 40, .9) 32%, rgba(23, 13, 40, .45) 64%, rgba(23, 13, 40, .12) 100%); }
+.area-banner-art.is-reversed::before { background: linear-gradient(260deg, rgba(23, 13, 40, .96) 0%, rgba(23, 13, 40, .9) 32%, rgba(23, 13, 40, .45) 64%, rgba(23, 13, 40, .12) 100%); }
+
+/* =============================================
+   FAIXA DE SELOS — a "4,5 Excelente" da Webnode, sem nota
+   de terceiro: aqui são as garantias que o próprio site
+   cumpre, e por isso são verificáveis por qualquer pessoa.
+   ============================================= */
+.landing-trust { border-bottom: 1px solid var(--landing-border); background: #fff; }
+.landing-trust-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 34px; padding: 19px 0; }
+.landing-trust-inner span { display: inline-flex; align-items: center; gap: 9px; color: var(--landing-ink-soft); font-size: 12px; font-weight: 700; }
+.landing-trust-inner i { color: var(--landing-purple); font-size: 13px; }
+
+/* Declaração — o "acreditamos na sua ideia" da Webnode */
+.landing-believe { background: var(--landing-bg); }
+.landing-believe-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr); align-items: center; gap: clamp(45px, 7vw, 92px); }
+.believe-copy h2 { max-width: 640px; margin-top: 10px; color: var(--landing-ink); font-family: "Playfair Display", Georgia, serif; font-size: clamp(30px, 3.9vw, 46px); letter-spacing: -.045em; line-height: 1.08; }
+.believe-copy h2 em { color: var(--landing-coral); font-style: normal; }
+.believe-copy > p { max-width: 580px; margin-top: 17px; color: var(--landing-ink-soft); font-size: 14px; line-height: 1.7; }
+.landing-text-link { display: inline-flex; align-items: center; gap: 9px; margin-top: 22px; padding: 0 0 4px; border-bottom: 2px solid rgba(109, 59, 209, .28); color: var(--landing-purple); font-size: 13px; font-weight: 800; transition: border-color .2s, color .2s; }
+.landing-text-link:hover { border-color: var(--landing-purple); color: var(--landing-purple-dark); }
+.landing-text-link:focus-visible { outline: 3px solid var(--landing-purple); outline-offset: 4px; border-radius: 3px; }
+.believe-visual { position: relative; min-height: 470px; }
+.believe-image-card { position: absolute; top: 8%; right: 6%; width: 78%; height: 76%; overflow: hidden; border: 8px solid #fff; border-radius: 30px 30px 100px 30px; box-shadow: 0 25px 50px rgba(70, 43, 100, .14); transform: rotate(-2deg); }
+.believe-image-card img { width: 100%; height: 100%; object-fit: cover; }
+.believe-quote-card { position: absolute; z-index: 3; right: 0; bottom: 10%; display: flex; align-items: flex-start; gap: 9px; max-width: 210px; padding: 14px; border-radius: 14px; background: var(--landing-ink); color: #fff; font-family: "Playfair Display", Georgia, serif; font-size: 12px; line-height: 1.35; }
+.believe-quote-card i { color: #ffad9e; }
+.believe-shape { position: absolute; border-radius: 50%; }
+.believe-shape-one { top: 0; left: 0; width: 115px; height: 115px; background: #eee8ff; }
+.believe-shape-two { bottom: 0; left: 4%; width: 72px; height: 72px; background: #fff0eb; }
+
+/* Números — os "50 M+ / 15+ / 82%" da Webnode */
+.landing-stats-band { padding: 78px 0; background: #f5f0ff; text-align: center; }
+.stats-band-title { max-width: 620px; margin: 0 auto; color: var(--landing-ink); font-family: "Playfair Display", Georgia, serif; font-size: clamp(26px, 3.2vw, 38px); letter-spacing: -.04em; line-height: 1.12; }
+.stats-band-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 46px; }
+.stats-band-item { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.stats-band-item strong { color: var(--landing-purple); font-family: "Playfair Display", Georgia, serif; font-size: clamp(46px, 6vw, 68px); font-weight: 700; letter-spacing: -.05em; line-height: 1; }
+.stats-band-item span { max-width: 210px; color: var(--landing-ink-soft); font-size: 12px; font-weight: 600; line-height: 1.45; }
+
+/* Três cards — os "site de negócios / pessoal / loja" da Webnode */
+.landing-cards { background: var(--landing-bg); }
+.pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.pick-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--landing-border); border-radius: 20px; background: #fff; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.pick-card:hover { transform: translateY(-4px); border-color: transparent; box-shadow: var(--landing-shadow); }
+.pick-card:focus-visible { outline: 3px solid var(--landing-purple); outline-offset: 3px; }
+.pick-media { display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--landing-purple-soft); }
+.pick-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+.pick-card:hover .pick-media img { transform: scale(1.04); }
+.pick-body { flex: 1; display: flex; flex-direction: column; padding: 22px 23px 24px; }
+.pick-label { color: var(--landing-coral); font-size: 10px; font-weight: 800; letter-spacing: .14em; }
+.pick-body h3 { margin-top: 11px; color: var(--landing-ink); font-size: 19px; font-weight: 800; letter-spacing: -.02em; }
+.pick-body p { margin-top: 9px; color: var(--landing-ink-soft); font-size: 12.5px; line-height: 1.6; }
+.pick-link { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 20px; color: var(--landing-purple); font-size: 11.5px; font-weight: 800; }
+
+/* Bloco imagem + lista — o "crie o seu site com IA" da Webnode */
+.landing-split { background: #fff; }
+.landing-split-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: center; gap: clamp(45px, 7vw, 90px); }
+.split-visual { position: relative; min-height: 430px; }
+.split-image-wrap { position: absolute; top: 0; left: 0; width: 86%; height: 88%; overflow: hidden; border-radius: 26px 90px 26px 26px; box-shadow: 0 25px 50px rgba(70, 43, 100, .16); }
+.split-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.split-note { position: absolute; z-index: 3; right: 0; bottom: 6%; display: flex; align-items: center; gap: 11px; max-width: 230px; padding: 14px 16px; border: 1px solid var(--landing-border); border-radius: 15px; background: #fff; box-shadow: 0 16px 32px rgba(70, 43, 100, .13); }
+.split-note > i { width: 32px; height: 32px; display: grid; place-items: center; flex: none; border-radius: 10px; background: var(--landing-coral-soft); color: var(--landing-coral); font-size: 14px; }
+.split-note strong, .split-note small { display: block; }
+.split-note strong { color: var(--landing-ink); font-size: 11.5px; }
+.split-note small { margin-top: 3px; color: var(--landing-muted); font-size: 10px; }
+.split-copy h2 { max-width: 560px; margin-top: 10px; color: var(--landing-ink); font-family: "Playfair Display", Georgia, serif; font-size: clamp(30px, 3.9vw, 46px); letter-spacing: -.045em; line-height: 1.08; }
+.split-copy > p { max-width: 560px; margin-top: 17px; color: var(--landing-ink-soft); font-size: 14px; line-height: 1.7; }
+.split-points { margin: 26px 0 0; padding: 0; list-style: none; display: grid; gap: 15px; }
+.split-points li { display: flex; gap: 12px; color: var(--landing-ink-soft); font-size: 13px; line-height: 1.6; }
+.split-points i { width: 22px; height: 22px; display: grid; place-items: center; flex: none; margin-top: 1px; border-radius: 50%; background: var(--landing-purple); color: #fff; font-size: 9.5px; }
+.split-points strong { color: var(--landing-ink); }
+.split-copy .landing-primary-button { margin-top: 28px; }
+
+/* Passos — o "como criar um site gratuito" da Webnode */
+.landing-steps { background: var(--landing-bg); }
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.step-card { position: relative; padding: 30px 26px 28px; border: 1px solid var(--landing-border); border-radius: 20px; background: #fff; }
+.step-number { display: inline-block; color: var(--landing-coral); font-family: "Playfair Display", Georgia, serif; font-size: 34px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+.step-card h3 { margin-top: 14px; color: var(--landing-ink); font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+.step-card p { margin-top: 9px; color: var(--landing-ink-soft); font-size: 12.5px; line-height: 1.65; }
+
+/* Recursos — a grade de seis do rodapé da Webnode */
+.landing-features { background: #fff; }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.feature-item { padding: 26px 24px; border: 1px solid var(--landing-border); border-radius: 18px; background: var(--landing-bg); }
+.feature-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: var(--landing-purple-soft); color: var(--landing-purple); font-size: 17px; }
+.feature-item h3 { margin-top: 16px; color: var(--landing-ink); font-size: 15px; font-weight: 800; letter-spacing: -.015em; }
+.feature-item p { margin-top: 8px; color: var(--landing-ink-soft); font-size: 12.5px; line-height: 1.6; }
+
+/* FAQ — as perguntas da Webnode */
+.landing-faq { background: var(--landing-bg); }
+.landing-faq-grid { display: grid; grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr); align-items: start; gap: clamp(40px, 6vw, 80px); }
+.faq-intro { position: sticky; top: 110px; }
+.faq-intro h2 { margin-top: 10px; color: var(--landing-ink); font-family: "Playfair Display", Georgia, serif; font-size: clamp(30px, 3.6vw, 42px); letter-spacing: -.045em; line-height: 1.1; }
+.faq-intro p { max-width: 340px; margin-top: 15px; color: var(--landing-muted); font-size: 13px; line-height: 1.65; }
+.faq-list { display: grid; gap: 10px; }
+.faq-item { border: 1px solid var(--landing-border); border-radius: 16px; background: #fff; }
+.faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 62px; padding: 18px 22px; color: var(--landing-ink); font-size: 14px; font-weight: 700; cursor: pointer; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:hover { color: var(--landing-purple); }
+.faq-item summary:focus-visible { outline: 3px solid var(--landing-purple); outline-offset: -3px; border-radius: 16px; }
+.faq-item summary i { flex: none; color: var(--landing-muted); font-size: 12px; transition: transform .2s; }
+.faq-item[open] summary i { transform: rotate(180deg); }
+.faq-answer { padding: 0 22px 20px; }
+.faq-answer p { color: var(--landing-ink-soft); font-size: 13px; line-height: 1.7; }
 
 /* Histórias */
 .landing-stories { background: #f5f0ff; }
@@ -177,9 +338,13 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 1000px) {
     .landing-nav-links { gap: 16px; }
     .landing-hero-grid { gap: 35px; }
-    .delivery-grid { grid-template-columns: repeat(2, 1fr); }
-    .landing-about-grid { gap: 45px; }
-    .about-values { grid-template-columns: 1fr; }
+    /* Faixa estreita: o texto e a arte já disputam espaço. O texto
+       limita a 58% e o retrato/detalhe da arte recua um pouco. */
+    .area-banner { min-height: 290px; padding: 38px 32px; }
+    .area-banner-content { max-width: 58%; }
+    .landing-believe-grid, .landing-split-grid { gap: 45px; }
+    .pick-grid, .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .landing-nav-links a { font-size: 11.5px; }
 }
 
 @media (max-width: 760px) {
@@ -192,7 +357,7 @@ button { font: inherit; cursor: pointer; }
     .landing-login-link { display: none; }
     .landing-menu-toggle { display: grid; place-items: center; }
     .landing-hero { padding: 112px 0 62px; }
-    .landing-hero-grid, .landing-about-grid { grid-template-columns: 1fr; }
+    .landing-hero-grid, .landing-believe-grid, .landing-split-grid, .landing-faq-grid { grid-template-columns: 1fr; }
     .landing-hero-copy h1 { font-size: clamp(42px, 12vw, 64px); }
     .landing-hero-lead { font-size: 14px; }
     .landing-hero-visual { min-height: 420px; margin-top: 12px; }
@@ -202,13 +367,33 @@ button { font: inherit; cursor: pointer; }
     .landing-section { padding: 72px 0; }
     .landing-section-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
     .landing-section-heading p { max-width: 380px; }
-    .delivery-grid { grid-template-columns: 1fr; }
-    .delivery-card { min-height: 230px; }
-    .about-visual { min-height: 390px; order: 2; }
-    .about-copy { order: 1; }
-    .about-image-card { right: 7%; width: 76%; height: 78%; }
-    .about-quote-card { right: 0; bottom: 7%; }
-    .about-stats { gap: 18px; }
+
+    /* Banner em telefone: não sobra largura para arte AO LADO do texto.
+       A faixa vira vertical, a arte vai para baixo e o véu fecha por igual
+       — a arte continua visível no rodapé, mas sem brigar com a leitura.
+       A inversão de lado deixa de fazer sentido com uma coluna só. */
+    .area-banner { min-height: 0; padding: 30px 24px 130px; background: var(--img-fundo, none) center bottom / cover no-repeat, linear-gradient(135deg, #452a7d, #241741) center / cover no-repeat; }
+    .area-banner::before, .area-banner.is-reversed::before, .area-banner-art::before, .area-banner-art.is-reversed::before { background: linear-gradient(180deg, rgba(23, 13, 40, .95) 0%, rgba(23, 13, 40, .93) 45%, rgba(23, 13, 40, .72) 100%); }
+    .area-banner-content { max-width: 100%; }
+    .area-banner.is-reversed .area-banner-content { margin-left: 0; }
+    .area-banner-text { font-size: 13.5px; }
+    .area-banner-number { right: 16px; bottom: -2px; font-size: 62px; opacity: .8; }
+    .area-banner.is-reversed .area-banner-number { right: 16px; left: auto; }
+    /* O retrato não cabe embaixo do texto em telefone. Vira textura no
+       canto, encolhido e quase apagado — igual ao card da Lia na home. */
+    .area-banner-art { padding-bottom: 96px; background: var(--img-fundo, none) right -30px bottom -20px / auto 82% no-repeat, linear-gradient(135deg, #4b2c86, #241741) center / cover no-repeat; }
+
+    /* Declaração e bloco imagem+lista: a imagem desce para baixo do
+       texto, e a imagem vai primeiro só se fizer sentido na leitura.
+       Aqui o texto vem antes — é ele que explica. */
+    .believe-visual { min-height: 380px; }
+    .believe-image-card { right: 7%; width: 76%; height: 78%; }
+    .believe-quote-card { right: 0; bottom: 7%; }
+    .split-visual { min-height: 340px; order: 2; }
+    .split-copy { order: 1; }
+    .faq-intro { position: static; }
+
+    .stats-band-grid, .pick-grid, .steps-grid, .features-grid { grid-template-columns: 1fr; }
     .centered-heading { align-items: center; text-align: center; }
     .stories-grid { grid-template-columns: 1fr; }
     .story-card-highlight { transform: none; }
@@ -232,8 +417,16 @@ button { font: inherit; cursor: pointer; }
     .hero-floating small { font-size: 8px; }
     .hero-floating-icon { width: 25px; height: 25px; font-size: 10px; }
     .hero-sticker { font-size: 10px; }
-    .about-stats { flex-wrap: wrap; }
-    .about-stats strong { font-size: 25px; }
+    .area-banner { padding: 26px 20px 112px; }
+    .area-banner-title { font-size: 24px; }
+    .area-banner-link { width: 100%; justify-content: center; }
+    .area-banner-points li { font-size: 11px; }
+    .landing-trust-inner { justify-content: flex-start; gap: 10px 20px; }
+    .landing-trust-inner span { font-size: 11.5px; }
+    .landing-stats-band { padding: 60px 0; }
+    .stats-band-item strong { font-size: 46px; }
+    .faq-item summary { padding: 16px 18px; font-size: 13.5px; }
+    .faq-answer { padding: 0 18px 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -19,6 +19,11 @@
    lia-avatar           Cabeçalho e balão do chat da AcolherIA
    comunidade-visual    Lado esquerdo do banner da NeuroComunidade
 
+   Os prefixos "banner-area-*" são as faixas largas da LANDING PAGE
+   (uma por área: Explorar, Comunidade, Direitos, AcolherIA). Também
+   entram por data-img-fundo, porque são fundo de bloco com texto por
+   cima, não <img>.
+
    Se a imagem não carregar, cai num desenho de espera com o nome "Lia".
    Ou seja: dá para deixar o caminho apontando para o arquivo que você
    ainda vai criar, sem quebrar a página.
@@ -35,7 +40,16 @@
         'lia-avatar': '/img/lia/avatar-lia.png',
 
         // ---- NeuroComunidade -------------------------------------------
-        'comunidade-visual': '/img/mulher.png'
+        'comunidade-visual': '/img/mulher.png',
+
+        // ---- Landing page: uma faixa por área --------------------------
+        // A arte entra como FUNDO do bloco (data-img-fundo), com o texto
+        // por cima. Caminho com espaço e vírgula fica com %20: é o que
+        // funciona ao mesmo tempo em `src` e em `url()` do CSS.
+        'banner-area-explorar': '/img/recursos-hero-DaGrMSNl.jpg',
+        'banner-area-comunidade': '/img/banner-comunidade.png',
+        'banner-area-direitos': '/img/Documento%20com%20selo%20oficial%20e%20uma%20caneta%2C%20representando%20direitos%20legais.png',
+        'banner-area-acolheria': '/img/lia/banner-lia.png'
     };
 
     var RESERVA = '/img/lia/placeholder-lia.svg';

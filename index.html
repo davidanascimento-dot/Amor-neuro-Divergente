@@ -23,8 +23,10 @@
                 <span>Amor NeuroDivergente</span>
             </a>
             <nav class="landing-nav-links" id="landingNavLinks" aria-label="Navegação principal">
-                <a href="#entrega">O que tem aqui</a>
+                <a href="#entrega">Áreas</a>
+                <a href="#recursos">Recursos</a>
                 <a href="#sobre">Sobre</a>
+                <a href="#faq">Dúvidas</a>
                 <a href="/comunidade/comunidade.html">Comunidade</a>
             </nav>
             <div class="landing-nav-actions">
@@ -38,6 +40,10 @@
     </header>
 
     <main id="top">
+        <!-- =============================================
+             HERO — a promessa e os dois caminhos: explorar
+             sem login, ou criar conta para participar.
+             ============================================= -->
         <section class="landing-hero">
             <div class="landing-container landing-hero-grid">
                 <div class="landing-hero-copy">
@@ -54,7 +60,7 @@
                     <div class="hero-blob hero-blob-one"></div>
                     <div class="hero-blob hero-blob-two"></div>
                     <div class="hero-image-wrap">
-                        <img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.jpg" alt="Grupo de pessoas converse em um ambiente acolhedor">
+                        <img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.jpg" alt="Grupo de pessoas conversa em um ambiente acolhedor">
                     </div>
                     <div class="hero-floating hero-floating-top"><span class="hero-floating-icon"><i class="fa-solid fa-heart"></i></span><span><strong>Você não precisa se explicar.</strong><small>Aqui, cada ritmo é respeitado.</small></span></div>
                     <div class="hero-floating hero-floating-bottom"><span class="hero-mini-avatars"><i></i><i></i><i></i></span><span><strong>Uma comunidade real</strong><small>feita para pertencer e confiar.</small></span></div>
@@ -63,74 +69,324 @@
             </div>
         </section>
 
-        <section class="landing-section landing-delivery" id="entrega">
+        <!-- =============================================
+             FAIXA DE SELOS — a versão deste site da
+             avaliação que a Webnode mostra logo abaixo do
+             hero. Aqui são as garantias que valem para
+             quem chega.
+             ============================================= -->
+        <div class="landing-trust">
+            <div class="landing-container landing-trust-inner">
+                <span><i class="fa-solid fa-lock-open"></i> Sem login para ler</span>
+                <span><i class="fa-solid fa-hand-holding-heart"></i> 100% gratuito</span>
+                <span><i class="fa-solid fa-hand-sparkles"></i> Libras com VLibras</span>
+                <span><i class="fa-solid fa-eye"></i> Ajustes de acessibilidade</span>
+                <span><i class="fa-solid fa-font"></i> Fonte para dislexia</span>
+            </div>
+        </div>
+
+        <!-- =============================================
+             DECLARAÇÃO — o "acreditamos na sua ideia" da
+             Webnode. Uma frase por vez, sem lista.
+             ============================================= -->
+        <section class="landing-section landing-believe">
+            <div class="landing-container landing-believe-grid">
+                <div class="believe-copy">
+                    <span class="landing-eyebrow">SOBRE O AMOR NEURODIVERGENTE</span>
+                    <h2>Acreditamos no seu <em>ritmo</em>. Vamos mostrar que ele cabe aqui.</h2>
+                    <p>O Amor NeuroDivergente nasceu para criar um lugar onde pessoas neurodivergentes encontrem informação de qualidade, apoio real e uma comunidade que respeita diferentes formas de estar no mundo.</p>
+                    <p>Você pode explorar tudo sem login. Se quiser comentar, publicar ou conversar com outras pessoas, criamos uma conta para você — e só isso.</p>
+                    <a class="landing-text-link" href="#recursos">Ver o que tem para ler <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="believe-visual">
+                    <div class="believe-image-card"><img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa estudando e escrevendo com calma"></div>
+                    <div class="believe-quote-card"><i class="fa-solid fa-quote-left"></i><span>Aqui, ninguém precisa se explicar.</span></div>
+                    <span class="believe-shape believe-shape-one"></span><span class="believe-shape believe-shape-two"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             NÚMEROS — os 50M+ / 15+ / 82% da Webnode.
+             Poucos, grandes, sem promessa inflada.
+             ============================================= -->
+        <section class="landing-stats-band">
+            <div class="landing-container">
+                <h2 class="stats-band-title">Junte-se às pessoas que já encontraram um lugar para elas aqui.</h2>
+                <div class="stats-band-grid">
+                    <div class="stats-band-item"><strong>4</strong><span>áreas para explorar sem login</span></div>
+                    <div class="stats-band-item"><strong>100%</strong><span>do conteúdo aberto e gratuito</span></div>
+                    <div class="stats-band-item"><strong>∞</strong><span>formas de pertencer à comunidade</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             BANNERS DAS ÁREAS
+
+             O coração da página. Antes eram quatro quadrados
+             coloridos, iguais entre si. Agora cada área é uma
+             faixa larga com a arte DE FUNDO e o texto por
+             cima, no mesmo formato do card da Lia no fim da
+             home, e o lado do texto alterna a cada área: o
+             olho vai descendo em zigue-zague em vez de bater
+             em quatro caixas na mesma linha.
+
+             A arte vem de /imagens.js (data-img-fundo), então
+             trocar a imagem de uma área é uma linha só lá.
+             ============================================= -->
+        <section class="landing-section landing-areas" id="entrega">
             <div class="landing-container">
                 <div class="landing-section-heading">
                     <div><span class="landing-eyebrow">SEM BARREIRA, NO SEU RITMO</span><h2>O que você encontra aqui</h2></div>
-                    <p>Quatro caminhos para explorar sem precisar se cadastrar.</p>
+                    <p>Quatro caminhos para explorar sem precisar se cadastrar. Cada um com uma imagem e uma explicação rápida, para você saber o que espera antes de entrar.</p>
                 </div>
-                <div class="delivery-grid">
-                    <a class="delivery-card delivery-card-purple" href="/Explorar/Explorar.html">
-                        <span class="delivery-icon"><i class="fa-solid fa-compass"></i></span>
-                        <span class="delivery-number">01</span>
-                        <h3>Explorar</h3>
-                        <p>Guias, artigos e respostas para entender melhor o seu jeito de aprender.</p>
-                        <span class="delivery-link">Ver recursos <i class="fa-solid fa-arrow-right"></i></span>
+
+                <div class="area-banner-list">
+
+                    <!-- 01 EXPLORAR — texto à esquerda, arte à direita -->
+                    <article class="area-banner area-banner-explorar" data-img-fundo="banner-area-explorar">
+                        <span class="area-banner-number" aria-hidden="true">01</span>
+                        <div class="area-banner-content">
+                            <span class="area-banner-tag"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explorar</span>
+                            <h3 class="area-banner-title">Entenda o seu jeito de aprender</h3>
+                            <p class="area-banner-text">Guias, artigos e respostas escritos sem juridiquês e sem culpa, para entender melhor o seu ritmo — e respeitar o dos outros.</p>
+                            <ul class="area-banner-points">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Artigos e guias por tema</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Ferramentas para o dia a dia</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Blog e eventos</li>
+                            </ul>
+                            <a class="area-banner-link" href="/Explorar/Explorar.html">Ver recursos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                    </article>
+
+                    <!-- 02 COMUNIDADE — inverte: texto à direita -->
+                    <article class="area-banner area-banner-comunidade is-reversed" data-img-fundo="banner-area-comunidade">
+                        <span class="area-banner-number" aria-hidden="true">02</span>
+                        <div class="area-banner-content">
+                            <span class="area-banner-tag"><i class="fa-regular fa-comments" aria-hidden="true"></i> Comunidade</span>
+                            <h3 class="area-banner-title">Gente que entende, do seu jeito</h3>
+                            <p class="area-banner-text">Fórum, grupos e conversas com quem vive o mesmo. Você lê tudo sem conta e entra na conversa quando quiser — no tempo que precisar.</p>
+                            <ul class="area-banner-points">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Fórum aberto</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Grupos por assunto</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Eventos e encontros</li>
+                            </ul>
+                            <a class="area-banner-link" href="/comunidade/comunidade.html">Entrar na comunidade <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                    </article>
+
+                    <!-- 03 DIREITOS — texto à esquerda -->
+                    <article class="area-banner area-banner-direitos" data-img-fundo="banner-area-direitos">
+                        <span class="area-banner-number" aria-hidden="true">03</span>
+                        <div class="area-banner-content">
+                            <span class="area-banner-tag"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Seus direitos</span>
+                            <h3 class="area-banner-title">Leis traduzidas, sem juridiquês</h3>
+                            <p class="area-banner-text">O que a lei garante, em português de gente. Para você saber o que pedir na escola, no trabalho e na saúde — e como pedir.</p>
+                            <ul class="area-banner-points">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Leis explicadas passo a passo</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Direitos por situação</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Onde pedir ajuda</li>
+                            </ul>
+                            <a class="area-banner-link" href="/Direitos/direitos.html">Conhecer direitos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                    </article>
+
+                    <!-- 04 ACOLHERIA — inverte. Esta é arte de retrato em PNG
+                         com fundo transparente, não foto de paisagem: `cover`
+                         cortaria o rosto. Ver .area-banner-art no CSS. -->
+                    <article class="area-banner area-banner-acolheria area-banner-art is-reversed" data-img-fundo="banner-area-acolheria">
+                        <span class="area-banner-number" aria-hidden="true">04</span>
+                        <div class="area-banner-content">
+                            <span class="area-banner-tag"><i class="fa-solid fa-robot" aria-hidden="true"></i> AcolherIA</span>
+                            <h3 class="area-banner-title">Uma conversa com a Lia, quando quiser</h3>
+                            <p class="area-banner-text">A assistente do site tira dúvidas, indica caminhos e acolhe. Sem pressa, sem formulário, no seu ritmo.</p>
+                            <ul class="area-banner-points">
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Perguntas orientadas</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i> Acolhimento sem julgamento</li>
+                            </ul>
+                            <a class="area-banner-link" href="/inicio.html#acolheria">Conversar com a Lia <i class="fa-regular fa-comment-dots" aria-hidden="true"></i></a>
+                            <p class="area-banner-nota">AcolherIA é uma inteligência artificial. Ajuda com informação e acolhimento, mas não faz diagnóstico e não substitui profissional de saúde.</p>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             TRÊS CARDS — os "site de negócios / site pessoal /
+             loja online" da Webnode. Aqui são os três jeitos de
+             consumir o conteúdo: ler, aprender de verdade e voltar
+             quando quiser.
+             ============================================= -->
+        <section class="landing-section landing-cards" id="recursos">
+            <div class="landing-container">
+                <div class="landing-section-heading centered-heading">
+                    <div><span class="landing-eyebrow">CONTEÚDO PARA O SEU RITMO</span><h2>Três jeitos de usar o site</h2></div>
+                    <p>Você não precisa ler tudo nem seguir ordem nenhuma. Escolha por onde quer começar.</p>
+                </div>
+                <div class="pick-grid">
+                    <a class="pick-card" href="/Explorar/Explorar.html">
+                        <span class="pick-media"><img src="/img/recursos-hero-DaGrMSNl.jpg" alt="Pessoa explicando algo para uma criança, em uma sala tranquila" loading="lazy"></span>
+                        <span class="pick-body">
+                            <span class="pick-label">PARA LER</span>
+                            <h3>Artigos e guias</h3>
+                            <p>Textos organizados por assunto — TDAH, autismo, dislexia, altas habilidades, saúde e mais — para ler no seu tempo.</p>
+                            <span class="pick-link">Explorar artigos <i class="fa-solid fa-arrow-right"></i></span>
+                        </span>
                     </a>
-                    <a class="delivery-card delivery-card-coral" href="/comunidade/comunidade.html">
-                        <span class="delivery-icon"><i class="fa-regular fa-comments"></i></span>
-                        <span class="delivery-number">02</span>
-                        <h3>Comunidade</h3>
-                        <p>Conversas, grupos e histórias de quem vive a neurodiversidade.</p>
-                        <span class="delivery-link">Entrar na comunidade <i class="fa-solid fa-arrow-right"></i></span>
+                    <a class="pick-card" href="/blog/blog.html">
+                        <span class="pick-media"><img src="/img/livro.webp" alt="Capa do livro NeuroDivergentes: o potencial além do diagnóstico" loading="lazy"></span>
+                        <span class="pick-body">
+                            <span class="pick-label">PARA HISTÓRIAS</span>
+                            <h3>Blog e livros</h3>
+                            <p>Relatos de quem vive, e livros indicados para entender melhor o próprio diagnóstico — sem tratamento e sem rótulo.</p>
+                            <span class="pick-link">Ler o blog <i class="fa-solid fa-arrow-right"></i></span>
+                        </span>
                     </a>
-                    <a class="delivery-card delivery-card-gold" href="/Direitos/direitos.html">
-                        <span class="delivery-icon"><i class="fa-solid fa-scale-balanced"></i></span>
-                        <span class="delivery-number">03</span>
-                        <h3>Seus direitos</h3>
-                        <p>Leis explicadas sem juridiquês para você entender melhor os seus direitos.</p>
-                        <span class="delivery-link">Conhecer direitos <i class="fa-solid fa-arrow-right"></i></span>
-                    </a>
-                    <a class="delivery-card delivery-card-blue" href="/inicio.html#acolheria">
-                        <span class="delivery-icon"><i class="fa-solid fa-robot"></i></span>
-                        <span class="delivery-number">04</span>
-                        <h3>AcolherIA</h3>
-                        <p>Uma assistente preparada para dúvidas, acolhimento e orientação.</p>
-                        <span class="delivery-link">Conversar com a AcolherIA <i class="fa-solid fa-arrow-right"></i></span>
+                    <a class="pick-card" href="/loja/loja.html">
+                        <span class="pick-media"><img src="/img/Kit Escolar Fundamental Ii Para Neurodivergentes Com Cubo.webp" alt="Kit escolar com cubos de apoio para crianças neurodivergentes" loading="lazy"></span>
+                        <span class="pick-body">
+                            <span class="pick-label">PARA O DIA A DIA</span>
+                            <h3>Loja e apoios</h3>
+                            <p>Kits, planners e materiais que ajudam a organizar a rotina, comprar para apoiar o projeto ou doar para ele.</p>
+                            <span class="pick-link">Ver a loja <i class="fa-solid fa-arrow-right"></i></span>
+                        </span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <section class="landing-section landing-about" id="sobre">
-            <div class="landing-container landing-about-grid">
-                <div class="about-visual">
-                    <div class="about-image-card"><img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa estudando e escrevendo com calma"></div>
-                    <div class="about-quote-card"><i class="fa-solid fa-quote-left"></i><span>Aqui, ninguém precisa se explicar.</span></div>
-                    <span class="about-shape about-shape-one"></span><span class="about-shape about-shape-two"></span>
+        <!-- =============================================
+             BLOCO IMAGEM + LISTA — o "crie o seu site
+             instantaneamente com a ajuda da IA" da Webnode.
+             Uma imagem de um lado, três promessas com
+             check do outro.
+             ============================================= -->
+        <section class="landing-section landing-split">
+            <div class="landing-container landing-split-grid">
+                <div class="split-visual">
+                    <div class="split-image-wrap"><img src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg" alt="Mãos anotando em um caderno ao lado de um notebook, em uma mesa tranquila" loading="lazy"></div>
+                    <div class="split-note"><i class="fa-solid fa-mug-hot"></i><span><strong>Você escolhe quando voltar.</strong><small>Nada de cobrança de leitura.</small></span></div>
                 </div>
-                <div class="about-copy">
-                    <span class="landing-eyebrow">SOBRE O AMOR NEURODIVERGENTE</span>
-                    <h2>Informação que acolhe. Comunidade que entende.</h2>
-                    <p>O Amor NeuroDivergente nasceu para criar um lugar onde pessoas neurodivergentes encontrem informação de qualidade, apoio real e uma comunidade que respeita diferentes formas de estar no mundo.</p>
-                    <p>Você pode explorar tudo sem login. Se quiser comentar, publicar ou conversar com outras pessoas, criamos uma conta para você.</p>
-                    <div class="about-values">
-                        <div><i class="fa-solid fa-universal-access"></i><span><strong>Acessível de verdade</strong><small>VLibras, UserWay e fonte para dislexia.</small></span></div>
-                        <div><i class="fa-solid fa-heart"></i><span><strong>Acolhimento sem julgamento</strong><small>Linguagem simples e respeito por cada história.</small></span></div>
-                        <div><i class="fa-solid fa-lock-open"></i><span><strong>Livre e gratuito</strong><small>Você escolhe quando e como participar.</small></span></div>
+                <div class="split-copy">
+                    <span class="landing-eyebrow">SEM PRESSA, DO SEU JEITO</span>
+                    <h2>Comece a explorar sem precisar se cadastrar</h2>
+                    <p>A conta aqui é opcional de verdade. Você lê, ouve em Libras e navega no seu tempo. Ela só existe se você quiser comentar, publicar ou conversar.</p>
+                    <ul class="split-points">
+                        <li><i class="fa-solid fa-check"></i><span><strong>Crie a conta só se quiser.</strong> Ler todo o conteúdo do site não pede login, e-mail nem cadastro.</span></li>
+                        <li><i class="fa-solid fa-check"></i><span><strong>Guarde o que leu.</strong> O site lembra em que você parou para continuar de onde parou.</span></li>
+                        <li><i class="fa-solid fa-check"></i><span><strong>Ajuste como a página se comporta.</strong> Contraste, tamanho de fonte e movimento reduzido são você quem liga.</span></li>
+                    </ul>
+                    <a class="landing-primary-button" href="/inicio.html">Explorar agora <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             PASSOS — o "como criar um site gratuito" da
+             Webnode. Três passos, numerados, sem enrolação.
+             ============================================= -->
+        <section class="landing-section landing-steps">
+            <div class="landing-container">
+                <div class="landing-section-heading centered-heading">
+                    <div><span class="landing-eyebrow">TRÊS PASSOS</span><h2>Como funciona</h2></div>
+                    <p>Do primeiro clique à primeira conversa, sem burocracia no meio.</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <span class="step-number">01</span>
+                        <h3>Entre e explore</h3>
+                        <p>Abra qualquer área sem login. Leia, assista em Libras, salve o que quiser. Nada é cobrado e nada é perdido.</p>
                     </div>
-                    <div class="about-stats"><div><strong>4</strong><span>lugares para explorar</span></div><div><strong>100%</strong><span>conteúdo aberto</span></div><div><strong>∞</strong><span>formas de pertencimento</span></div></div>
+                    <div class="step-card">
+                        <span class="step-number">02</span>
+                        <h3>Escolha seu ritmo</h3>
+                        <p>Você pode passar um mês só lendo sobre laudo, ou só conversando com a Lia. Não existe caminho obrigatório.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">03</span>
+                        <h3>Participe, se quiser</h3>
+                        <p>Crie uma conta para comentar, publicar, entrar em grupos ou conversar no fórum. Você sai quando quiser.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- =============================================
+             DEPOIMENTOS — a seção de avaliações da Webnode.
+             ============================================= -->
         <section class="landing-section landing-stories" id="historias">
             <div class="landing-container">
-                <div class="landing-section-heading centered-heading"><div><span class="landing-eyebrow>PERTENCER É IMPORTANTE</span><h2>Um lugar para cada história</h2></div><p>Você não precisa chegar sabendo tudo. A gente aprende junto.</p></div>
+                <div class="landing-section-heading centered-heading"><div><span class="landing-eyebrow">PERTENCER É IMPORTANTE</span><h2>Um lugar para cada história</h2></div><p>Você não precisa chegar sabendo tudo. A gente aprende junto.</p></div>
                 <div class="stories-grid">
                     <article class="story-card"><div class="story-stars">★★★★★</div><p>“Encontrei palavras para explicar o que sentia e pessoas que não me julgam.”</p><div class="story-author"><span class="story-avatar">A</span><span><strong>Uma pessoa TDAH</strong><small>da comunidade</small></span></div></article>
                     <article class="story-card story-card-highlight"><div class="story-stars">★★★★★</div><p>“O conteúdo é claro e a comunidade respeita o meu tempo. Isso já muda tudo.”</p><div class="story-author"><span class="story-avatar story-avatar-coral">L</span><span><strong>Uma pessoa autista</strong><small>da comunidade</small></span></div></article>
                     <article class="story-card"><div class="story-stars">★★★★★</div><p>“Finalmente um lugar para falar sobre direitos sem precisar entrar em um tribunal.”</p><div class="story-author"><span class="story-avatar story-avatar-gold">R</span><span><strong>Mais uma pertencente</strong><small>da comunidade</small></span></div></article>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             RECURSOS — a grade de seis do rodapé da Webnode,
+             "a plataforma completa". Aqui: acessibilidade e
+             o que mais sustenta o site.
+             ============================================= -->
+        <section class="landing-section landing-features">
+            <div class="landing-container">
+                <div class="landing-section-heading">
+                    <div><span class="landing-eyebrow">O QUE SUSTENTA O SITE</span><h2>Acessibilidade e cuidado em cada detalhe</h2></div>
+                    <p>Recursos que existem porque alguém pediu — e porque ninguém deveria precisar mendigar para ler.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-item"><span class="feature-icon"><i class="fa-solid fa-hand-sparkles"></i></span><h3>Libras com VLibras</h3><p>Um clique e o conteúdo é traduzido em Libras, sem sair da página.</p></div>
+                    <div class="feature-item"><span class="feature-icon"><i class="fa-solid fa-universal-access"></i></span><h3>Ajustes de acessibilidade</h3><p>Contraste, tamanho de fonte, foco visível e navegação por teclado em todo o site.</p></div>
+                    <div class="feature-item"><span class="feature-icon"><i class="fa-solid fa-font"></i></span><h3>Fonte para dislexia</h3><p>Uma opção de leitura alternativa para quem acha o texto padrão cansativo.</p></div>
+                    <div class="feature-item"><span class="feature-icon"><i class="fa-solid fa-book-bookmark"></i></span><h3>Continue de onde parou</h3><p>O site guarda o que você leu para você retomar depois sem perder o fio.</p></div>
+                    <div class="feature-item"><span class="feature-icon"><i class="fa-solid fa-wave-square"></i></span><h3>Movimento reduzido</h3><p>Quem pede menos animação — por preferência ou por necessidade — não vê animação.</p></div>
+                    <div class="feature-item"><span class="feature-icon"><i class="fa-solid fa-heart"></i></span><h3>De verdade gratuito</h3><p>Ler, aprender e conversar não custa nada. A loja existe para quem quer apoiar.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             FAQ — as perguntas da Webnode, adaptadas para as
+             dúvidas reais de quem chega aqui.
+             ============================================= -->
+        <section class="landing-section landing-faq" id="faq">
+            <div class="landing-container landing-faq-grid">
+                <div class="faq-intro">
+                    <span class="landing-eyebrow">PERGUNTAS FREQUENTES</span>
+                    <h2>Dúvidas comuns</h2>
+                    <p>Se a sua não estiver aqui, a Lia responde — ou você pode falar com a gente pela página de contato.</p>
+                    <a class="landing-text-link" href="/inicio.html#acolheria">Perguntar para a Lia <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary><span>Preciso criar conta para ler?</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                        <div class="faq-answer"><p>Não. Todo o conteúdo do site — artigos, guias, blogs e leis — é aberto. A conta só é necessária para comentar, publicar ou conversar na comunidade.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary><span>O site é gratuito mesmo?</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                        <div class="faq-answer"><p>Sim. Todo o conteúdo é gratuito. Existe uma loja com produtos físicos, e quem quiser pode doar para o projeto continuar de pé.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary><span>A AcolherIA substitui um terapeuta?</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                        <div class="faq-answer"><p>Não. A AcolherIA é uma inteligência artificial de acolhimento e informação: ajuda a tirar dúvidas e encontrar caminhos no site, mas não faz diagnóstico nem substitui atendimento humano. Se você estiver em crise, ligue para o CVV no 188.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary><span>Preciso me explicar toda vez que entro?</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                        <div class="faq-answer"><p>Não. Um dos nossos valores é o contrário disso. Você não precisa justificar diagnóstico, laudo ou sintoma para ler, perguntar ou participar. Se quiser, conta a sua história — mas ninguém obriga.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary><span>O site funciona no celular?</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                        <div class="faq-answer"><p>Funciona. Todas as páginas são pensadas para tela pequena também, com botões grandes, texto legível e sem pulos de rolagem inexplicáveis.</p></div>
+                    </details>
+                    <details class="faq-item">
+                        <summary><span>Como posso ajudar o projeto?</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                        <div class="faq-answer"><p>Você pode doar, comprar na loja, compartilhar um artigo ou simplesmente voltar e contar pra alguém como foi. Todas essas coisas ajudam.</p></div>
+                    </details>
                 </div>
             </div>
         </section>
