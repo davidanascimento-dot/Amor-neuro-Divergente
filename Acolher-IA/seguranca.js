@@ -579,13 +579,6 @@
             return Boolean(painel && !painel.hidden);
         },
 
-        // Abre a busca por CAPS/UBS perto de quem chamou. Exposto para o
-        // botão de ajuda rápida do modal, que fica sempre a vista: antes o
-        // numero so aparecia depois que a conversa começava.
-        buscarCaps: function () {
-            pedirLocalizacao();
-        },
-
         ligarUI: function () {
             garantirPainel();
             document.getElementById('acolheriaSafetyFechar')?.addEventListener('click', api.fechar);
@@ -593,22 +586,13 @@
             document.getElementById('acolheriaRespIniciar')?.addEventListener('click', iniciarRespiracao);
             document.getElementById('acolheriaRespParar')?.addEventListener('click', pararRespiracao);
             document.getElementById('acolheriaGeo')?.addEventListener('click', pedirLocalizacao);
-            document.getElementById('acolheriaSemAjuda')?.addEventListener('click', api.abrirCrise);
 
-            // Botão de ajuda rápida dentro do modal da AcolherIA. Delegado
-            // porque o botão só existe em algunas páginas (o painel de
-            // segurança é injetado, este já vem no HTML).
-            if (!document.body.dataset.colheriaCapsLigado) {
-                document.body.dataset.colheriaCapsLigado = '1';
-                document.addEventListener('click', function (event) {
-                    const alvo = event.target instanceof Element
-                        ? event.target.closest('#acolheriaCapsBusca')
-                        : null;
-                    if (!alvo) return;
-                    event.preventDefault();
-                    pedirLocalizacao();
-                });
-            }
+            // O botão "Preciso de ajuda agora" saiu da tela. O painel
+            // continua existindo e continua abrindo sozinho quando a
+            // conversa indica risco — é para isso que serve a detecção.
+            // api.abrirCrise segue na API pública para quem precisar
+            // chamar o painel por outro caminho.
+
 
             document.addEventListener('keydown', function (event) {
                 if (event.key === 'Escape' && api.estaAberto()) {

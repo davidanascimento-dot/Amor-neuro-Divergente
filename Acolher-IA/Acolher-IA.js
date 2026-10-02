@@ -385,6 +385,24 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         acolheriaClose.addEventListener('click', closeAcolheriaPanel);
     }
 
+    // =============================================
+    // AVISO DE QUE É IA — recolhe e expande
+    //
+    // O aviso ocupa uma linha só quando fechado. O texto completo fica
+    // escondido até a pessoa pedir, senão tomava a altura da tela antes
+    // de aparecer a primeira mensagem.
+    // =============================================
+    const iaToggle = document.getElementById('acolheriaIaToggle');
+    const iaDetalhe = document.getElementById('acolheriaIaDetalhe');
+
+    if (iaToggle && iaDetalhe) {
+        iaToggle.addEventListener('click', () => {
+            const aberto = iaToggle.getAttribute('aria-expanded') === 'true';
+            iaToggle.setAttribute('aria-expanded', String(!aberto));
+            iaDetalhe.hidden = aberto;
+        });
+    }
+
     if (acolheriaOverlayBg) {
         acolheriaOverlayBg.addEventListener('click', closeAcolheriaPanel);
     }
@@ -430,22 +448,174 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     });
 
     // =============================================
+    // AVISO DE QUE É IA — injetado em todas as páginas
+    //
+    // Fica aqui, e não replicado no HTML de cada página, por dois
+    // motivos: o aviso é uma informação de segurança e não pode
+    // divergir entre páginas; e o CSS dele também varies, então
+    // injetar junto evita depender de cada stylesheet ter a regra.
+    //
+    // Ocupa UMA linha. O texto completo aparece só quando a pessoa
+    // pede. A versão anterior ocupava quase a altura da tela antes da
+    // primeira mensagem.
+    //
+    // Os contatos de crise NÃO ficam aqui de propósito. Quando a
+    // conversa indica risco, quem aparece é o Painel de Apoio
+    // Imediato (seguranca.js), que se abre sozinho. number na mão de
+    // todo mundo, o tempo todo, é ruído.
+    // =============================================
+    function injetarAvisoIA() {
+        const modal = document.querySelector('.acolheria-modal');
+        const corpo = document.getElementById('acolheriaChatBody');
+        if (!modal || !corpo || document.getElementById('acolheriaIaFaixa')) return;
+
+        const faixa = document.createElement('div');
+        faixa.className = 'acolheria-ia-faixa';
+        faixa.id = 'acolheriaIaFaixa';
+
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'acolheria-ia-toggle';
+        botao.id = 'acolheriaIaToggle';
+        botao.setAttribute('aria-expanded', 'false');
+        botao.setAttribute('aria-controls', 'acolheriaIaDetalhe');
+
+        const icone = document.createElement('i');
+        icone.className = 'fa-solid fa-circle-info';
+        icone.setAttribute('aria-hidden', 'true');
+
+        const resumo = document.createElement('span');
+        resumo.className = 'acolheria-ia-resumo';
+        resumo.textContent = 'Assistente virtual por IA — não substitui atendimento humano';
+
+        const mais = document.createElement('span');
+        mais.className = 'acolheria-ia-mais';
+        mais.textContent = 'Saiba mais';
+
+        const seta = document.createElement('i');
+        seta.className = 'fa-solid fa-chevron-down acolheria-ia-seta';
+        seta.setAttribute('aria-hidden', 'true');
+
+        botao.append(icone, resumo, mais, seta);
+
+        const detalhe = document.createElement('div');
+        detalhe.className = 'acolheria-ia-detalhe';
+        detalhe.id = 'acolheriaIaDetalhe';
+        detalhe.hidden = true;
+
+        const p1 = document.createElement('p');
+        p1.append(
+            'Isto é uma ',
+            forte('inteligência artificial'),
+            '. Ela ajuda com informação e acolhimento, mas ',
+            forte('não faz diagnóstico'),
+            ' e não substitui profissional de saúde, psicólogo, advogado ou Defensoria Pública.'
+        );
+
+        const p2 = document.createElement('p');
+        p2.append('Para orientação jurídica, veja a ');
+        p2.append(link('/Direitos/direitos.html', 'página de Direitos'));
+        p2.append(' e a ');
+        p2.append(link('https://dpu.def.br', 'DPU', true));
+        p2.append('.');
+
+        const p3 = document.createElement('p');
+        p3.append('Em situação de risco, ligue para o ');
+        p3.append(link('tel:188', 'CVV (188)'));
+        p3.append(', gratuito e sigiloso, ou ');
+        p3.append(link('tel:192', 'SAMU (192)'));
+        p3.append('.');
+
+        detalhe.append(p1, p2, p3);
+        faixa.append(botao, detalhe);
+        modal.insertBefore(faixa, corpo);
+
+        botao.addEventListener('click', () => {
+            const aberto = botao.getAttribute('aria-expanded') === 'true';
+            botao.setAttribute('aria-expanded', String(!aberto));
+            detalhe.hidden = aberto;
+        });
+    }
+
+    function forte(texto) {
+        const el = document.createElement('strong');
+        el.textContent = texto;
+        return el;
+    }
+
+    function link(href, texto, externo) {
+        const a = document.createElement('a');
+        a.href = href;
+        a.textContent = texto;
+        if (externo) {
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+        }
+        return a;
+    }
+
+    // O CSS vai junto. Cada página usa um stylesheet diferente
+    // (inicio.css, blog.css, comunidade.css...), e nenhum deles pode
+    // faltar a regra sem o aviso aparecer sem estilo.
+    function injetarEstiloAvisoIA() {
+        if (document.getElementById('acolheriaIaStyle')) return;
+        const style = document.createElement('style');
+        style.id = 'acolheriaIaStyle';
+        style.textContent = `
+            .acolheria-ia-faixa {
+                background: var(--primary-light, #ede9fe);
+                border-bottom: 1px solid var(--border-color, #e8e3dd);
+                flex-shrink: 0;
+            }
+            .acolheria-ia-toggle {
+                display: flex; align-items: center; gap: 8px;
+                width: 100%; padding: 8px 16px;
+                border: none; background: none; color: var(--text-dark, #1a1a2e);
+                font-family: 'Inter', sans-serif; font-size: 12px;
+                line-height: 1.4; text-align: left; cursor: pointer;
+            }
+            .acolheria-ia-toggle > i:first-child {
+                color: var(--primary, #7c3aed); flex-shrink: 0; font-size: 13px;
+            }
+            .acolheria-ia-resumo { flex: 1; min-width: 0; font-weight: 600; }
+            .acolheria-ia-mais {
+                flex-shrink: 0; font-weight: 700;
+                text-decoration: underline; text-underline-offset: 2px;
+            }
+            .acolheria-ia-toggle[aria-expanded="true"] .acolheria-ia-mais { display: none; }
+            .acolheria-ia-seta { flex-shrink: 0; font-size: 10px; transition: transform .2s ease; }
+            .acolheria-ia-toggle[aria-expanded="true"] .acolheria-ia-seta { transform: rotate(180deg); }
+            .acolheria-ia-toggle:hover { background: rgba(124,58,237,.10); }
+            .acolheria-ia-toggle:focus-visible { outline: 2px solid var(--primary, #7c3aed); outline-offset: -2px; }
+            .acolheria-ia-detalhe {
+                padding: 2px 16px 12px; color: var(--text-dark, #1a1a2e);
+                font-size: 13px; line-height: 1.6;
+            }
+            .acolheria-ia-detalhe[hidden] { display: none; }
+            .acolheria-ia-detalhe p { margin: 0 0 8px; }
+            .acolheria-ia-detalhe p:last-child { margin-bottom: 0; }
+            .acolheria-ia-detalhe a { color: var(--primary, #7c3aed); font-weight: 700; }
+            .acolheria-ia-detalhe a:focus-visible { outline: 2px solid var(--primary, #7c3aed); outline-offset: 2px; }
+            @media (max-width: 420px) {
+                .acolheria-ia-toggle { padding: 8px 12px; font-size: 11.5px; }
+                .acolheria-ia-resumo { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    injetarEstiloAvisoIA();
+    injetarAvisoIA();
+
+    // =============================================
     // SEGURANÇA — camada 1 e 2
     // =============================================
 
     if (window.AcolheriaSeguranca) {
-        // Ajuda sempre acessível, mesmo fora de crise (prática recomendada).
-        // Criado ANTES de ligarUI() para que o listener seja registrado.
-        const nota = document.querySelector('.acolheria-footer-note');
-        if (nota && !document.getElementById('acolheriaSemAjuda')) {
-            const sos = document.createElement('button');
-            sos.type = 'button';
-            sos.id = 'acolheriaSemAjuda';
-            sos.className = 'acolheria-sos';
-            sos.innerHTML = '<i class="fa-solid fa-life-ring"></i> Preciso de ajuda agora';
-            nota.insertAdjacentElement('afterend', sos);
-        }
-
+        // Sem botão "Preciso de ajuda agora" na tela. Ele ocupava espaço
+        // em toda conversa, mesmo fora de crise, e repetia o que o aviso
+        // de IA já diz. O Painel de Apoio Imediato continua existindo e
+        // se abre sozinho quando a conversa indica risco.
         window.AcolheriaSeguranca.ligarUI();
     }
 
