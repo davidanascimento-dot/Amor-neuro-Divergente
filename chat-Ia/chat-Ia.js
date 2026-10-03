@@ -226,8 +226,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // =========================================
     // Desenho
     // =========================================
-    let avisaoJaMostrada = false;
-
     function avatarDaLia() {
         const caixa = document.createElement('div');
         caixa.className = 'cia-msg-avatar';
@@ -282,15 +280,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function desenharTudo() {
         rolagem.textContent = '';
 
-        if (!avisaoJaMostrada) {
-            const aviso = document.createElement('p');
-            aviso.className = 'cia-aviso-ia';
-            aviso.textContent =
-                'Lia é uma inteligência artificial. Ajuda com informação e acolhimento, ' +
-                'mas não faz diagnóstico e não substitui profissional de saúde.';
-            rolagem.appendChild(aviso);
-            avisaoJaMostrada = true;
-        }
+        // O aviso "Lia é uma inteligência artificial" NAO entra aqui.
+        // Ele fica uma vez so, em `.cia-rodape-nota`, no rodape em cima
+        // do campo. Antes ele aparecia duas vezes: uma injetada no topo
+        // da conversa e outra no rodape, com quase o mesmo texto. Duas
+        // vezes a mesma frase teaches a pessoa a nao ler nenhuma das duas
+        // — e a do topo rolava para fora da tela assim que a conversa
+        // começava, que era justo o momento em que mais importava.
+        //
+        // No rodape ele e melhor porque fica sempre a vista: e a hora em
+        // que a pessoa esta prestes a pedir algo.
 
         const mensagens = C.mensagens();
         if (!mensagens.length) {
@@ -437,8 +436,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function irParaFim() {
+        // Duas passadas, e não uma.
+        //
+        // Logo antes desta chamada as ferramentas e os recursos são
+        // mostrados, e eles encolhem a área de rolagem. Um único
+        // requestAnimationFrame mede o scrollHeight ANTES do navegador
+        // aplicar essa mudança de layout, e a rolagem para um pouco
+        // acima do fim — a última linha da Lia fica cortada embaixo,
+        // que era exatamente o que aparecia na tela.
+        //
+        // O primeiro quadro aplica o layout novo; o segundo mede a
+        // altura certa e rola de novo.
         requestAnimationFrame(function () {
             rolagem.scrollTop = rolagem.scrollHeight;
+            requestAnimationFrame(function () {
+                rolagem.scrollTop = rolagem.scrollHeight;
+            });
         });
     }
 
@@ -774,20 +787,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     campo.addEventListener('input', function () {
         ajustarAltura();
-        btnEnviar.disabled = !campo.value.trim() && !enviando;
+        atualizarBotaoEnviar();
     });
+
+    /**
+     * O botão de enviar mostra se há algo para enviar.
+     *
+     * Antes isso só era recalculado no evento `input`. Ao abrir a
+     * página o campo nascia vazio e o botão nascia habilitado: seem
+     * haver o que enviar, e era preciso apertar para discovering
+     * que nada acontecia. Mandar() já devolvia vazio sem fazer
+     * nada, mas o botão mentindo sobre o estado é o tipo de coisa que
+     * faz a pessoa achar que a Lia travou.
+     */
+    function atualizarBotaoEnviar() {
+        btnEnviar.disabled = !campo.value.trim() && !enviando;
+    }
 
     campo.addEventListener('keydown', function (ev) {
         // Enter envia, Shift+Enter quebra linha. É o esperado em chat.
         if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
             ev.preventDefault();
             mandar(campo.value);
+            atualizarBotaoEnviar();
         }
     });
 
     form.addEventListener('submit', function (ev) {
         ev.preventDefault();
         mandar(campo.value);
+        // O campo esvazia dentro de mandar(); o botão precisa voltar
+        // para desabilitado junto, e nao esperar o próximo input.
+        atualizarBotaoEnviar();
     });
 
     btnVoz.addEventListener('click', alternarVoz);
@@ -799,6 +830,9 @@ document.addEventListener('DOMContentLoaded', function () {
     desenharTudo();
     atualizarBotaoSalvar();
     atualizarContador();
+    // Sem isso o botão de enviar nasce habilitado com o campo vazio:
+    // atualizarBotaoEnviar só era chamado ao digitar.
+    atualizarBotaoEnviar();
 
     if (!temVoz() && btnVoz) {
         // Sem reconhecimento de voz, o botão não seria nada.

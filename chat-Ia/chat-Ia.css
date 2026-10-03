@@ -62,6 +62,13 @@ body.a11y-dark-mode {
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
+    /* O cabeçalho entra no fluxo e o chat fica com o que sobrar.
+       Antes o cabeçalho era `fixed` — herdado de .header-glass, no
+       inicio.css — e por isso saía do fluxo. Dava dois defeitos:
+       sobrava uma faixa em branco embaixo, e a linha "Lia / assistente
+       virtual" ficava ATRÁS do cabeçalho, invisível. */
+    display: flex;
+    flex-direction: column;
 }
 
 /* =========================================
@@ -75,6 +82,12 @@ body.a11y-dark-mode {
     padding: 10px 22px;
     background: var(--cia-superficie);
     border-bottom: 1px solid var(--cia-borda);
+    /* Anula o `position: fixed` que vem de .header-glass no inicio.css.
+       Aqui o cabeçalho é a primeira faixa da tela e ocupa a altura dele
+       de verdade. chat-Ia.css é carregado depois de inicio.css, então
+       esta regra vence na ordem. */
+    position: static;
+    flex: 0 0 auto;
 }
 
 .cia-header .logo {
@@ -138,8 +151,14 @@ body.a11y-dark-mode .cia-header .header-links a[aria-current="page"] {
 .cia {
     display: grid;
     grid-template-rows: auto 1fr auto;
-    height: calc(100vh - 55px);
-    height: calc(100dvh - 55px);
+    /* Sem `height: calc(100dvh - 55px)`. O 55 era um palpite que não
+       batia: o cabeçalho tem 75px, então o chat ficava 20px mais alto
+       que a tela e era cortado. Quem mede a altura agora é o flex de
+       .cia-body — o cabeçalho ocupa o que ocupa, e o chat fica com o
+       resto, seja 75px ou 64px, no celular ou no desktop. */
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
     max-width: 1080px;
     margin: 0 auto;
     background: var(--cia-fundo);
@@ -459,19 +478,6 @@ body.a11y-dark-mode .cia-btn-icone-cont { color: #2E1065; }
 
 .cia-rolagem:focus-visible { outline: 3px solid var(--cia-roxo); outline-offset: -3px; }
 
-.cia-aviso-ia {
-    align-self: center;
-    max-width: 560px;
-    padding: 9px 16px;
-    border-radius: 999px;
-    background: var(--cia-roxo-claro);
-    border: 1px solid var(--cia-borda);
-    color: var(--cia-texto-medio);
-    font-size: 0.76rem;
-    text-align: center;
-    line-height: 1.5;
-}
-
 .cia-msg {
     display: flex;
     gap: 12px;
@@ -577,20 +583,29 @@ body.a11y-dark-mode .cia-btn-icone-cont { color: #2E1065; }
 
 .cia-ferramentas-rotulo,
 .cia-recursos-rotulo {
-    display: block;
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     font-weight: 700;
     color: var(--cia-texto-tenue);
-    margin-bottom: 8px;
+    /* O rotulo ocupava uma linha inteira e empurrava os botoes para
+       baixo. Sendo inline, ele fica ao lado deles e a faixa perde uns
+       14px — que é conversa a mais, e conversa é o que a pessoa veio
+       usar aqui. */
+    display: inline-block;
+    margin: 0 10px 0 0;
+    vertical-align: middle;
 }
 
+/* inline-flex, e não flex: é o que deixa o rotulo ao lado dos botões
+   em vez de numa linha só dele. */
 .cia-ferramentas-botoes,
 .cia-recursos-lista {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px 8px;
+    align-items: center;
+    vertical-align: middle;
 }
 
 .cia-ferr {
@@ -990,6 +1005,17 @@ body.a11y-dark-mode .cia-torrada { color: #2E1065; }
     .cia-ferr,
     .cia-recurso,
     .cia-sug { white-space: nowrap; flex-shrink: 0; }
+
+    /* No desktop o rótulo ficou ao lado dos botões, para a faixa ser
+       mais baixa. Aqui os botões NÃO quebram: viram rolagem horizontal
+       para não empurrar o campo para fora da tela. Com o rótulo do
+       lado, ele espremeria essa rolagem e os botões sumiriam para
+       fora. Então ele volta para a linha de cima. */
+    .cia-ferramentas-rotulo,
+    .cia-recursos-rotulo {
+        display: block;
+        margin: 0 0 6px;
+    }
 }
 
 /* No celular a Lia encolhe: o campo de mensagem tem de continuar

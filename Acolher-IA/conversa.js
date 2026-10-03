@@ -169,6 +169,52 @@ Se continuar falhando, avisa em contato@amorneurodivergente.com.`;
             });
         },
 
+        /**
+         * O mesmo histórico, escrito como texto, para a função que só
+         * aceita uma mensagem solta.
+         *
+         * A função publicada em produção é a versão antiga: ela lê o
+         * campo `message` e não conhece `messages`. Mandando só o
+         * formato novo, ela respondia HTTP 400 "Mensagem inválida" e a
+         * Lia ficava muda na tela — o botão de enviar funcionava, a
+         * resposta nunca chegava.
+         *
+         * Montar a conversa como transcrição resolve sem depender de
+         * publicar nada: verifiquei que a função antiga entende o
+         * contexto ("Pessoa: meu nome e Rafael" e ela responde chamando
+         * de Rafael) e que ignora os campos extras do corpo.
+         *
+         * O prefixo de modo entra junto. A versão antiga não tem
+         * parâmetro de modo, mas obedece a instrução escrita — pedindo
+         * "de forma muito simples" ela responde em frases curtas, que é
+         * o mesmo efeito do botão "Mais simples".
+         */
+        textoParaFuncaoAntiga: function (modo) {
+            if (!atual || !atual.mensagens.length) return '';
+
+            const INSTRUCAO = {
+                simples: 'Responda de forma muito simples: frases curtas, ' +
+                         'sem termos técnicos. Se precisar de um termo difícil, ' +
+                         'explique com palavras comuns logo depois.',
+                direto: 'Responda de forma direta e curta. Vá ao ponto, ' +
+                        'sem rodeios e sem introdução.',
+                passos: 'Responda em passos numerados, um assunto por vez, ' +
+                        'de forma que dê para seguir na ordem.',
+                detalhado: 'Responda com bastante detalhe, explicações ' +
+                           'completas e exemplos.'
+            };
+
+            const linhas = atual.mensagens.map(function (m) {
+                const quem = m.role === 'user' ? 'Pessoa' : 'Lia';
+                return quem + ': ' + m.content;
+            });
+
+            let texto = linhas.join('\n\n');
+            const instrucao = INSTRUCAO[modo];
+            if (instrucao) texto += '\n\n[Jeito de responder: ' + instrucao + ']';
+            return texto;
+        },
+
         mensagens: function () {
             return atual ? atual.mensagens.slice() : [];
         },
@@ -363,7 +409,23 @@ Se continuar falhando, avisa em contato@amorneurodivergente.com.`;
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 signal: controller.signal,
+                // Os dois formatos vão no mesmo corpo, de propósito.
+                //
+                // `messages` + `modo` é o que a função reescrita usa.
+                // `message` é o que a função publicada em produção lê
+                // hoje. Ela ignora os campos que não conhece — verifiquei
+                // — então um corpo serve para as duas.
+                //
+                // Sem o `message`, a Lia não respondia nada: HTTP 400.
+                // Sem o `messages`, o dia que a função nova for publicada
+                // o histórico e os modos passam a funcionar sem tocar
+                // neste arquivo.
                 body: JSON.stringify({
+                    // `|| ultimaMensagem` é rede de segurança: se a
+                    // transcrição viesse vazia por algum motivo, a função
+                    // receberia "" e responderia 400 — a mesma falha que
+                    // fazia a Lia ficar muda.
+                    message: api.textoParaFuncaoAntiga(modo) || ultimaMensagem,
                     messages: api.historico(),
                     modo: modo
                 })
