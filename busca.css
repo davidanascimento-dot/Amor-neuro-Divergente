@@ -1,0 +1,235 @@
+/* =========================================
+   BUSCA — o campo e a caixa de resultados
+
+   A busca entra sozinha no cabeçalho (busca.js), então estas regras não
+   dependem de nenhuma página ter a marcação. O botão é a lupa; em tela
+   pequena continua sendo só a lupa, sem texto, que é o esperado em
+   celular.
+
+   Cores: as do cabeçalho do site (#7c3aed e #ede9fe), não as da AcolherIA.
+   A busca pertence ao site, não à assistente.
+   ========================================= */
+
+.busca-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--border-color, #e8e3dd);
+    color: var(--text-dark, #1a1a2e);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.busca-btn:hover {
+    background: var(--primary-light, #ede9fe);
+    border-color: var(--primary, #7c3aed);
+    color: var(--primary, #7c3aed);
+}
+
+.busca-btn:focus-visible {
+    outline: 3px solid var(--primary, #7c3aed);
+    outline-offset: 2px;
+}
+
+/* ---------- A caixa de diálogo ---------- */
+.busca-caixa {
+    width: min(640px, 92vw);
+    max-height: 82vh;
+    /* O <dialog> nativo é centralizado por "margin: auto", mas o reset
+       global do site (* { margin: 0 }) apaga isso e a caixa abre no
+       canto superior esquerdo. Aqui a centralização é explícita. */
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--border-color, #e8e3dd);
+    border-radius: 18px;
+    background: var(--bg-white, #ffffff);
+    color: var(--text-dark, #1a1a2e);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.busca-caixa::backdrop {
+    background: rgba(15, 10, 30, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+.busca-caixa[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.busca-campo-linha {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color, #e8e3dd);
+    flex-shrink: 0;
+}
+
+.busca-campo-icone {
+    color: var(--text-muted, #8a827c);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.busca-campo {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--text-dark, #1a1a2e);
+    padding: 6px 0;
+}
+
+.busca-campo:focus { outline: none; }
+.busca-campo::placeholder { color: var(--text-muted, #8a827c); }
+
+/* O input type=search traz um X próprio no Chrome; escondido para não
+   haver dois botões de limpar. */
+.busca-campo::-webkit-search-cancel-button { display: none; }
+
+.busca-limpar {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-body, #faf9fe);
+    border: 1px solid var(--border-color, #e8e3dd);
+    color: var(--text-medium, #5c5652);
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.busca-limpar:hover { background: var(--primary-light, #ede9fe); color: var(--primary, #7c3aed); }
+.busca-limpar[hidden] { display: none; }
+.busca-limpar:focus-visible { outline: 3px solid var(--primary, #7c3aed); outline-offset: 2px; }
+
+.busca-ajuda {
+    margin: 0;
+    padding: 8px 16px;
+    font-size: 0.76rem;
+    color: var(--text-muted, #8a827c);
+    border-bottom: 1px solid var(--border-color, #e8e3dd);
+    flex-shrink: 0;
+}
+
+.busca-resultados {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.busca-dica {
+    margin: 0;
+    padding: 26px 16px;
+    text-align: center;
+    color: var(--text-muted, #8a827c);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+.busca-grupo {
+    margin: 12px 8px 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted, #8a827c);
+}
+
+.busca-resultado {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid transparent;
+}
+
+.busca-resultado:hover,
+.busca-resultado:focus-visible {
+    background: var(--primary-light, #ede9fe);
+    border-color: rgba(124, 58, 237, 0.28);
+    outline: none;
+}
+
+.busca-resultado-ativo {
+    background: var(--primary-light, #ede9fe);
+    border-color: var(--primary, #7c3aed);
+}
+
+.busca-resultado-titulo {
+    font-size: 0.93rem;
+    font-weight: 700;
+    color: var(--text-dark, #1a1a2e);
+}
+
+.busca-resultado-desc {
+    font-size: 0.82rem;
+    color: var(--text-medium, #5c5652);
+    line-height: 1.5;
+}
+
+.busca-resultado-url {
+    font-size: 0.72rem;
+    color: var(--primary, #7c3aed);
+}
+
+/* ---------- Modo escuro ---------- */
+body.a11y-dark-mode .busca-btn {
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.86);
+}
+
+body.a11y-dark-mode .busca-btn:hover {
+    background: rgba(124, 58, 237, 0.24);
+    color: #fff;
+}
+
+body.a11y-dark-mode .busca-caixa {
+    background: #1f1235;
+    border-color: #3a2a58;
+    color: #fff;
+}
+
+body.a11y-dark-mode .busca-campo { color: #fff; }
+body.a11y-dark-mode .busca-campo-linha,
+body.a11y-dark-mode .busca-ajuda { border-color: #3a2a58; }
+body.a11y-dark-mode .busca-limpar { background: #2a1c44; border-color: #3a2a58; color: #ddd; }
+body.a11y-dark-mode .busca-resultado-desc { color: #c9bcd9; }
+body.a11y-dark-mode .busca-resultado-titulo { color: #fff; }
+body.a11y-dark-mode .busca-resultado:hover,
+body.a11y-dark-mode .busca-resultado-ativo { background: rgba(124, 58, 237, 0.22); border-color: rgba(196, 181, 253, 0.4); }
+body.a11y-dark-mode .busca-resultado-url { color: #c4b5fd; }
+
+/* ---------- Tela pequena ---------- */
+@media (max-width: 640px) {
+    .busca-caixa { width: 96vw; max-height: 88vh; }
+    .busca-ajuda { font-size: 0.72rem; }
+    .busca-resultado { padding: 12px; }
+
+    /* O botão herdava flex-shrink do flexbox do cabeçalho e apertava
+       para 28px num celular. Abaixo de 44px o toque erra o alvo com
+       frequência — e quem mais precisa dessa lupa é quem tem tremor
+       ou dificuldade motora. */
+    .busca-btn {
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        margin-right: 8px;
+    }
+
+    .busca-campo-linha { padding: 12px 14px; }
+}
