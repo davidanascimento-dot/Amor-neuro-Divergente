@@ -37,6 +37,17 @@
         // ---- Lia / AcolherIA -------------------------------------------
         // Fundo do card da AcolherIA na home: a arte horizontal.
         'acolheria-card-bg': '/img/lia/banner-lia.png',
+        // A MESMA arte, so que de Direitos: a Lia de jaleco, a mesa,
+        // com o martelo de juiz ao lado. Usada apenas no card de
+        // Direitos ("Ainda com duvidas sobre seus direitos?"), onde o
+        // fundo e escuro e o traco violeta claro aparece igual.
+        //
+        // O traco vem da referencia `lia-corpo-todo.jpeg`, medido pelo
+        // `ferramentas/estilizar-lia-direitos.py`.
+        //
+        // So este card muda. O botao da Lia no hub, o avatar do chat e
+        // o mini chat continuam com a arte de sempre.
+        'acolheria-card-bg-direitos': '/img/lia/lia-direitos-clara.png',
         // Avatar circular do chat (cabeçalho e balões da assistente).
         'lia-avatar': '/img/lia/avatar-lia.png',
         // Abertura do mini chat: personagem em tamanho grande,
@@ -50,7 +61,7 @@
         // do mini chat, nas mensagens e no botao do hub. 256px porque
         // o maior uso e o botao do hub, com 60px.
         'lia-avatar-novo': '/img/lia/lia-avatar-256.png',
-        // Versao cheia do mesmo avatar, para quando-precision de mais.
+        // Versao cheia do mesmo avatar, para quando a precisao de mais.
         'lia-avatar-cheio': '/img/lia/lia-avatar-circular.png',
         // CORPO INTEIRO da Lia, para a tela de abertura. Nao e recortada:
         // da do topo do coque ao chao dos tenes.
