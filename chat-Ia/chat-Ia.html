@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Converse com a Lia, assistente virtual do Amor NeuroDivergente. Acolhimento e informação sobre TDAH, autismo, direitos e organização, no seu ritmo.">
+    <title>Conversar com a Lia — Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="chat-Ia.css">
+    <link rel="stylesheet" href="/movimento-reduzido.css">
+    <script src="/imagens.js"></script>
+</head>
+
+<body class="cia-body">
+
+<!-- =========================================
+     CABEÇALHO DO SITE
+
+     A página da Lia é uma parte do Amor NeuroDivergente, não outro site.
+     Por isso a navegação principal fica aqui, igual em todas as outras
+     páginas: logo à esquerda, atalhos à direita, e a AcolherIA marcada
+     como a página atual.
+
+     Os links são os que existem de verdade. Não há "Sobre" nem
+     "Serviços" no projeto, e link para página que não existe leva ao
+     404 — foi o que a antiga /chat-Ia/chat-Ia.html fez com 48 endereços
+     até esta página existir.
+     ========================================= -->
+<header class="header-glass cia-header">
+    <a href="/inicio.html" class="logo">
+        <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+        <span class="logo-text">Amor NeuroDivergente</span>
+    </a>
+    <nav class="header-links" aria-label="Navegação principal">
+        <a href="/inicio.html">Início</a>
+        <a href="/Explorar/Explorar.html">Explorar</a>
+        <a href="/comunidade/comunidade.html">Comunidade</a>
+        <a href="/chat-Ia/chat-Ia.html" aria-current="page">AcolherIA</a>
+    </nav>
+</header>
+
+<main class="cia" id="mainContent">
+
+    <!-- =========================================
+         IDENTIDADE DA LIA
+         ========================================= -->
+    <div class="cia-topo">
+        <div class="cia-topo-esq">
+            <span class="cia-identidade">
+                <span class="cia-avatar" aria-hidden="true">
+                    <img src="/img/lia/lia-avatar-256.png" alt=""
+                         data-img-slot="lia-avatar-novo">
+                </span>
+                <span class="cia-identidade-texto">
+                    <strong>Lia</strong>
+                    <span class="cia-status" id="ciaStatus">
+                        <i class="fa-solid fa-circle" aria-hidden="true"></i>
+                        assistente virtual
+                    </span>
+                </span>
+            </span>
+        </div>
+
+        <div class="cia-topo-dir">
+            <button type="button" class="cia-btn-icone" id="ciaBtnConversas"
+                    aria-label="Abrir minhas conversas" title="Minhas conversas">
+                <i class="fa-regular fa-comments" aria-hidden="true"></i>
+                <span class="cia-btn-icone-cont" id="ciaContConversas" hidden>0</span>
+            </button>
+            <button type="button" class="cia-btn-icone" id="ciaBtnNova"
+                    aria-label="Começar uma conversa nova" title="Conversa nova">
+                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- =========================================
+         LISTA DE CONVERSAS
+         ========================================= -->
+    <aside class="cia-lateral" id="ciaLateral" hidden aria-label="Minhas conversas">
+        <div class="cia-lateral-topo">
+            <h2>Minhas conversas</h2>
+            <button type="button" class="cia-btn-icone" id="ciaBtnFecharLateral"
+                    aria-label="Fechar a lista de conversas">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="cia-lateral-aviso">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            <p>
+                As conversas ficam salvas <strong>só neste aparelho</strong> e
+                <strong>só quando você pedir</strong>, em texto que qualquer pessoa
+                com acesso ao seu computador consegue ler.
+            </p>
+        </div>
+
+        <div class="cia-lateral-lista" id="ciaListaConversas"></div>
+
+        <div class="cia-lateral-rodape">
+            <button type="button" class="cia-btn-apagar" id="ciaBtnApagarTudo">
+                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                Apagar tudo
+            </button>
+            <button type="button" class="cia-btn-ghost" id="ciaBtnSalvar">
+                <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+                Salvar esta conversa
+            </button>
+        </div>
+    </aside>
+
+    <!-- =========================================
+         CONVERSA
+         ========================================= -->
+    <div class="cia-conversa">
+
+        <div class="cia-rolagem" id="ciaMensagens"
+             role="log" aria-live="polite" aria-relevant="additions text"
+             aria-label="Conversa com a Lia" tabindex="0"></div>
+
+        <div class="cia-ferramentas" id="ciaFerramentas" hidden>
+            <span class="cia-ferramentas-rotulo" id="ciaRotuloFerramentas">
+                Como prefere essa resposta?
+            </span>
+            <div class="cia-ferramentas-botoes">
+                <button type="button" data-modo="simples"   class="cia-ferr">Mais simples</button>
+                <button type="button" data-modo="direto"    class="cia-ferr">Direto</button>
+                <button type="button" data-modo="passos"    class="cia-ferr">Passo a passo</button>
+                <button type="button" data-modo="detalhado" class="cia-ferr">Mais detalhes</button>
+                <button type="button" id="ciaBtnOuvir"     class="cia-ferr">
+                    <i class="fa-solid fa-volume-high" aria-hidden="true"></i> Ouvir
+                </button>
+                <button type="button" id="ciaBtnCopiar"    class="cia-ferr">
+                    <i class="fa-solid fa-copy" aria-hidden="true"></i> Copiar
+                </button>
+            </div>
+        </div>
+
+        <div class="cia-recursos" id="ciaRecursos" hidden>
+            <span class="cia-recursos-rotulo">Sobre isso, no site:</span>
+            <div class="cia-recursos-lista" id="ciaRecursosLista"></div>
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         COMPOSITOR
+         ========================================= -->
+    <div class="cia-composer">
+
+        <div class="cia-sugestoes" id="ciaSugestoes">
+            <span class="cia-sugestoes-rotulo">Como você quer começar?</span>
+            <div class="cia-sugestoes-botoes">
+                <button type="button" class="cia-sug" data-prompt="Quero conversar sobre o que está acontecendo comigo.">Quero conversar</button>
+                <button type="button" class="cia-sug" data-prompt="Tenho uma dúvida sobre neurodivergência.">Tenho uma dúvida</button>
+                <button type="button" class="cia-sug" data-prompt="Tenho muita coisa na cabeça e não sei por onde começar. Vamos organizar por partes?">Organizar ideias</button>
+                <button type="button" class="cia-sug" data-prompt="Preciso de ajuda com uma situação específica.">Preciso de ajuda</button>
+            </div>
+        </div>
+
+        <form class="cia-form" id="ciaForm">
+            <label class="cia-rotulo" for="ciaInput">Sua mensagem</label>
+            <div class="cia-form-linha">
+                <button type="button" class="cia-icone-rodape" id="ciaBtnVoz"
+                        aria-label="Falar em vez de digitar" aria-pressed="false" title="Falar em vez de digitar">
+                    <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+                </button>
+                <textarea class="cia-input" id="ciaInput" rows="1" placeholder="Digite sua mensagem..."
+                          autocomplete="off"></textarea>
+                <button type="submit" class="cia-enviar" id="ciaBtnEnviar" aria-label="Enviar mensagem">
+                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                </button>
+            </div>
+            <p class="cia-rodape-nota">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                Lia é uma inteligência artificial. Ela ajuda com informação e acolhimento,
+                mas não faz diagnóstico e não substitui profissional de saúde.
+                <a href="/privacidade.html">Privacidade</a>
+            </p>
+        </form>
+    </div>
+
+</main>
+
+<script src="/Acolher-IA/seguranca.js"></script>
+<script src="/Acolher-IA/conversa.js"></script>
+<script src="chat-Ia.js"></script>
+<script src="/pular-conteudo.js"></script>
+<script src="/userway.js"></script>
+<script src="/vlibras.js"></script>
+</body>
+</html>

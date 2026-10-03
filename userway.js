@@ -59,14 +59,37 @@
        ------------------------------------------------------------------ */
     function positionar() {
         var alvos = document.querySelectorAll(SELOR);
+
+        // A gaveta da Lia ocupa a direita inteira da tela. Com ela aberta,
+        // o icone de acessibilidade ficaria embaixo da gaveta, e a pessoa
+        // que precisa dele e nao consegue ve-lo e a pior combinacao
+        // possivel. Entao ele sai da frente enquanto a conversa estiver
+        // na tela.
+        var recuo = 0;
+        var overlay = document.getElementById('acolheriaOverlay');
+        if (overlay && !overlay.hidden) {
+            var gaveta = overlay.querySelector('.acolheria-modal');
+            if (gaveta && gaveta.offsetWidth > 0) {
+                // Na tela estreita a gaveta ocupa tudo; ai nao ha canto
+                // livre, e ela sobe acima dela em vez de ir para o lado.
+                recuo = (window.innerWidth - gaveta.offsetWidth) < 24
+                    ? 0
+                    : gaveta.offsetWidth;
+            }
+        }
+
         for (var i = 0; i < alvos.length; i++) {
             var el = alvos[i];
-            el.style.setProperty('right', '0px', 'important');
+            el.style.setProperty('right', recuo + 'px', 'important');
             el.style.setProperty('bottom', OFFSET_Y + 'px', 'important');
             el.style.setProperty('top', 'auto', 'important');
             el.style.setProperty('left', 'auto', 'important');
         }
     }
+
+    // O Acolher-IA.js chama isto ao abrir e ao fechar a conversa, porque
+    // o MutationObserver de childList nao enxerga mudanca de atributo.
+    window.reposicionarAcessibilidade = positionar;
 
     // O widget e injetado por codigo de terceiro e pode se reposicionar
     // sozinho. Acompanhar as mudancas e a unica forma de o icone nao
@@ -76,6 +99,17 @@
             childList: true,
             subtree: true
         });
+
+        // Abrir e fechar a conversa da Lia mexe no atributo 'hidden' do
+        // overlay, e isso nao gera childList. Sem esta observacao o icone
+        // de acessibilidade ficaria preso embaixo da gaveta.
+        var overlay = document.getElementById('acolheriaOverlay');
+        if (overlay) {
+            new MutationObserver(positionar).observe(overlay, {
+                attributes: true,
+                attributeFilter: ['hidden']
+            });
+        }
     }
 
     // Enquanto o widget nao aparecer, procura de tempos em tempos. Desiste

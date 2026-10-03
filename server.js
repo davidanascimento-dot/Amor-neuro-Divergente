@@ -123,12 +123,36 @@ function serveStaticFile(request, response) {
 
     fs.stat(filePath, (error, stats) => {
         if (error || !stats.isFile()) {
-            response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+            response.writeHead(404, {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Cache-Control': 'no-cache'
+            });
             response.end('Arquivo não encontrado.');
             return;
         }
 
-        response.writeHead(200, { 'Content-Type': contentType(filePath) });
+        // =============================================================
+        // CACHE
+        //
+        // Antes esta resposta saía sem nenhum cabeçalho de cache: sem
+        // Cache-Control, sem ETag, sem Last-Modified. O Chrome aplica
+        // cache heurístico nesse caso e passa a servir CSS e JavaScript
+        // antigos SEM revalidar. Na prática, mudar uma regra no
+        // inicio.css não aparecia até dar um Ctrl+Shift+R.
+        //
+        // no-store força a buscar de novo toda vez. É o comportamento
+        // correto para desenvolvimento, e é o que evita publicar uma
+        // correção e deixar metade dos visitantes na versão antiga.
+        //
+        // Quem público o site precisa do mesmo efeito no servidor de
+        // produção: ou Cache-Control no-cache, ou nomes de arquivo com
+        // a data de publicação (inicio.20261002.css).
+        // =============================================================
+        response.writeHead(200, {
+            'Content-Type': contentType(filePath),
+            'Cache-Control': 'no-store, must-revalidate',
+            'Pragma': 'no-cache'
+        });
         fs.createReadStream(filePath).pipe(response);
     });
 }

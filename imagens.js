@@ -17,6 +17,8 @@
    lia-retrato          Banner da AcolherIA na página inicial
    lia-banner           Faixa larga da home (bloco "converse com a Lia")
    lia-avatar           Cabeçalho e balão do chat da AcolherIA
+   lia-boas-vindas      Tela de abertura do chat: personagem grande,
+                        traco violeta sobre fundo transparente
 
    Os prefixos "banner-area-*" são as faixas largas da LANDING PAGE
    (uma por área: Explorar, Comunidade, Direitos, AcolherIA). Também
@@ -37,6 +39,22 @@
         'acolheria-card-bg': '/img/lia/banner-lia.png',
         // Avatar circular do chat (cabeçalho e balões da assistente).
         'lia-avatar': '/img/lia/avatar-lia.png',
+        // Abertura do mini chat: personagem em tamanho grande,
+        // em traco violeta, sobre o fundo claro.
+        'lia-boas-vindas': '/img/lia/lia-boas-vindas.png',
+        // A Lia da introducao na PAGINA DE CONVERSA (/chat-Ia). O fundo
+        // dela e escuro, entao usa a versao clara do traco: a violeta
+        // sumiria no escuro.
+        'lia-intro': '/img/lia/banner-lia.png',
+        // AVATAR CIRCULAR da Lia. Substitui o icone de robo no cabecalho
+        // do mini chat, nas mensagens e no botao do hub. 256px porque
+        // o maior uso e o botao do hub, com 60px.
+        'lia-avatar-novo': '/img/lia/lia-avatar-256.png',
+        // Versao cheia do mesmo avatar, para quando-precision de mais.
+        'lia-avatar-cheio': '/img/lia/lia-avatar-circular.png',
+        // CORPO INTEIRO da Lia, para a tela de abertura. Nao e recortada:
+        // da do topo do coque ao chao dos tenes.
+        'lia-corpo': '/img/lia/lia-corpo.png',
 
         // ---- NeuroComunidade -------------------------------------------
         // Sem arte própria por enquanto: o banner da comunidade saiu da

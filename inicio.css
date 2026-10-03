@@ -1895,6 +1895,67 @@ transform: translateY(-8px);
     border-color: rgba(245, 158, 11, 0.2);
 }
 
+/* =============================================
+   A LIA NO HUB — atalho principal
+
+   Comunidade, FAQ, e-mail e WhatsApp são atalhos de segunda mão: são
+   úteis, mas a conversa é o motivo de a pessoa estar aqui. A Lia ficou
+   com o mesmo peso visual de "ir para a loja".
+
+   O seletor precisa ser .floating-hub .hub-action-ia (0,2,0) e não só
+   .hub-action-ia: comunidade.css reescreve .hub-action — padding, raio e
+   borda — com (0,1,0), e venceria.
+   ============================================= */
+.floating-hub .hub-action-ia {
+    /* A arte E o botao: sem fundo e sem borda. O gradiente roxo e a
+       borda lavanda que existiram aqui faziam a Lia parecer um botao
+       comum com uma foto dentro. */
+    background: transparent;
+    border: none;
+    padding: 0;
+    width: 60px;
+    height: 60px;
+    /* Sem align-self a caixa de 60px estica a linha inteira e os outros
+       quatro atalhos mudam de tamanho junto. */
+    align-self: flex-start;
+    overflow: hidden;
+    box-shadow: none;
+    font-weight: 700;
+}
+
+.floating-hub .hub-action-ia i {
+    font-size: 20px;
+}
+
+.floating-hub .hub-action-ia .hub-action-label {
+    font-weight: 700;
+}
+
+/* Sem gradiente no hover: o botao e a arte, e a arte nao muda de cor no
+   hover. O que responde ao hover e uma sombra, para dar o retorno. */
+.floating-hub .hub-action-ia:hover,
+.floating-hub .hub-action-ia:focus-visible {
+    background: transparent;
+    border: none;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+}
+
+.floating-hub .hub-action-ia:focus-visible {
+    outline: 3px solid #7c3aed;
+    outline-offset: 2px;
+}
+
+/* No modo escuro o site inteiro acende, e o gradiente roxo ficaria
+   perdido no fundo escuro sem a borda mais clara. */
+body.a11y-dark-mode .floating-hub .hub-action-ia {
+    border-color: rgba(196, 181, 253, 0.8);
+}
+
+/* Sem gradiente no hover: o botao e a arte, e a arte nao muda de cor. */
+body.a11y-dark-mode .floating-hub .hub-action-ia:hover {
+    background: transparent;
+}
+
 /* Divisória */
 .floating-hub-divider {
     height: 1px;
@@ -3622,4 +3683,464 @@ a.is-locked .lock-icon {
 a.is-locked::after {
     content: attr(aria-disabled);
     display: none;
+}
+
+/* A palette e a tela de abertura da Lia ficam no fim do arquivo de propsito: as
+   regras antigas do .acolheria-modal usam as mesmas classes, entao so sobrescrevendo
+   aqui a ordem do arquivo garante que a paleta nova e a que vale. */
+/* =========================================
+   ACOLHERIA — PALETA DA MARCA E TELA DE ABERTURA
+
+   A Lia ganhou rosto. Abrir o mini chat mostrava uma mensagem de doze
+   linhas enumerando assuntos; agora mostra a personagem, uma frase e
+   quatro caminhos.
+
+   A paleta é a definida para a AcolherIA:
+
+     #FAF8FC  branco suave      fundo
+     #8D018D  roxo da marca     botao e destaque
+     #F1E7FA  lilás claro       balao da Lia e escolhas
+     #261A35  roxo profundo    texto
+
+   Tudo aqui e escopado em .acolheria-modal. O resto do site usa
+   #7c3aed, e mexer nas variaveis globais mudaria o card da home, os
+   botoes do cabecalho e o banner de Direitos. A Lia pode ter a cor
+   dela; o site nao precisa.
+
+   Contraste medido (WCAG AA, 4.5:1 para texto normal):
+     #261A35 sobre #FAF8FC  15,53
+     #261A35 sobre #F1E7FA  13,69
+     branco sobre #8D018D    8,33
+     #8D018D sobre #F1E7FA    6,96
+   ========================================= */
+
+.acolheria-modal {
+    --lia-fundo: #FAF8FC;
+    --lia-roxo: #8D018D;
+    --lia-lilas: #F1E7FA;
+    --lia-texto: #261A35;
+    --lia-texto-suave: #6B5B7A;
+    background: var(--lia-fundo);
+    color: var(--lia-texto);
+    border-left: 1px solid #E6DCF0;
+}
+
+.acolheria-modal-header {
+    background: var(--lia-fundo);
+    border-bottom: 1px solid #E6DCF0;
+}
+
+.acolheria-modal-body {
+    background: var(--lia-fundo);
+}
+
+/* Balão da Lia: lilás claro, texto roxo profundo. */
+.acolheria-msg-assistente .acolheria-bubble {
+    background: var(--lia-lilas);
+    border: 1px solid #E0D0F0;
+    color: var(--lia-texto);
+    box-shadow: none;
+}
+
+/* Balão da pessoa: o roxo da marca, com texto branco. E o inverso do
+   da Lia, e é assim que se distingue quem escreveu. */
+.acolheria-msg-user .acolheria-bubble {
+    background: var(--lia-roxo);
+    border-color: var(--lia-roxo);
+    color: #ffffff;
+}
+
+.acolheria-input {
+    background: #ffffff;
+    border: 1px solid #E0D0F0;
+    color: var(--lia-texto);
+}
+
+.acolheria-input::placeholder {
+    color: var(--lia-texto-suave);
+}
+
+/* =========================================
+   TELA DE BOAS-VINDAS
+   ========================================= */
+.acolheria-boas-vindas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    padding: 6px 4px 14px;
+}
+
+.acolheria-boas-vindas-arte {
+    position: relative;
+    width: 100%;
+    max-width: 240px;
+    margin-bottom: 6px;
+}
+
+/* A personagem. A arte ja vem com fundo transparente e traco violeta,
+   entao nao ha caixa branca: ela assenta direto no fundo do chat. */
+.acolheria-boas-vindas-lia {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 230px;
+    object-fit: contain;
+    object-position: center bottom;
+    margin: 0 auto;
+}
+
+/* O balão de fala, acima dela. */
+.acolheria-balao {
+    position: relative;
+    margin: 0 0 10px;
+    padding: 9px 15px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #E0D0F0;
+    color: var(--lia-texto);
+    font-size: 0.86rem;
+    line-height: 1.45;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(38, 26, 53, 0.08);
+}
+
+/* A cauda do balão, apontando para a Lia. */
+.acolheria-balao::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-right: 1px solid #E0D0F0;
+    border-bottom: 1px solid #E0D0F0;
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.acolheria-boas-vindas-titulo {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--lia-texto);
+    line-height: 1.3;
+}
+
+.acolheria-boas-vindas-sub {
+    margin: 2px 0 0;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--lia-roxo);
+}
+
+.acolheria-boas-vindas-nota {
+    margin: 6px 0 0;
+    max-width: 30ch;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--lia-texto-suave);
+}
+
+/* =========================================
+   AS QUATRO ESCOLHAS
+   ========================================= */
+.acolheria-sugestoes {
+    background: transparent;
+    border-top: 1px solid #E6DCF0;
+    padding: 12px 14px 14px;
+}
+
+.acolheria-sugestoes-rotulo {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lia-texto-suave);
+}
+
+.acolheria-sugestoes-caixa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+/* As seis sugestões que estavam no HTML usavam verde-limão (#ecfccb),
+   uma cor que nao aparecia em mais nenhum lugar do site e destoava de
+   tudo. Trocadas pelo lilac da Lia. */
+.acolheria-suggestion {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--lia-lilas);
+    color: var(--lia-roxo);
+    border: 1px solid #E0D0F0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.acolheria-suggestion:hover,
+.acolheria-suggestion:focus-visible {
+    background: var(--lia-roxo);
+    border-color: var(--lia-roxo);
+    color: #ffffff;
+}
+
+.acolheria-suggestion:focus-visible {
+    outline: 3px solid var(--lia-roxo);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   ANIMAÇÃO DE ABERTURA
+
+   0,0s  a Lia entra com opacidade e um deslocamento vertical curto
+   0,5s  o balão aparece
+   2,5s  a frase do balão troca
+   4,5s  tudo sai
+
+   Quem pediu movimento reduzido no sistema recebe a tela estatica, sem
+   deslocamento e sem troca de frase — e o que a regra [data-abertura]
+   = estatico faz no CSS la embaixo.
+   ========================================= */
+/* A troca de frase do balão e feita pelo JS, que espera 2,5s. */
+/* Sem animacao: a tela aparece pronta e fica. Sem deslocamento, sem
+   opacidade, sem espera. */
+.acolheria-boas-vindas[data-abertura='estatico'] * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* O resto da animação de abertura — entrada da Lia, troca de frase do
+   balão e saída — fica em /chat-Ia/chat-Ia.css. Ela pertence à página de
+   conversa inteira, e não à gaveta de 420px. Aqui a abertura é sempre
+   estática, então nenhuma regra de movimento é necessária. */
+
+/* =========================================
+   MODO ESCURO
+
+   Quem liga o modo escuro do site passa a ver a Lia em lilás claro sobre
+   fundo escuro, em vez de violeta sobre branco. A arte é trocada pelo
+   mesmo slot que o mini chat ja usava antes.
+   ========================================= */
+body.a11y-dark-mode .acolheria-modal {
+    --lia-fundo: #1f1235;
+    --lia-roxo: #c4b5fd;
+    --lia-lilas: #2f1f4d;
+    --lia-texto: #ffffff;
+    --lia-texto-suave: #c9bcd9;
+    background: var(--lia-fundo);
+    border-left-color: #3a2a58;
+}
+
+body.a11y-dark-mode .acolheria-modal-header,
+body.a11y-dark-mode .acolheria-modal-body {
+    background: var(--lia-fundo);
+    border-color: #3a2a58;
+}
+
+body.a11y-dark-mode .acolheria-msg-assistente .acolheria-bubble {
+    background: var(--lia-lilas);
+    border-color: #4a3a6e;
+    color: #ffffff;
+}
+
+body.a11y-dark-mode .acolheria-msg-user .acolheria-bubble {
+    background: #7c3aed;
+    border-color: #7c3aed;
+}
+
+body.a11y-dark-mode .acolheria-input {
+    background: #2a1c44;
+    border-color: #4a3a6e;
+    color: #ffffff;
+}
+
+body.a11y-dark-mode .acolheria-balao {
+    background: #2a1c44;
+    border-color: #4a3a6e;
+    color: #ffffff;
+}
+
+body.a11y-dark-mode .acolheria-balao::after {
+    background: #2a1c44;
+    border-color: #4a3a6e;
+}
+
+body.a11y-dark-mode .acolheria-sugestoes {
+    border-top-color: #3a2a58;
+}
+
+body.a11y-dark-mode .acolheria-suggestion {
+    background: var(--lia-lilas);
+    border-color: #4a3a6e;
+    color: var(--lia-roxo);
+}
+
+body.a11y-dark-mode .acolheria-suggestion:hover,
+body.a11y-dark-mode .acolheria-suggestion:focus-visible {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #ffffff;
+}
+
+/* =========================================
+   TELEFONE
+   ========================================= */
+@media (max-width: 420px) {
+    .acolheria-boas-vindas-arte { max-width: 176px; }
+    .acolheria-boas-vindas-lia { width: 132px; height: 132px; }
+    .acolheria-boas-vindas-nota { max-width: 26ch; }
+    .acolheria-sugestoes-caixa { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+    .acolheria-suggestion { white-space: nowrap; flex-shrink: 0; }
+}
+
+
+/* =========================================
+   AVATAR DA LIA
+
+   O ícone de robô que representava a assistente foi trocado pela arte
+   dela. Vale para o cabeçalho do mini chat, para o botão do hub e para
+   as mensagens — os três usam a mesma imagem reduzida (256px), que é 4x
+   maior que o maior uso (o botão do hub, com 60px).
+   ========================================= */
+
+/* --- Cabeçalho do mini chat --- */
+.lia-avatar-cabecalho {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 38%;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* --- Botão da Lia no hub flutuante ---
+
+   `contain` e não `cover`: a arte da Lia é um círculo completo (disco
+   lilás, anel roxo, faíscas) e `cover` cortava o anel de baixo, dejando
+   só um busto dentro de um quadrado arredondado. `object-position`
+   empurrava ainda mais para cima.
+
+   O botão tem a mesma pegada dos outros quatro (57 x 49). O rótulo fica
+   escondido porque "AcolherIA" não cabe em 9px, e sobrava espaço morto
+   onde ele estaria. O padding vertical menor e a arte maior preenchem
+   esse espaço, para o botão não parecer uma caixa vazia com uma foto
+   flutuando dentro. */
+/* Sem fundo e sem borda: a arte É o botao. O gradiente roxo e a borda
+   lavanda que eu tinha colocado deixavam a Lia parecendo um botão comum
+   com uma foto dentro. Agora ela ocupa a caixa inteira.
+
+   `align-self: flex-start` impede que a caixa de 60px estique a linha
+   inteira: os outros quatro atalhos continuam com 49px, como estavam. */
+
+.floating-hub .hub-action-ia img.hub-action-ia-arte {
+    width: 100%;
+    height: 100%;
+    /* A arte e quadrada (1024x1024) e a caixa e quadrada: cover aqui
+       nao corta nada, so preenche. */
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--radius-sm);
+    display: block;
+}
+
+.floating-hub .hub-action-ia:hover,
+.floating-hub .hub-action-ia:focus-visible {
+    background: transparent;
+    border: none;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+}
+
+/* O botão do hub tem 60px e mostra ícone + rótulo empilhados. Com a
+   imagem de 34px, o rótulo "AcolherIA" (8 letras) não cabe mais. A arte
+   passa a ser a identidade e o rótulo some — o title e o aria-label
+   continuam dizendo do que se trata. */
+.floating-hub .hub-action-ia .hub-action-label {
+    display: none;
+}
+
+.floating-hub .hub-action-ia:hover img.hub-action-ia-arte,
+.floating-hub .hub-action-ia:focus-visible img.hub-action-ia-arte {
+    border-color: #ffffff;
+}
+
+/* --- Mensagens do mini chat --- */
+.acolheria-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 38%;
+    display: block;
+}
+
+.acolheria-typing .acolheria-avatar {
+    background: var(--lia-lilas, #F1E7FA);
+}
+
+/* =========================================
+   CORPO INTEIRO NA ABERTURA DA GAVETA
+
+   A tela de boas-vindas do mini chat passou do retrato para a Lia de corpo
+   inteiro. A arte é alta e estreita (412 x 1502), então o limite é a
+   ALTURA, não a largura: numa gaveta de 420px ela precisa caber sem
+   empurrar o campo de mensagem para fora da tela.
+   ========================================= */
+.acolheria-boas-vindas-arte {
+    max-width: 190px;
+}
+
+.acolheria-boas-vindas-lia {
+    width: 168px;
+    height: 168px;
+    max-height: none;
+    /* A arte e um retrato de busto: forcar circulo cortaria os
+       ombros. Raio do site, que basta para nao brigar com o
+       desenho. */
+    border-radius: var(--radius-md);
+    object-fit: contain;
+    object-position: center;
+}
+
+/* O balão fica em cima da cabeça; com o corpo inteiro há espaço real para
+   ele, o que não havia com o retrato em busto. */
+.acolheria-balao {
+    margin-bottom: 6px;
+}
+
+/* --- Modo escuro --- */
+body.a11y-dark-mode .floating-hub .hub-action-ia img.hub-action-ia-arte {
+    border-color: rgba(196, 181, 253, 0.7);
+}
+
+/* A Lia é de traço roxo sobre fundo claro. Na gaveta escura o desenho
+   sumiria, então a arte vai por cima de um disco lilás — que é o
+   próprio desenho, e não um fundo inventado. */
+body.a11y-dark-mode .acolheria-avatar img {
+    background: #2f1f4d;
+}
+
+body.a11y-dark-mode .acolheria-avatar {
+    background: #2f1f4d;
+}
+
+/* O avatar da Lia ja vem com o proprio disco lilac e tracado roxo. Nao
+   ha por que inventar um fundo atras dele, nem manter o raio de "corpo
+   de pe" (50% 50% 8px 8px) num avatar que e um circulo. */
+body.a11y-dark-mode .acolheria-boas-vindas-lia {
+    background: transparent;
+    border-radius: var(--radius-md);
+}
+
+/* --- Telefone: a Lia encolhe para o campo de mensagem ficar à vista --- */
+@media (max-width: 420px) {
+    .acolheria-boas-vindas-arte { max-width: 150px; }
+    .acolheria-boas-vindas-lia { width: 132px; height: 132px; }
+    .lia-avatar-cabecalho { width: 26px; height: 26px; }
 }

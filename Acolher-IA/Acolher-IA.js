@@ -95,23 +95,145 @@ Se você está em risco agora, ligue **188** ou **192**. Eu fico aqui. 💜`;
     }
 
     // Função para obter descrição do projeto
-    function getModalWelcomeMessage() {
-        return `💜 **Bem-vinde à AcolherIA!**
+    // =====================================================================
+    // As quatro entradas. Cada uma vira uma mensagem que a Lia recebe de
+    // verdade, e não um link para lugar nenhum.
+    const ABERTURAS = [
+        {
+            rotulo: 'Quero conversar',
+            prompt: 'Quero conversar sobre o que está acontecendo comigo.'
+        },
+        {
+            rotulo: 'Tenho uma dúvida',
+            prompt: 'Tenho uma dúvida sobre neurodivergência.'
+        },
+        {
+            rotulo: 'Organizar ideias',
+            prompt: 'Tenho muita coisa na cabeça e não sei por onde começar. Vamos organizar por partes?'
+        },
+        {
+            rotulo: 'Preciso de ajuda',
+            prompt: 'Preciso de ajuda com uma situação específica.'
+        }
+    ];
 
-Eu sou a assistente virtual do projeto **Amor NeuroDivergente** — uma comunidade dedicada a apoiar pessoas neurodivergentes (TDAH, autismo, dislexia, AHSD e outras variações neurológicas).
+    function montarBoasVindas() {
+        if (!acolheriaChatBody) return null;
+        if (acolheriaChatBody.querySelector('.acolheria-boas-vindas')) return null;
 
-**O que você pode perguntar:**
- TDAH e Autismo (TEA)
- Direitos e legislação
- Organização e produtividade
- Crises sensoriais e regulação
- Diagnóstico e avaliação
- Terapias e tratamentos
- Neurodiversidade em geral
+        const tela = document.createElement('div');
+        tela.className = 'acolheria-boas-vindas';
 
-**Vamos conversar?** Me faça qualquer pergunta sobre neurodiversidade! 💜`;
+        // --- personagem + balão ---
+        const arte = document.createElement('div');
+        arte.className = 'acolheria-boas-vindas-arte';
+
+        // O balão vem ANTES da imagem no DOM: é assim que ele aparece
+        // acima da cabeça dela, com a cauda apontando para baixo.
+        const balao = document.createElement('p');
+        balao.className = 'acolheria-balao';
+        balao.textContent = 'Oi! Eu sou a Lia. Que bom ter você aqui!';
+        arte.appendChild(balao);
+
+        // Avatar, não corpo inteiro. A gaveta tem 420px de largura e a
+        // Lia de corpo inteiro ocupava a tela inteira, empurrando o campo
+        // de mensagem. A arte é quadrada (1024x1024), então cabe sem corte.
+        const arteLia = document.createElement('img');
+        arteLia.className = 'acolheria-boas-vindas-lia';
+        arteLia.alt = 'Lia, assistente virtual do Amor NeuroDivergente';
+        arteLia.setAttribute('data-img-slot', 'lia-avatar');
+        const caminho = (window.IMAGENS || {})['lia-avatar'];
+        if (caminho) {
+            arteLia.src = caminho;
+            arteLia.addEventListener('error', function () {
+                // Sem a arte ainda sobra a saudação. Melhor do que um
+                // quadro vazio onde deveria estar a Lia.
+                arteLia.remove();
+            }, { once: true });
+            arte.appendChild(arteLia);
+        }
+
+        // --- texto ---
+        const titulo = document.createElement('h2');
+        titulo.className = 'acolheria-boas-vindas-titulo';
+        titulo.textContent = 'Olá! Eu sou a Lia.';
+
+        const sub = document.createElement('p');
+        sub.className = 'acolheria-boas-vindas-sub';
+        sub.textContent = 'Como posso te ajudar hoje?';
+
+        const nota = document.createElement('p');
+        nota.className = 'acolheria-boas-vindas-nota';
+        nota.textContent =
+            'Converse no seu ritmo. Pode perguntar, explorar, ou simplesmente começar falando.';
+
+        tela.appendChild(arte);
+        tela.appendChild(titulo);
+        tela.appendChild(sub);
+        tela.appendChild(nota);
+
+        acolheriaChatBody.insertBefore(tela, acolheriaChatBody.firstChild);
+        return tela;
     }
 
+    /**
+     * Troca as seis sugestões de assunto do HTML pelas quatro aberturas.
+     * Elas viram as duas coisas ao mesmo tempo: as escolhas da tela de
+     * boas-vindas e o atalho para começar a conversar.
+     */
+    function montarSugestoesDeAbertura() {
+        if (!acolheriaSuggestions) return;
+        if (acolheriaSuggestions.getAttribute('data-abertura') === 'pronto') return;
+        acolheriaSuggestions.setAttribute('data-abertura', 'pronto');
+
+        acolheriaSuggestions.textContent = '';
+
+        const rotulo = document.createElement('span');
+        rotulo.className = 'acolheria-sugestoes-rotulo';
+        rotulo.textContent = 'Escolha por onde começar';
+        acolheriaSuggestions.appendChild(rotulo);
+
+        const caixa = document.createElement('div');
+        caixa.className = 'acolheria-sugestoes-caixa';
+
+        ABERTURAS.forEach(function (abertura) {
+            const botao = document.createElement('button');
+            botao.type = 'button';
+            botao.className = 'acolheria-suggestion';
+            botao.textContent = abertura.rotulo;
+            botao.addEventListener('click', function () {
+                if (acolheriaInput) acolheriaInput.value = abertura.prompt;
+                sendModalMessage();
+            });
+            caixa.appendChild(botao);
+        });
+
+        acolheriaSuggestions.appendChild(caixa);
+    }
+
+    /**
+     * Mini chat: mostra a tela de boas-vindas e para por aí.
+     *
+     * A animação de abertura NÃO fica aqui. Ela é da página de conversa
+     * inteira (/chat-Ia/chat-Ia.html), onde há espaço e tempo para uma
+     * apresentação. Numa gaveta de 420px, uma intro de quatro segundos e
+     * meio atrapalha: a pessoa pediu uma resposta rápida e fica olhando
+     * uma animação.
+     */
+    function mostrarBoasVindas() {
+        montarSugestoesDeAbertura();
+        const tela = montarBoasVindas();
+        if (acolheriaSuggestions) acolheriaSuggestions.hidden = false;
+        if (tela) tela.setAttribute('data-abertura', 'estatico');
+    }
+
+    /** Some com a tela de abertura: a conversa começou. */
+    function esconderBoasVindas() {
+        if (!acolheriaChatBody) return;
+        const tela = acolheriaChatBody.querySelector('.acolheria-boas-vindas');
+        if (tela) tela.remove();
+        if (acolheriaSuggestions) acolheriaSuggestions.hidden = true;
+    }
     // Função para resposta de tópico bloqueado
     function getBlockedTopicResponse() {
         return `💜 **Desculpe, não posso responder a isso!**
@@ -166,9 +288,9 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         if (isUser) {
             avatar.innerHTML = '<i class="fa-solid fa-user"></i>';
         } else {
-            // Avatar da Lia. Sem o arquivo da Lia em /img/lia/, o onerror
-            // devolve o robô genérico e a conversa continua normal.
-            const caminho = (window.IMAGENS || {})['lia-avatar'];
+            // Avatar da Lia. Sem o arquivo em /img/lia/, o onerror devolve
+            // o robô genérico e a conversa continua normal.
+            const caminho = (window.IMAGENS || {})['lia-avatar-novo'];
             if (caminho) {
                 avatar.innerHTML = '';
                 const img = document.createElement('img');
@@ -282,7 +404,9 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
 
         // Esconde as sugestões após a primeira mensagem
         if (acolheriaSuggestions) {
-            acolheriaSuggestions.style.display = 'none';
+        // A conversa comecou: a tela de boas-vindas e as escolhas
+        // de abertura nao fazem mais sentido.
+        esconderBoasVindas();
         }
 
         // Adiciona mensagem do usuário
@@ -325,12 +449,21 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         acolheriaOverlay.setAttribute('aria-modal', 'false');
         acolheriaOverlay.setAttribute('aria-label', 'Conversa com a AcolherIA');
 
-        // Limpa o chat anterior se estiver vazio, mas mantém a mensagem de boas-vindas
+        // Chat vazio: mostra a tela de boas-vindas (personagem,
+        // saudação curta e as quatro escolhas) no lugar da saudação longa.
         if (acolheriaChatBody && acolheriaChatBody.children.length === 0) {
-            addModalMessage(getModalWelcomeMessage(), false);
+            mostrarBoasVindas();
         }
 
         if (jaAberto) return;
+
+        // O ícone de acessibilidade sai da frente da gaveta enquanto a
+        // conversa estiver na tela. Quem está em dificuldade para ler não
+        // pode ficar sem o botão de acessibilidade justamente enquanto
+        // conversa.
+        if (typeof window.reposicionarAcessibilidade === 'function') {
+            window.reposicionarAcessibilidade();
+        }
 
         setTimeout(() => {
             if (acolheriaInput) acolheriaInput.focus();
@@ -342,6 +475,11 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
         acolheriaOverlay.hidden = true;
         if (acolheriaOverlayBg) acolheriaOverlayBg.hidden = true;
         removeModalTyping();
+
+        // Volta para o canto inferior direito.
+        if (typeof window.reposicionarAcessibilidade === 'function') {
+            window.reposicionarAcessibilidade();
+        }
     }
 
     function isAcolheriaOpen() {
@@ -358,24 +496,103 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
     // EVENTOS - ABRIR O PAINEL
     // =============================================
 
-    // Qualquer link para a página da Lia abre o painel em vez de navegar.
+    // =============================================
+    // ATALHO DA LIA NO HUB
     //
-    // A página /chat-Ia/chat-Ia.html NÃO EXISTE no projeto. Um clique
-    // nela levava ao 404 "Arquivo não encontrado".
+    // O botão da Lia dentro do hub flutuante abre ESTE painel, sobre a
+    // página em que a pessoa está, em vez de levar para
+    // /chat-Ia/chat-Ia.html.
     //
-    // Antes isso era interceptado em três lugares só: .sidebar-link,
-    // .header-links a e .hub-action. Tudo que usasse aquele href com
-    // outra classe escapava — o botão do card de Direitos, o link do
-    // rodapé e o do menu de cada página. São 48 links em 20 arquivos.
+    // O gancho é o atributo data-ia-abrir, não o href. Assim o botão
+    // continua sendo um <a> de verdade: se o JavaScript falhar, ele
+    // navega para a página da Lia em vez de não fazer nada.
     //
-    // Um seletor único resolve todos de uma vez e continua valendo para
-    // botões novos, sem precisar lembrar de acrescentar aqui.
-    document.querySelectorAll('a[href="/chat-Ia/chat-Ia.html"]').forEach(link => {
-        link.addEventListener('click', (e) => {
+    // Só o atalho do hub é interceptado. Os links do menu superior e do
+    // rodapé levam para a página, que é o que se espera de um item de
+    // menu.
+    // =============================================
+    document.querySelectorAll('[data-ia-abrir]').forEach((botao) => {
+        botao.addEventListener('click', (e) => {
             e.preventDefault();
             openAcolheriaPanel();
         });
     });
+
+    // =============================================
+    // AVATAR DA LIA — cabeçalho do mini chat e botão do hub
+    //
+    // O ícone de robô que representava a assistente foi trocado pela
+    // arte dela. Fica num lugar só em vez de repetido no HTML das 8
+    // páginas: o cabeçalho e o botão do hub existem em todas elas, com a
+    // mesma marcação.
+    // =============================================
+    function aplicarAvatarDaLia() {
+        const mapa = window.IMAGENS || {};
+
+        // 1) Cabeçalho do mini chat: <i class="fa-solid fa-robot">
+        const titulo = document.querySelector('.acolheria-modal-title');
+        if (titulo && mapa['lia-avatar']) {
+            const robo = titulo.querySelector('i.fa-robot');
+            if (robo && !titulo.querySelector('img.lia-avatar-cabecalho')) {
+                const img = document.createElement('img');
+                img.className = 'lia-avatar-cabecalho';
+                img.alt = 'Lia';
+                img.setAttribute('data-img-slot', 'lia-avatar');
+                img.src = mapa['lia-avatar'];
+                img.addEventListener('error', function () {
+                    // Sem a arte, o robô é melhor do que um buraco.
+                    img.replaceWith(robo);
+                }, { once: true });
+                robo.replaceWith(img);
+            }
+        }
+
+        // 2) Botão da Lia no hub flutuante
+        document.querySelectorAll('.hub-action-ia').forEach((botao) => {
+            if (!mapa['lia-avatar']) return;
+            if (botao.querySelector('img')) return;
+
+            const icone = botao.querySelector('i');
+            if (!icone) return;
+
+            const img = document.createElement('img');
+            img.className = 'hub-action-ia-arte';
+            img.alt = '';
+            img.setAttribute('aria-hidden', 'true');
+            img.setAttribute('data-img-slot', 'lia-avatar');
+            img.src = mapa['lia-avatar'];
+            img.addEventListener('error', function () { img.remove(); }, { once: true });
+            icone.replaceWith(img);
+        });
+    }
+
+    // =============================================
+    // BOTÃO DE EXPANDIR
+    //
+    // O painel é a conversa rápida. Quem quer histórico, lista de
+    // conversas, voz e as ferramentas por resposta precisa da página.
+    // Este botão é a ponte entre os dois, e é injetado aqui em vez de
+    // repetido no cabeçalho de cada uma das 8 páginas com o modal.
+    // =============================================
+    const cabecalhoModal = document.querySelector('.acolheria-modal-header');
+    const botaoFechar = document.getElementById('acolheriaClose');
+
+    if (cabecalhoModal && botaoFechar && !document.getElementById('acolheriaExpandir')) {
+        const expandir = document.createElement('a');
+        expandir.className = 'acolheria-expandir';
+        expandir.id = 'acolheriaExpandir';
+        expandir.href = '/chat-Ia/chat-Ia.html';
+        expandir.title = 'Abrir a conversa completa, com histórico e ferramentas';
+        expandir.innerHTML =
+            '<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>' +
+            '<span>Conversa completa</span>';
+
+        botaoFechar.parentElement.insertBefore(expandir, botaoFechar);
+    }
+
+    // Avatar da Lia no cabeçalho e no botão do hub. Aqui, porque é o
+    // mesmo ponto da inicialização que já troca o ícone de robô.
+    aplicarAvatarDaLia();
 
     // Deep link: a landing page e as configurações podem abrir direto.
     const ACOLHERIA_HASHES = ['#acolheria', '#acolheriaoverlay'];
@@ -699,7 +916,16 @@ Se o problema persistir, entre em contato com nossa equipe de suporte. 💜`;
 
     // Botões da Lia na página inicial: o do card e o da faixa larga.
     // Só existem lá, então não há listener órfão nas outras páginas.
-    ['btn-acolheria-banner', 'btn-acolheria-faixa'].forEach(function (id) {
+    // Botões que abrem o modal da Lia.
+    //
+    // Antes entrava aqui o 'btn-acolheria-banner', o CTA do card da
+    // home. Ele virou link para /chat-Ia/chat-Ia.html: com a página de
+    // conversa existindo, pedir a conversa completa e receber um modal
+    // em cima da home era o caminho mais curto para frustração.
+    //
+    // O 'btn-acolheria-faixa' é injetado por este mesmo script, por isso
+    // não aparece em nenhum HTML.
+    ['btn-acolheria-faixa'].forEach(function (id) {
         document.getElementById(id)?.addEventListener('click', () => {
             openAcolheriaPanel();
         });

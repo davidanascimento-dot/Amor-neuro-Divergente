@@ -1,0 +1,1009 @@
+/* =========================================
+   chat-Ia.css — página de conversa com a Lia
+
+   TEMA CLARO. A página é o Hub completo da AcolherIA, e a direção é
+   branca, arejada e sem excesso de estímulo. O mini chat (gaveta) tem a
+   mesma paleta; o resto do site tem a sua, mais escura. Aqui a Lia é o
+   elemento principal e o fundo não pode competir com ela.
+
+     #FFFFFF   superfície
+     #FAF8FC   fundo da conversa
+     #8D018D   roxo da marca, ações e destaques
+     #F1E7FA   lilás, mensagens da Lia e escolhas
+     #261A35   roxo profundo, texto
+
+   Contraste medido (WCAG AA, 4.5:1 para texto normal):
+     #261A35 sobre #FAF8FC  15,53
+     #261A35 sobre #F1E7FA  13,69
+     branco sobre #8D018D    8,33
+     #8D018D sobre #F1E7FA    6,96
+     #5C4A6E sobre #FAF8FC   6,72   (texto secundário)
+
+   Modo escuro do site continua valendo: quem liga vê a página inteira em
+   roxo escuro, com a Lia em traço claro. Nada se perde de acessibilidade.
+   ========================================= */
+
+:root {
+    --cia-fundo: #FAF8FC;
+    --cia-superficie: #FFFFFF;
+    --cia-borda: #EADFF2;
+    --cia-borda-forte: #DCC7EC;
+    --cia-texto: #261A35;
+    --cia-texto-medio: #5C4A6E;
+    --cia-texto-tenue: #7A6889;
+    --cia-roxo: #8D018D;
+    --cia-roxo-escuro: #6B016B;
+    --cia-roxo-claro: #F6ECFA;
+    --cia-lilas: #F1E7FA;
+    --cia-raio: 16px;
+    --cia-sombra: 0 1px 2px rgba(38, 26, 53, 0.06), 0 6px 20px rgba(38, 26, 53, 0.05);
+}
+
+body.a11y-dark-mode {
+    --cia-fundo: #1F1235;
+    --cia-superficie: #2A1C44;
+    --cia-borda: #3A2A58;
+    --cia-borda-forte: #4A3A6E;
+    --cia-texto: #FFFFFF;
+    --cia-texto-medio: #D6C9E4;
+    --cia-texto-tenue: #B7A7C9;
+    --cia-roxo: #C4B5FD;
+    --cia-roxo-escuro: #A78BFA;
+    --cia-roxo-claro: #33224F;
+    --cia-lilas: #33224F;
+    --cia-sombra: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.cia-body {
+    margin: 0;
+    background: var(--cia-fundo);
+    color: var(--cia-texto);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+/* =========================================
+   CABEÇALHO DO SITE
+   ========================================= */
+.cia-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 22px;
+    background: var(--cia-superficie);
+    border-bottom: 1px solid var(--cia-borda);
+}
+
+.cia-header .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--cia-texto);
+    font-weight: 700;
+}
+
+.cia-header .logo-img {
+    height: 34px;
+    width: auto;
+    display: block;
+}
+
+.cia-header .logo-text { font-size: 0.98rem; }
+
+.cia-header .header-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.cia-header .header-links a {
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--cia-texto-medio);
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.cia-header .header-links a:hover {
+    background: var(--cia-roxo-claro);
+    color: var(--cia-roxo);
+}
+
+/* A página atual. Quem está aqui precisa saber onde está. */
+.cia-header .header-links a[aria-current="page"] {
+    background: var(--cia-roxo);
+    color: #ffffff;
+}
+
+body.a11y-dark-mode .cia-header .header-links a[aria-current="page"] {
+    color: #2E1065;
+}
+
+.cia-header a:focus-visible,
+.cia-header button:focus-visible {
+    outline: 3px solid var(--cia-roxo);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   ESTRUTURA
+   ========================================= */
+.cia {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: calc(100vh - 55px);
+    height: calc(100dvh - 55px);
+    max-width: 1080px;
+    margin: 0 auto;
+    background: var(--cia-fundo);
+}
+
+/* =========================================
+   IDENTIDADE DA LIA
+   ========================================= */
+.cia-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--cia-borda);
+    background: var(--cia-superficie);
+}
+
+.cia-topo-esq { min-width: 0; }
+.cia-topo-dir { display: flex; gap: 8px; flex-shrink: 0; }
+
+.cia-identidade {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+/* O avatar é a arte da Lia, não o ícone de robô. */
+.cia-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--cia-lilas);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-roxo);
+    font-size: 1.1rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.cia-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+    border-radius: 50%;
+    display: block;
+}
+
+.cia-identidade-texto {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    min-width: 0;
+}
+
+.cia-identidade-texto strong {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cia-texto);
+}
+
+.cia-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--cia-texto-tenue);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+}
+
+.cia-status i { font-size: 0.5rem; color: #10b981; }
+
+.cia-btn-icone {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--cia-roxo-claro);
+    border: 1px solid var(--cia-borda);
+    color: var(--cia-texto-medio);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.cia-btn-icone:hover {
+    background: var(--cia-lilas);
+    color: var(--cia-roxo);
+}
+
+.cia-btn-icone-cont {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--cia-roxo);
+    color: #ffffff;
+    font-size: 0.66rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--cia-superficie);
+}
+
+body.a11y-dark-mode .cia-btn-icone-cont { color: #2E1065; }
+
+/* =========================================
+   LISTA DE CONVERSAS
+   ========================================= */
+.cia-lateral {
+    position: fixed;
+    top: 55px;
+    right: 0;
+    bottom: 0;
+    width: min(360px, 90vw);
+    z-index: 40;
+    background: var(--cia-superficie);
+    border-left: 1px solid var(--cia-borda);
+    box-shadow: -18px 0 46px rgba(38, 26, 53, 0.14);
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+    gap: 14px;
+}
+
+.cia-lateral[hidden] { display: none; }
+
+.cia-lateral-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.cia-lateral-topo h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--cia-texto);
+}
+
+.cia-lateral-aviso {
+    display: flex;
+    gap: 10px;
+    padding: 12px 13px;
+    border-radius: 12px;
+    background: var(--cia-roxo-claro);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-texto-medio);
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.cia-lateral-aviso i { color: var(--cia-roxo); margin-top: 2px; }
+.cia-lateral-aviso p { margin: 0; }
+
+.cia-lateral-lista {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cia-lateral-vazio {
+    padding: 26px 12px;
+    text-align: center;
+    color: var(--cia-texto-tenue);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.cia-conversa-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 13px;
+    border-radius: 12px;
+    background: var(--cia-fundo);
+    border: 1px solid var(--cia-borda);
+    color: var(--cia-texto-medio);
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    transition: background-color 0.2s;
+}
+
+.cia-conversa-item:hover { background: var(--cia-roxo-claro); }
+
+.cia-conversa-item[aria-current="true"] {
+    background: var(--cia-roxo-claro);
+    border-color: var(--cia-borda-forte);
+    color: var(--cia-texto);
+}
+
+/* A Lia no histórico, no lugar do ícone de balões. */
+.cia-conversa-item-arte {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 38%;
+    flex-shrink: 0;
+    display: block;
+}
+
+.cia-conversa-item-texto {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.cia-conversa-item-titulo {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--cia-texto);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cia-conversa-item-data { font-size: 0.72rem; color: var(--cia-texto-tenue); }
+
+.cia-conversa-item-apagar {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--cia-texto-tenue);
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.cia-conversa-item-apagar:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.cia-lateral-rodape {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--cia-borda);
+}
+
+.cia-btn-apagar,
+.cia-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.cia-btn-apagar {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #B91C1C;
+}
+
+.cia-btn-apagar:hover { background: #FEE2E2; }
+
+.cia-btn-ghost {
+    background: var(--cia-roxo-claro);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-texto-medio);
+}
+
+.cia-btn-ghost:hover { background: var(--cia-lilas); color: var(--cia-texto); }
+.cia-btn-ghost:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* =========================================
+   CONVERSA
+   ========================================= */
+.cia-conversa {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--cia-fundo);
+}
+
+.cia-rolagem {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 24px 20px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+}
+
+.cia-rolagem:focus-visible { outline: 3px solid var(--cia-roxo); outline-offset: -3px; }
+
+.cia-aviso-ia {
+    align-self: center;
+    max-width: 560px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--cia-roxo-claro);
+    border: 1px solid var(--cia-borda);
+    color: var(--cia-texto-medio);
+    font-size: 0.76rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.cia-msg {
+    display: flex;
+    gap: 12px;
+    max-width: 760px;
+}
+
+.cia-msg-lia { align-self: flex-start; }
+.cia-msg-eu { align-self: flex-end; flex-direction: row-reverse; }
+
+.cia-msg-avatar {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cia-lilas);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-roxo);
+    font-size: 0.85rem;
+    overflow: hidden;
+}
+
+.cia-msg-eu .cia-msg-avatar {
+    background: var(--cia-roxo-claro);
+    border-color: var(--cia-borda);
+    color: var(--cia-texto-medio);
+}
+
+.cia-msg-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+    border-radius: 50%;
+    display: block;
+}
+
+.cia-bolha {
+    padding: 13px 17px;
+    border-radius: var(--cia-raio);
+    font-size: 0.96rem;
+    line-height: 1.62;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* A Lia fala em lilás claro; a pessoa, no roxo da marca. */
+.cia-msg-lia .cia-bolha {
+    background: var(--cia-lilas);
+    border: 1px solid var(--cia-borda-forte);
+    border-top-left-radius: 5px;
+    color: var(--cia-texto);
+}
+
+.cia-msg-eu .cia-bolha {
+    background: var(--cia-roxo);
+    border-top-right-radius: 5px;
+    color: #ffffff;
+}
+
+.cia-bolha strong { font-weight: 700; }
+.cia-msg-lia .cia-bolha a { color: var(--cia-roxo); font-weight: 600; }
+
+.cia-digitando {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.cia-digitando span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cia-roxo);
+    animation: cia-pulsa 1.25s infinite ease-in-out;
+}
+
+.cia-digitando span:nth-child(2) { animation-delay: 0.18s; }
+.cia-digitando span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes cia-pulsa {
+    0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+    30%           { opacity: 1;    transform: translateY(-4px); }
+}
+
+/* =========================================
+   FERRAMENTAS E RECURSOS
+   ========================================= */
+.cia-ferramentas,
+.cia-recursos {
+    padding: 10px 20px;
+    border-top: 1px solid var(--cia-borda);
+    background: var(--cia-superficie);
+    flex-shrink: 0;
+}
+
+.cia-ferramentas[hidden],
+.cia-recursos[hidden] { display: none; }
+
+.cia-ferramentas-rotulo,
+.cia-recursos-rotulo {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 700;
+    color: var(--cia-texto-tenue);
+    margin-bottom: 8px;
+}
+
+.cia-ferramentas-botoes,
+.cia-recursos-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cia-ferr {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--cia-roxo-claro);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-roxo);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.cia-ferr:hover:not(:disabled) {
+    background: var(--cia-lilas);
+    color: var(--cia-roxo-escuro);
+}
+
+.cia-ferr:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.cia-ferr[aria-pressed="true"] {
+    background: var(--cia-roxo);
+    border-color: var(--cia-roxo);
+    color: #ffffff;
+}
+
+body.a11y-dark-mode .cia-ferr[aria-pressed="true"] { color: #2E1065; }
+
+.cia-recurso {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--cia-lilas);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-roxo);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.cia-recurso:hover { background: var(--cia-roxo-claro); }
+
+/* =========================================
+   COMPOSITOR
+   ========================================= */
+.cia-composer {
+    border-top: 1px solid var(--cia-borda);
+    background: var(--cia-superficie);
+    padding: 12px 20px 14px;
+    flex-shrink: 0;
+}
+
+.cia-sugestoes { margin-bottom: 12px; }
+.cia-sugestoes[hidden] { display: none; }
+
+.cia-sugestoes-rotulo {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--cia-texto-medio);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.cia-sugestoes-botoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.cia-sug {
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--cia-roxo-claro);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-roxo);
+    font: inherit;
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.cia-sug:hover {
+    background: var(--cia-roxo);
+    border-color: var(--cia-roxo);
+    color: #ffffff;
+}
+
+body.a11y-dark-mode .cia-sug:hover { color: #2E1065; }
+
+.cia-rotulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.cia-form-linha { display: flex; align-items: flex-end; gap: 9px; }
+
+.cia-input {
+    flex: 1 1 auto;
+    min-height: 46px;
+    max-height: 190px;
+    padding: 12px 16px;
+    border-radius: 22px;
+    background: var(--cia-fundo);
+    border: 1px solid var(--cia-borda-forte);
+    color: var(--cia-texto);
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: none;
+    overflow-y: auto;
+}
+
+.cia-input::placeholder { color: var(--cia-texto-tenue); }
+
+.cia-icone-rodape,
+.cia-enviar {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--cia-borda-forte);
+    background: var(--cia-roxo-claro);
+    color: var(--cia-texto-medio);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.cia-icone-rodape:hover { background: var(--cia-lilas); color: var(--cia-roxo); }
+
+.cia-icone-rodape[aria-pressed="true"] {
+    background: #DC2626;
+    border-color: #DC2626;
+    color: #ffffff;
+    animation: cia-pulsa-borda 1.2s infinite ease-in-out;
+}
+
+@keyframes cia-pulsa-borda {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45); }
+    50%      { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+}
+
+.cia-enviar {
+    background: var(--cia-roxo);
+    border-color: var(--cia-roxo);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.cia-enviar:hover:not(:disabled) {
+    background: var(--cia-roxo-escuro);
+    transform: translateY(-2px);
+}
+
+.cia-enviar:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.cia-rodape-nota {
+    margin: 9px 0 0;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--cia-texto-tenue);
+    text-align: center;
+}
+
+.cia-rodape-nota a { color: var(--cia-roxo); font-weight: 600; }
+
+.cia-form-linha .cia-input:focus-visible,
+.cia-form-linha .cia-icone-rodape:focus-visible,
+.cia-form-linha .cia-enviar:focus-visible,
+.cia-sug:focus-visible,
+.cia-ferr:focus-visible,
+.cia-btn-apagar:focus-visible,
+.cia-btn-ghost:focus-visible,
+.cia-btn-icone:focus-visible,
+.cia-conversa-item:focus-visible {
+    outline: 3px solid var(--cia-roxo);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   INTRODUÇÃO DA LIA
+
+   Tela de abertura do Hub completo. A Lia aparece de corpo inteiro, com
+   o balão acima, e sai de cena quando a conversa começa.
+
+     0,0s  a Lia entra
+     0,5s  o balão aparece
+     2,5s  a frase troca (o JS troca o texto)
+     4,5s  só o balão e a frase saem; a Lia fica na tela inicial
+
+   Respeita prefers-reduced-motion e o opt-out em localStorage
+   ('acolheria-abertura' = 'off').
+   ========================================= */
+.cia-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+    padding: 4px 16px 20px;
+}
+
+.cia-intro-arte {
+    position: relative;
+    width: 100%;
+    max-width: 260px;
+    margin-bottom: 4px;
+}
+
+/* Corpo inteiro: 412 x 1502 na origem. O limite é a ALTURA, senão a Lia
+   toma a tela inteira e empurra o campo de mensagem para fora.
+
+   O min() com 34vh importa: numa janela baixa, 330px fixos faziam a tela
+   de abertura passar da altura útil e o campo de mensagem só aparecia
+   depois de rolar. O campo de mensagem é infraestrutura — não pode
+   depender de rolagem. */
+.cia-intro-lia {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: min(330px, 34vh);
+    object-fit: contain;
+    object-position: center bottom;
+    margin: 0 auto;
+}
+
+/* Balão: fundo branco, borda lilás, cauda apontando para ela. */
+.cia-intro-balao {
+    position: relative;
+    margin: 0 0 10px;
+    padding: 11px 18px;
+    border-radius: 18px;
+    background: #FFFFFF;
+    border: 1px solid #DCC7EC;
+    color: #261A35;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    text-align: left;
+    box-shadow: 0 2px 10px rgba(38, 26, 53, 0.07);
+}
+
+.cia-intro-balao::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    width: 11px;
+    height: 11px;
+    background: #FFFFFF;
+    border-right: 1px solid #DCC7EC;
+    border-bottom: 1px solid #DCC7EC;
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.cia-intro-titulo {
+    margin: 0;
+    font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+    font-weight: 800;
+    color: var(--cia-texto);
+    line-height: 1.25;
+}
+
+.cia-intro-sub {
+    margin: 2px 0 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--cia-roxo);
+}
+
+.cia-intro-nota {
+    margin: 8px 0 0;
+    max-width: 34ch;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: var(--cia-texto-medio);
+}
+
+/* No modo escuro o balão acompanha, senão um retângulo branco no meio de
+   uma tela roxa. */
+body.a11y-dark-mode .cia-intro-balao {
+    background: #2A1C44;
+    border-color: #4A3A6E;
+    color: #FFFFFF;
+}
+
+body.a11y-dark-mode .cia-intro-balao::after {
+    background: #2A1C44;
+    border-color: #4A3A6E;
+}
+
+@keyframes ciaLiaEntra {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ciaLiaSai {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-12px); }
+}
+
+@keyframes ciaBalaoEntra {
+    from { opacity: 0; transform: translateY(7px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cia-intro[data-intro='rodando'] .cia-intro-lia {
+    animation: ciaLiaEntra 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cia-intro[data-intro='rodando'] .cia-intro-balao {
+    animation: ciaBalaoEntra 0.45s ease-out 0.5s both;
+}
+
+.cia-intro[data-intro='saindo'] {
+    animation: ciaLiaSai 0.45s ease-in both;
+}
+
+.cia-intro[data-intro='estatica'],
+.cia-intro[data-intro='estatica'] * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cia-intro[data-intro='rodando'],
+    .cia-intro[data-intro='rodando'] * {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* =========================================
+   AVISO TEMPORÁRIO
+   ========================================= */
+.cia-torrada {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 60;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--cia-roxo);
+    color: #ffffff;
+    font-size: 0.84rem;
+    font-weight: 700;
+    box-shadow: var(--cia-sombra);
+}
+
+.cia-torrada[hidden] { display: none; }
+
+body.a11y-dark-mode .cia-torrada { color: #2E1065; }
+
+/* =========================================
+   RESPONSIVO
+   ========================================= */
+@media (max-width: 820px) {
+    .cia-header { padding: 10px 14px; }
+    .cia-header .logo-text { font-size: 0.86rem; }
+    .cia-header .header-links a { padding: 7px 11px; font-size: 0.82rem; }
+}
+
+@media (max-width: 720px) {
+    .cia-rolagem { padding: 18px 14px 6px; gap: 14px; }
+    .cia-ferramentas, .cia-recursos { padding: 10px 14px; }
+    .cia-composer { padding: 10px 14px 12px; }
+
+    /* Sugestões e ferramentas viram rolagem horizontal em vez de
+       quebrar em três linhas e empurrar o campo para fora da tela. */
+    .cia-ferramentas-botoes,
+    .cia-recursos-lista,
+    .cia-sugestoes-botoes {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        padding-bottom: 4px;
+    }
+
+    .cia-ferr,
+    .cia-recurso,
+    .cia-sug { white-space: nowrap; flex-shrink: 0; }
+}
+
+/* No celular a Lia encolhe: o campo de mensagem tem de continuar
+   visível sem rolagem. */
+@media (max-width: 420px) {
+    .cia-header .logo-text { display: none; }
+    .cia-rolagem { padding: 14px 12px 4px; }
+    .cia-intro { padding: 2px 8px 14px; }
+    .cia-intro-arte { max-width: 190px; }
+    .cia-intro-lia { max-height: min(240px, 30vh); }
+    .cia-intro-nota { max-width: 28ch; font-size: 0.8rem; }
+    .cia-avatar { width: 38px; height: 38px; }
+    .cia-msg { gap: 9px; }
+    .cia-msg-avatar { width: 30px; height: 30px; font-size: 0.74rem; }
+    .cia-bolha { font-size: 0.9rem; padding: 11px 14px; }
+    .cia-lateral { top: 0; }
+}
