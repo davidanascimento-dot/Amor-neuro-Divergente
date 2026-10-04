@@ -1184,10 +1184,20 @@ body.a11y-dark-mode .rail-toggle-button:hover {
     font-size: inherit;
 }
 
+/* A arte nova e uma CENA panoramica: 826 x 589, ou seja 1,40:1.
+   A regra anterior fixava `height: 104px`, calibrada para o logo
+   quadrado que ficava ali antes. Numa cena panoramica isso daria
+   146 px de largura, e cada uma das tres pessoas ficaria com
+   cerca de 48 px — ilegivel.
+
+   Aqui quem manda e a LARGURA. A cena chega a 340 px e a altura
+   acompanha a proporcao (340 / 1,40 = 243 px). `object-fit:
+   contain` garante que nada seja cortado se a coluna for mais
+   estreita que isso. */
 .conversas-page .empty-mascot img {
     display: block;
-    width: auto;
-    height: 104px;
+    width: min(340px, 100%);
+    height: auto;
     max-width: 100%;
     object-fit: contain;
     margin: 0 auto;
