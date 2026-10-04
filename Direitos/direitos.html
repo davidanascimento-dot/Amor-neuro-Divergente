@@ -10,11 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/elementos-decorativos.css">
     <link rel="stylesheet" href="/espacos-banner.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="direitos.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
+    <link rel="stylesheet" href="/lia-chibi.css">
   <script src="/imagens.js"></script>
 </head>
 
@@ -163,7 +165,10 @@
         <!-- =============================================
              INTRO — Frase-guia
              ============================================= -->
-        <section class="rights-intro">
+        <section class="deco-hospedeiro rights-intro">
+        <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--nuvem deco--esq deco--topo deco--s2"
+              style="--tam: 120px; --rot: -8deg" aria-hidden="true"></span>
             <div class="rights-intro__container">
                 <h2 class="rights-intro__title">
                     Direitos não se limitam a um site.
@@ -234,7 +239,10 @@
             <span class="espaco-banner__nome">Direitos / antes das leis</span>
             <span class="espaco-banner__fundo">/img/ilustracoes/OS SEIS SÍMBOLOS DOS DIREITOS.jpg</span>
         </div>
-<section class="laws-section" id="leis">
+<section class="deco-hospedeiro laws-section" id="leis">
+        <!-- elemento decorativo: coracao. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--coracao deco--esq deco--topo deco--s1"
+              style="--tam: 46px; --rot: -11deg" aria-hidden="true"></span>
             <header class="laws-section__head">
                 <span class="section-badge"><i class="fa-solid fa-book"></i> Biblioteca de Leis</span>
                 <h2 class="laws-section-title">Leis que protegem você</h2>
@@ -266,7 +274,10 @@
             <span class="espaco-banner__nome">Direitos / depois das leis</span>
             <span class="espaco-banner__fundo">/img/ilustracoes/A MARCA &quot;VALIDAR&quot;.jpg</span>
         </div>
-<section class="sources-banner">
+<section class="deco-hospedeiro sources-banner">
+        <!-- elemento decorativo: organicas. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--organicas deco--dir deco--base deco--s2"
+              style="--tam: 80px; --rot: 8deg" aria-hidden="true"></span>
             <div class="sources-banner__container">
                 <h3 class="sources-banner__title">
                     <i class="fa-solid fa-book-open-reader"></i> Quer se aprofundar?
@@ -339,7 +350,10 @@
         <!-- =============================================
              RECURSOS ÚTEIS + ENVIE SEU CASO
              ============================================= -->
-        <section class="resources-section" id="recursos">
+        <section class="deco-hospedeiro resources-section" id="recursos">
+        <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--nuvem deco--dir deco--topo deco--s2"
+              style="--tam: 112px; --rot: 6deg" aria-hidden="true"></span>
             <div class="resources-container">
                 <div class="resources-box">
                     <div class="resources-box-header">
@@ -409,7 +423,10 @@
         <!-- =============================================
              FAQ DE DIREITOS
              ============================================= -->
-        <section class="rights-faq" id="faq">
+        <section class="deco-hospedeiro rights-faq" id="faq">
+        <!-- elemento decorativo: organicas. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--organicas deco--dir deco--topo deco--s3"
+              style="--tam: 78px; --rot: -5deg" aria-hidden="true"></span>
             <header class="rights-faq__head">
                 <span class="section-badge"><i class="fa-regular fa-circle-question"></i> Dúvidas frequentes</span>
                 <h2>Perguntas sobre direitos</h2>
@@ -477,12 +494,26 @@
         <!-- =============================================
              CONTATO
              ============================================= -->
-        <section class="rights-contact" id="contato">
+        <section class="deco-hospedeiro rights-contact banner--direitos" id="contato">
+            <!-- LIA CHIBI — broche na borda do banner.
+                 Decorativa: nao e a Lia principal, que continua intacta
+                 com a arte e a animacao dela.
+            
+                 Fica na secao do banner, e nao solta na pagina, por dois motivos
+                 medidos: o card tem a largura inteira da secao (nao ha espaco
+                 ao lado) e tem overflow:hidden (pendurado para fora, seria
+                 cortado). A secao tem overflow:visible, entao passa. -->
+
+        <!-- elemento decorativo: coracao. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--coracao deco--dir deco--topo deco--s1"
+              style="--tam: 50px; --rot: 9deg" aria-hidden="true"></span>
             <!-- Mesmo modelo do card da home: arte de fundo, texto por
                  cima, sem coluna de ícone. O ícone de robô ocupava 80px
                  de largura e empurrava o texto para o meio, longe do
                  respiro que a Lia precisa. -->
             <div class="rights-contact__card" data-img-fundo="acolheria-card-bg-direitos">
+                        <img class="banner-lia-chibi banner-lia-chibi__img" src="/img/ilustracoes/lia-chibi.png"
+                 alt="" width="816" height="903" aria-hidden="true" draggable="false">
                 <div class="rights-contact__content">
                     <span class="acolheria-badge-nome">
                         <i class="fa-solid fa-robot" aria-hidden="true"></i>

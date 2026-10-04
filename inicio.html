@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/elementos-decorativos.css">
     <link rel="stylesheet" href="/espacos-banner.css">
     
     
@@ -21,6 +22,7 @@
     <!-- 🆕 Estilos das novas seções -->
     <link rel="stylesheet" href="Explorar/Explorar.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
+    <link rel="stylesheet" href="/lia-chibi.css">
   <script src="/imagens.js"></script>
 </head>
 
@@ -466,9 +468,33 @@
              🆕 PUBLICAÇÕES EM DESTAQUE — Carrossel editorial
              ============================================= -->
         
-        <figure class="espaco-banner espaco-banner--preenchido espaco-banner--ideia" data-espaco="home-01" data-fundo="/img/ilustracoes/A CADEIRA VAZIA.png">
-            <img src="/img/ilustracoes/A%20CADEIRA%20VAZIA.png" alt="Sete pessoas de jaleco em volta de uma poltrona vazia, ao lado de uma planta e de livros. A frase da arte: Existe um lugar para você aqui." loading="lazy" decoding="async" width="1400" height="759">
+        <!-- HEROI — banner panoramico de tela cheia.
+             A arte e a ILLUSTRACAO DA CASA: circulo de pessoas de idades
+             diferentes, com a frase no centro. Nao e copia da Lia — o
+             banner da Lia serviu so de referencia para saber o que e
+             um hero que ocupa a tela: horizontal, largo, sem moldura.
+
+             A moldura que veio na arte foi cortada (16 px dos quatro
+             lados). No rodape o corte NAO e perda: as pessoas ja
+             estouravam a moldura, e agora estouram o quadro do banner
+             -- que e o efeito pedido. -->
+        <!-- A arte fica DEPOIS do botao "Quero fazer parte", e nao
+             antes dele. O botao e o que pede a acao; a arte explica o
+             lugar para onde a acao leva. Invertido, a faixa empurrava
+             o botao para fora da primeira dobra.
+
+             Por isso `loading="lazy"`: a 2100 px de rolagem, esta arte
+             ja nao compete por banda com o conteudo que a pessoa veio
+             ver. Quando ela chega perto, o navegador carrega. -->
+        <figure class="espaco-banner espaco-banner--preenchido espaco-banner--hero"
+                data-espaco="home-hero"
+                data-fundo="/img/ilustracoes/A CADEIRA VAZIA.jpg">
+            <img src="/img/ilustracoes/A%20CADEIRA%20VAZIA-hero.png"
+                 alt="Vista de cima de sete pessoas deitadas em fila, de costas, com os bracos uns sobre os outros. Ao redor, pequenos circulos coloridos. No centro embaixo, a frase: voce nao esta sozinho."
+                 width="928" height="525" loading="lazy" decoding="async">
         </figure>
+
+
 <section class="explore-highlights" id="destaques">
             <div class="container">
                 <header class="explore-highlights__head">
@@ -693,7 +719,10 @@
         <!-- =============================================
              DIREITOS
              ============================================= -->
-        <section class="rights-quick-section">
+        <section class="deco-hospedeiro rights-quick-section">
+        <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--nuvem deco--dir deco--topo deco--s2"
+              style="--tam: 118px; --rot: -7deg" aria-hidden="true"></span>
             <div class="container">
                 <div class="rights-box">
                     <div class="rights-info">
@@ -839,7 +868,18 @@
              O fundo vem do slot "acolheria-card-bg" em /imagens.js.
              É aplicado por JS porque CSS não lê arquivo de configuração.
              ============================================= -->
-        <section class="acolheria-banner-section" id="acolheria">
+        <section class="acolheria-banner-section banner--inicio" id="acolheria">
+              <!-- LIA CHIBI — broche na borda do banner.
+                   Decorativa: nao e a Lia principal, que continua intacta
+                   com a arte e a animacao dela.
+              
+                   Fica na <section>, e nao dentro do card, por dois motivos
+                   medidos: o card tem a largura inteira da secao (nao ha espaco
+                   ao lado) e tem overflow:hidden (pendurado para fora, seria
+                   cortado). A secao tem overflow:visible, entao passa. -->
+              <img class="banner-lia-chibi banner-lia-chibi__img" src="/img/ilustracoes/lia-chibi.png"
+                   alt="" width="816" height="903" aria-hidden="true" draggable="false">
+
             <div class="acolheria-card" data-img-fundo="acolheria-card-bg">
                 <div class="acolheria-card-content">
                     <!-- Uma tag só. "AcolherIA" e "Lia" juntas eram

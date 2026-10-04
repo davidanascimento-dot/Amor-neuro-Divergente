@@ -1,0 +1,175 @@
+/* =========================================
+   LIA CHIBI — broche ao lado da Lia
+
+   O QUE ESTE ELEMENTO NAO E
+   -------------------------
+   Nao e a Lia. A Lia principal ja existe, com a arte, a animacao e a
+   composicao atuais, e NAO foi tocada. Este e um detalhe a parte:
+   a carinha dela, do tamanho de um broche, ao lado da grande.
+
+   A hierarquia do banner continua a mesma de antes:
+
+       conteudo  ->  Lia principal  ->  Lia Chibi
+
+   ---------------------------------------------------------
+   ONDE A LIA GRANDE ESTA (medido, nao estimado)
+   ---------------------------------------------------------
+   A Lia grande nao e um elemento: e `background-image` do card, com
+   `right 90px center / contain`. Medindo o resultado no banner real
+   (card 985 x 368):
+
+       TEXTO          x  32 .. 511
+       COQUE da Lia   x 667 .. 779   y  7 .. 72
+       ROSTO da Lia   x 671 .. 750   y 126 .. 208
+
+   Entao a faixa entre o fim do texto e o rosto da Lia e de 160 px
+   (x 511 ate 671), e o canto superior esquerdo dessa faixa esta
+   livre: e ali que a Chibi entra.
+
+   A posicao NAO e a da lateral da tela. A da tela deixava a carinha
+   solta, longe de quem ela representa. Ao lado do rosto ela vira
+   assinatura: e a mesma Lia, duas vezes.
+
+   ---------------------------------------------------------
+   POR QUE position: absolute DENTRO da <section>, e nao do card
+   ---------------------------------------------------------
+   O card tem `overflow: hidden` e a largura inteira da secao — nao
+   ha espaco ao lado dele. A <section> tem `overflow: visible` e
+   `position: relative`, entao a Chibi e posicionada por ela e o
+   card nao a corta.
+
+   ---------------------------------------------------------
+   TAMANHO
+   ---------------------------------------------------------
+   O rosto da Lia grande mede 79 x 83 px no banner. A Chibi tem
+   72 px: um pouco menor, do mesmo tamanho, como um broche ao lado
+   de um retrato. Se ficasse do mesmo tamanho, leria como uma
+   segunda Lia grande.
+
+   ---------------------------------------------------------
+   POR QUE pointer-events: none
+   ---------------------------------------------------------
+   A Chibi passa por cima do card. Sem isto, uma area de 72 x 80 px
+   sobre o banner deixaria de repassar clique ao que estiver
+   embaixo.
+   ========================================= */
+
+/* ---------- A ancora: a section de cada banner ---------- */
+
+.banner--inicio,
+.banner--direitos {
+    position: relative;
+}
+
+/* ---------- O broche ---------- */
+
+.banner-lia-chibi {
+    position: absolute;
+    z-index: 30;
+
+    /* Medido no banner de referencia (985 x 368):
+         TEXTO        x  32 .. 511
+         COQUE da Lia x 667 .. 779   y  7 .. 72
+         ROSTO da Lia x 671 .. 750   y 126 .. 208
+
+       A carinha vai SOBRE O CABELO, na lateral, e nao sobre o rosto:
+       por isso `top: 6px` (faixa do coque, y 7..72) em vez de
+       96px, que a colocava em cima da testa e dos olhos.
+
+       E 1 cm (~38 px) para o lado OPOSTO ao texto, ou seja, para a
+       direita — a direcao em que o banner esta livre. `right` de
+       246px (encostada no rosto) para 208px: a borda direita da
+       carinha sai de x ~667 e vai para x ~705, encostando na lateral
+       direita do coque.
+
+       Com isso a carinha ocupa y 6..87, que termina 39 px ANTES do
+       rosto (y 126). Nao ha sobreposicao. */
+    top: 6px;
+    right: 208px;
+
+    /* Um pouco menor que o rosto da Lia (79 px), como broche ao
+       lado de retrato. */
+    width: 72px;
+    height: auto;
+
+    /* Dois graus: tira a sensacao de selo, sem parecer torto. */
+    transform: rotate(-2deg);
+
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* =========================================
+   TABLET
+   =========================================
+
+   O banner encolhe, e a Lia encolhe junto — mas o texto encolhe
+   mais, porque ganha largura. A proporcao do recuo tambem muda.
+   Aqui a posicao e recalculada pela mesma razao medida antes
+   (246/985 = 0,25 da largura), o que mantem a carinha na mesma
+   distancia relativa do rosto. */
+
+/* ---------------------------------------------------------
+   REGRA DO TABLET, CORRIGIDA
+   ---------------------------------------------------------
+   A primeira versao usava `right: 21%`. A porcentagem pareceu
+  parecia — "acompanha o encolhimento do banner" — e foi
+   exatamente o erro: a 1000 px de janela ela valeu 207 px, e a
+   carinha foi parar em x 717..779, em cima do COQUE (x 667..779)
+   e do ROSTO (x 671..750) da Lia grande. Medido, nao estimado.
+
+   A razao da posicao esta medida em pixels absolutos, no banner de
+   referencia (985 px de largura). Encolher o banner encolhe a Lia
+   grande junto, e o recuo absoluto continua a aproximada a
+   proximidade do rosto. Por isso aqui o valor e fixo. */
+
+@media (max-width: 1024px) {
+    .banner-lia-chibi {
+        width: 60px;
+        top: 6px;
+        right: 174px;
+    }
+}
+
+/* =========================================
+   CELULAR
+   =========================================
+
+   Abaixo de 720 px o texto ocupa quase toda a largura e a Lia
+   grande fica pequena no canto. Nao ha mais a faixa de 160 px
+   entre os dois. A Chibi encolhe e sobe, para ficar no canto
+   superior — a unica regiao que continua livre. */
+
+@media (max-width: 720px) {
+    .banner-lia-chibi {
+        width: 46px;
+        top: 14px;
+        right: 14px;
+        transform: rotate(0deg);
+    }
+}
+
+/* =========================================
+   MOVIMENTO REDUZIDO
+   =========================================
+
+   Nenhuma animacao e declarada — a Chibi e estatica por
+   especificacao. A regra existe para que, se alguem acrescentar uma
+   depois, ela pare aqui. A animacao da Lia principal NAO e afetada:
+   ela vive em outros arquivos. */
+
+@media (prefers-reduced-motion: reduce) {
+    .banner-lia-chibi {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* =========================================
+   MODO ESCURO
+   =========================================
+
+   Nada a ajustar: os dois banners sao escuros por definicao (veu
+   roxo sobre a arte). A Chibi e a mesma nos dois.
+   ========================================= */

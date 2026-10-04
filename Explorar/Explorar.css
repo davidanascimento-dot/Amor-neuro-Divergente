@@ -1618,23 +1618,104 @@ body.a11y-reduce-motion .section-head__link {
    COLUNA ESQUERDA — FORM CARD
    ========================================= */
 .form-card {
-    background: var(--explore-card);
-    border: 1px solid var(--explore-border);
-    border-radius: var(--explore-radius);
-    padding: 44px 40px;
-    box-shadow: var(--explore-shadow);
+    /* O fundo branco, a borda e a sombra sairam. A caixa reunia arte e
+       formulario, mas com a grade em 50/50 os dois lados ja se
+       distinguem pela posicao — a caixa era uma moldura a mais.
+
+       E havia um ganho concreto: os campos do formulario sao brancos e
+       o card tambem era branco, entao cada campo so se distinguia pela
+       borda de 1px. Sem o branco do card, os campos passam a contrastar
+       com a pagina (#faf9fe) e ganham superficie propria. */
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
 }
 
 /* ===== Layout interno: contato lateral + formulário ===== */
 .form-layout {
     display: grid;
-    grid-template-columns: 260px 1fr;
+    /* A coluna lateral era 260 px. Com a arte dentro, a 260 px a cena
+       cairia para 145 px de altura e a pessoa ficaria ilegível. O
+       `clamp` dá 300 px no celular, 380 px em telas medias e 400 px no
+       limite — sem passar de 40% da largura, para o formulario nunca
+       ser espremido. */
+    grid-template-columns: clamp(260px, 30%, 400px) minmax(0, 1fr);
     gap: 32px;
     align-items: start;
 }
 
-.form-main {
-    min-width: 0; /* evita overflow em grid */
+/* ---------- A divisao da area de contato ----------
+
+   Metade e metade, no modelo da referencia: a cena ocupa a coluna
+   esquerda e o formulario a direita.
+
+   `minmax(0, ...)` nos dois lados e obrigatorio. Sem ele a coluna do
+   formulario cresce pelo `min-content` do formulario e empurra a arte
+   para fora da grade — que era o defeito da coluna fixa de 260 px. */
+
+.contato-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 48px);
+    align-items: start;
+}
+
+.contato-arte {
+    margin: 0;
+    max-width: 520px;
+}
+
+/* O arquivo ja vem com o fundo removido (PNG 594x508, transparente):
+   nao ha retangulo de creme nem borda para disfarcar. */
+.contato-arte img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.form-main__title {
+    margin: 0 0 22px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    line-height: 1.25;
+    color: var(--explore-text);
+}
+
+/* ---------- Os dados de contato, agora em faixa ----------
+
+   Era uma coluna estreita com fundo e borda proprios. Virou uma lista
+   de items lado a lado, sem caixa: o bloco ja tem o card em volta, e
+   uma caixa dentro de outra so encurtava a linha. */
+
+.contact-list--faixa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 32px;
+    margin: 34px 0 0;
+    padding: 26px 0 0;
+    border-top: 1px solid var(--explore-border);
+    list-style: none;
+}
+
+.contact-list--faixa li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1 1 210px;
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .contato-split { grid-template-columns: minmax(0, 1fr); }
+    /* Empilhado, a arte vem primeiro: e a parte que convida. */
+    .contato-arte { margin-inline: auto; }
+}
+
+@media (max-width: 560px) {
+    .contact-list--faixa li { flex-basis: 100%; }
 }
 
 @media (max-width: 900px) {

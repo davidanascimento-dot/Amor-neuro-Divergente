@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/elementos-decorativos.css">
     <link rel="stylesheet" href="/espacos-banner.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="Explorar.css">
@@ -174,7 +175,10 @@
             <span class="espaco-banner__nome">Explorar / antes dos topicos</span>
             <span class="espaco-banner__fundo">/img/ilustracoes/A ESTANTE DAS POSSIBILIDADES.jpg</span>
         </div>
-<section class="explore-intro">
+<section class="deco-hospedeiro explore-intro">
+        <!-- elemento decorativo: organicas. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--organicas deco--esq deco--base deco--s2"
+              style="--tam: 88px; --rot: -6deg" aria-hidden="true"></span>
             <div class="explore-intro__container">
                 <h2 class="explore-intro__title">
                     Clique em um dos tópicos abaixo para ir direto ao conteúdo:
@@ -522,7 +526,10 @@
         <!-- =============================================
              FAQ
              ============================================= -->
-        <section class="faq-section" id="faq">
+        <section class="deco-hospedeiro faq-section" id="faq">
+        <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+        <span class="deco deco--nuvem deco--dir deco--topo deco--s2"
+              style="--tam: 124px; --rot: -7deg" aria-hidden="true"></span>
             <div class="faq-header">
                 <span class="faq-icon"><i class="fa-regular fa-circle-question"></i></span>
                 <h2>Perguntas Frequentes</h2>
@@ -589,57 +596,27 @@
     <!-- ========================================= -->
     <div id="estado-formulario">
 
-        <div class="form-layout">
+        <div class="contato-split">
+            <!-- A cena ocupa a metade esquerda e o formulario a
+                 direita, no modelo da referencia.
 
-            <!-- ===== COLUNA LATERAL: DADOS DE CONTATO ===== -->
-            <aside class="contact-info">
-                <h3>Fale Conosco</h3>
-                <ul class="contact-list">
-                    <li>
-                        <span class="contact-icon"><i class="fa-solid fa-phone"></i></span>
-                        <div>
-                            <strong>Telefone / WhatsApp</strong>
-                            <a href="tel:+5511999999999">(11) 99999-9999</a>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>
-                        <div>
-                            <strong>E-mail</strong>
-                            <a href="mailto:contato@seudominio.com.br">contato@seudominio.com.br</a>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>
-                        <div>
-                            <strong>Endereço</strong>
-                            <span>Rua Exemplo, 123 — Centro<br>São Paulo/SP — CEP 00000-000</span>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="contact-icon"><i class="fa-regular fa-clock"></i></span>
-                        <div>
-                            <strong>Horário de atendimento</strong>
-                            <span>Segunda a sexta, das 9h às 18h</span>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="contact-icon"><i class="fa-solid fa-share-nodes"></i></span>
-                        <div>
-                            <strong>Redes sociais</strong>
-                            <span class="social-links">
-                                <a href="#" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="#" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-                                <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-                                <a href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-            </aside>
+                 O titulo "Fale Conosco" saiu: ele nomeava a coluna de
+                 contato E o formulario ao mesmo tempo, entao nao
+                 distinguia nada. Agora cada lado tem o seu.
 
-            <!-- ===== COLUNA PRINCIPAL: FORMULÁRIO ===== -->
+                 Os dados de contato NAO foram apagados. Telefone,
+                 e-mail, endereco, horario e redes continuam na pagina,
+                 agora numa faixa sem titulo — cada item ja se nomeia
+                 sozinho, entao o h3 era redundante. -->
+            <figure class="contato-arte">
+                <img src="/img/ilustracoes/Ilustra%C3%A7%C3%A3o%20Fale%20Conosco.png"
+                     alt="Pessoa sentada numa poltrona com um celular na mao, escrevendo uma mensagem. Ao redor, uma planta, livros, um caderno aberto, uma caneta e envelopes, num ambiente domestico acolhedor."
+                     width="594" height="508" loading="lazy" decoding="async">
+            </figure>
+
             <div class="form-main">
+                <h2 class="form-main__title">Como podemos ajudar?</h2>
+
                 <form id="support-form">
 
                     <div class="form-row">
@@ -689,12 +666,12 @@
 
                     <div class="form-group full-width">
                         <label for="form-assunto">Assunto *</label>
-                        <input type="text" id="form-assunto" placeholder="Ex.: Dúvida sobre laudo, denúncia, sugestão..." required>
+                        <input type="text" id="form-assunto" placeholder="Ex.: D├║vida sobre laudo, den├║ncia, sugest├úo..." required>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="form-caso">Conte-nos seu caso *</label>
-                        <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa 🌱" required></textarea>
+                        <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa ­ƒî▒" required></textarea>
                         <div class="char-counter"><span id="current-chars">0</span>/4000</div>
                     </div>
 
@@ -703,12 +680,13 @@
                     </button>
 
                     <p class="privacy-notice">
-                        Ao enviar, você concorda com nossa política de privacidade. Seus dados são tratados com sigilo.
+                        Ao enviar, voc├¬ concorda com nossa pol├¡tica de privacidade. Seus dados s├úo tratados com sigilo.
                     </p>
                 </form>
-            </div>
-
+                        </div>
         </div>
+
+                
     </div>
 
     <!-- ========================================= -->
@@ -774,6 +752,7 @@
     </div>
 
 </div>
+
 
         
         <!-- FOOTER -->

@@ -1,0 +1,190 @@
+/* =========================================
+   ELEMENTOS DECORATIVOS RECORRENTES
+
+   Tres artes, um unico sistema:
+
+     nuvem     -> ambientacao. A mais recorrente.
+     coracao   -> destaque menor. Perto de acolhimento e contato.
+     organicas -> preenchimento. Menor e mais discreta que a nuvem.
+
+   REGRA QUE MANTA O SITE PRINCIPALMENTE UM SITE DE INFORMACAO
+   ------------------------------------------------------------
+   Estes elementos resolvem pontas secas. Eles nao decoram o que ja
+   esta funcionando. Se uma secao ja tem arte, fica sem nada.
+
+   ---------------------------------------------------------
+   COMO USAR
+   ---------------------------------------------------------
+
+   Um <span> vazio, dentro da secao que ele decora:
+
+       <span class="deco deco--nuvem deco--dir deco--topo"
+             style="--tam: 130px; --rot: -8deg" aria-hidden="true"></span>
+
+   Variaveis:
+
+     --tam   tamanho em px          (padrao por tipo)
+     --rot   rotacao em graus       (padrao 0)
+     --op    opacidade              (padrao 1)
+
+   Modificadores de posicao (podem ser combinados):
+
+     deco--esq | deco--dir      margem lateral
+     deco--topo | deco--base    margem vertical
+     deco--s1 .. deco--s3       quanto a borda e respeitada
+
+   ---------------------------------------------------------
+   POR QUE CSS/background E NAO <img>
+   ---------------------------------------------------------
+
+   Um <img> decorativo ainda e um no para leitores de tela, ainda
+   ocupa espaco no fluxo se algo der errado, e ainda pode receber
+   foco. Um <span> com `aria-hidden` e `background-image` nao tem
+   nenhum dos tres. E o navegador baixa a imagem uma vez so, para
+   as paginas que a usarem.
+
+   ---------------------------------------------------------
+   POR QUE pointer-events: none
+   ---------------------------------------------------------
+
+   O elemento fica sobre o texto. Sem isso, o clique num link perto
+   da nuvem cairia na nuvem em vez do link.
+   ========================================= */
+
+/* ---------- O container precisa ser o ancora ---------- */
+
+/* ---------- A secao que hospeda o elemento precisa ser o ancora ----
+
+   `isolation: isolate` cria um contexto de empilhamento novo. Sem
+   ele, um `z-index: -1` no elemento escaparia para tras do fundo da
+   pagina inteira. Com ele, o `-1` vale so dentro da secao: o desenho
+   fica atras do conteudo, mas a frente do fundo da propria secao.
+
+   E o `-1` e o que garante a regra do briefing. Sem ele, o elemento
+   tem `z-index: 0` e o texto da secao — que nao e posicionado, e
+   portanto ignora z-index — fica ABAIXO: o desenho pinta por cima
+   de link, titulo e botao. Medido: a nuvem cobria um <a> em 3
+   paginas e uma forma organica cobria um <h2>. Com o `-1` mais o
+   isolate, o texto sempre fica legivel, mesmo se a posicao ficar ruim
+   numa pagina futura. */
+
+.deco-hospedeiro {
+    position: relative;
+    isolation: isolate;
+}
+
+.deco {
+    position: absolute;
+    z-index: -1;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    /* Sem isto, o elemento ainda ocupa espaco no fluxo quando a
+       position falha por alguma razao. */
+    width: var(--tam, 120px);
+    height: auto;
+    aspect-ratio: var(--razao, 1);
+
+    transform: rotate(var(--rot, 0deg));
+    opacity: var(--op, 1);
+}
+
+/* ---------- As tres artes ---------- */
+
+.deco--nuvem {
+    --razao: 688 / 397;
+    --tam: 130px;
+    background-image: url("/img/ilustracoes/decor-nuvem.png");
+}
+
+.deco--coracao {
+    --razao: 234 / 235;
+    --tam: 54px;
+    background-image: url("/img/ilustracoes/decor-coracao.png");
+}
+
+.deco--organicas {
+    --razao: 447 / 473;
+    --tam: 96px;
+    background-image: url("/img/ilustracoes/decor-organicas.png");
+}
+
+/* ---------- Posicao ----------
+
+   As margens sao（DISTANTES o bastante para a arte sair parcialmente
+   do bloco, e perto o bastante para nao invadir o texto. O conteudo
+   das secoes do site tem respiro de 40 a 80 px, entao --s1 (16 px) ja
+   coloca a arte encostando na borda sem cobrir nada. */
+
+.deco--esq  { left: var(--mx, 16px); }
+.deco--dir  { right: var(--mx, 16px); }
+.deco--topo { top: var(--my, 16px); }
+.deco--base { bottom: var(--my, 16px); }
+
+.deco--s2 { --mx: 34px; --my: 34px; }
+.deco--s3 { --mx: 64px; --my: 60px; }
+
+/* Variacao lateral util: puxa a arte para fora do bloco, para ela
+   parecer "partially fora" como pede o briefing. O espaco negativo
+   e seguro porque o elemento e absoluto — nao empurra conteudo. */
+.deco--fora-dir { right: calc(-1 * var(--mx, 16px)); }
+.deco--fora-esq { left:  calc(-1 * var(--mx, 16px)); }
+
+/* =========================================
+   RESPONSIVO
+   ========================================= */
+
+/* Tablet: reduz e recoloca para dentro. Fora do bloco em telas
+   medias pode cair sobre o texto, porque o respiro das colunas
+   diminui antes da largura da tela. */
+@media (max-width: 1024px) {
+    .deco--nuvem     { --tam: 104px; }
+    .deco--organicas { --tam: 78px; }
+    .deco--coracao   { --tam: 44px; }
+    .deco--fora-dir,
+    .deco--fora-esq {
+        right: var(--mx, 16px);
+        left: auto;
+    }
+    .deco--fora-esq { left: var(--mx, 16px); right: auto; }
+}
+
+/* Celular: o briefing diz que podem sumir quando nao ha espaco.
+   Aqui eles nao competem por espaco nenhum — vao para os cantos, na
+   diagonal oposta ao texto, e reduzem. */
+
+@media (max-width: 720px) {
+    .deco--nuvem     { --tam: 78px; --op: 0.85; }
+    .deco--organicas { --tam: 60px; --op: 0.85; }
+    .deco--coracao   { --tam: 36px; }
+    .deco--s3 { --mx: 12px; --my: 12px; }
+    .deco--s2 { --mx: 8px;  --my: 8px; }
+}
+
+/* Telas muito estreitas: a nuvem e a forma organica somem. Numa
+   coluna de 320 px, 78 px de arte numa lateral e 24% da largura
+   — o suficiente para cobrir o texto. O coracao permanece por ser
+   pequeno. */
+@media (max-width: 420px) {
+    .deco--nuvem,
+    .deco--organicas { display: none; }
+}
+
+/* =========================================
+   MOVIMENTO REDUZIDO
+   =========================================
+
+   Nenhuma animacao esta declarada, mas se alguem acrescentar uma
+   depois, ela para aqui. */
+
+@media (prefers-reduced-motion: reduce) {
+    .deco {
+        animation: none !important;
+        transition: none !important;
+    }
+}
