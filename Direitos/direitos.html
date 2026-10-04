@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/espacos-banner.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="direitos.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
@@ -219,7 +220,21 @@
         <!-- =============================================
              SEÇÃO DE LEIS — Sem busca, card padrão
              ============================================= -->
-        <section class="laws-section" id="leis">
+        
+        <!-- ESPAÇO PARA BANNER — Direitos / antes das leis
+             data-espaco identifica este lugar de forma estável.
+             Quando a arte entrar, troque por <img> ou marque o bloco
+             com .espaco-banner--preenchido. -->
+        <div class="espaco-banner espaco-banner--grande" data-espaco="direitos-01"
+             data-fundo="/img/ilustracoes/OS SEIS SÍMBOLOS DOS DIREITOS.jpg">
+            <span class="espaco-banner__marca">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                espaço para banner
+            </span>
+            <span class="espaco-banner__nome">Direitos / antes das leis</span>
+            <span class="espaco-banner__fundo">/img/ilustracoes/OS SEIS SÍMBOLOS DOS DIREITOS.jpg</span>
+        </div>
+<section class="laws-section" id="leis">
             <header class="laws-section__head">
                 <span class="section-badge"><i class="fa-solid fa-book"></i> Biblioteca de Leis</span>
                 <h2 class="laws-section-title">Leis que protegem você</h2>
@@ -237,7 +252,21 @@
         <!-- =============================================
              FONTES PARA SE APROFUNDAR
              ============================================= -->
-        <section class="sources-banner">
+        
+        <!-- ESPAÇO PARA BANNER — Direitos / depois das leis
+             data-espaco identifica este lugar de forma estável.
+             Quando a arte entrar, troque por <img> ou marque o bloco
+             com .espaco-banner--preenchido. -->
+        <div class="espaco-banner espaco-banner--largo" data-espaco="direitos-02"
+             data-fundo="/img/ilustracoes/A MARCA &quot;VALIDAR&quot;.jpg">
+            <span class="espaco-banner__marca">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                espaço para banner
+            </span>
+            <span class="espaco-banner__nome">Direitos / depois das leis</span>
+            <span class="espaco-banner__fundo">/img/ilustracoes/A MARCA &quot;VALIDAR&quot;.jpg</span>
+        </div>
+<section class="sources-banner">
             <div class="sources-banner__container">
                 <h3 class="sources-banner__title">
                     <i class="fa-solid fa-book-open-reader"></i> Quer se aprofundar?

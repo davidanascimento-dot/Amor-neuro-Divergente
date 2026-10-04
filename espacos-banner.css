@@ -1,0 +1,184 @@
+/* =========================================
+   ESPAÇOS PARA OS BANNERS
+
+   Cada bloco abaixo é um lugar reservado para a arte do projeto. Onde
+   a arte não existe ainda, o espaço aparece vazio e marcado — para
+   ficar visível na hora de posicionar a imagem.
+
+   POR QUE O ESPAÇO NASCE ESCONDIDO
+   ---------------------------------
+   Uma caixa tracejada com a palavra "banner" no meio de uma página
+   pública parece defeito. Quem visita o site não deve ver um espaço
+   vago.
+
+   Por isso os espaços começam em `display: none`. Para ver o
+   esqueleto enquanto monta as artes, ligue a chave abaixo de `none`
+   para `block` — e desligue de novo quando publicar.
+
+   Cada espaço também é identificado por `data-espaco`, com um nome
+   estável. Serve para achar o lugar certo sem depender do número da
+   seção, que muda sempre que uma seção é acrescentada.
+
+   ========================================= */
+
+:root {
+    /* `none` publica o site sem os espaços vazios.
+       Troque por `block` para enxergar o esqueleto. */
+    --espacos-banner: none;
+}
+
+/* ---------- O bloco ---------- */
+.espaco-banner {
+    display: var(--espacos-banner);
+    margin: 0 auto;
+    padding: clamp(26px, 4vw, 48px) 20px;
+    max-width: 1120px;
+    border: 2px dashed #c4b5fd;
+    border-radius: 18px;
+    background: #faf7ff;
+    text-align: center;
+}
+
+/* Enquanto é esqueleto, a página ganha espaço para a arte respirar
+   e o bloco fica com altura parecida com a arte real. */
+.espaco-banner--grande { min-height: 280px; }
+.espaco-banner--largo  { min-height: 150px; }
+
+/* ---------- Rótulo ---------- */
+.espaco-banner__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    background: #ede9fe;
+    border: 1px solid #ddd6fe;
+    border-radius: 999px;
+    padding: 6px 14px;
+}
+
+.espaco-banner__nome {
+    display: block;
+    margin-top: 12px;
+    font-size: 0.86rem;
+    color: #6b5b95;
+    line-height: 1.6;
+}
+
+.espaco-banner__fundo {
+    display: block;
+    margin-top: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    color: #8d7fb5;
+}
+
+/* ---------- Quando a arte entrar ----------
+   A chave `--espacos-banner` esconde só os espaços VAZIOS, para o
+   visitante não ver um retângulo tracejado no meio da página. Um
+   espaço já preenchido é conteúdo de verdade e aparece sempre — por
+   isso `display: block` aqui, fora do alcance da chave. */
+.espaco-banner--preenchido {
+    display: block;
+    border: 0;
+    background: none;
+    padding: 0;
+    min-height: 0;
+    max-width: none;
+    overflow: hidden;
+}
+
+.espaco-banner--preenchido img {
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+    height: auto;
+}
+
+/* Dimensionamento pela FRAÇÃO que o desenho ocupa dentro do arquivo, e
+   não pela largura do arquivo. A medição éobligatória: duas artes com
+   arquivos do mesmo tamanho podem ter desenhos de tamanhos opostos.
+
+     A Cadeira Vazia     1400x759 | desenho 1399x758 -> 99,9% da largura
+     A Linha que Conecta  768x325 | desenho  768x71  -> 100%  da largura
+
+   A Cadeira Vazia mudou de ilustração para CENA: são sete pessoas, uma
+   poltrona, uma planta, livros e uma frase. Não é mais um ponto de
+   foco, é um quadro. Por isso enche a coluna em vez de ficar numa
+   caixa estreita — e o dimensionamento antigo (1035 px de arquivo)
+   serviria aqui para 1034 px de desenho, cinco vezes o que a arte
+   pediu antes.
+
+   Com o desenho ocupando quase o arquivo inteiro, o `overflow: hidden`
+   não precisa mais aparar nada: não há margem transparente sobrando. */
+.espaco-banner--preenchido.espaco-banner--ideia img {
+    width: min(980px, 100%);
+    max-width: none;
+}
+
+/* ---------- A folha de papel sob a cena ----------
+
+   Duas coisas que o fundo transparente não resolve sozinho:
+
+   1. CONTRASTE. A poltrona é #E0C8A6 — 1,62:1 sobre branco. Osjalecos
+      são #F7F7F7 — 1,07:1. Desenhada com a paleta que a artista escolheu,
+      a cena fica frágil demais sobre a página branca.
+
+   2. MODO ESCURO. A frase "Existe um lugar para você aqui." está
+      queimada dentro da arte, em #494440. Sobre fundo escuro, ela some.
+      Não dá para recolor a arte sem mexer na pele das sete pessoas.
+
+   A saída é uma folha. A artista desenhou sobre papel creme; a folha
+   devolve esse papel. Em modo claro ela é quase invisível e a arte
+   parece solta na página; em modo escuro é o que segura a frase
+   legível. Uma regra, dois problemas, nenhum pixel da arte alterado. */
+.espaco-banner--preenchido.espaco-banner--ideia {
+    width: min(1120px, 94%);
+    margin-inline: auto;
+    padding: clamp(20px, 3vw, 44px) clamp(16px, 2.4vw, 36px);
+    border-radius: 20px;
+    background: #faf7f1;
+}
+
+body.a11y-dark-mode .espaco-banner--preenchido.espaco-banner--ideia {
+    background: #f6f1e8;
+}
+
+.espaco-banner--preenchido.espaco-banner--transicao {
+    padding-block: clamp(16px, 2.4vw, 32px);
+}
+
+.espaco-banner--preenchido.espaco-banner--transicao img {
+    width: min(860px, 94%);
+    max-width: 100%;
+}
+
+/* ---------- Modo escuro ---------- */
+body.a11y-dark-mode .espaco-banner {
+    border-color: #4c3a7a;
+    background: #1c1430;
+}
+
+body.a11y-dark-mode .espaco-banner__marca {
+    color: #ddd6fe;
+    background: #2e1f52;
+    border-color: #4c3a7a;
+}
+
+body.a11y-dark-mode .espaco-banner__nome,
+body.a11y-dark-mode .espaco-banner__fundo { color: #b8a8dd; }
+
+/* ---------- Tela pequena ---------- */
+@media (max-width: 720px) {
+    .espaco-banner { padding: 20px 14px; }
+    .espaco-banner--grande { min-height: 200px; }
+    .espaco-banner--largo  { min-height: 110px; }
+}
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .espaco-banner { animation: none !important; transition: none !important; }
+}

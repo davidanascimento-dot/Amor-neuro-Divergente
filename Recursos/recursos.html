@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/espacos-banner.css">
  <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="recursos.css">
 
@@ -232,7 +233,21 @@
         </section>
 
       
-        <section class="recursos-section recursos-section--alt" id="artigos-equipe">
+        
+        <!-- ESPAÇO PARA BANNER — Artigos / entre texto de fora e da casa
+             data-espaco identifica este lugar de forma estável.
+             Quando a arte entrar, troque por <img> ou marque o bloco
+             com .espaco-banner--preenchido. -->
+        <div class="espaco-banner espaco-banner--grande" data-espaco="artigos-01"
+             data-fundo="/img/ilustracoes/AS DUAS MÃOS.jpg">
+            <span class="espaco-banner__marca">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                espaço para banner
+            </span>
+            <span class="espaco-banner__nome">Artigos / entre texto de fora e da casa</span>
+            <span class="espaco-banner__fundo">/img/ilustracoes/AS DUAS MÃOS.jpg</span>
+        </div>
+<section class="recursos-section recursos-section--alt" id="artigos-equipe">
             <div class="recursos-section__container">
                 <header class="recursos-head">
                     <div>
@@ -499,7 +514,21 @@
         <!-- =============================================
              NEWSLETTER
              ============================================= -->
-        <section class="recursos-newsletter">
+        
+        <!-- ESPAÇO PARA BANNER — Artigos / antes das categorias
+             data-espaco identifica este lugar de forma estável.
+             Quando a arte entrar, troque por <img> ou marque o bloco
+             com .espaco-banner--preenchido. -->
+        <div class="espaco-banner espaco-banner--largo" data-espaco="artigos-02"
+             data-fundo="/img/ilustracoes/DIVISÓRIAS DE CONHECIMENTO.jpg">
+            <span class="espaco-banner__marca">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                espaço para banner
+            </span>
+            <span class="espaco-banner__nome">Artigos / antes das categorias</span>
+            <span class="espaco-banner__fundo">/img/ilustracoes/DIVISÓRIAS DE CONHECIMENTO.jpg</span>
+        </div>
+<section class="recursos-newsletter">
             <div class="recursos-newsletter__card">
                 <span class="recursos-newsletter__icon"><i class="fa-regular fa-envelope"></i></span>
                 <h2>Receba novos artigos no seu e-mail</h2>

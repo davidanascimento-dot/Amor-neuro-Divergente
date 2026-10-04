@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/espacos-banner.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="doações.css">
     
@@ -590,7 +591,21 @@
         <!-- =============================================
         CARROSSEL 3D COVERFLOW (mesmo estilo do início)
         ============================================= -->
-        <section class="carousel-triple-section">
+        
+        <!-- ESPAÇO PARA BANNER — Apoiar / entre impacto e depoimentos
+             data-espaco identifica este lugar de forma estável.
+             Quando a arte entrar, troque por <img> ou marque o bloco
+             com .espaco-banner--preenchido. -->
+        <div class="espaco-banner espaco-banner--largo" data-espaco="apoiar-01"
+             data-fundo="/img/ilustracoes/CAMINHO DOS RECURSOS.jpg">
+            <span class="espaco-banner__marca">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                espaço para banner
+            </span>
+            <span class="espaco-banner__nome">Apoiar / entre impacto e depoimentos</span>
+            <span class="espaco-banner__fundo">/img/ilustracoes/CAMINHO DOS RECURSOS.jpg</span>
+        </div>
+<section class="carousel-triple-section">
             <h2>Depoimentos que aquecem o coração</h2>
             <p class="features-sub">Arraste ou clique nas setas</p>
             

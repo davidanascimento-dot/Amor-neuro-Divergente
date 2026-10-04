@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/espacos-banner.css">
     <link rel="stylesheet" href="landing.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
@@ -111,7 +112,21 @@
              NÚMEROS — os 50M+ / 15+ / 82% da Webnode.
              Poucos, grandes, sem promessa inflada.
              ============================================= -->
-        <section class="landing-stats-band">
+        
+        <!-- ESPAÇO PARA BANNER — Landing / entre a apresentacao e os numeros
+             data-espaco identifica este lugar de forma estável.
+             Quando a arte entrar, troque por <img> ou marque o bloco
+             com .espaco-banner--preenchido. -->
+        <div class="espaco-banner espaco-banner--grande" data-espaco="landing-01"
+             data-fundo="/img/ilustracoes/A PAUSA VISUAL.jpg">
+            <span class="espaco-banner__marca">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                espaço para banner
+            </span>
+            <span class="espaco-banner__nome">Landing / entre a apresentacao e os numeros</span>
+            <span class="espaco-banner__fundo">/img/ilustracoes/A PAUSA VISUAL.jpg</span>
+        </div>
+<section class="landing-stats-band">
             <div class="landing-container">
                 <h2 class="stats-band-title">Junte-se às pessoas que já encontraram um lugar para elas aqui.</h2>
                 <div class="stats-band-grid">
