@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="Explorar/Explorar.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
     <link rel="stylesheet" href="/lia-chibi.css">
+  <link rel="stylesheet" href="/foto-forma.css">
   <script src="/imagens.js"></script>
 </head>
 
@@ -263,8 +264,20 @@
              ============================================= -->
         <section class="mission-section">
             <div class="mission-container">
-                <div class="mission-image">
-                    <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=500&fit=crop" alt="Pessoas conversando em ambiente acolhedor" loading="lazy">
+                <!-- =============================================
+                     FOTO FORMA — teste
+                     A foto mantem a mesma URL, o mesmo `alt` e o mesmo
+                     `loading`. Muda so a moldura: a forma organica e a
+                     folha cinza deslocada vem de `.foto-forma`, e os tres
+                     losangos amarelos sao tres <span> decorativos — sem
+                     imagem nova, sem fonte de icone.
+                     Os `aria-hidden` importam: um leitor de tela anunciaria
+                     "estrela" tres vezes, e nao ha nada a anunciar. -->
+                <div class="mission-image foto-forma">
+                    <img class="foto-forma__foto" src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=500&fit=crop" alt="Pessoas conversando em ambiente acolhedor" loading="lazy">
+                    <span class="foto-forma__losango foto-forma__losango--a" aria-hidden="true"></span>
+                    <span class="foto-forma__losango foto-forma__losango--b" aria-hidden="true"></span>
+                    <span class="foto-forma__losango foto-forma__losango--c" aria-hidden="true"></span>
                 </div>
                 <div class="mission-content">
                     <span class="section-badge"><i class="fa-solid fa-heart"></i> Nossa Missão</span>

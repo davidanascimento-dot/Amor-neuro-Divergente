@@ -1,0 +1,346 @@
+/* =========================================
+   FOTO FORMA — o tratamento de fotografia
+
+   Um unico lugar para o tratamento que o guia pede na secao 2
+   ("bord-radius organico, moldura deslocada, forma organica
+   atras, pequenos elementos decorativos"):
+
+       .foto-forma        a moldura + os losangos
+       .foto-forma__foto  a foto, com a forma organica
+
+   -----------------------------------------------------
+   POR QUE ISTO AQUI E NAO DENTRO DE `inicio.css`
+   -----------------------------------------------------
+   `inicio.css` tem 2100+ linhas e as imagens ja tem regra propria
+   (`.mission-image` = raio grande, `overflow: hidden`, e um
+   `::after` com borda). Editar la exigiria vencer um `::after`
+   que ja existe e um `overflow: hidden` que ja existe.
+
+   Aqui a regra entra depois, com prefixo proprio, e o `::after` do
+   novo tratamento tem especificidade maior (`.foto-forma::after`
+   e 0,1,1 contra 0,1,1 do antigo — empate — entao o espaco de
+   nomes `foto-forma` precisa vencer de outra forma, e vence
+   porque este arquivo e lido DEPOIS).
+
+   Em compensacao, nada aqui e unico: e a mesma regra para todas
+   as fotos, em qualquer pagina. Se ficar bom na Missao, e o
+   mesmo bloco que entra nas outras.
+   ========================================= */
+
+:root {
+    /* A moldura: um cinza quente, quase a cor do papel. Nao e
+       cinza de sombra — e a "segunda folha" do fundo, a forma que
+       o guia pede atras da foto. */
+    --fd-moldura: #e8e4de;
+
+    /* O amarelo do site, usado SO nos losangos. Regra 7: "amarelo
+       apenas como pequeno acento". Tres losangos pequenos numa foto
+       de 570px sao acento; um bloco amarelo seria parede. */
+    --fd-amarelo: #f2b705;
+}
+
+/* =========================================
+   1. A MOLDURA
+
+   O container. Nao tem fundo, borda nem raio: ele existe so
+   para segurar as duas formas (a de tras e a foto) e os tres
+   losangos.
+   ========================================= */
+
+.foto-forma {
+    position: relative;
+    isolation: isolate;
+    /* `overflow: hidden` do `.mission-image` NAO pode ficar aqui:
+       ele cortaria os tres losangos, que sao justamente o
+       elemento que sai da borda da foto. */
+    overflow: visible;
+    border-radius: 0;
+}
+
+/* ---------- A forma de tras: a folha de papel debaixo ---------- */
+
+/* Um pseudo-elemento, nao uma imagem. A regra 3 do guia e
+   "sempre que possivel, criar esses elementos com HTML/CSS". */
+.foto-forma::before {
+    content: "";
+    position: absolute;
+
+    /* O deslocamento: 12px. A folha aparece na esquerda e embaixo —
+       que e o lado de leitura de quem olha a foto, e o lado onde
+       ela encosta no texto.
+
+       A primeira versao usava 26px, e ai a folha deixou de ser uma
+       moldura e virou um halo de 40px em volta da foto: espesso o
+       bastante para parecer erro de recorte, e grosso demais para
+       a "folha de papel debaixo" que o desenho mostra. */
+    inset: 12px -10px -10px 12px;
+
+    /* A mesma curva da foto, para as duas lerem como um par. */
+    border-radius: 68% 32% 58% 42% / 62% 38% 66% 34%;
+
+    background: var(--fd-moldura);
+    z-index: 0;
+}
+
+/* =========================================
+   2. A FOTO
+
+   O `border-radius` em porcentagem e o que faz a curva ser
+   ASSIMETRICA: os quatro cantos tem valores diferentes, e nenhum
+   canto e igual a um vizinho. E o que diferencia "organico" de
+   "redondo".
+
+   Nao e `clip-path` de proposito: com `clip-path` a foto nao
+   continua sendo uma foto (nao dá para preservar o
+   `object-fit`), e o `alt` continua funcionando — o que importa
+   para quem usa leitor de tela.
+   ========================================= */
+
+/* -----------------------------------------------------
+   POR QUE `img.foto-forma__foto` E NAO SO `.foto-forma__foto`
+   -----------------------------------------------------
+   O `inicio.css` tem:
+
+       .mission-image img  { max-height: 450px; height: 100%; }
+
+   Esse seletor vale 0,1,1 (uma classe + um elemento). O meu
+   `.foto-forma__foto` vale 0,1,0. Entao o `inicio.css` vence —
+   e a primeira tentativa de limitar a altura simplesmente nao
+   teve efeito, sem nenhum aviso.
+
+   Acrescentar `img` ao seletor sobe para 0,1,1: empate. O
+   desempate e a ordem de leitura, e este arquivo vem depois.
+   Acrescentar tambem `.foto-forma` a frente sobe para 0,2,1, e
+   isso ganha por especificidade e nao por ordem — mais seguro,
+   porque nao depende de o link ficar no fim da lista.
+
+   A regra do guia e "nao criar estilos conflitantes". Entre
+   levantar a especificidade e reescrever a regra antiga, a
+   especificidade e o mal menor: nao toca no `inicio.css`, que
+   e compartilhado com outras paginas. */
+
+img.foto-forma__foto {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    /* `height: auto` e obrigatorio: sem ele o `height: 100%` do
+       `inicio.css` continua valendo, e a imagem fica com a
+       altura do container (590px) em vez da altura natural. */
+    height: auto;
+
+    /* A foto nao pode ser o assunto da secao. O texto ao lado tem
+       dois paragrafos de verdade; com a foto em 590px de altura
+       ela vira o assunto e o texto vira legenda.
+
+       420px ainda e grande o bastante para a foto ter presenca,
+       e pequeno o bastante para o texto continuar sendo o
+       conteudo. */
+    max-height: 420px;
+    object-fit: cover;
+
+    border-radius: 68% 32% 58% 42% / 62% 38% 66% 34%;
+    /* Sem `overflow: hidden`: a foto ja tem a forma nela mesma. */
+}
+
+/* ---- O `::after` antigo, neutralizado.
+
+   O `.mission-image` (do `inicio.css`) tem um `::after` que e uma
+   borda de 1px com raio grande, desenhada para uma foto
+   RETANGULAR. Com a curva organica por cima, essa borda vira um
+   contorno que nao acompanha a forma — e o contorno aparecendo
+   fora da foto e o pior defeito visual que existe aqui.
+
+   Esconder, em vez de reaproveitar: e elemento de outro sistema,
+   e a regra do guia e nao misturar estilos. */
+
+/* `.mission-image::after` e `.foto-forma::after` tem a MESMA
+   especificidade (0,1,1). O desempate e a ordem de leitura, e
+   este arquivo vem depois do `inicio.css` — entao o `content`
+   abaixo ganha. */
+.foto-forma::after {
+    content: none;
+}
+
+/* =========================================
+   3. OS LOSANGOS
+
+   Tres no total, que e o limite do guia ("1-3 elementos
+   decorativos por composicao", secao 5).
+
+   Duas posicoes no canto superior direito (uma grande, uma
+   pequena) e uma no inferior esquerdo. E a distribuicao do
+   desenho de referencia: a forma repete em diagonal, e o olho
+   vai da foto para o canto.
+
+   Todos com `pointer-events: none` — nada aqui pode roubar o
+   clique de quem esta tentando tocar a imagem.
+   ========================================= */
+
+.foto-forma__losango {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    background: var(--fd-amarelo);
+
+    /* A estrela de quatro pontas. Um losango de verdade seria so
+       um quadrado com `rotate(45deg)`, e isso tem 4 lados retos —
+       parece um desenho, nao um brilho.
+
+       O `clip-path` de 8 pontos com os "cotovelos" recuados e o
+       que faz a estrela ter as pontas finas e o miolo largo. E o
+       mesmo caminho do site: `.rd-estrela` no `design-direitos.css`
+       usa este polygon exato. Um elemento em vez de um arquivo de
+       imagem. */
+    clip-path: polygon(
+        50% 0%,
+        62% 38%,
+        100% 50%,
+        62% 62%,
+        50% 100%,
+        38% 62%,
+        0% 50%,
+        38% 38%
+    );
+
+    /* O mesmo brilho suave do losango, mas mais fechado — na
+       estrela de quatro pontas o `drop-shadow` acompanha o
+       `clip-path` e nao vira um quadrado ao redor. */
+    filter: drop-shadow(0 2px 7px rgba(242, 183, 5, 0.38));
+}
+
+/* ---- O grande: canto superior direito, encostando na borda ---- */
+
+.foto-forma__losango--a {
+    top: 6%;
+    right: 4%;
+    width: 34px;
+    height: 34px;
+}
+
+/* ---- O pequeno: logo abaixo do grande, mais para dentro ---- */
+
+.foto-forma__losango--b {
+    top: 24%;
+    right: 15%;
+    width: 20px;
+    height: 20px;
+    opacity: 0.85;
+}
+
+/* ---- O da diagonal: canto inferior esquerdo, do outro lado ---- */
+
+.foto-forma__losango--c {
+    bottom: 12%;
+    left: 6%;
+    width: 24px;
+    height: 24px;
+}
+
+/* =========================================
+   4. O HOVER
+
+   Regra 14 do guia: "hover de 2-5px". Aqui a foto sobe 3px e a
+   folha de tras acompanha 1px, para nao haver "descolamento"
+   entre as duas formas.
+
+   E uma foto dentro de um bloco editorial — nao e link, nao tem
+   acao. Por isso o hover e de leitura, nao de clique: nada
+   acontece quando se toca. O que muda e so a percepcao de que a
+   foto esta "acima" do papel.
+   ========================================= */
+
+@media (hover: hover) {
+    .foto-forma__foto {
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .foto-forma::before {
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .foto-forma:hover .foto-forma__foto {
+        transform: translateY(-3px);
+    }
+
+    .foto-forma:hover::before {
+        transform: translateY(-1px);
+    }
+}
+
+/* =========================================
+   5. RESPONSIVO
+
+   Regra 13: no celular os elementos decorativos sao os primeiros
+   a sair, e a forma precisa ser reposicionada, nao so encolhida.
+
+   - o `border-radius` em % ja se adapta sozinho ao container
+     menor, entao a curva continua organica sem ajuste;
+   - os losangos encolhem junto com a foto (eles sao % da
+     largura do container via `clamp`), e o terceiro — o da
+     diagonal, que e o mais distante da foto — e o primeiro a
+     sair, porque e o que mais invade o texto ao lado;
+   - a folha de tras encolhe o deslocamento, porque 26px de
+     deslocamento numa foto de 300px e 8% de borda, e 8% de borda
+     numa foto pequena e desperdicio de espaco.
+   ========================================= */
+
+@media (max-width: 900px) {
+    .foto-forma::before {
+        inset: 9px -7px -7px 9px;
+    }
+}
+
+@media (max-width: 560px) {
+    .foto-forma::before {
+        inset: 7px -5px -5px 7px;
+    }
+
+    /* O losango grande e o pequeno continuam (sao os que fazem a
+       assinatura visual); o da diagonal sai. */
+    .foto-forma__losango--c {
+        display: none;
+    }
+
+    .foto-forma__losango--a {
+        width: 26px;
+        height: 26px;
+    }
+
+    .foto-forma__losango--b {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* =========================================
+   6. MOVIMENTO REDUCIDO
+
+   Sem hover, sem transicao. O conteudo continua identico — o
+   que some e o movimento, nunca a informacao.
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .foto-forma__foto,
+    .foto-forma::before {
+        transition: none !important;
+    }
+
+    .foto-forma:hover .foto-forma__foto,
+    .foto-forma:hover::before {
+        transform: none;
+    }
+}
+
+/* =========================================
+   7. MODO ESCURO
+
+   O site tem `body.a11y-dark-mode`. A moldura cinza-clara
+   continuaria clara no escuro e viraria um bloco branco. Aqui a
+   moldura vira um roxo muito escuro — mesma funcao, combinando
+   com o fundo.
+   ========================================= */
+
+body.a11y-dark-mode .foto-forma {
+    --fd-moldura: #2a2140;
+}

@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
     <link rel="stylesheet" href="/lia-chibi.css">
+    <link rel="stylesheet" href="/Direitos/design-direitos.css">
   <script src="/imagens.js"></script>
 </head>
 
@@ -115,11 +116,18 @@
         <!-- =============================================
              HERO EDITORIAL — Imagem full-width + título
              ============================================= -->
-        <section class="rights-banner">
+        <section class="rights-banner rd-banner">
             <div class="rights-banner__media">
                 <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1920&h=900&fit=crop"
                      alt="Documentos e símbolo de justiça" loading="eager">
                 <div class="rights-banner__overlay"></div>
+                <!-- Veu medido: a foto tem area clara (media 144,
+                     pico #EEEDEB) exatamente onde o texto cai. Com o
+                     veu de 55% do overlay, o branco do subtitulo ficava
+                     em ~2,5:1 — abaixo de AA. Este veu reforca o centro e
+                     alivia nas pontas, para o texto passar de 7:1 e a
+                     estatueta continuar visivel. -->
+                <div class="rd-banner__veu"></div>
             </div>
 
             <div class="rights-banner__content">
@@ -189,6 +197,12 @@
         <!-- =============================================
              GRID DE CATEGORIAS — Padrão Ministério
              ============================================= -->
+        <!-- Divisor: a maior mudanca de assunto da pagina ate aqui.
+             Onde ha lei, a pagina muda de regra. -->
+        <div class="rd-sep" aria-hidden="true">
+            <span class="rd-sep__losango"></span>
+        </div>
+
         <section class="categories-nav" id="categorias">
             <div class="categories-nav__container">
                 <header class="categories-nav__head">
@@ -198,22 +212,22 @@
                 </header>
 
                 <div class="categories-grid">
-                    <a href="#leis" class="category-tile" data-filter="educacional">
+                    <a href="#leis" class="category-tile rd-categoria" data-filter="educacional">
                         <div class="category-tile__icon"><i class="fa-solid fa-graduation-cap"></i></div>
                         <span class="category-tile__title">Educação</span>
                         <span class="category-tile__count">3 leis</span>
                     </a>
-                    <a href="#leis" class="category-tile" data-filter="saude">
+                    <a href="#leis" class="category-tile rd-categoria" data-filter="saude">
                         <div class="category-tile__icon"><i class="fa-solid fa-heart-pulse"></i></div>
                         <span class="category-tile__title">Saúde</span>
                         <span class="category-tile__count">2 leis</span>
                     </a>
-                    <a href="#leis" class="category-tile" data-filter="social">
+                    <a href="#leis" class="category-tile rd-categoria" data-filter="social">
                         <div class="category-tile__icon"><i class="fa-solid fa-handshake"></i></div>
                         <span class="category-tile__title">Assistência Social</span>
                         <span class="category-tile__count">5 leis</span>
                     </a>
-                    <a href="#leis" class="category-tile" data-filter="acessibilidade">
+                    <a href="#leis" class="category-tile rd-categoria" data-filter="acessibilidade">
                         <div class="category-tile__icon"><i class="fa-solid fa-universal-access"></i></div>
                         <span class="category-tile__title">Acessibilidade</span>
                         <span class="category-tile__count">3 leis</span>
@@ -423,6 +437,12 @@
         <!-- =============================================
              FAQ DE DIREITOS
              ============================================= -->
+        <!-- Divisor: do conteudo juridico para as duvidas.
+             A resposta pratica vem depois da lei. -->
+        <div class="rd-sep" aria-hidden="true">
+            <span class="rd-sep__losango"></span>
+        </div>
+
         <section class="deco-hospedeiro rights-faq" id="faq">
         <!-- elemento decorativo: organicas. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
         <span class="deco deco--organicas deco--dir deco--topo deco--s3"

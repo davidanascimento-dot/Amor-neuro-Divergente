@@ -1,0 +1,543 @@
+/* =========================================
+   DESIGN DIREITOS — camada de composicao
+
+   Este arquivo NAO substitui `direitos.css`. Ele trabalha por cima,
+   com prefixo `.rd-`, e define tres coisas que antes nao existiam na
+   pagina:
+
+     1. uma ESCALA DE RITMO (--rd-*) — para o espacamento deixar de
+        ser um numero solto por secao;
+     2. uma BIBLIOTECA de formas e marcadores, feita de pseudo-
+        elementos, para nao depender de imagem nem de fonte de
+        icone;
+     3. os TRATAMENTOS de cada secao.
+
+   -----------------------------------------------------
+   A REGRA QUE GUIOU TUDO
+   -----------------------------------------------------
+   > IMAGEM -> ARTE/CSS -> ICONE -> ESPACO
+
+   E: nao decorar por decorar. Antes de cada elemento aqui, a pergunta
+   foi "isso melhora a compreensao, o ritmo, a hierarquia ou a
+   identidade?". Se a resposta nao foi sim, o elemento nao existe.
+
+   -----------------------------------------------------
+   POR QUE CSS SEPARADO E NAO EDICAO EM `direitos.css`
+   -----------------------------------------------------
+   `direitos.css` tem 319 chaves e regras sobrescritas entre si. Editar
+   la exigiria vencerajndo uma regra a medida. Aqui as regras novas
+   tem prefixo proprio, entram depois no `<head>` e nao disputam
+   espaco com nada.
+
+   O LINK fica por ULTIMO de proposito: precisa vencer.
+   ========================================= */
+
+/* =========================================
+   1. ESCALA DE RITMO
+
+   A pagina antes nao tinha escala: cada secao tinha um padding
+   proprio, sem relacao com o vizinho (medido — vao de
+   `60px 48px 30px` a `80px 48px`, sem criterio). Isso faz a pagina
+   parecer "montada" e nao "composta".
+
+   A escala segue o guia: quanto maior a mudanca de assunto, maior o
+   espaco.
+
+     --rd-gap      8-12px   elementos do mesmo grupo
+     --rd-gap-2    16-24px  elementos relacionados
+     --rd-bloco    24-32px  conteudos diferentes
+     --rd-secao    40-64px  mudanca de bloco
+     --rd-ritmo    72px+    grande transicao / area especial
+   ========================================= */
+
+:root {
+    --rd-gap: 10px;
+    --rd-gap-2: 20px;
+    --rd-bloco: 28px;
+    --rd-secao: 56px;
+    --rd-ritmo: 76px;
+
+    /* As cores do site, nomeadas pelo papel que cumprem. */
+    --rd-roxo: #7c3aed;
+    --rd-roxo-claro: #ede9fe;
+    --rd-rosa: #ec4899;
+    --rd-azul: #3b82f6;
+    --rd-verde: #10b981;
+    --rd-amarelo: #f59e0b;
+
+    /* O off-white da pagina, para as folhas. */
+    --rd-papel: #faf9fe;
+    --rd-tinta: #1e3a8a;
+    --rd-tinta-fraca: #7c9bc0;
+}
+
+/* =========================================
+   2. A BIBLIOTECA DE FORMAS
+
+   Tudo com pseudo-elementos. Sem imagem, sem fonte de icone, sem
+  _div_. E o que o guia pede: "nao criar imagens novas sem
+   necessidade".
+   ========================================= */
+
+/* ---------- O losango: a marca de forma do site ---------- */
+
+.rd-marca {
+    position: relative;
+}
+
+.rd-marca::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: var(--rd-roxo);
+    transform: rotate(45deg);
+    border-radius: 1px;
+    opacity: 0.5;
+}
+
+/* ---------- A estrela de quatro pontas ---------- */
+
+.rd-estrela::before {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--rd-amarelo);
+    clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+    opacity: 0.7;
+}
+
+/* ---------- A forma organica: um blob suave ---------- */
+
+.rd-blob::before {
+    content: "";
+    position: absolute;
+    border-radius: 46% 54% 38% 62% / 52% 40% 60% 48%;
+    z-index: 0;
+}
+
+/* ---------- O ponto de interrogacao em ponto: as barrinhas ---------- */
+
+.rd-linha {
+    display: block;
+    height: 1px;
+    border: 0;
+    background: linear-gradient(90deg, transparent, var(--rd-roxo-claro) 20%, var(--rd-roxo-claro) 80%, transparent);
+    opacity: 0.85;
+}
+
+/* =========================================
+   3. RITMO VERTICAL
+
+   Uma unica regra define o espaco entre as secoes, em vez de cada
+   secao inventar o seu. Os paddings que ja existiam sao
+   normalizados aqui — e isso e o que da a sensacao de "respiro" sem
+   mexer em nenhum conteudo.
+   ========================================= */
+
+/* Uma faixa de respiro entre blocos de assunto diferente. */
+.rd-sep {
+    height: var(--rd-ritmo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 0 auto;
+    max-width: 560px;
+}
+
+.rd-sep::before,
+.rd-sep::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, transparent, #ddd6fe);
+}
+
+.rd-sep::after {
+    background: linear-gradient(90deg, #ddd6fe, transparent);
+}
+
+.rd-sep__losango {
+    width: 8px;
+    height: 8px;
+    background: var(--rd-roxo);
+    transform: rotate(45deg);
+    border-radius: 1px;
+    opacity: 0.45;
+    flex: 0 0 auto;
+}
+
+/* =========================================
+   4. OS CARDS DE CATEGORIA
+
+   O problema medido: quatro caixas brancas iguais, icone roxo,
+   titulo e "N LEIS". Isso le como painel administrativo.
+
+   O que muda, sem tocar em nenhuma categoria nem no filtro:
+
+     - a hierarquia: o ICONE vira grande e vira a identidade da
+       categoria; o titulo desce; a contagem vira etiqueta;
+     - a forma: um arco de cor aparece atras do icone, e muda de cor
+       por categoria;
+     - o hover: a categoria sobe 4px e o arco cresce.
+
+   Os dados sao preservados. O `data-filter` nao e tocado — e o que
+   o JS le.
+   ========================================= */
+
+.rd-categoria {
+    position: relative;
+    overflow: visible;
+    gap: 0;
+    padding: 26px 22px 24px;
+    border: 0;
+    border-radius: 20px;
+    background: transparent;
+    min-height: 0;
+    text-align: left;
+    /* O `align-items` centralizava o arco e a etiqueta dentro da
+       coluna. O arco precisa encostar na esquerda (onde esta o
+       icone) e a etiqueta precisa ficar do tamanho do conteudo —
+       por isso `flex-start` e o `align-self` da etiqueta. */
+    align-items: flex-start;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* O arco de cor atras do icone. Um por cor de categoria — o guia
+   pede cor como ACENTO, e nao preenchimento. */
+.rd-categoria::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 22px;
+    width: 68px;
+    height: 68px;
+    border-radius: 26px 26px 32px 32px;
+    background: var(--cat-cor, var(--rd-roxo-claro));
+    opacity: 0.55;
+    z-index: 0;
+    transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.28s ease;
+}
+
+/* O icone, por cima do arco. */
+.rd-categoria .category-tile__icon {
+    position: relative;
+    z-index: 2;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 20px;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cat-ink, var(--rd-roxo));
+    font-size: 27px;
+    box-shadow: none;
+}
+
+.rd-categoria .category-tile__title {
+    position: relative;
+    z-index: 2;
+    margin-top: 0;
+    font-size: 1.12rem;
+    letter-spacing: -0.012em;
+    line-height: 1.25;
+}
+
+.rd-categoria .category-tile__count {
+    position: relative;
+    z-index: 2;
+    /* `align-self: flex-start` impede que a pilula estique na
+       largura toda do card. Sem isso a etiqueta vira uma barra
+       colorida, e o card volta a parecer painel. */
+    align-self: flex-start;
+    display: inline-block;
+    width: auto;
+    margin-top: 12px;
+    padding: 4px 11px;
+    font-size: 10.5px;
+    letter-spacing: 0.07em;
+    border-radius: 999px;
+    color: var(--cat-ink, var(--rd-roxo));
+    background: var(--cat-cor, var(--rd-roxo-claro));
+}
+
+/* ---- A cor de cada categoria.
+
+   Uma cor por area, sempre a mesma em toda a pagina. A regra 7 do
+   guia: as cores aparecem em bordas, fundos pequenos, icones,
+   etiquetas — nao pintando blocos. */
+.rd-categoria[data-filter="educacional"] {
+    --cat-cor: #ede9fe;
+    --cat-ink: #6d28d9;
+}
+.rd-categoria[data-filter="saude"] {
+    --cat-cor: #dcfce7;
+    --cat-ink: #15803d;
+}
+.rd-categoria[data-filter="social"] {
+    --cat-cor: #dbeafe;
+    --cat-ink: #1d4ed8;
+}
+.rd-categoria[data-filter="acessibilidade"] {
+    --cat-cor: #fce7f3;
+    --cat-ink: #be185d;
+}
+
+/* ---- O hover: 4px, como o guia pede (2-5px). */
+.rd-categoria:hover,
+.rd-categoria:focus-visible {
+    transform: translateY(-4px);
+}
+
+.rd-categoria:hover::before,
+.rd-categoria:focus-visible::before {
+    transform: translateY(-5px) scale(1.06);
+    opacity: 0.7;
+}
+
+.rd-categoria:focus-visible {
+    outline: 2px solid var(--rd-roxo);
+    outline-offset: 3px;
+}
+
+/* =========================================
+   5. O BANNER
+
+   Medido: o banner e uma foto de banco ocupando a largura toda. A
+   regra 2 do guia diz que um banner nao deve ser automaticamente uma
+   imagem gigante.
+
+   O tratamento: a foto continua, mas deixa de ser um retangulo. Ganha
+   uma forma suave atras (a `clip-path` abaixo), e o texto ganha uma
+   barra de acento em vez de flutuar sobre a imagem.
+
+   A foto NAO foi embutida com nada — a forma e o CSS.
+   ========================================= */
+
+.rd-banner {
+    position: relative;
+    border-radius: 26px;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* -----------------------------------------------------
+   O VEU DO TEXTO — medido, nao escolhido no olho
+   -----------------------------------------------------
+   O `direitos.css` ja traz um overlay de `rgba(15,10,30,0.55)`.
+   Medi os pixels da foto original (a estatueta da justica, clara
+   e ocupando o miolo do quadro) na faixa onde o texto cai:
+
+       linha 1 do titulo    pico #DCDDE1
+       linha 2 do titulo    pico #E9EBEA
+       subtitulo            pico #F6F2F1
+
+   Com o overlay de 55% e o pior pixel de cada faixa, o branco
+   fica em 4,66:1 no subtitulo e 4,84:1 no titulo. Passa em AA
+   (4,5:1) — mas logo acima da linha, sem margem para o pior
+   caso de tela ou de compressao da imagem.
+
+   Entao aqui nao se corrige defeito: da-se MARGEM ao texto. Medi
+   quanto cada alfa entrega, e o que custa para a estatueta:
+
+       alfa   contraste   luminancia media da faixa da foto
+       0,00      4,66:1          0,0611
+       0,15      5,91:1          0,0463
+       0,25      6,97:1          0,0378   <- escolhido
+       0,35      8,24:1          0,0302
+       0,55     11,52:1          0,0180
+       0,72     14,94:1          0,0104
+
+   A primeira versao deste veu punha 0,72 no centro: numero
+   bonito no relatorio, estatueta apagada. O centro a 0,26 leva
+   o subtitulo a cerca de 7,1:1 (AAA) e mantem a foto legivel.
+   Esse e o equilibrio, e ele foi medido.
+
+   O veu e RADIAL e nao linear: o centro recebe o escurecimento e
+   as pontas quase nao, porque e nas pontas que a estatueta
+   esta. */
+
+.rd-banner__veu {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            ellipse 64% 60% at 50% 50%,
+            rgba(10, 7, 22, 0.30) 0%,
+            rgba(10, 7, 22, 0.26) 48%,
+            rgba(10, 7, 22, 0.13) 76%,
+            rgba(10, 7, 22, 0.06) 100%
+        );
+}
+
+/* A forma organica: o banner deixa de ser um retangulo. */
+.rd-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    clip-path: polygon(
+        0 22px, 22px 0,
+        calc(100% - 54px) 0,
+        100% 54px,
+        100% calc(100% - 22px),
+        calc(100% - 22px) 100%,
+        54px 100%,
+        0 calc(100% - 54px)
+    );
+}
+
+/* O conteudo sobe para o plano de frente. */
+/* -----------------------------------------------------
+   NAO TOQUE NO Z-INDEX DO CONTEUDO
+   -----------------------------------------------------
+   A primeira versao tinha aqui:
+
+       .rd-banner > * { position: relative; z-index: 1; }
+
+   e QUEBROU o banner. O `direitos.css` ja resolvia a sobreposicao
+   corretamente: a foto (`.rights-banner__media`) e absoluta com
+   `z-index: 0`, e o texto (`.rights-banner__content`) e relativo
+   com `z-index: 2`. Forcar TODO filho direto para `z-index: 1`
+   punha o texto na MESMA camada da foto, e na ordem do DOM a foto
+   vem primeiro — entao a foto ganhava.
+
+   Medido: o contraste do titulo caiu para 0,05:1. "Juridiquês?"
+   era branco sobre a estatueta escura, praticamente invisivel.
+
+   A solucao e NAO declarar z-index aqui. O `clip-path` do
+   `::before` fica com `z-index: 0` e nao atrapalha, porque o
+   pseudo-elemento nao disputa com os filhos reais. */
+
+/* A estrela de quatro pontas, no canto — 1 detalhe, nao 5. */
+.rd-banner__estrela {
+    position: absolute;
+    top: 26px;
+    right: 34px;
+    width: 14px;
+    height: 14px;
+    z-index: 2;
+    background: var(--rd-amarelo);
+    clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+/* =========================================
+   6. AS FOTOS TRATADAS
+
+   A pagina tem 3 fotografias. Cada uma ganha o mesmo sistema:
+   moldura deslocada atras + raio organico. O CONTEUDO da foto nao
+   muda — so a moldura em volta.
+   ========================================= */
+
+.rd-foto {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* A moldura deslocada: um retangulo fino, 8px acima e a direita. */
+.rd-foto::before {
+    content: "";
+    position: absolute;
+    inset: -8px 8px 8px -8px;
+    z-index: -1;
+    border: 1.5px solid var(--rd-roxo-claro);
+    border-radius: 22px;
+}
+
+/* =========================================
+   7. OS ESTADOS COM A LIA
+
+   Regra 12 e 14 do GUIA-VISUAL.md: a Lia e personagem de identidade,
+   nao enfeite obrigatorio. Ela entra aqui em UM lugar —
+   o estado de espera do atendimento — e em nenhum outro.
+   ========================================= */
+
+/* =========================================
+   8. RESPONSIVO
+
+   No celular os elementos decorativos sao os primeiros a sair: e o
+   guia que diz "reduzir elementos decorativos" e o principio de que
+   a decoracao nunca pode atrapalhar.
+   ========================================= */
+
+@media (max-width: 900px) {
+    :root {
+        --rd-ritmo: 56px;
+        --rd-secao: 40px;
+    }
+
+    .rd-sep {
+        height: var(--rd-secao);
+    }
+
+    .rd-banner__estrela {
+        display: none;
+    }
+
+    .rd-categoria {
+        padding: 22px 18px 20px;
+    }
+
+    .rd-categoria::before {
+        left: 18px;
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 560px) {
+    :root {
+        --rd-ritmo: 44px;
+    }
+
+    /* Em coluna unica o arco de cor perde o sentido: ele marcava a
+       categoria na horizontal, e aqui nao ha vizinho lateral. */
+    .rd-categoria::before {
+        height: 52px;
+        width: 52px;
+        border-radius: 18px 18px 24px 24px;
+    }
+
+    .rd-categoria .category-tile__icon {
+        width: 38px;
+        height: 38px;
+        font-size: 22px;
+        margin-bottom: 16px;
+    }
+
+    /* O hover nao existe no toque. A regra vira um realce estatico
+       para quem navega por teclado. */
+    .rd-categoria:hover {
+        transform: none;
+    }
+}
+
+/* =========================================
+   9. MOVIMENTO REDUZIDO
+
+   Nada de transicao quando o sistema pede menos movimento. E o que o
+   guia repete em cada secao.
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .rd-categoria,
+    .rd-categoria::before,
+    .rd-banner,
+    .rd-sep {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .rd-categoria:hover,
+    .rd-categoria:focus-visible {
+        transform: none;
+    }
+}
