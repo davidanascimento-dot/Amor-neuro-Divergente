@@ -2328,6 +2328,105 @@ body.a11y-reduce-motion .primary-btn:hover:not(:disabled) {
     margin-bottom: 18px;
 }
 
+/* ---------- A Lia no estado de espera ----------
+
+   Regra 14 do GUIA-VISUAL.md: quando o estado da interface tem uma
+   mensagem humana, a Lia entra como parte da composicao — nao como
+   uma imagem solta no centro.
+
+   O que mudou: o icone de ampulheta (fa-hourglass-half) era um
+   elemento GENERICO de "espera". Ele nao dizia nada sobre quem
+   esta respondendo. A Lia diz.
+
+   A composicao e de tres pecas:
+     1. a Lia, na lateral direita do card;
+     2. a frase acima dela, deslocada — como uma fala;
+     3. o protocolo e o status, que continuam sendo o centro.
+
+   O tamanho da Lia e proposital: 210px de altura num card de mais
+   de 400px. A regra diz "nao competir com o titulo nem com o
+   protocolo" — e a proporcao mede isso. */
+
+.espera-presenca {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: clamp(14px, 3vw, 28px);
+    margin: 0 auto 18px;
+    max-width: 460px;
+}
+
+.espera-lia {
+    /* A arte e 412x1502 — razao 1:3,65, que e o corpo inteiro de
+       verdade. Entao a largura e consequencia da altura: 300px de
+       altura dao 82px de largura. Nao e espremer a arte; e o
+       tamanho que ela tem.
+
+       A primeira versao usava 210px, o que dava 58px de largura —
+       media tampa de papel em vez de presenca. O guia diz
+       "tamanho proporcional ao conteudo" e "nao competir com o
+       titulo nem com o protocolo"; 300px cumpre os dois: a Lia
+       ocupa a lateral do card sem encostar no texto. */
+    width: auto;
+    height: 300px;
+    object-fit: contain;
+    object-position: bottom center;
+    flex: 0 0 auto;
+}
+
+/* A frase: acima da Lia, deslocada para a direita, como fala. */
+.espera-fala {
+    order: 1;
+    position: relative;
+    margin: 0 0 34px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--explore-text);
+    background: #ffffff;
+    border: 1px solid var(--explore-border);
+    border-radius: 14px 14px 4px 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.espera-lia { order: 2; }
+
+/* Sem espaco para a frase: ela sobe e vira legenda acima da Lia. */
+@media (max-width: 420px) {
+    .espera-presenca {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    .espera-fala {
+        order: 1;
+        margin-bottom: 0;
+        text-align: center;
+    }
+    .espera-lia {
+        order: 2;
+        height: 216px;
+    }
+}
+
+/* ---------- Modo escuro ---------- */
+body.a11y-dark-mode .espera-fala {
+    background: #1a1a2e;
+    border-color: #2d2d44;
+    color: #e8e3dd;
+}
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .espera-presenca,
+    .espera-lia,
+    .espera-fala {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
 .espera-titulo {
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 1.5rem;

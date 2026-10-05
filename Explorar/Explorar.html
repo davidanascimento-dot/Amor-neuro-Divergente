@@ -694,8 +694,23 @@
     <!-- ========================================= -->
     <div id="estado-espera" hidden>
         <div class="espera-card">
-            <div class="espera-icone">
-                <i class="fa-regular fa-hourglass-half"></i>
+            <!-- A Lia assume a funcao visual que era da ampulheta.
+                 O icone generico de "espera" nao dizia nada; a Lia diz
+                 que estamos cuidando disso.
+
+                 A frase fica acima, deslocada para a direita, como
+                 uma fala. O protocolo continua sendo o elemento
+                 funcional principal — e ele que o usuario precisa ler
+                 e copiar.
+
+                 Decorativa: aria-hidden e alt vazio. O texto do
+                 estado ja esta no h2 e em #statusEsperaTexto, que e o
+                 que o leitor de tela anuncia. -->
+            <div class="espera-presenca" aria-hidden="true">
+                <span class="espera-fala">Recebemos seu pedido.</span>
+                <img class="espera-lia" src="/img/lia/lia-corpo.png"
+                     alt="" width="412" height="1502"
+                     loading="lazy" decoding="async">
             </div>
             <h2 class="espera-titulo">Atendimento aberto!</h2>
             <p class="espera-sub">Guarde este protocolo. Vamos te responder em até <strong>48h úteis</strong>.</p>
