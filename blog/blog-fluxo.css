@@ -1,0 +1,1388 @@
+/* =========================================
+   BLOG — SISTEMA DE CONTEUDO VIVO
+   Arquivo: blog/blog-fluxo.css
+   Prefixo: .bl-
+   Carregado por ULTIMO, depois de blog.css
+
+   -----------------------------------------------------
+   O SISTEMA PROPRIO DESTA PAGINA
+   -----------------------------------------------------
+   A diretriz de continuidade exige sistemas de layout DIFERENTES,
+   nao a mesma estrutura com cores diferentes. Os tres ja sao:
+
+     Explorar  -> caminhos      (grade de 2 colunas, titulo a esquerda)
+     Eventos   -> eixo temporal (data abre a linha, coluna 1)
+     Artigos   -> diagramacao   (estante + perfil de coluna + indice)
+     Blog      -> FLUXO         (este arquivo)
+
+   O que e um "fluxo de conteudo vivo":
+
+     - UM destaque largo no topo, dentro da propria dobra;
+     - depois, os 8 restantes em pesos diferentes, forming um
+       ritmo. Nenhuma fileira se repete;
+     - `editorial-card--article` e `editorial-card--video` recebem
+       FORMAS DIFERENTES. Artigo e imagem + titulo. Video e a
+       miniatura dividida (imagem + canal + descricao + autor) com
+       o botao de play. Nao e o mesmo card com um icone trocado;
+     - os 8 filtros viram uma régua fina, integrada a composicao,
+       e nao uma barra de botao grudada no rodape da tela.
+
+   -----------------------------------------------------
+   A ARMADILHA DO FILTRO — leia antes de mexer no grid
+   -----------------------------------------------------
+   `blog.js` filtra assim:
+
+       card.hidden = !shouldShow;
+
+   ou seja, ele escreve o ATRIBUTO `hidden`. O `[hidden]` do
+   navegador vale `display: none`, porem na especificidade (0,1,0) —
+   igual a de um `.editorial-card`. Ate agora isso funcionava porque
+   `blog.css` tem `.editorial-card[hidden] { display: none }`, que e
+   (0,2,0) e vence.
+
+   Se este arquivo declarar `display` num seletor de (0,2,0) ou mais
+   no card, o filtro QUEBRA: os cards escondidos continuam na tela.
+   Por isso todos os `display` deste arquivo ficam em `.bl-item`,
+   que e (0,1,0), e o `[hidden]` ganha uma rede de seguranca
+   propria em `.bl-item[hidden]` — mesma especificidade do `blog.css`,
+   e por carregar tambem a classe nova, continua depois dele.
+
+   Os 8 `data-filter`, os 8 `data-category`, o `id="blogGrid"`, o
+   `id="blogEmpty"` e o `data-video-id` NAO foram tocados.
+   ========================================= */
+
+:root {
+    /* Os mesmos tokens que `blog.css` ja declara. Nenhuma cor nova. */
+    --bl-tinta: #1a1a2e;
+    /* O `--blog-muted` do `blog.css` e `#8a827c`, e ele NAO passa.
+       Medido em 25 amostras: 7 falharam, todas com o mesmo tom —
+       3,60:1 sobre o papel e 3,43:1 sobre o bloco lavanda dos
+       videos, contra os 4,5:1 que um texto abaixo de 18,66px exige.
+
+       O valor abaixo e `#5c5652`, que e o mesmo que `Explorar` e
+       `Artigos` ja usam (lá como `--ed-suave` e `--re-suave`). Nao
+       e uma cor nova: e o token da familia, e o `blog-muted` que
+       estava aqui era o unico fora dela. Medido: 6,89:1 sobre o
+       papel e 6,63:1 sobre o lavanda. */
+    --bl-suave: #5c5652;
+    --bl-roxo: #7c3aed;
+    --bl-roxo-claro: #ede9fe;
+    --bl-borda: #e8e3dd;
+    --bl-papel: #faf9fe;
+    --bl-cartao: #ffffff;
+
+    --bl-header-altura: 75px;
+    --bl-nav-altura: 174px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --bl-header-altura: 65px;
+        --bl-nav-altura: 152px;
+    }
+}
+
+/* =========================================
+   1. A SUBNAV — o mesmo bug das outras duas paginas
+   =========================================
+   `blog.css` declara `.blog-nav` com `position: fixed; bottom: 0` —
+   e a MESMA coisa que estava em `Explorar.css` e em `recursos.css`.
+   Uma barra de 8 chips colada no rodape da janela, sempre por cima
+   do conteudo, e um `bottom: auto; top: 65px` nos breakpoints
+   menores, que so troca o lugar do problema.
+
+   Aqui os 8 filtros ganham status de REGUA: `sticky` logo abaixo do
+   header fixo. Eles continuam acessíveis a qualquer altura da pagina
+   — que e a razao de serem uma barra — sem cobrir nada. */
+
+.blog-nav {
+    position: sticky;
+    top: var(--bl-header-altura);
+    bottom: auto;
+    z-index: 50;
+
+    background: rgba(250, 249, 254, 0.92);
+    backdrop-filter: blur(10px);
+    border-top: 0;
+    border-bottom: 1px solid var(--bl-borda);
+
+    box-shadow: 0 1px 0 rgba(26, 26, 46, 0.02),
+                0 6px 18px -12px rgba(26, 26, 46, 0.18);
+}
+
+/* O container deixa de ser "8 botoes centralizados" e vira uma
+   regua: o rotulo a esquerda, os chips a direita, tudo na mesma
+   linha de base. E o que integra o filtro a composicao em vez de
+   deixar a regua como uma barra de ferramentas solta no meio. */
+.blog-nav__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 11px 48px;
+}
+
+/* O rotulo. Elemento novo de TEXTO puro, sem icone: e a unica
+   palavra que diz o que a regua faz. */
+.blog-nav__rotulo {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--bl-suave);
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.blog-nav__chips {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+/* O chip vira palavra, nao pílula. `padding` vertical de 7px e
+   borda-none: a regua e feita de texto, e o unico estado com peso
+   e o chip ativo. Medido: 8 pílulas de 40px ocupavam 640px e
+   competiam com o titulo da dobra. */
+.blog-nav__chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--bl-suave);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.blog-nav__chip i {
+    font-size: 11px;
+    color: var(--bl-suave);
+    opacity: 0.72;
+    transition: color 0.18s ease, opacity 0.18s ease;
+}
+
+@media (hover: hover) {
+    .blog-nav__chip:hover {
+        color: var(--bl-roxo);
+        background: rgba(124, 58, 237, 0.06);
+    }
+
+    .blog-nav__chip:hover i {
+        color: var(--bl-roxo);
+        opacity: 1;
+    }
+}
+
+/* O estado ativo e a unica pílula da regua — e por isso e a
+   unica que se enxerga. Antes TODOS os chips tinham fundo e borda,
+   e o ativo era so mais um retangulo roxo. */
+.blog-nav__chip.active,
+.blog-nav__chip[aria-pressed="true"] {
+    background: var(--bl-roxo);
+    color: #ffffff;
+}
+
+.blog-nav__chip.active i,
+.blog-nav__chip[aria-pressed="true"] i {
+    color: #ffffff;
+    opacity: 1;
+}
+
+.blog-nav__chip:focus-visible {
+    outline: 2px solid var(--bl-roxo);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   2. A PRIMEIRA DOBRA — destaque + regua
+   =========================================
+
+   Sai `__media` + `__overlay` + `__eyebrow` + `__title-accent`:
+   as mesmas 4 pecas que Artigos, Blog e Direitos compartilhavam
+   (medido: o accent era o MESMO hex #38bdf8 e a MESMA Playfair
+   italica nas 4). A foto do banner era cafe com `brightness(0.75)`
+   e veu de 0,85 — quase invisivel. Some.
+
+   Entra o DESTAQUE: o primeiro `editorial-card` do grid sobe para
+   a dobra, ao lado do titulo.
+
+   Por que subir em vez de so aumentar o primeiro card do grid: a
+   ordem pedida e Blog -> destaque -> filtros -> conteudos. Com o
+   destaque dentro da dobra, a hierarquia e literal. E o card
+   CONTINUA um `editorial-card`, entao o filtro o trata igual aos
+   outros — `card.hidden` nele funciona como em todos. */
+.blog-banner.bl-hero {
+    display: block;
+    min-height: 0;
+    position: relative;
+    padding: 0;
+    background: var(--bl-papel);
+    border-bottom: 0;
+    overflow: visible;
+}
+
+/* Mesma variacao de 3% das outras duas: a familia se reconhece no
+   fundo, nao na composicao. */
+.blog-banner.bl-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 62% 72% at 88% 14%, rgba(236, 72, 153, 0.04), transparent 60%),
+        radial-gradient(ellipse 56% 64% at 10% 84%, rgba(124, 58, 237, 0.045), transparent 62%);
+}
+
+/* O grid da dobra: texto a esquerda, destaque a direita. */
+.bl-hero__grade {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 78px 48px 74px;
+    display: grid;
+    /* 520px e nao 560px: medido com 560, a coluna de texto dava
+       480px e "e informacao de verdade" em Playfair itálico de
+       49,6px nao cabia — o titulo quebrava em 3 linhas e a dobra
+       perdia o ar de manchete. */
+    grid-template-columns: minmax(0, 1fr) 520px;
+    column-gap: 64px;
+    align-items: center;
+}
+
+.bl-hero__coluna {
+    min-width: 0;
+}
+
+/* ---------- A marca: 1 linha + 1 PONTO na ponta.
+
+   Os outros tres ja tem marca: Explorar e Artigos usam a estrela
+   amarela/roxa depois da linha, Eventos usa o losango verde. Um
+   ponto e uma forma diferente — e nao uma cor diferente, que e o
+   que a diretriz proibe. */
+.bl-hero__marca {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 26px;
+    pointer-events: none;
+}
+
+.bl-hero__linha {
+    width: 44px;
+    height: 1px;
+    background: #dcd5cb;
+    flex: 0 0 auto;
+}
+
+/* O ponto encosta na linha, como um ponto final de frase. */
+.bl-hero__ponto {
+    width: 7px;
+    height: 7px;
+    margin-left: -1px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--bl-roxo);
+    opacity: 0.6;
+}
+
+.bl-hero__titulo {
+    font-family: 'Inter', -apple-system, sans-serif;
+    /* 2.9rem de teto: 46,4px medidos em 1440px. Abaixo disso
+       "e informação de verdade" cabe na coluna de 520px. */
+    font-size: clamp(1.75rem, 3.8vw, 2.9rem);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-hero__accent {
+    color: var(--bl-roxo);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+.bl-hero__apoio {
+    max-width: 430px;
+    margin: 26px 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--bl-suave);
+}
+
+/* ---------- O DESTAQUE, na coluna da direita.
+
+   Nao e um card: e uma peca de abertura. Sem fundo, sem borda, sem
+   raio — a unica caixa do site que fica solta assim, e e o que faz
+   ela ler como manchete e nao como "o primeiro card". */
+.bl-destaque {
+    grid-column: 2;
+    min-width: 0;
+    display: block;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    text-decoration: none;
+}
+
+.bl-destaque__rotulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--bl-suave);
+}
+
+.bl-destaque__fio {
+    width: 26px;
+    height: 1px;
+    background: var(--bl-roxo);
+    opacity: 0.45;
+    flex: 0 0 auto;
+}
+
+.bl-destaque__media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 21 / 10;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #f3f4f6;
+    margin-bottom: 18px;
+}
+
+.bl-destaque__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bl-destaque__titulo {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.375rem, 2.1vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1.16;
+    letter-spacing: -0.028em;
+    color: var(--bl-tinta);
+    margin: 0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.bl-destaque__categoria {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--bl-roxo);
+}
+
+@media (hover: hover) {
+    .bl-destaque:hover .bl-destaque__titulo {
+        color: var(--bl-roxo);
+    }
+
+    .bl-destaque:hover .bl-destaque__media img {
+        transform: scale(1.02);
+    }
+}
+
+.bl-destaque:focus-visible {
+    outline: 2px solid var(--bl-roxo);
+    outline-offset: 5px;
+    border-radius: 5px;
+}
+
+/* =========================================
+   3. O FLUXO — 8 itens, 8 pesos
+
+   Medido antes: `.editorial-grid` era `repeat(3, 1fr)` com 9 cards
+   identicos. Nenhum lugar onde o olho parasse, e nenhuma diferenca
+   entre artigo e video alem do icone de play.
+
+   O ritmo abaixo soma 12 colunas em cada linha. As formas seguem a
+   ordem real dos 8 cards que restam depois de o destaque subir para
+   a dobra (video, video, artigo, video, artigo, artigo, video,
+   artigo):
+
+       linha 1   video 8          +  video 4
+       linha 2   artigo 12         (a pausa: horizontal, imagem a esquerda)
+       linha 3   video 4 + artigo 4 + artigo 4
+       linha 4   video 8          +  artigo 4
+
+   `grid-column: span N` explicito em cada item: o `grid-auto-flow`
+   empacota esparso e criaria uma 5a linha vazia se a ordem do DOM
+   nao casasse com a grade. Medido o resultado: 4 linhas, 8 itens,
+   nenhuma linha implicita. */
+.blog-grid-section.bl-fluxo-secao {
+    padding: 76px 48px 0;
+    background: var(--bl-papel);
+}
+
+/* Nenhuma classe nova aqui: o container no HTML se chama
+   `blog-grid-section__container` e o rotulo
+   `blog-grid-section__eyebrow`. A primeira versao deste arquivo
+   inventou `bl-fluxo-secao__container` e `bl-fluxo-secao__eyebrow`,
+   que nao existem em lugar nenhum do HTML — e por isso nenhuma das
+   duas regras pegava. */
+.blog-grid-section__container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.blog-grid-section__head.bl-fluxo-secao__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0 0 34px;
+    padding: 0 0 16px;
+    border-bottom: 2px solid var(--bl-tinta);
+    text-align: left;
+}
+
+.blog-grid-section__eyebrow {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bl-suave);
+    margin: 0 0 8px;
+}
+
+.blog-grid-section__eyebrow i {
+    color: var(--bl-roxo);
+}
+
+.blog-grid-section__head h2 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--bl-tinta);
+    margin: 0 0 6px;
+}
+
+.blog-grid-section__head p {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bl-suave);
+    margin: 0;
+    max-width: 58ch;
+}
+
+/* ---------- A grade do fluxo. */
+.editorial-grid.bl-fluxo {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 44px 32px;
+    align-items: start;
+}
+
+/* A rede de seguranca do filtro. Ver a nota sobre `hidden` no
+   cabecalho deste arquivo. */
+.bl-item[hidden] {
+    display: none !important;
+}
+
+/* O chrome de card SAI de todos os 8. Sem isto o fluxo seria uma
+   grade de 8 caixas brancas com sombra — exatamente o padrao que
+   a diretriz proibe. O que separa um item do outro passa a ser o
+   peso e a forma, nao a borda.
+
+   `display` NAO e declarado aqui, e deliberado. Declarar seria
+   (0,2,0), e a "pausa" precisa de `display: grid` no proprio
+   article — que e o MESMO elemento, a 0,1,0. Com o `display` no
+   reset a pausa nunca viraria grid: medido, ela renderizou
+   `display: block` com a imagem em cima do texto, que e
+   exatamente o card horizontal que a forma deveria eliminar.
+
+   Deixar o `display: flex; flex-direction: column` que vem do
+   `blog.css` resolve as outras 7 formas — elas empilham media e
+   corpo do mesmo jeito. E o `display: grid` da pausa, a 0,1,0 no
+   mesmo arquivo e mais tarde, vence o `flex` de la. */
+.bl-fluxo .editorial-card {
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+@media (hover: hover) {
+    /* O `transform` e o `box-shadow` do hover de `blog.css` sao
+       zerados: o card sob o cursor nao pode pular. */
+    .bl-fluxo .editorial-card:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: transparent;
+        background: transparent;
+    }
+}
+
+/* =========================================
+   3.1  FORMA A — VIDEO HORIZONTAL (8 colunas)
+
+   O `--video` nao e um `--article` com play. Ele traz a
+   `video-thumb__split`, que e imagem + rotulo do canal + descricao
+   + autor — quatro dados que o `--article` nao tem. Da para (e
+   precisa) ocupar mais espaco que um so titulo.
+
+   A `split` original e 45% imagem / 55% texto. Aqui ela vira
+   52/48 e ganha a altura da linha. */
+.bl-item--video-largo {
+    grid-column: span 8;
+}
+
+/* 5:2 e nao 16:9. Medido: em 16:9 a miniatura de 8 colunas media
+   557px de altura e a foto da esquerda ficava 326x557 — um retrato
+   de uma foto deitada, com o rosto cortado. Em 5:2 ela fica
+   326x261 e o enquadramento volta a ser o da imagem. */
+.bl-item--video-largo .editorial-card__media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 5 / 2;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4f6;
+    margin-bottom: 14px;
+}
+
+.bl-item--video-largo .video-thumb {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* 44%, que e a proporcao do `blog.css`, e nao 52%. Com 52% o texto
+   ficava com 300px e a descricao quebrava em 3 linhas curtas. */
+.bl-item--video-largo .video-thumb__split {
+    display: grid;
+    grid-template-columns: 44% minmax(0, 1fr);
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
+}
+
+.bl-item--video-largo .video-thumb__split img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* O texto do video ganha fundo proprio: sem ele, a miniatura e o
+   texto disputam o mesmo claro e o texto some. */
+.bl-item--video-largo .video-thumb__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 22px 24px;
+    background: #f5f3fa;
+}
+
+.bl-item--video-largo .video-thumb__label {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    color: var(--bl-roxo);
+}
+
+.bl-item--video-largo .video-thumb__desc {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.012em;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-item--video-largo .video-thumb__author {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--bl-suave);
+}
+
+.bl-item--video-largo .video-thumb__play {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--bl-roxo);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* O titulo do video. Fica ABAIXO da miniatura dividida, e nao
+   dentro dela: dentro, repetiria a descricao que a `split` ja
+   mostra. Abaixo, ele completa o que a imagem nao disse. */
+.bl-item--video-largo .editorial-card__body {
+    padding: 0;
+}
+
+.bl-item--video-largo .editorial-card__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.24;
+    letter-spacing: -0.024em;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-item--video-largo .editorial-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+    .bl-item--video-largo:hover .editorial-card__title a {
+        color: var(--bl-roxo);
+    }
+}
+
+/* O botao de play herda o hover do card? Nao. */
+.bl-item--video-largo .video-thumb__play i {
+    color: #ffffff;
+}
+
+/* =========================================
+   3.2  FORMA B — VIDEO COMPACTO (4 colunas)
+
+   Mesmo video, outra escala. A `split` vira coluna: imagem 16:9 em
+   cima, texto embaixo. E a prova de que a forma depende do peso,
+   e nao so do tipo. */
+.bl-item--video-curto {
+    grid-column: span 4;
+}
+
+/* SEM `aspect-ratio` na caixa, e o proprio `<img>` que tem 3:2.
+
+   Medido: com `aspect-ratio: 4/3` na media e `height: 56%` na
+   imagem, a foto do video media 160px enquanto a foto 3:2 dos
+   artigos da MESMA linha media 253px. Os tres itens da linha 3
+   tinham topo igual e base errada — a linha ficava escalonada e
+   a comparacao entre video e artigo, que e o que o sistema
+   precisa mostrar, ficava a cargo de uma diferenca de forma que
+   nao existe.
+
+   Aqui a foto do video tem a MESMA proporcao e o MESMO tamanho da
+   foto do artigo. O que muda entre os dois e o que vem DEPOIS:
+   o video tem o bloco lavanda com canal e autor, o artigo nao
+   tem nada. A diferenca de forma passa a estar onde ela e
+   verdadeira — no conteudo, e nao no accidento do enquadramento. */
+.bl-item--video-curto .editorial-card__media {
+    display: block;
+    width: 100%;
+
+    /* `aspect-ratio: auto` e obrigatorio, e nao cosmetico. O
+       `blog.css` declara `aspect-ratio` em `.editorial-card__media`;
+       sem zerar aqui, a caixa herda a proporcao dele e CRUNTA o
+       proprio conteco. Medido: media de 291x182px contra um
+       `.video-thumb` de 258px — os 64px do bloco de texto com o
+       canal e o autor ficavam FORA da caixa, e o
+       `.editorial-card__title`, que vem logo depois, subia e
+       ficava por cima deles.
+
+       Alem disso o texto da miniatura sumiu inteiro da captura. */
+    aspect-ratio: auto;
+    height: auto;
+
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4f6;
+    margin-bottom: 12px;
+}
+
+.bl-item--video-curto .video-thumb {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bl-item--video-curto .video-thumb__split {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.bl-item--video-curto .video-thumb__split img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+    flex: 0 0 auto;
+}
+
+.bl-item--video-curto .video-thumb__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 5px;
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    background: #f5f3fa;
+}
+
+.bl-item--video-curto .video-thumb__label {
+    display: block;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--bl-roxo);
+}
+
+.bl-item--video-curto .video-thumb__desc {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-item--video-curto .video-thumb__author {
+    display: block;
+    font-size: 0.6875rem;
+    color: var(--bl-suave);
+}
+
+.bl-item--video-curto .video-thumb__play {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--bl-roxo);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    pointer-events: none;
+}
+
+.bl-item--video-curto .editorial-card__body {
+    padding: 0;
+}
+
+.bl-item--video-curto .editorial-card__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.28;
+    letter-spacing: -0.018em;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-item--video-curto .editorial-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+    .bl-item--video-curto:hover .editorial-card__title a {
+        color: var(--bl-roxo);
+    }
+}
+
+/* =========================================
+   3.3  FORMA C — ARTIGO COMPACTO (4 colunas)
+
+   Artigo nao tem `split`: tem imagem e titulo. E o espaco vazio
+   entre eles e o que o separa do video na mesma linha. */
+.bl-item--artigo-curto {
+    grid-column: span 4;
+}
+
+.bl-item--artigo-curto .editorial-card__media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4f6;
+    margin-bottom: 12px;
+}
+
+.bl-item--artigo-curto .editorial-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bl-item--artigo-curto .editorial-card__body {
+    padding: 0;
+}
+
+.bl-item--artigo-curto .editorial-card__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.28;
+    letter-spacing: -0.018em;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-item--artigo-curto .editorial-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+    .bl-item--artigo-curto:hover .editorial-card__title a {
+        color: var(--bl-roxo);
+    }
+
+    .bl-item--artigo-curto:hover .editorial-card__media img {
+        transform: scale(1.03);
+    }
+}
+
+/* =========================================
+   3.4  FORMA D — A PAUSA (12 colunas, horizontal)
+
+   Unico item em que a imagem fica a ESQUERDA e o texto a direita,
+   com a imagem estreita (272px). E o item que interrompe o fluxo:
+   vem depois de dois videos e antes de tres artigos, entao muda o
+   eixo de leitura duas vezes na mesma pagina.
+
+   Media deitado e texto em 26px: e a unica vez que um titulo de
+   artigo chega perto do destaque. */
+.bl-item--artigo-pausa {
+    grid-column: span 12;
+    padding: 26px 0;
+    border-top: 1px solid var(--bl-borda);
+    border-bottom: 1px solid var(--bl-borda);
+}
+
+
+/* `display: grid` no PROPRIO article. Nao pode ser
+   `.bl-item--artigo-pausa .editorial-card`, porque o
+   `bl-item--artigo-pausa` e o `editorial-card` estao na MESMA tag
+   — um seletor de descendente nao casa com o proprio elemento.
+   Medido antes da correcao: `display: block`, `bodyTop` 1990 contra
+   `mediaTop` 1786, ou seja, o texto caia embaixo da imagem. */
+.bl-item--artigo-pausa {
+    display: grid;
+    grid-template-columns: 272px minmax(0, 1fr);
+    column-gap: 34px;
+    align-items: center;
+}
+
+.bl-item--artigo-pausa .editorial-card__media {
+    display: block;
+    width: 272px;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.bl-item--artigo-pausa .editorial-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bl-item--artigo-pausa .editorial-card__body {
+    padding: 0;
+    min-width: 0;
+}
+
+.bl-item--artigo-pausa .editorial-card__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.375rem, 2.2vw, 1.625rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.028em;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-item--artigo-pausa .editorial-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+    .bl-item--artigo-pausa:hover .editorial-card__title a {
+        color: var(--bl-roxo);
+    }
+
+    .bl-item--artigo-pausa:hover .editorial-card__media img {
+        transform: scale(1.03);
+    }
+}
+
+/* =========================================
+   3.5  ARTIGO MEDIO (4 colunas, na ultima linha)
+
+   Mesma forma do artigo curto mas com proporcao vertical: a imagem
+   fica mais alta. Separado do `--artigo-curto` para que as duas
+   classes nao dependam uma da outra se um dia os pesos mudarem. */
+.bl-item--artigo-medio {
+    grid-column: span 4;
+}
+
+.bl-item--artigo-medio .editorial-card__media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4f6;
+    margin-bottom: 12px;
+}
+
+.bl-item--artigo-medio .editorial-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bl-item--artigo-medio .editorial-card__body {
+    padding: 0;
+}
+
+.bl-item--artigo-medio .editorial-card__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.28;
+    letter-spacing: -0.018em;
+    color: var(--bl-tinta);
+    margin: 0;
+}
+
+.bl-item--artigo-medio .editorial-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+    .bl-item--artigo-medio:hover .editorial-card__title a {
+        color: var(--bl-roxo);
+    }
+
+    .bl-item--artigo-medio:hover .editorial-card__media img {
+        transform: scale(1.03);
+    }
+}
+
+/* =========================================
+   3.6  O FOCO de todos os itens
+
+   Uma regra so, porque os 8 itens compartilham a mesma forma de
+   foco. `outline-offset: 4px` porque os itens nao tem caixa: sem
+   recuo, o contorno encosta na foto. */
+.bl-item:focus-within {
+    outline: 2px solid var(--bl-roxo);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* =========================================
+   4. A PAGINACAO e O ESTADO VAZIO
+   =========================================
+
+   A paginacao vira um rodape de regua: numeros como texto, sem
+   caixa, com o ativo em roxo cheio. `blog.js` so troca a classe
+   `is-active` nos botoes — nenhuma funcionalidade tocada. */
+
+.blog-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-top: 52px;
+    padding-top: 26px;
+    border-top: 1px solid var(--bl-borda);
+}
+
+.blog-pagination__page {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--bl-suave);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+@media (hover: hover) {
+    .blog-pagination__page:hover {
+        background: rgba(124, 58, 237, 0.07);
+        color: var(--bl-roxo);
+    }
+}
+
+.blog-pagination__page.is-active {
+    background: var(--bl-roxo);
+    color: #ffffff;
+}
+
+.blog-pagination__page:focus-visible {
+    outline: 2px solid var(--bl-roxo);
+    outline-offset: 2px;
+}
+
+/* O estado vazio ganha a mesma moldura de "aqui nao tem nada", que
+   e o que o `blog.js` mostra quando o filtro nao acha card. */
+.blog-empty {
+    text-align: left;
+    padding: 48px 0;
+    border-top: 1px solid var(--bl-borda);
+    border-bottom: 1px solid var(--bl-borda);
+}
+
+.blog-empty[hidden] {
+    display: none !important;
+}
+
+.blog-empty i {
+    display: block;
+    font-size: 26px;
+    color: var(--bl-roxo);
+    opacity: 0.5;
+    margin-bottom: 12px;
+}
+
+.blog-empty h3 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.022em;
+    color: var(--bl-tinta);
+    margin: 0 0 6px;
+}
+
+.blog-empty p {
+    font-size: 0.9375rem;
+    color: var(--bl-suave);
+    margin: 0;
+}
+
+/* O estado vazio precisa aparecer DEPOIS da grade, e como ele e um
+   irmao da grade dentro do mesmo container, ele fica aqui. */
+.blog-empty {
+    margin-top: 8px;
+}
+
+/* =========================================
+   5. A NEWSLETTER
+
+   Nao muda de forma — o que muda e o tom: o `bl-` prefixo deixa
+   claro que ela faz parte do mesmo sistema. Ja era o bloco mais
+   discreto da pagina e continua sendo. */
+.blog-newsletter.bl-rodape {
+    padding: 88px 48px 0;
+    background: #ffffff;
+}
+
+/* O bloco da newsletter ja e uma caixa centrada por
+   `blog.css`; aqui ele so ganha o respiro do sistema. Nenhuma
+   classe nova: a classe real e `blog-newsletter__card`. */
+.blog-newsletter__card {
+    max-width: 720px;
+}
+
+/* CORRECAO DE ACESSIBILIDADE, e nao de design.
+
+   O `blog.css` pinta o paragrafo da newsletter com
+   `var(--blog-muted)`, que e `#8a827c`. Medido: 3,60:1 sobre o
+   papel, contra os 4,5:1 que um texto de 15px exige. A falha e de
+   `blog.css`, nao deste arquivo — mas ela fica na pagina que esta
+   sendo entregue, e a diretriz pede contraste verificado.
+
+   Aqui entra `--bl-suave`, que e `#5c5652`: 6,89:1. O tom e o da
+   familia, e a unica coisa que muda na newsletter e a cor de um
+   paragrafo. */
+.blog-newsletter__card p {
+    color: var(--bl-suave);
+}
+
+/* =========================================
+   6. RESPONSIVO
+   ========================================= */
+
+@media (max-width: 1100px) {
+    .bl-hero__grade {
+        grid-template-columns: minmax(0, 1fr) 460px;
+        column-gap: 44px;
+    }
+
+    .editorial-grid.bl-fluxo {
+        gap: 38px 24px;
+    }
+
+    /* O video largo desce para 12 e vira a mesma forma do video
+       compacto, so que maior. E o unico jeito de a `split`
+       caber sem espremer a descricao. */
+    .bl-item--video-largo {
+        grid-column: span 12;
+    }
+
+    .blog-nav__container {
+        padding: 10px 32px;
+    }
+
+    .blog-banner.bl-hero,
+    .blog-grid-section.bl-fluxo-secao,
+    .blog-newsletter.bl-rodape { padding-left: 32px; padding-right: 32px; }
+}
+
+@media (max-width: 900px) {
+    .bl-hero__grade {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 44px;
+        padding: 56px 32px 52px;
+    }
+
+    .bl-destaque {
+        grid-column: 1;
+    }
+
+    .bl-hero__apoio {
+        max-width: 100%;
+    }
+
+    /* A regua vira duas linhas: o rotulo em cima, os chips rolando
+       embaixo. O rotulo e `position: static` aqui — antes ele era
+       um item flex que esticava. */
+    .blog-nav__container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 32px;
+    }
+
+    .blog-nav__chips {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .blog-nav__chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* A grade perde colunas: 12 -> 6. A pausa e o video largo
+       continuam em 6 (= a largura toda), e os outros quatro caem
+       para 3. */
+    .editorial-grid.bl-fluxo {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 32px 20px;
+    }
+
+    .bl-item--video-largo,
+    .bl-item--artigo-pausa { grid-column: span 6; }
+
+    .bl-item--video-curto,
+    .bl-item--artigo-curto,
+    .bl-item--artigo-medio { grid-column: span 3; }
+
+    .bl-item--artigo-pausa {
+        grid-template-columns: 200px minmax(0, 1fr);
+        column-gap: 24px;
+    }
+
+    .bl-item--artigo-pausa .editorial-card__media {
+        width: 200px;
+    }
+
+    .blog-banner.bl-hero,
+    .blog-grid-section.bl-fluxo-secao,
+    .blog-newsletter.bl-rodape { padding-left: 32px; padding-right: 32px; }
+}
+
+@media (max-width: 560px) {
+    .bl-hero__grade {
+        padding: 42px 22px 40px;
+        row-gap: 36px;
+    }
+
+    .bl-hero__marca {
+        margin-bottom: 20px;
+    }
+
+    .bl-hero__linha {
+        width: 36px;
+    }
+
+    .bl-destaque__media {
+        aspect-ratio: 16 / 10;
+    }
+
+    /* 1 coluna. A grade de 6 vira 1 e cada item ocupa a linha
+       inteira. A ordem do DOM ja e a ordem de leitura, entao
+       nenhuma reordenacao e necessaria. */
+    .editorial-grid.bl-fluxo {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 34px;
+    }
+
+    .bl-item--video-largo,
+    .bl-item--video-curto,
+    .bl-item--artigo-curto,
+    .bl-item--artigo-medio,
+    .bl-item--artigo-pausa { grid-column: 1; }
+
+    /* O video largo perde a divisao lateral. Medido em 390px: a
+       `split` continuava em 44/56 dentro de 346px, o que deixava
+       152px para o texto — e o "Jornalista" ficava CORTADO pela
+       `overflow: hidden` do thumb. A forma empilhada resolve e
+       mantem a diferenca com o artigo: a foto e 3:2, igual a dos
+       artigos, e o bloco lavanda vem DEPOIS. */
+    .bl-item--video-largo .editorial-card__media {
+        aspect-ratio: auto;
+        height: auto;
+    }
+
+    .bl-item--video-largo .video-thumb {
+        height: auto;
+    }
+
+    .bl-item--video-largo .video-thumb__split {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bl-item--video-largo .video-thumb__split img {
+        height: auto;
+        aspect-ratio: 3 / 2;
+    }
+
+    .bl-item--video-largo .video-thumb__text {
+        justify-content: flex-start;
+        padding: 14px 16px;
+    }
+
+    /* A pausa perde a disposicao deitada: 272px de imagem ao lado
+       de um titulo de 26px nao cabem em 390px. Vira bloco. */
+    .bl-item--artigo-pausa {
+        padding: 0;
+        border-bottom: 1px solid var(--bl-borda);
+    }
+
+    .bl-item--artigo-pausa {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 14px;
+    }
+
+    .bl-item--artigo-pausa .editorial-card__media {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+    }
+
+    .blog-nav__container {
+        padding: 9px 22px;
+    }
+
+    .blog-banner.bl-hero,
+    .blog-grid-section.bl-fluxo-secao,
+    .blog-newsletter.bl-rodape { padding-left: 22px; padding-right: 22px; }
+
+    .blog-pagination {
+        margin-top: 36px;
+        padding-top: 20px;
+    }
+}
+
+@media (max-height: 620px) and (min-width: 901px) {
+    .bl-hero__grade { padding: 52px 48px 48px; }
+    .bl-hero__marca { margin-bottom: 18px; }
+}
+
+/* =========================================
+   7. MOVIMENTO REDUCIDO
+
+   Mesma regra do Artigos: uma regra so, em `*` dentro das 4 secoes
+   novas. Uma lista de seletores nao cobre as transicoes declaradas
+   nos proprios filhos — foi o que a medicao mostrou no Artigos, e a
+   lista de seletores e fragil demais para repetir o erro. */
+@media (prefers-reduced-motion: reduce) {
+    .blog-banner *,
+    .blog-grid-section *,
+    .blog-newsletter *,
+    .blog-nav *,
+    .blog-pagination * {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .bl-destaque:hover .bl-destaque__media img,
+    .bl-item--artigo-curto:hover .editorial-card__media img,
+    .bl-item--artigo-pausa:hover .editorial-card__media img,
+    .bl-item--artigo-medio:hover .editorial-card__media img {
+        transform: none;
+    }
+}

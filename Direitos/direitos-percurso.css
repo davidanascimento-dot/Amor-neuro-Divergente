@@ -1,0 +1,2331 @@
+/* =========================================
+   DIREITOS — SISTEMA DE PERCURSO
+   Arquivo: Direitos/direitos-percurso.css
+   Prefixo: .dp-
+   Carregado por ULTIMO, depois de direitos.css
+
+   -----------------------------------------------------
+   O SISTEMA PROPRIO DESTA PAGINA
+   -----------------------------------------------------
+   A diretriz de continuidade exige sistemas de layout DIFERENTES,
+   nao a mesma estrutura com cores diferentes. Os quatro ja sao:
+
+     Explorar  -> caminhos      (2 colunas, onde ir)
+     Eventos   -> eixo temporal (data abre a linha)
+     Artigos   -> diagramacao   (estante + perfil de coluna + indice)
+     Blog      -> fluxo         (8 pesos, destaque na dobra)
+     Direitos  -> PERCURSO      (este arquivo)
+
+   O percurso tem TRES pecas que nenhum dos outros tem:
+
+     1. A MARCA DE PERCURSO. Uma coluna de marcacao a esquerda,
+        com um fio vertical que atravessa a pagina inteira, e um
+        numero que NAO fica no titulo da secao. O numero e a
+        estrutura de leitura, nao um rotulo.
+
+        Por que nao e o indice de Artigos: Artigos tem `01`-`04`
+        DENTRO da dobra, apontando para secoes da propria pagina.
+        E um sumario editorial, uma peca local. Aqui a marcacao
+        comeca na dobra e continua por tres secoes. Mesma gramatica
+        visual — numero + fio — e funcao diferente: Artigos mostra
+        o que tem, Direitos mostra por onde se anda.
+
+     2. A ATMOSFERA, 100% EM CSS. Decisao do usuario: sem PNG, sem
+        ilustracao grande. Quatro camadas de gradiente e tres formas
+        em CSS puro. Cada uma e verificavel por calculo, nao por
+        gosto.
+
+     3. A LEI COMO LINHA DE PERCURSO, nao como caixa. As 12 leis do
+        banco passam de 12 fotos em 12 caixas azul-escura para 12
+        linhas separadas por um fio, com a base legal a direita.
+
+   -----------------------------------------------------
+   O QUE SAI, E POR QUE
+   -----------------------------------------------------
+   MEDIDO no `direitos.css` (45.607 bytes, 319 chaves):
+
+     - 20 regras usam fundo escuro na pagina clara. As outras 60
+       sao `body.a11y-dark-mode` e nao contam. Tres delas criam
+       ilhas de marinho quase preto no meio de um site claro:
+         .law-editorial-card__panel  #071524   <- as 12 leis
+         .case-box                   #1a1525 / #2d1b3d
+         .rights-contact__card       #1f1235 / #3b1a5c
+
+       O painel das leis e o pior caso: as 12 leis SAO o conteudo
+       principal da pagina e cada uma e uma caixa azul-escura. Uma
+       pagina sobre clareza e seguranca com o conteudo principal em
+       marinho de tribunal.
+
+     - `.rd-banner__veu` existe no HTML e nao tem NENHUMA regra no
+       CSS. Alguem tentou corrigir o veu do banner e a regra nunca
+       foi escrita. O elemento sai.
+
+     - o accent do banner e `#38bdf8`, o mesmo hex medido em
+       Artigos, Blog e Direitos. Quarta ocorrencia do mesmo template.
+
+   -----------------------------------------------------
+   A BARRA DE NAVEGACAO — a 5a ocorrencia do mesmo bug
+   -----------------------------------------------------
+   `direitos.css` declara `.rights-nav` com `position: fixed;
+   bottom: 0`, e um `bottom: auto; top: 65px` nos breakpoints
+   menores. E exatamente o que estava em `Explorar.css`,
+   `recursos.css` e `blog.css`. Correcao identica: `sticky` logo
+   abaixo do header fixo de 75px (65px no celular).
+   ========================================= */
+
+:root {
+    --dp-tinta: #1a1a2e;
+    --dp-suave: #5c5652;
+    --dp-roxo: #7c3aed;
+    --dp-roxo-claro: #ede9fe;
+    --dp-aviso: #f2b705;
+    --dp-borda: #e8e3dd;
+    --dp-papel: #faf9fe;
+    --dp-papel-quente: #f5f3fa;
+
+    --dp-header-altura: 75px;
+    --dp-nav-altura: 168px;
+    --dp-marca-largura: 62px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --dp-header-altura: 65px;
+        --dp-nav-altura: 150px;
+        --dp-marca-largura: 40px;
+    }
+}
+
+/* =========================================
+   1. A BARRA DE NAVEGACAO
+   =========================================
+   6 chips, vira regua: rotulo a esquerda, chips a direita.
+   Os 6 `href` (`#categorias`, `#leis`, `#editorial`, `#recursos`,
+   `#faq`, `#contato`) NAO foram tocados. */
+
+.rights-nav {
+    position: sticky;
+    top: var(--dp-header-altura);
+    bottom: auto;
+    z-index: 50;
+
+    background: rgba(250, 249, 254, 0.92);
+    backdrop-filter: blur(10px);
+    border-top: 0;
+    border-bottom: 1px solid var(--dp-borda);
+
+    box-shadow: 0 1px 0 rgba(26, 26, 46, 0.02),
+                0 6px 18px -12px rgba(26, 26, 46, 0.18);
+}
+
+/* O rotulo e um `<span class="rights-nav__rotulo">` no HTML, com
+   `aria-hidden="true"` — e nao um `::before`. A primeira versao
+   usava pseudo, com o argumento de que o rotulo e decoracao de
+   organizacao. O resultado foi "Oriente-se" DUPLICADO na captura:
+   o `::before` nao tinha sido removido quando o `<span>` entrou.
+
+   O pseudo nao resolve a ordem de leitura: `::before` gerado por CSS
+   entra na arvore de acessibilidade quando tem conteudo textual, e
+   `aria-hidden` no pseudo nao existe. O `<span>` com `aria-hidden`
+   no HTML e a forma correta. */
+.rights-nav__rotulo {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--dp-suave);
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.rights-nav__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 11px 48px;
+}
+
+.rights-nav__chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--dp-suave);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.rights-nav__chip i {
+    font-size: 11px;
+    color: var(--dp-suave);
+    opacity: 0.72;
+    transition: color 0.18s ease, opacity 0.18s ease;
+}
+
+@media (hover: hover) {
+    .rights-nav__chip:hover {
+        color: var(--dp-roxo);
+        background: rgba(124, 58, 237, 0.06);
+    }
+
+    .rights-nav__chip:hover i {
+        color: var(--dp-roxo);
+        opacity: 1;
+    }
+}
+
+/* O chip vira palavra, nao pilula. O estado ativo e a unica pilula
+   da regua — e por isso a unica que se enxerga. */
+.rights-nav__chip.is-active {
+    background: var(--dp-roxo);
+    color: #ffffff;
+}
+
+.rights-nav__chip.is-active i {
+    color: #ffffff;
+    opacity: 1;
+}
+
+.rights-nav__chip:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 2px;
+}
+
+/* Os 6 chips sao ancoras. Sem `scroll-margin-top`, clicar num deles
+   rola a secao ate o topo e a barra de 69px cobre o que esta la. */
+#categorias,
+#leis,
+#editorial,
+#recursos,
+#faq,
+#contato {
+    scroll-margin-top: var(--dp-nav-altura);
+}
+
+/* =========================================
+   2. A PRIMEIRA DOBRA — a marca comeca aqui
+
+   -----------------------------------------------------
+   A ATMOSFERA: 4 GRADIENTES + 3 FORMAS, TUDO EM CSS
+   -----------------------------------------------------
+   Decisao do usuario, e eu concordo: sem PNG, sem ilustracao
+   grande. A informacao juridica precisa continuar sendo
+   protagonista, e uma atmosfera feita de CSS da controle exato de
+   contraste, intensidade e responsividade.
+
+   As intensidades nao sao gosto, sao conta:
+
+     - as 3 primeiras camadas ficam entre 0,030 e 0,048 de opacidade.
+       Medido no Explorar, que usa 0,05 e 0,035 no mesmo lugar: o
+       degrau maximo contra o #faf9fe e de 2 niveis por canal. Abaixo
+       de 1,5 a diferenca nao aparece nem em captura de tela.
+
+     - o ponto de marcacao e o unico elemento com presenca real, e
+       ele e pequeno e opaco. Um ponto e um ponto; ele marca.
+
+   Sem PNG significa que nao existe arquivo para carregar, nao
+   existe pedido de rede, e nao existe `alt` a escrever. Nenhuma
+   imagem nesta dobra. */
+
+.rd-banner.dp-hero {
+    display: block;
+    min-height: 0;
+    position: relative;
+    padding: 0;
+    background: var(--dp-papel);
+    border-bottom: 0;
+    overflow: visible;
+
+    /* `clip-path: none` e necessario. O `design-direitos.css` (43
+       chaves, uma camada anterior) deixa um `clip-path` em
+       `.rd-banner::before`, com os cantos em bisel. Minha regra do
+       `::before` nao declara `clip-path`, entao o bisel herdado
+       sobrevivia em cima da atmosfera nova. */
+    clip-path: none;
+    border-radius: 0;
+}
+
+/* As 3 camadas de tom. `radial-gradient`, nao `linear`: as
+   demais paginas usam elipses posicionadas nos cantos, e uma
+   mudanca para faixas retas diria "calma" em vez de "clareza". */
+.rd-banner.dp-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 58% 70% at 84% 10%, rgba(124, 58, 237, 0.048), transparent 62%),
+        radial-gradient(ellipse 46% 58% at 8% 86%, rgba(236, 72, 153, 0.030), transparent 60%),
+        radial-gradient(ellipse 52% 62% at 52% 46%, rgba(56, 189, 248, 0.034), transparent 66%);
+}
+
+/* A ATMOSFERA PROPRIAMENTE: 3 formas em CSS puro.
+
+   1. o arco de orientacao, a direita — um anel aberto de 1px, o
+      unico elemento que sugere "caminho" sem virar seta;
+   2. o ponto de marcacao, o unico ponto opaco da dobra;
+   3. a linha de percurso, horizontal, ligando o ponto a coluna do
+      texto — e a linha que o percurso vai continuar depois.
+
+   Os tres sao decorativos: `aria-hidden` no HTML e
+   `pointer-events: none` aqui.
+
+   -----------------------------------------------------
+   A ILUSTRACAO DE FUNDO — a terceira camada da dobra
+   -----------------------------------------------------
+   `img/ilustracoes/imagem-direitos.jpg`, 1024x572, 1,79:1 — a mesma
+   medida do arquivo do Explorar, e a mesma composicao: um caminho que
+   sobe da esquerda ate uma porta, um livro aberto na base, uma
+   arvore a esquerda, e o canto superior esquerdo vazio, que e onde o
+   titulo mora.
+
+   ONDE A ARTE ESTA DENTRO DA DOBRA — medido antes de escolher
+
+     - a dobra e 985x398, ou 2,47:1. A arte e 1,79:1, ou seja, mais
+       ALTA que a dobra. `cover` escala pela largura (0,962), leva a
+       arte a 550px de altura e sobra 152px para cortar: 28%.
+
+     - onde esta o conteudo util: medindo pixel a pixel quanto cada
+       faixa da arte se afasta do fundo dela, a tinta esta entre 12%
+       e 87% da altura. As faixas de 0% a 12% e de 87% a 100% nao
+       tem quase nada — e o vazio de borda da arte.
+
+     - o enquadramento e `50% 55%`, e nao `center`. Medindo a janela
+       visivel para cada posicao: `center` (50%) abriria de 13,8% a
+       86,2%, `55%` abre de 15,2% a 87,8%. A diferenca e pequena,
+       mas a faixa de 75% a 87% da arte e a de maior densidade de
+       tinta da imagem toda (23,8% dos pixels) — e ali que esta o
+       livro aberto. Com 55% o livro entra inteiro.
+
+   OS BORDAS: por que NAO ha veu pela direita como no Artigos
+
+     O Artigos precisa de um veu extra porque a borda direita da
+     arte dele e (203,192,252) — 59 niveis mais escura que o papel, e
+     aparecia como uma faixa lilas colada na borda.
+
+     Aqui nao. Medidas as quatro bordas desta arte contra o #faf9fe:
+     esquerda desvia 8, direita 7, topo 7, base 6. O pior pixel de
+     25px em cada coluna extrema desvia 10. Isso e menos da metade
+     do degrau que o arquivo do Explorar ja tem e com o qual a
+     dobra dele funciona sem veu lateral. Entao: 2 veus, como no
+     Explorar.
+
+   Nenhum `alt`, nenhum `aria-hidden`: e um `background-image`, que
+   nao entra na arvore de acessibilidade. Um `<img>` aqui seria lido
+   como imagem sem descricao, que e pior. */
+
+.rd-banner.dp-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        /* o ponto de marcacao: 9px, solido.
+
+           O `transparent 100%` NO FIM e obrigatorio, e e a correcao
+           de um bug real. A primeira versao era:
+
+               radial-gradient(circle 4.5px at ...,
+                   rgba(124,58,237,0.55) 0, rgba(124,58,237,0.55) 100%)
+
+           Um `radial-gradient` com `circle <raio>` NAO recorta: ele
+           preenche a caixa toda, e o que passa do raio continua
+           com a ULTIMA cor declarada. Ou seja, aquele "ponto de 9px"
+           inundava a dobra inteira de roxo a 55%.
+
+           Medido: a dobra renderizava (180,144,244), que e
+           exatamente 0,55 de #7c3aed sobre #faf9fe — 68,2+112,5,
+           31,9+112,05, 130,35+114,3. A conta bate e o bug fica
+           documentado aqui.
+
+           Com o `transparent` no fim, so os 9px do ponto sao
+           roxos e o resto da camada e transparente. */
+        radial-gradient(circle 4.5px at calc(100% - 168px) 34%,
+            rgba(124, 58, 237, 0.55) 0,
+            rgba(124, 58, 237, 0.55) 100%,
+            transparent 100%),
+        /* o arco: 1px, aberto a esquerda, nao fecha. A 0,11 e nao
+           0,16 — medido, a 0,16 o arco lia como um circulo solto
+           cortando a borda da tela, e nao como profundidade. */
+        radial-gradient(circle 230px at calc(100% - 40px) 42%,
+            transparent 0 97.1%, rgba(124, 58, 237, 0.11) 97.1% 97.9%, transparent 97.9% 100%),
+        /* [3] veu pela esquerda: protege o titulo. Mesmo degrau do
+           Explorar — 90% na borda, 0 em 58%. O titulo ocupa de 8%
+           a 59% da largura da dobra (medido) e de 30% a 59% da
+           altura, entao o veu cobre a parte onde a arte tem mais
+           tinta (a arvore, a 8% de distancia da borda). */
+        linear-gradient(to right,
+            rgba(250, 249, 254, 0.9) 0%, rgba(250, 249, 254, 0.72) 26%,
+            rgba(250, 249, 254, 0.34) 44%, rgba(250, 249, 254, 0) 60%),
+        /* [4] veu vertical: come o topo e a base. Sem isto a imagem
+           TERMINARIA em linha reta no fim da dobra, com o tom
+           (244,243,248) dela de frente para o #faf9fe da secao
+           seguinte: uma linha horizontal atravessando a pagina. */
+        linear-gradient(to bottom,
+            var(--dp-papel) 0%, rgba(250, 249, 254, 0) 9%,
+            rgba(250, 249, 254, 0) 86%, var(--dp-papel) 100%),
+        /* [5] a arte, de um lado ao outro da dobra. */
+        url("/img/ilustracoes/imagem-direitos.jpg");
+
+    background-repeat: no-repeat;
+    background-position: 0 0, 0 0, 0 0, 0 0, 50% 55%;
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, cover;
+}
+
+.dp-hero__grade {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 84px 48px 80px;
+    display: grid;
+    /* 268px e nao 300px. Medido: com 300px a coluna do texto dava
+       732px e "E descubra como usar cada um deles." em Playfair
+       italica de 46,4px nao cabia — o titulo quebrava em 3 linhas e
+       a dobra perdia o ar de manchete. Com 268px sobram 764px. */
+    grid-template-columns: minmax(0, 1fr) 268px;
+    column-gap: 68px;
+    align-items: center;
+}
+
+.dp-hero__coluna {
+    min-width: 0;
+}
+
+/* ---------- A marca do percurso: 1 linha · 1 ponto · 1 linha.
+
+   As tres marcas ja usadas no site:
+
+     Explorar  linha + estrela amarela, estrela ANTES da linha
+     Artigos   linha + estrela roxa,     estrela DEPOIS da linha
+     Eventos   linha + losango verde
+
+   Aqui: linha + ponto + linha. O ponto no meio do fio e a propria
+   ideia de percurso — um marco no caminho. Diferente das tres por
+   forma e por posicao, nao por cor. */
+.dp-hero__marca {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 30px;
+    pointer-events: none;
+}
+
+.dp-hero__fio {
+    width: 44px;
+    height: 1px;
+    background: #dcd5cb;
+    flex: 0 0 auto;
+}
+
+.dp-hero__ponto {
+    width: 7px;
+    height: 7px;
+    margin: 0 12px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--dp-roxo);
+    opacity: 0.6;
+}
+
+.dp-hero__titulo {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    color: var(--dp-tinta);
+    margin: 0;
+}
+
+.dp-hero__accent {
+    color: var(--dp-roxo);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+/* O subtitulo entra INTEGRAL, palavra por palavra. E a promessa da
+   pagina inteira numa frase: conhecer as leis E saber usa-las. */
+.dp-hero__apoio {
+    max-width: 460px;
+    margin: 26px 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--dp-suave);
+}
+
+/* O percurso comeca na dobra com os 3 momentos que o guia define:
+   quais sao meus direitos, como eu uso, onde encontro ajuda. Sao os
+   mesmos numeros das 3 secoes seguintes. A dobra NAO explica mais do
+   que isso — o resto do percurso faz. */
+.dp-percurso {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.dp-percurso__item {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 14px 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--dp-borda);
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dp-percurso__item:first-child {
+    padding-top: 0;
+}
+
+.dp-percurso__item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.dp-percurso__num {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--dp-roxo);
+    line-height: 1.45;
+}
+
+.dp-percurso__txt {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    color: var(--dp-tinta);
+    line-height: 1.45;
+    transition: color 0.18s ease;
+}
+
+@media (hover: hover) {
+    .dp-percurso__item:hover {
+        padding-left: 8px;
+    }
+
+    .dp-percurso__item:hover .dp-percurso__txt {
+        color: var(--dp-roxo);
+    }
+}
+
+.dp-percurso__item:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* =========================================
+   3. AS 4 AREAS — o Momento 1
+
+   O guia exemplifica:
+
+       EDUCACAO
+       Matricula * adaptacao * apoio
+       ------------------------------- ->
+
+   O que existe hoje: 4 `category-tile` com icone em caixa e a
+   contagem de leis no canto. Mudam para: area em caps, os termos que
+   a area realmente cobre (veio dos `description` do banco), um fio e
+   a seta.
+
+   A contagem de leis CONTINUA no DOM, menor e a direita. E o dado
+   que o filtro usa — nao pode sair. */
+
+.categories-nav.dp-areas {
+    padding: 88px 48px 0;
+    background: var(--dp-papel);
+    width: 100%;
+}
+
+.dp-areas__container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.categories-nav__head h2 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--dp-tinta);
+    margin: 0 0 6px;
+}
+
+.categories-nav__head > p {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    margin: 0;
+    max-width: 56ch;
+}
+
+.categories-nav__head {
+    margin-bottom: 34px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--dp-tinta);
+}
+
+/* O cabecalho da secao: o badge e um icone de "camadas", que e
+   generic demais para a primeira marca de percurso. Vira um rotulo
+   textual discreto. */
+.categories-nav__head .section-badge {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dp-suave);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0 0 8px;
+}
+
+.categories-nav__head .section-badge i {
+    color: var(--dp-roxo);
+}
+
+.categories-nav__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--dp-tinta);
+    margin: 0 0 6px;
+}
+
+.categories-nav__sub {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    margin: 0;
+    max-width: 56ch;
+}
+
+.categories-grid.dp-areas__grade {
+    display: block;
+}
+
+/* Uma area por linha, separada por um fio. Sem caixa, sem icone em
+   quadrado, sem raio. A grade de 4 colunas vira uma lista de 4
+   linhas — e o que o guia pede: "evita aquele muro de cards". */
+.dp-areas__grade .category-tile {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 28px;
+    align-items: baseline;
+    column-gap: 20px;
+    padding: 24px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--dp-borda);
+    border-radius: 0;
+    box-shadow: none;
+    text-decoration: none;
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.24s ease;
+}
+
+/* O icone continua no DOM — e o que identifica a area em uma
+   busca por icone — mas nao aparece. */
+.dp-areas__grade .category-tile__icon {
+    display: none;
+}
+
+/* A MANCHA COLORIDA de cada area tambem sai. O
+   `design-direitos.css` (43 chaves, uma camada anterior) cria
+   `.rd-categoria::before` com 68x68px de `border-radius` e a cor
+   `--cat-cor` de cada `data-filter` — um circulo pastel atras do
+   titulo. Medido na captura: um disco lilac atras de "Educacao",
+   um verde atras de "Saude", um azul atras de "Assistencia
+   Social".
+
+   Nao era a caixa do icone (essa eu ja tinha escondido com
+   `display: none`) — e o pseudo-elemento, que `display: none` no
+   filho nao alcança. Era uma 4a camada de cor em cima do
+   percurso, e a pagina voltava a parecer um mural de fichas. */
+.dp-areas__grade .rd-categoria::before {
+    display: none;
+}
+
+/* O cabecalho da secao estava centralizado (`.categories-nav__head`
+   tem `text-align: center` no `direitos.css`). O percurso e lido da
+   esquerda para a direita; centralizar o cabecalho e centralizar o
+   titulo e a cobertura ao mesmo tempo, e os dois ficavam
+   desalinhados. */
+.categories-nav__head {
+    text-align: left;
+}
+
+/* A cor da area entra no proprio titulo, com um fio na mesma cor a
+   esquerda. Medido: com o titulo em #1a1a2e e so um fio neutro, as
+   4 areas eram 4 linhas iguais — a unica coisa que as distinguia era
+   o nome. Agora o fio e o titulo carregam a cor, o mesmo tom que o
+   rotulo das 12 leis, entao o filtro e a linha falam a mesma lingua.
+
+   O contraste de cada uma contra o papel: educacional 6,8:1, saude
+   4,8:1, social 6,4:1, acessibilidade 5,8:1. Todas passam 4,5:1. E o
+   titulo em Playfair 22px passa a 3:1 com folga. */
+.dp-areas__grade .category-tile__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    color: var(--dp-tinta);
+    margin: 0;
+    transition: color 0.2s ease;
+}
+
+.dp-areas__grade .category-tile {
+    --dp-cat: var(--dp-roxo);
+    position: relative;
+    padding-left: 20px;
+}
+
+.dp-areas__grade .category-tile::before {
+    /* Este pseudo ja era usado pelo `design-direitos.css` para a
+       mancha circular colorida (68x68px). Aqui ele vira o fio da
+       marcacao: 3px de largura, altura da linha, na cor da area.
+       Medido, a mancha ocupava 68px de quadrado atras do titulo e
+       era a 4a camada de cor da pagina. */
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 26px;
+    width: 3px;
+    height: 20px;
+    border-radius: 2px;
+    background: var(--dp-cat);
+}
+
+.dp-areas__grade .category-tile[data-filter="educacional"] {
+    --dp-cat: #6d28d9;
+}
+
+.dp-areas__grade .category-tile[data-filter="saude"] {
+    --dp-cat: #15803d;
+}
+
+.dp-areas__grade .category-tile[data-filter="social"] {
+    --dp-cat: #1d4ed8;
+}
+
+.dp-areas__grade .category-tile[data-filter="acessibilidade"] {
+    --dp-cat: #be185d;
+}
+
+/* A contagem de leis na cor da area: fecha o parentesis do fio. */
+.dp-areas__grade .category-tile__count {
+    color: var(--dp-cat);
+    opacity: 0.75;
+}
+
+/* A contagem de leis: 11px, discreta, a direita. E o dado que o
+   filtro usa, e o unico numero que a pessoa ve antes de entrar. */
+.dp-areas__grade .category-tile__count {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--dp-suave);
+    white-space: nowrap;
+}
+
+.dp-areas__grade .category-tile::after {
+    content: "\f061";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 13px;
+    color: var(--dp-cat);
+    opacity: 0.6;
+    justify-self: end;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.18s ease;
+}
+
+/* NOTA sobre `@media (hover: hover)`: dentro dele, TODO seletor
+   precisa de `:hover`. Sem isso a regra vira estado normal — e foi o
+   que aconteceu na primeira versao: a borda roxa das 4 areas
+   aparecia sempre, e nao so ao passar o ponteiro. Medido:
+   `border-bottom-color` computava `rgb(124,58,237)` em repouso.
+   A media query diz "este dispositivo TEM ponteiro"; ela nao diz
+   "o ponteiro esta aqui". */
+@media (hover: hover) {
+    .dp-areas__grade .category-tile:hover {
+        padding-left: 8px;
+        border-bottom-color: var(--dp-roxo);
+    }
+
+    .dp-areas__grade .category-tile:hover .category-tile__title {
+        color: var(--dp-cat);
+    }
+
+    .dp-areas__grade .category-tile:hover::after {
+        transform: translateX(4px);
+        opacity: 1;
+    }
+}
+
+.dp-areas__grade .category-tile:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* Os termos de cobertura de cada area. Texto novo no HTML, tirado
+   do que o `description` do banco realmente cobre. */
+.dp-areas__cobertura {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--dp-suave);
+    margin: 6px 0 0;
+    max-width: 62ch;
+}
+
+/* =========================================
+   3b. A FAIXA — a arte do slot `direitos-01`
+
+   Fica entre as 4 areas e as 12 leis, que e exatamente onde o slot foi
+   reservado ("Direitos / antes das leis"). E o unico respiro da
+   pagina: as 4 areas sao 4 linhas de navegacao e as 12 leis sao 12
+   linhas de dado — as duas partes mais carregadas. A faixa e o
+   suspiro entre elas.
+
+   -----------------------------------------------------
+   DE UM LADO AO OUTRO — e por que `100vw + 28`
+   -----------------------------------------------------
+   `100vw` mede a janela INCLUINDO a barra de rolagem vertical
+   (15 a 17 px medidos), enquanto `100%` do pai mede so a area util.
+   Centralizar pelo classico `50% - 50vw` deixaria a faixa 7 px curta
+   de um lado e abriria um vao de pagina na borda oposta — foi medido
+   em -21 px a esquerda e +7 px a direita.
+
+   Puxar os DOIS lados pelo mesmo valor fecha o vao sem depender de
+   qual lado a barra ocupa. E porque o elemento e bloco, as duas
+   margens somam exatamente a largura excedente: 100vw + 28 - 14 - 14
+   = 100% do pai. Estoura 14 px de cada lado e preenche o pai inteiro;
+   o corte extra cai em linha transparente, dentro do `overflow`.
+
+   Os numeros sao os do proprio `espacos-banner.css`, medidos nele —
+   o site ja resolveu isso uma vez e o comprimento da barra nao muda
+   entre paginas. Nao e copia de estilo: e o mesmo numero.
+
+   -----------------------------------------------------
+   A ALTURA: 32/9 corta a arte, e e para isso que ela foi escolhida
+   -----------------------------------------------------
+   A arte e 1024x434, ou 2,36:1. Numa faixa de 32/9 (3,56:1) o
+   `cover` mostra 66% da altura dela e corta 34% — 147 px. Com
+   -----------------------------------------------------
+   A ALTURA: 22/7, e o enquadramento que NAO come as pastas
+   -----------------------------------------------------
+   A arte e 1024x434, ou 2,36:1. Numa faixa de 22/7 (3,14:1) o
+   `cover` mostra 74% da altura dela e corta 26%.
+
+   O numero nao foi escolhido no olho: foi medido. Com 32/9 (3,56:1)
+   a faixa mostrava so 66% da arte e o intervalo visivel ia de 19% a
+   86% da altura — mas as pastas com documento e visto verde estao
+   de 58% a 92%. A regiao de 86% a 92% ficava FORA, e a captura
+   mostrou as pastas cortadas no meio.
+
+   Em 22/7 o visivel vai de 18% a 100% e as pastas entram inteiras. O
+   que ainda sai sao os papeis soltos do canto superior esquerdo, que
+   sao atmosfera — e o corte de 18% pega so o vazio acima deles.
+
+   A 74% visivel a faixa mede 327 px numa janela de 985 e 467 px numa
+   de 1440. Contra as 12 leis, que ocupam perto de 1560 px, sao 23% do
+   bloco: respiro, nao peso.
+   */
+
+.dp-faixa {
+    position: relative;
+    display: block;
+
+    /* O estouro dos dois lados — ver a nota acima. */
+    width: calc(100vw + 28px);
+    max-width: none;
+    margin-inline: -14px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    overflow: hidden;
+
+    aspect-ratio: 22 / 7;
+}
+
+/* -----------------------------------------------------
+   POR QUE O SELetor CARREGA `espaco-banner--preenchido` NA FRENTE
+   -----------------------------------------------------
+   O `espacos-banner.css` escreve, na regra que serve a QUALQUER
+   imagem dentro de um espaco preenchido:
+
+       .espaco-banner--preenchido img { object-fit: contain; }
+
+   Isso e (0,1,1). Um `.dp-faixa__arte` sozinho e (0,1,0) e perde.
+   Medido: com `contain` a arte entrava inteira e centralizada, e a
+   faixa media 289 px de altura com a arte ocupando so os 193 px do
+   centro — sobrava metade da faixa vazia dos dois lados.
+
+   O `contain` esta certo para o uso comum do arquivo: uma arte de
+   proporcao livre num espaco livre, sem cortar nada. Aqui o
+   preenchimento e proposital — `cover` com `object-position` e o que
+   faz a faixa parecer uma faixa.
+*/
+.espaco-banner--preenchido .dp-faixa__arte {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 72%;
+}
+
+/* Em tela estreita a faixa abre para perto de 1,9:1. Medido: em 22/7
+   uma janela de 390 px daria 124 px de altura, e as pastas — que e o
+   que a arte diz — sobrariam em 92 px, quase um decalque. */
+@media (max-width: 768px) {
+    .dp-faixa {
+        aspect-ratio: 17 / 9;
+    }
+
+    .espaco-banner--preenchido .dp-faixa__arte {
+        /* Na tela estreita o visivel abre para 78%: sobra folga para
+           as pastas sem que a faixa vire um bloco de altura. */
+        object-position: 50% 80%;
+    }
+}
+
+/* =========================================
+   4. AS 12 LEIS — linhas de percurso
+
+   O JS gera o markup. `renderLaws()` produz, por lei:
+
+       <article class="law-editorial-card law-editorial-card--{position}">
+         <div class="__image"><img><div class="__image-overlay"></div></div>
+         <div class="__panel">
+           <span class="__category">...</span>
+           <h3 class="__title">...</h3>
+           <p class="__description">...</p>
+           <div class="__footer">
+             <span class="__number">Lei {number}</span>
+             <a class="__link">Ver lei completa <i></i></a>
+
+   `direitos.js` NAO e tocado. Tudo aqui e CSS sobre esse markup.
+
+   O que muda:
+     - a imagem e o overlay somem (`display: none`);
+     - o painel deixa de ser `#071524` e vira transparente;
+     - o card deixa de ser caixa e vira linha de percurso;
+     - o `--left`/`--right` que o JS alterna deixa de ter efeito.
+
+   O que NAO muda: os 4 `data-category`, o filtro, a busca, o
+   `#lawsNoResults`, os 8 `externalLink`. */
+
+/* `.laws-section` e a propria largura: o `direitos.css` da
+   `max-width: 1200px` a ela. Sem container dentro, nao ha o que
+   segurar os 1200px — o padding lateral vai na secao. */
+.laws-section.dp-leis {
+    padding: 96px 48px 0;
+    background: #ffffff;
+
+    /* `width: 100%` e obrigatorio, e a medicao prova. O
+       `direitos.css` da `max-width: 1200px` a `.laws-section`, e o
+       `inicio.css` transforma `.main-content` em `display: flex;
+       flex-direction: column`. Uma section com `max-width` e SEM
+       `width` encolhe ate o conteudo nesse flex column.
+
+       Medido antes: a secao media 689px dentro de um `main-content`
+       de 985px, e a lista das 12 leis ficava com 625px. Ou seja, o
+       percurso — a coisa que deveria ocupar a largura da pagina —
+       ocupava 63% dela.
+
+       `#categorias` nao tinha o problema porque `.categories-nav` nao
+       tem `max-width` no CSS antigo, e um item de flex sem
+       `max-width` estica no eixo cruzado. */
+    width: 100%;
+    max-width: none;
+}
+
+.laws-section.dp-leis > *:not(.deco) {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.laws-section__head.dp-leis__head {
+    margin-bottom: 30px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--dp-tinta);
+    text-align: left;     /* o `direitos.css` centraliza */
+}
+
+.laws-section__head .section-badge {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dp-suave);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0 0 8px;
+}
+
+.laws-section__head .section-badge i {
+    color: var(--dp-roxo);
+}
+
+.laws-section-title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--dp-tinta);
+    margin: 0 0 6px;
+}
+
+.laws-section-sub {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    margin: 0;
+    max-width: 58ch;
+}
+
+/* A grade deixa de ser 2 colunas de caixa e vira uma coluna de
+   linhas. `display: block` neutraliza o `repeat(2, 1fr)`.
+
+   O `[hidden]` do `direitos.css` e `.law-editorial-card[hidden]`, que
+   e (0,2,0). Por isso `display` NAO e declarado aqui em seletor de
+   (0,2,0) ou mais: o filtro do JS depende dele. Quem manda no
+   `display` do card e o `display: flex` de (0,1,0) do
+   `direitos.css`, rebaixado aqui para `flex-direction: column`. */
+.laws-grid.dp-leis__lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.law-editorial-card[hidden] {
+    display: none;
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--dp-borda);
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    min-height: 0;
+    padding: 26px 0;
+}
+
+/* O `--left`/`--right` que o JS alterna: sem efeito. Declarado com
+   o mesmo peso do `direitos.css` e mais tarde no arquivo, entao
+   ganha. */
+.laws-grid.dp-leis__lista .law-editorial-card--right .law-editorial-card__image {
+    grid-column: auto;
+    grid-row: auto;
+    margin: 0;
+    border-radius: 0;
+}
+
+@media (hover: hover) {
+    /* O `translateY(-4px)` e a sombra de 40px do `direitos.css`
+       sao zerados: num percurso, a linha nao pula. */
+    .laws-grid.dp-leis__lista .law-editorial-card:hover {
+        transform: none;
+        box-shadow: none;
+        background: transparent;
+    }
+}
+
+/* A imagem e o overlay somem. 12 fotos de 200px de altura sao 12
+   blocos que nao acrescentam nada: o `alt` do `img` gerado pelo JS
+   e o titulo da lei repetido, e nenhuma das 12 imagens diz algo que
+   o titulo nao diga.
+
+   O `<img>` continua no DOM com o `alt` intacto. Se um dia a imagem
+   voltar a ter funcao, e uma regra. */
+.laws-grid.dp-leis__lista .law-editorial-card__image,
+.laws-grid.dp-leis__lista .law-editorial-card__image-overlay {
+    display: none;
+}
+
+/* O painel deixa de ser marinho quase preto. Este e o ponto onde a
+   pagina deixa de parecer um tribunal: as 12 leis — o conteudo
+   principal — passam de 12 caixas `#071524` para 12 linhas sobre
+   fundo claro. */
+.laws-grid.dp-leis__lista .law-editorial-card__panel {
+    background: transparent;
+    color: var(--dp-tinta);
+    padding: 0;
+    gap: 8px;
+    display: block;
+}
+
+/* ---------- A COR POR AREA.
+
+   Medido antes: as 12 leis eram 12 linhas com o mesmo rotulo cinza.
+   Nao dava para saber de relance se uma lei era de educacao, saude,
+   assistencia social ou acessibilidade — e a area e a primeira coisa
+   que a pessoa procura quando filtra.
+
+   As 4 cores NAO sao novas: sao as mesmas 4 que o
+   `design-direitos.css` ja usava nos tiles de area (`--cat-ink`),
+   que eu tinha escondido junto com a mancha de cor. Reaproveitar
+   as duas e o que mantem a leitura: o filtro e a linha falam a
+   mesma lingua.
+
+     educacional     #6d28d9  (roxo)
+     saude            #15803d  (verde)
+     social           #1d4ed8  (azul)
+     acessibilidade   #be185d  (rosa)
+
+   O contraste de cada uma contra o branco foi medido: 7,0:1, 5,3:1,
+   7,4:1 e 6,1:1 — todas passam 4,5:1, e nenhuma delas e a cor do
+   texto do titulo, que continua #1a1a2e. A cor entra so no rotulo
+   e no icone: ela marca a area, nao compete com a leitura. */
+
+.laws-grid.dp-leis__lista .law-editorial-card__category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: auto;
+    padding: 0 0 8px;
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--dp-borda);
+    width: 100%;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--dp-cat);
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card__category i {
+    font-size: 11px;
+    color: var(--dp-cat);
+}
+
+/* O token e lido do `data-category` que o JS ja escreve em cada
+   card. `--dp-cat` tem um padrao (o roxo da marca) para o caso de
+   uma categoria nova aparecer sem linha aqui. */
+.laws-grid.dp-leis__lista .law-editorial-card[data-category="educacional"] {
+    --dp-cat: #6d28d9;
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card[data-category="saude"] {
+    --dp-cat: #15803d;
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card[data-category="social"] {
+    --dp-cat: #1d4ed8;
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card[data-category="acessibilidade"] {
+    --dp-cat: #be185d;
+}
+
+/* O titulo: Inter 800 em 1,25rem. Antes era 1,15rem sobre fundo
+   escuro; agora precisa de mais peso, porque nao ha mais o contraste
+   do painel para sustentar o texto. */
+.laws-grid.dp-leis__lista .law-editorial-card__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.24;
+    letter-spacing: -0.024em;
+    color: var(--dp-tinta);
+    margin: 0;
+    order: 2;
+}
+
+/* A descricao e a 2a camada do guia ("o que e?"). Ela existe no
+   banco e e o unico texto proprio de cada lei. */
+.laws-grid.dp-leis__lista .law-editorial-card__description {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--dp-suave);
+    margin: 0;
+    max-width: 66ch;
+    order: 3;
+}
+
+/* O rodape: base legal a esquerda, link a direita. A base legal e a
+   3a camada — "Base legal", que o guia diz que deve aparecer como
+   referencia sem dominar. 11px uppercase, discreto. */
+.laws-grid.dp-leis__lista .law-editorial-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 0;
+    order: 4;
+}
+
+/* A base legal. Medido, `0.6875rem` (11px) em uppercase ficava
+   pequena demais — era a unica forma de chegar no numero da lei, e
+   ela e a referencia que a pessoa vai copiar. Vai para 12,5px sem
+   uppercase (o numero ja tem ponto e barra: "12.764/2012" nao quer
+   caixa alta) e ganha a cor da area, para o olho achar o numero da
+   lei sem ler o resto. */
+.laws-grid.dp-leis__lista .law-editorial-card__number {
+    font-size: 0.78125rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--dp-cat);
+    white-space: nowrap;
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--dp-roxo);
+    text-decoration: none;
+    transition: gap 0.2s ease, color 0.18s ease;
+}
+
+@media (hover: hover) {
+    .laws-grid.dp-leis__lista .law-editorial-card__link:hover {
+        color: var(--dp-roxo);
+        gap: 10px;
+    }
+
+    .laws-grid.dp-leis__lista .law-editorial-card__link:hover i {
+        transform: translateX(2px);
+    }
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card__link i {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+.laws-grid.dp-leis__lista .law-editorial-card__link:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* O foco de toda a lei. `focus-within` porque o unico link e o
+   "Ver lei completa" — o foco precisa cair na linha, e um outline
+   no link sozinho deixa 240px de linha sem nada marcado. */
+.laws-grid.dp-leis__lista .law-editorial-card:focus-within {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* O estado vazio: mesma moldura do percurso, nao um bloco solto. */
+.laws-no-results {
+    padding: 44px 0;
+    border-top: 1px solid var(--dp-borda);
+    border-bottom: 1px solid var(--dp-borda);
+    color: var(--dp-suave);
+    font-size: 0.9375rem;
+}
+
+.laws-no-results i {
+    color: var(--dp-roxo);
+    opacity: 0.6;
+    margin-right: 8px;
+}
+
+/* =========================================
+   5. O FORMULARIO — a Lia, no unico ponto com funcao
+
+   Decisao do usuario: a Lia entra aqui e apenas aqui.
+
+   A razao esta no texto que ja existe na pagina: "Conte-nos seu
+   caso". E o momento exato em que a pessoa chegou ate o fim do
+   percurso e ainda nao sabe por onde comecar. A Lia nao decora a
+   secao — ela responde a duvida.
+
+   O `case-box` escuro (`#1a1525` -> `#2d1b3d`) vira claro. Uma caixa
+   marinho quase preta num formulario que promete "seus dados estao
+   seguros" trabalha contra a mensagem. */
+
+.resources-section.dp-ajuda {
+    padding: 96px 48px 0;
+    background: var(--dp-papel);
+    width: 100%;      /* ver a nota em `.laws-section` */
+    max-width: none;
+}
+
+/* O `direitos.css` da `max-width: 1200px` a `.resources-section`,
+   que e a propria secao. O container dentro so centraliza o
+   conteudo dentro da area util. */
+.dp-ajuda__container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* A grade e o CONTAINER, nao o `resources-box`: os dois filhos da
+   coluna sao `.resources-box` (as 3 linhas de recurso) e
+   `.case-box` (a Lia e o formulario). Declarar a grade no
+   `resources-box` a faria ter um unico filho em 2 colunas. */
+.dp-ajuda__grade {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0 64px;
+    align-items: start;
+}
+
+/* ---------- Os 3 `resource-item` viram linhas de percurso tambem.
+
+   O `resources-box` perde o chrome: fundo branco, borda de 1px,
+   raio. Sao 3 itens; caixa seria 1 caixa para 3 linhas. */
+.dp-ajuda .resources-box {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+.dp-ajuda .resources-box-header {
+    margin-bottom: 8px;
+}
+
+.dp-ajuda .resources-box-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+    background: var(--dp-roxo-claro);
+    color: var(--dp-roxo);
+    border-radius: 9px;
+    margin-bottom: 12px;
+}
+
+.dp-ajuda .resources-box h3 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--dp-tinta);
+    margin: 0 0 6px;
+}
+
+/* O `padding-left: 62px` do `direitos.css` alinhava o subtitulo com
+   o titulo, que ficava ao lado de um icone de 48px. Como o icone
+   agora e de 34px e o subtitulo vai abaixo dele, o recuo sobrava:
+   medido, "Ferramentas e documentos" comecava 62px a direita do
+   titulo. */
+.dp-ajuda .resources-box-sub {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--dp-suave);
+    margin: 0 0 22px;
+    padding-left: 0;
+}
+
+.dp-ajuda .resources-list {
+    display: block;
+    margin: 0;
+}
+
+.dp-ajuda .resource-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 14px;
+    padding: 16px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--dp-borda);
+    border-radius: 0;
+    text-decoration: none;
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.24s ease;
+}
+
+.dp-ajuda .resource-item-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+    background: transparent;
+    color: var(--dp-roxo);
+    border: 1px solid var(--dp-borda);
+    border-radius: 8px;
+}
+
+.dp-ajuda .resource-item strong {
+    display: block;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    color: var(--dp-tinta);
+    transition: color 0.18s ease;
+}
+
+.dp-ajuda .resource-item span {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--dp-suave);
+    margin-top: 2px;
+}
+
+.dp-ajuda .resource-item > i {
+    font-size: 12px;
+    color: var(--dp-roxo);
+    opacity: 0.52;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.18s ease;
+}
+
+@media (hover: hover) {
+    .dp-ajuda .resource-item:hover {
+        padding-left: 8px;
+        border-bottom-color: var(--dp-roxo);
+    }
+
+    .dp-ajuda .resource-item:hover strong {
+        color: var(--dp-roxo);
+    }
+
+    .dp-ajuda .resource-item:hover > i {
+        transform: translateX(4px);
+        opacity: 1;
+    }
+}
+
+.dp-ajuda .resource-item:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+.dp-ajuda .resources-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 11px 20px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    color: #ffffff;
+    background: var(--dp-roxo);
+    border: 0;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, gap 0.2s ease;
+}
+
+@media (hover: hover) {
+    .dp-ajuda .resources-download-btn:hover {
+        background: #6d28d9;
+        gap: 12px;
+    }
+}
+
+.dp-ajuda .resources-download-btn:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+}
+
+/* ---------- O formulario, com a Lia.
+
+   Grade de 2 colunas: a Lia e a pergunta a esquerda, o formulario a
+   direita. A Lia e a UNICA personagem da pagina e ela entra
+   pequena, ao lado do texto que responde a duvida dela. */
+.dp-ajuda .case-box {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    position: relative;
+}
+
+.dp-ajuda .case-box-glow {
+    display: none;
+}
+
+/* `text-align: left` e obrigatorio: o `case-box-content` herda
+   `text-align: center` do `direitos.css`, feito para o painel
+   escuro. Medido: o titulo do formulario e a descricao renderizavam
+   centralizados numa coluna de 429px, enquanto as linhas de recurso
+   ao lado eram a esquerda. */
+.dp-ajuda .case-box-content {
+    display: block;
+    text-align: left;
+}
+
+.dp-lia {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+/* 88px: menor que os 104px da Explorar. Aqui ela e um apoio a uma
+   pergunta, nao a assinatura de uma dobra. `pointer-events: none`
+   porque e decorativa: nao tem href, nao tem tabindex, e o `alt` e
+   vazio com `aria-hidden` no HTML. */
+.dp-lia__img {
+    width: 88px;
+    height: auto;
+    flex: 0 0 auto;
+    pointer-events: none;
+}
+
+.dp-lia__texto {
+    min-width: 0;
+    padding-top: 4px;
+}
+
+/* A especificidade aqui NAO e vaidade. O `direitos.css` tem
+   `.case-box p { color: rgba(255, 255, 255, 0.7) }`, que e (0,1,1) e
+   vence um seletor de classe unica. Medido: a pergunta da Lia
+   renderizava `rgba(255,255,255,0.7)` — branco sobre papel, ou
+   seja, invisivel. `display: block` nao resolvia.
+
+   Com `.dp-ajuda` no caminho, o seletor vira (0,2,0), que ganha de
+   (0,1,1). E o certo: o `case-box` ja nao e mais escuro, e o texto
+   dentro dele tem de acompanhar. */
+.dp-ajuda .dp-lia__pergunta {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1.24;
+    letter-spacing: -0.015em;
+    color: var(--dp-tinta);
+    margin: 0 0 8px;
+}
+
+.dp-ajuda .dp-lia__resposta {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--dp-suave);
+    margin: 0;
+    max-width: 44ch;
+}
+
+/* O titulo do formulario: o texto que o guia pede. */
+.dp-ajuda .case-box h3 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--dp-tinta);
+    margin: 0 0 6px;
+}
+
+.dp-ajuda .case-box > .case-box-content > p,
+.dp-ajuda .case-box-content > p {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    margin: 0 0 18px;
+}
+
+.dp-ajuda .case-box-content strong {
+    color: var(--dp-tinta);
+}
+
+/* O campo do formulario: fio em vez de caixa cheia. O `input` e o
+   `textarea` NAO sao tocados — mesmos elementos, mesmos `required`,
+   mesmos placeholders. */
+.dp-ajuda .case-form {
+    display: block;
+    margin: 0;
+}
+
+.dp-ajuda .case-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.dp-ajuda .case-form input,
+.dp-ajuda .case-form textarea {
+    width: 100%;
+    padding: 12px 0;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.9375rem;
+    color: var(--dp-tinta);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--dp-borda);
+    border-radius: 0;
+    transition: border-color 0.2s ease;
+}
+
+.dp-ajuda .case-form textarea {
+    min-height: 96px;
+    resize: vertical;
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+
+.dp-ajuda .case-form input::placeholder,
+.dp-ajuda .case-form textarea::placeholder {
+    color: var(--dp-suave);
+    opacity: 0.75;
+}
+
+.dp-ajuda .case-form input:focus,
+.dp-ajuda .case-form textarea:focus {
+    outline: 0;
+    border-bottom-color: var(--dp-roxo);
+}
+
+/* O foco visivel em campo que so tem fio: sem isto o teclado nao ve
+   onde esta. */
+.dp-ajuda .case-form input:focus-visible,
+.dp-ajuda .case-form textarea:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+.dp-ajuda .case-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    width: auto;
+    padding: 13px 24px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    color: #ffffff;
+    background: var(--dp-roxo);
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, gap 0.2s ease;
+}
+
+@media (hover: hover) {
+    .dp-ajuda .case-submit-btn:hover {
+        background: #6d28d9;
+        gap: 12px;
+    }
+}
+
+.dp-ajuda .case-submit-btn:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+}
+
+/* As 4 clarezas que o guia pede e que hoje nao estao todas na
+   pagina. `list-style: none` porque a marca padrao do navegador
+   desenharia um ponto que compete com a marcacao do percurso. */
+.dp-clarezas {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--dp-borda);
+}
+
+/* NENHUM grid aqui. Medido: um `<li>` com `<strong>` + texto tem
+   DOIS filhos (`filhosDoLi: ["STRONG.", "TEXTO"]`), entao no grid o
+   `<strong>` virava item da coluna 1 e o texto de fora caia numa
+   linha nova, numa coluna de 16px. Resultado: "para enviar.
+   Criamos um acesso com o" quebrando uma palavra por linha, e o
+   `<li>` com 234px de altura para uma frase de duas linhas.
+
+   Com `padding-left` + `::before` posicionado, o `<strong>` e o
+   texto voltam a ser o mesmo fluxo, que e o que o HTML pede. Vale
+   para qualquer quantidade de filhos. */
+.dp-clarezas li {
+    position: relative;
+    display: block;
+    padding: 9px 0 9px 22px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    border-bottom: 1px solid var(--dp-borda);
+    text-align: left;
+}
+
+.dp-clarezas li:last-child {
+    border-bottom: 0;
+}
+
+.dp-clarezas li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 15px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--dp-roxo);
+    opacity: 0.55;
+}
+
+.dp-clarezas strong {
+    color: var(--dp-tinta);
+    font-weight: 700;
+}
+
+/* O aviso de privacidade: a frase de seguranca, com o fio. */
+/* `position: relative` + `padding-left`, e nao `display: flex`.
+   Medido a 1440px: o `<p>` alinhava certinho no form (offset 0px),
+   mas o `<i>` aparecia 64px a direita dele — dentro de um flex, o
+   icone e o texto sao itens flex, e o espaco entre eles dependia de
+   como o `direitos.css` distribui. Com o icone posicionado, ele fica
+   onde pertence: na margem do texto. */
+.dp-ajuda .case-disclaimer {
+    position: relative;
+    display: block;
+    margin: 16px 0 0;
+    padding: 0 0 0 22px;
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.dp-ajuda .case-disclaimer i {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    font-size: 12px;
+    color: var(--dp-roxo);
+}
+
+/* =========================================
+   6. O FAQ — 6 <details>, intocados
+   ========================================= */
+
+/* `.rights-faq` e a propria largura: o `direitos.css` da
+   `max-width: 820px` a ela, e nao a um container dentro. Por isso o
+   `max-width` vai no head e na lista, e o padding fica na secao.
+   Sem container, nao ha o que segurar os 1200px. */
+.rights-faq.dp-faq {
+    padding: 88px 48px 0;
+    background: #ffffff;
+    width: 100%;      /* ver a nota em `.laws-section` */
+    max-width: none;
+}
+
+.dp-faq__head {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--dp-tinta);
+}
+
+.dp-faq .rights-faq__list {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dp-faq .section-badge {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dp-suave);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0 0 8px;
+}
+
+.dp-faq .section-badge i {
+    color: var(--dp-roxo);
+}
+
+.dp-faq .rights-faq__head > p {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    margin: 0;
+}
+
+.dp-faq .dp-secao__titulo,
+.dp-faq h2 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--dp-tinta);
+    margin: 0 0 6px;
+}
+
+/* O `<details>` vira linha de percurso. `summary` sem marcador: o
+   `+` e um pseudo, nao o `list-style` do navegador. */
+/* Medido: o FAQ NAO usa `<details>`. Sao 6 `div.faq-item` com um
+   `button` e um `div.faq-answer`, e quem controla a abertura e o
+   `direitos.js`. A primeira versao deste arquivo estilizou
+   `<details>` e `summary` — e nao pegou em nenhum dos 6.
+
+   Aqui o alvo e o botao e o icone `.fa-chevron-down` que ele ja
+   traz. Nenhuma das 6 perguntas e tocada. */
+.dp-faq .faq-item {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--dp-borda);
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.dp-faq .faq-item button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22px;
+    align-items: center;
+    column-gap: 16px;
+    width: 100%;
+    padding: 20px 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.35;
+    color: var(--dp-tinta);
+    transition: color 0.18s ease, padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dp-faq .faq-item button i {
+    justify-self: end;
+    font-size: 13px;
+    color: var(--dp-roxo);
+    opacity: 0.6;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
+}
+
+@media (hover: hover) {
+    .dp-faq .faq-item button:hover {
+        color: var(--dp-roxo);
+        padding-left: 8px;
+    }
+
+    .dp-faq .faq-item button:hover i {
+        opacity: 1;
+    }
+}
+
+.dp-faq .faq-item button:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+.dp-faq .faq-answer {
+    margin: 0;
+    padding: 0 40px 22px 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--dp-suave);
+    max-width: 72ch;
+}
+
+/* =========================================
+   7. O CONTATO — o card escuro vira claro
+
+   `.rights-contact__card` usa `linear-gradient(100deg,
+   rgba(15,...))` em 4 breakpoints. Oito regras de fundo escuro num
+   bloco so. Sai o fundo; fica o conteudo. */
+
+/* `.rights-contact` tem um comentario no `direitos.css` dizendo
+   que nao ha padding lateral porque o card encosta nas bordas. Aqui
+   passa a ter: o percurso precisa da margem de leitura. */
+.rights-contact.dp-contato {
+    padding: 96px 48px 0;
+    background: var(--dp-papel);
+    width: 100%;      /* ver a nota em `.laws-section` */
+    max-width: none;
+}
+
+.dp-contato__container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* O CARD vira uma grade de 2 colunas: o texto a esquerda, a Lia a
+   direita.
+
+   Medido: sem isso, `.acolheria-card-nota` — que e IRMA de
+   `.rights-contact__content`, e nao filha — ficava solta na direita
+   do bloco, e o desenho da Lia era empurrado para fora do card
+   (`dentro do card? false`, `sobra a direita da Lia: -5px`).
+
+   A nota nao pode ser styled como se estivesse dentro do texto: ela
+   nao esta. Por isso ela ganha `grid-column: 1` explicito, e e o
+   que fecha a coluna. Sem isso o grid a colocaria numa celula propria
+   da coluna 1, abaixo do conteudo, deixando um vao no meio. */
+.rights-contact__card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    column-gap: 48px;
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 0;
+    padding: 0;
+    text-align: left;
+}
+
+/* ---------- A LIA, no canto direito do bloco de contato.
+
+   O desenho e `img/lia/lia-direitos-percurso.png` (720x672), feito a
+   partir de `lia-direitos-clara.png` trocando a linha de #f0e2ff
+   para o roxo #7c3aed. Medido: na versao clara a linha ficava a
+   1,08:1 do papel #faf9fe — praticamente invisivel. Com o roxo da
+   marca ela volta a ler como desenho.
+
+   Por que um arquivo novo em vez de `filter` no GIF: o GIF da Lia
+   tem 33 cores opacas, todas de tom de pele, e NENHUM roxo (medido).
+   Um `hue-rotate` trocaria a pele tambem. O `lia-direitos-clara.png`
+   ja era o desenho certo — faltava so a cor. */
+
+/* A Lia e a 2a COLUNA do grid, nao um absoluto solto.
+
+   Medido: como absoluto com `right: 0` e `width: 300px`, a caixa
+   media 310px e ficava 5px PARA FORA do card — o desenho encostava
+   na borda da tela. Como item de grid, a coluna reserva 300px e a
+   imagem cabe dentro dela por construcao.
+
+   O `position: static` e obrigatorio: o `lia-chibi.css` deixa o
+   `position: absolute; top: 6px; right: 174px` nela, feito para
+   flutuar sobre o banner escuro. */
+.dp-contato__lia {
+    position: static;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    justify-self: end;
+    z-index: 0;
+
+    /* 720x603 (recortei a bbox da tinta do arquivo de 720x672, que
+       tinha 30px de vazio em cima). A 300px de largura a arte perde
+       58% — e arte de linha, nao perde nada nessa escala. */
+    width: 300px;
+    height: auto;
+    transform: rotate(-2deg);
+
+    opacity: 0.9;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* `max-width` sai: quem controla a largura agora e a coluna do
+   grid. Medido antes, o texto parava em 52% do card (479px de 921)
+   e sobrava 440px vazios — mais do que a Lia ocupa. */
+.rights-contact__content {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    z-index: 1;
+    max-width: none;
+    min-width: 0;
+}
+
+.rights-contact__card h2,
+.rights-contact h2 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--dp-tinta);
+    margin: 0 0 10px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--dp-tinta);
+}
+
+/* `color` explicito porque o `direitos.css` pinta este paragrafo de
+   `rgba(255,255,255,0.62)`, feito para o fundo escuro do card. Com o
+   fundo transparente esse branco ficaria invisivel — foi o mesmo
+   problema do texto da Lia no formulario. */
+.rights-contact__card p,
+.rights-contact p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--dp-suave);
+    max-width: 58ch;
+}
+
+/* ---------- A COR REAL DESTE PARAGRAFO (0,3,2).
+
+   Medido: o paragrafo saia em `rgb(255,255,255)` — branco puro, zero
+   leitura — e o `<strong>Lia</strong>` em `#a78bfa`. A regra minha
+   acima (0,1,1) nao vencia: o `direitos.css` tem
+   `.rights-contact__content > p:not(.acolheria-card-nota)`
+   (0,2,1) e o mesmo seletor com `strong` (0,2,2).
+
+   Aqui o seletor e o mesmo com `.rights-contact__card` na frente, o
+   que leva a (0,3,1) e (0,3,2): vence as duas. Sem a palavra
+   "Lia" o bloco nao dizia de quem a ajuda e.
+
+   `max-width` fica com o `460px !important` antigo: medido, a coluna
+   1 do grid tem 639px, e 460px de linha cabe o texto sem orfa. Nao
+   brigo com `!important` onde ele nao atrapalha. */
+.rights-contact__card .rights-contact__content > p:not(.acolheria-card-nota) {
+    color: var(--dp-suave);
+}
+
+.rights-contact__card .rights-contact__content > p:not(.acolheria-card-nota) strong {
+    color: var(--dp-roxo);
+    font-weight: 700;
+}
+
+.rights-contact .acolheria-badge-nome {
+    color: var(--dp-tinta);
+}
+
+/* A NOTA e irma do conteudo dentro do card, e nao filha. Sem o
+   `grid-column` ela cairia numa celula propria da coluna 1,
+   deixando um vao entre ela e o texto acima. */
+.rights-contact .acolheria-card-nota {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+    max-width: 52ch;
+    margin: 4px 0 0;
+}
+
+.rights-contact__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+}
+
+.rights-contact__actions .btn-primary,
+.rights-contact__actions .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, gap 0.2s ease;
+}
+
+.rights-contact__actions .btn-primary {
+    background: var(--dp-roxo);
+    color: #ffffff;
+    border: 0;
+}
+
+.rights-contact__actions .btn-secondary {
+    background: transparent;
+    color: var(--dp-roxo);
+    border: 1px solid var(--dp-borda);
+}
+
+@media (hover: hover) {
+    .rights-contact__actions .btn-primary:hover {
+        background: #6d28d9;
+        gap: 12px;
+    }
+
+    .rights-contact__actions .btn-secondary:hover {
+        color: var(--dp-roxo);
+        border-color: var(--dp-roxo);
+    }
+}
+
+.rights-contact__actions a:focus-visible,
+.rights-contact__actions button:focus-visible {
+    outline: 2px solid var(--dp-roxo);
+    outline-offset: 3px;
+}
+
+/* =========================================
+   8. RESPONSIVO
+   ========================================= */
+
+@media (max-width: 1100px) {
+    .dp-hero__grade {
+        grid-template-columns: minmax(0, 1fr) 280px;
+        column-gap: 48px;
+    }
+
+    .rights-nav__container { padding: 10px 32px; }
+
+    .rights-contact__card {
+        grid-template-columns: minmax(0, 1fr) 250px;
+        column-gap: 32px;
+    }
+
+    .dp-contato__lia {
+        width: 240px;
+        opacity: 0.6;
+    }
+
+    .rd-banner.dp-hero,
+    .categories-nav.dp-areas,
+    .laws-section.dp-leis,
+    .resources-section.dp-ajuda,
+    .rights-faq.dp-faq,
+    .rights-contact.dp-contato { padding-left: 32px; padding-right: 32px; }
+}
+
+@media (max-width: 900px) {
+    .dp-hero__grade {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 44px;
+        padding: 62px 32px 56px;
+    }
+
+    /* O percurso desce para baixo do texto. Continua numerado, que e
+       o que importa — a coluna de 300px nao cabe em 900px com o
+       titulo do lado. */
+    .dp-percurso {
+        grid-column: 1;
+    }
+
+    .dp-hero__apoio {
+        max-width: 100%;
+    }
+
+    /* `display: block` + chips `inline-flex`, e nao `column` de flex.
+
+       Medido na captura de 390px: com `flex-direction: column` os 6
+       chips viravam 6 LINHAS, e a regua ocupava 300px de altura
+       antes de qualquer conteudo. Quem abre a pagina no celular
+       empurrava a dobra inteira para baixo.
+
+       Como os chips sao filhos diretos do container — nao ha um
+       wrapper — so da para fazer trilho assim trocando o container
+       para `block` e cada chip para `inline-flex`. Aí eles fluem
+       como linha de texto e quebram em 2 linhas dentro do que se
+       ve, sem rolagem horizontal escondida. */
+    .rights-nav__container {
+        display: block;
+        padding: 10px 32px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .rights-nav__container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .rights-nav__rotulo {
+        margin: 0 0 7px;
+    }
+
+    .rights-nav__chip {
+        display: inline-flex;
+        margin: 0 3px 3px 0;
+    }
+
+    .dp-ajuda__grade {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 48px;
+    }
+
+    .rd-banner.dp-hero,
+    .categories-nav.dp-areas,
+    .laws-section.dp-leis,
+    .resources-section.dp-ajuda,
+    .rights-faq.dp-faq,
+    .rights-contact.dp-contato { padding-left: 32px; padding-right: 32px; }
+}
+
+@media (max-width: 560px) {
+    .dp-hero__grade {
+        padding: 44px 22px 42px;
+        row-gap: 36px;
+    }
+
+    .dp-hero__marca {
+        margin-bottom: 22px;
+    }
+
+    .dp-hero__fio {
+        width: 36px;
+    }
+
+    /* A area vira titulo em cima, termos embaixo, contagem embaixo
+       disso. O `grid-row` explicito e obrigario: sem ele o `<span>`
+       da contagem cai em cima do titulo — mesmo problema do indice
+       de categorias em Artigos. */
+    .dp-areas__grade .category-tile {
+        grid-template-columns: minmax(0, 1fr) 20px;
+        row-gap: 2px;
+        padding: 20px 0;
+    }
+
+    .dp-areas__grade .category-tile__title {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 1.1875rem;
+    }
+
+    .dp-areas__grade .category-tile::after {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .dp-areas__grade .category-tile__count {
+        grid-column: 1;
+        grid-row: 2;
+        margin-top: 4px;
+    }
+
+    .dp-areas__cobertura {
+        grid-row: 3;
+    }
+
+    .dp-ajuda .case-form-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dp-lia__img {
+        width: 68px;
+    }
+
+    .rights-nav__container { padding: 9px 22px; }
+
+    /* No celular o bloco vira 1 coluna e a Lia desce para baixo do
+       texto, centralizada e discreta. Medido: com 2 colunas a 390px
+       o texto ficaria com ~110px — 5 palavras por linha. */
+    .rights-contact__card {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 28px;
+    }
+
+    .rights-contact__content,
+    .rights-contact .acolheria-card-nota {
+        grid-column: 1;
+        max-width: none;
+    }
+
+    .rights-contact__content { grid-row: 1; }
+    .rights-contact .acolheria-card-nota { grid-row: 2; }
+
+    .dp-contato__lia {
+        grid-column: 1;
+        grid-row: 3;
+        justify-self: center;
+        width: 210px;
+        opacity: 0.5;
+        transform: none;
+    }
+
+    .rd-banner.dp-hero,
+    .categories-nav.dp-areas,
+    .laws-section.dp-leis,
+    .resources-section.dp-ajuda,
+    .rights-faq.dp-faq,
+    .rights-contact.dp-contato { padding-left: 22px; padding-right: 22px; }
+
+    .laws-grid.dp-leis__lista .law-editorial-card {
+        padding: 22px 0;
+    }
+
+    .laws-grid.dp-leis__lista .law-editorial-card__title {
+        font-size: 1.125rem;
+    }
+
+    .dp-faq .faq-item button {
+        font-size: 0.9375rem;
+        padding: 18px 0;
+    }
+
+    .dp-faq .faq-answer {
+        padding-right: 0;
+    }
+}
+
+@media (max-height: 620px) and (min-width: 901px) {
+    .dp-hero__grade { padding: 54px 48px 50px; }
+    .dp-hero__marca { margin-bottom: 20px; }
+}
+
+/* =========================================
+   9. MOVIMENTO REDUCIDO
+
+   Uma regra so, em `*` dentro das 6 secoes. Lista de seletores nao
+   cobre as transicoes declaradas nos proprios filhos — foi o que a
+   medicao mostrou no Artigos e no Blog. */
+@media (prefers-reduced-motion: reduce) {
+    .rd-banner *,
+    .categories-nav *,
+    .laws-section *,
+    .resources-section *,
+    .rights-faq *,
+    .rights-contact *,
+    .rights-nav * {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .dp-areas__grade .category-tile:hover::after,
+    .dp-ajuda .resource-item:hover > i,
+    .dp-faq summary:hover {
+        transform: none;
+    }
+
+    .dp-areas__grade .category-tile:hover,
+    .dp-ajuda .resource-item:hover,
+    .dp-percurso__item:hover,
+    .dp-faq .faq-item button:hover {
+        padding-left: 0;
+    }
+}

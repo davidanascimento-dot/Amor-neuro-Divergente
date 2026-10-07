@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="blog.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
+    <!-- A camada de fluxo. ULTIMO de proposito: precisa vencer. -->
+    <link rel="stylesheet" href="/blog/blog-fluxo.css">
   <script src="/imagens.js"></script>
 </head>
 <body>
@@ -119,21 +121,37 @@
         <!-- =============================================
         HERO — Banner editorial
         ============================================= -->
-        <section class="blog-banner">
-            <div class="blog-banner__media">
-                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920&h=900&fit=crop"
-                     alt="Pessoa lendo em ambiente tranquilo" loading="eager">
-                <div class="blog-banner__overlay"></div>
+        <section class="blog-banner bl-hero">
+            <div class="bl-hero__grade">
+                <div class="bl-hero__coluna">
+                    <span class="bl-hero__marca" aria-hidden="true">
+                        <span class="bl-hero__linha"></span>
+                        <span class="bl-hero__ponto"></span>
+                    </span>
+                    <h1 class="bl-hero__titulo">
+                        Histórias, reflexões<br>
+                        <span class="bl-hero__accent">e informação de verdade</span>
+                    </h1>
+                    <p class="bl-hero__apoio">
+                        Textos e vídeos sobre autismo, TDAH, direitos e vida
+                        neurodivergente. No seu tempo, do seu jeito.
+                    </p>
+                </div>
+                <article class="editorial-card editorial-card--article bl-destaque" data-category="autismo">
+                        <a href="/blog/post-masking.html" class="editorial-card__media bl-destaque__media">
+                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80"
+                                 alt="Pessoa tomando café em ambiente calmo" loading="lazy">
+                        </a>
+                        <div class="editorial-card__body bl-destaque__corpo">
+                <span class="bl-destaque__rotulo" aria-hidden="true">
+                    <span class="bl-destaque__fio"></span>Em destaque
+                </span>
+                <h2 class="editorial-card__title bl-destaque__titulo">
+                                <a href="/blog/post-masking.html">O dia em que você para de sobreviver e começa a viver</a>
+                            </h2>
+                <span class="bl-destaque__categoria">Autismo</span>
             </div>
-            <div class="blog-banner__content">
-                <span class="blog-banner__eyebrow"><i class="fa-solid fa-pen-nib"></i> Blog</span>
-                <h1 class="blog-banner__title">
-                    Histórias, reflexões <br>
-                    <span class="blog-banner__title-accent">e informação de verdade</span>
-                </h1>
-                <p class="blog-banner__sub">
-                    Textos e vídeos sobre autismo, TDAH, direitos e vida neurodivergente. No seu tempo, do seu jeito.
-                </p>
+                    </article>
             </div>
         </section>
 
@@ -142,31 +160,37 @@
         ============================================= -->
         <nav class="blog-nav" aria-label="Categorias do Blog">
             <div class="blog-nav__container">
-                <button class="blog-nav__chip active" data-filter="todos">
-                    <i class="fa-solid fa-border-all"></i> Todos
-                </button>
-                <button class="blog-nav__chip" data-filter="autismo">
-                    <i class="fa-solid fa-puzzle-piece"></i> Autismo
-                </button>
-                <button class="blog-nav__chip" data-filter="tdah">
-                    <i class="fa-solid fa-bolt"></i> TDAH
-                </button>
-                <button class="blog-nav__chip" data-filter="comunicacao">
-                    <i class="fa-solid fa-comments"></i> Comunicação
-                </button>
-                <button class="blog-nav__chip" data-filter="terapia">
-                    <i class="fa-solid fa-hand-holding-heart"></i> Terapia
-                </button>
-                <button class="blog-nav__chip" data-filter="direitos">
-                    <i class="fa-solid fa-scale-balanced"></i> Direitos
-                </button>
-                <button class="blog-nav__chip" data-filter="saude-mental">
-                    <i class="fa-solid fa-brain"></i> Saúde Mental
-                </button>
-                <button class="blog-nav__chip" data-filter="familia">
-                    <i class="fa-solid fa-people-roof"></i> Família
-                </button>
-            </div>
+                    <!-- A REGUA: rotulo a esquerda, os 8 chips a direita, na mesma linha de base.
+                         O rotulo e texto novo; os 8 <button> e os 8 `data-filter` nao foram tocados — `blog.js`
+                         continua encontre-os por `.blog-nav__chip`. -->
+                    <span class="blog-nav__rotulo">Filtrar por tema</span>
+                    <div class="blog-nav__chips">
+<button class="blog-nav__chip active" data-filter="todos">
+                        <i class="fa-solid fa-border-all"></i> Todos
+                        </button>
+                        <button class="blog-nav__chip" data-filter="autismo">
+                        <i class="fa-solid fa-puzzle-piece"></i> Autismo
+                        </button>
+                        <button class="blog-nav__chip" data-filter="tdah">
+                        <i class="fa-solid fa-bolt"></i> TDAH
+                        </button>
+                        <button class="blog-nav__chip" data-filter="comunicacao">
+                        <i class="fa-solid fa-comments"></i> Comunicação
+                        </button>
+                        <button class="blog-nav__chip" data-filter="terapia">
+                        <i class="fa-solid fa-hand-holding-heart"></i> Terapia
+                        </button>
+                        <button class="blog-nav__chip" data-filter="direitos">
+                        <i class="fa-solid fa-scale-balanced"></i> Direitos
+                        </button>
+                        <button class="blog-nav__chip" data-filter="saude-mental">
+                        <i class="fa-solid fa-brain"></i> Saúde Mental
+                        </button>
+                        <button class="blog-nav__chip" data-filter="familia">
+                        <i class="fa-solid fa-people-roof"></i> Família
+                        </button>
+                    </div>
+                </div>
         </nav>
 
         <!-- =============================================
@@ -186,10 +210,10 @@
             <span class="espaco-banner__nome">Blog / antes do grid</span>
             <span class="espaco-banner__fundo">/img/ilustracoes/A FOLHA ESCRITA.jpg</span>
         </div>
-<section class="blog-grid-section">
+<section class="blog-grid-section bl-fluxo-secao">
             <div class="blog-grid-section__container">
 
-                <header class="blog-grid-section__head">
+                <header class="blog-grid-section__head bl-fluxo-secao__head">
                     <div>
                         <span class="blog-grid-section__eyebrow"><i class="fa-solid fa-fire"></i> Em alta</span>
                         <h2>Conteúdos da comunidade</h2>
@@ -198,30 +222,19 @@
                 </header>
 
                 <!-- GRID 3 COLUNAS -->
-                <div class="editorial-grid" id="blogGrid">
+                <div class="editorial-grid bl-fluxo" id="blogGrid">
 
                     <!-- CARD 1 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article" data-category="autismo">
-                        <a href="/blog/post-masking.html" class="editorial-card__media">
-                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80"
-                                 alt="Pessoa tomando café em ambiente calmo" loading="lazy">
-                        </a>
-                        <div class="editorial-card__body">
-                            <h3 class="editorial-card__title">
-                                <a href="/blog/post-masking.html">O dia em que você para de sobreviver e começa a viver</a>
-                            </h3>
-                        </div>
-                    </article>
+                    
 
                     <!-- CARD 2 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video" data-category="comunicacao">
+                    <article class="editorial-card editorial-card--video bl-item bl-item--video-largo" data-category="comunicacao">
                         <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
                             <div class="video-thumb">
                                 <div class="video-thumb__split">
                                     <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80" alt="Comunicação inclusiva" loading="lazy">
                                     <div class="video-thumb__text">
                                         <span class="video-thumb__label">PORTAL DOS<br>NEURODIVERGENTES</span>
-                                        <p class="video-thumb__desc">Como tornar a comunicação mais inclusiva para profissionais neurodivergentes.</p>
                                         <span class="video-thumb__author">por Isabella Saes, Jornalista</span>
                                     </div>
                                 </div>
@@ -238,14 +251,13 @@
                     </article>
 
                     <!-- CARD 3 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video" data-category="autismo">
+                    <article class="editorial-card editorial-card--video bl-item bl-item--video-curto" data-category="autismo">
                         <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
                             <div class="video-thumb">
                                 <div class="video-thumb__split">
                                     <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&q=80" alt="Neurodivergência na infância" loading="lazy">
                                     <div class="video-thumb__text">
                                         <span class="video-thumb__label">PORTAL DOS<br>NEURODIVERGENTES</span>
-                                        <p class="video-thumb__desc">Neurodivergência na infância e adolescência</p>
                                         <span class="video-thumb__author">Tatiane Arruda, Psicóloga</span>
                                     </div>
                                 </div>
@@ -262,7 +274,7 @@
                     </article>
 
                     <!-- CARD 4 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article" data-category="reflexao">
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-pausa" data-category="reflexao">
                         <a href="#" class="editorial-card__media">
                             <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&q=80"
                                  alt="Pessoa refletindo" loading="lazy">
@@ -275,7 +287,7 @@
                     </article>
 
                     <!-- CARD 5 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video" data-category="saude-mental">
+                    <article class="editorial-card editorial-card--video bl-item bl-item--video-curto" data-category="saude-mental">
                         <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
                             <div class="video-thumb">
                                 <div class="video-thumb__split">
@@ -299,7 +311,7 @@
                     </article>
 
                     <!-- CARD 6 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article" data-category="familia">
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="familia">
                         <a href="#" class="editorial-card__media">
                             <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&q=80"
                                  alt="Burnout materno" loading="lazy">
@@ -312,7 +324,7 @@
                     </article>
 
                     <!-- CARD 7 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article" data-category="tdah">
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="tdah">
                         <a href="#" class="editorial-card__media">
                             <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80"
                                  alt="Método dos 5 minutos" loading="lazy">
@@ -325,7 +337,7 @@
                     </article>
 
                     <!-- CARD 8 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video" data-category="direitos">
+                    <article class="editorial-card editorial-card--video bl-item bl-item--video-largo" data-category="direitos">
                         <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
                             <div class="video-thumb">
                                 <div class="video-thumb__split">
@@ -349,7 +361,7 @@
                     </article>
 
                     <!-- CARD 9 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article" data-category="terapia">
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-medio" data-category="terapia">
                         <a href="#" class="editorial-card__media">
                             <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80"
                                  alt="Comunicação alternativa" loading="lazy">
@@ -385,7 +397,7 @@
         <!-- =============================================
         NEWSLETTER
         ============================================= -->
-        <section class="deco-hospedeiro blog-newsletter">
+        <section class="deco-hospedeiro blog-newsletter bl-rodape">
         <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
         <span class="deco deco--nuvem deco--dir deco--topo deco--s2"
               style="--tam: 100px; --rot: 6deg" aria-hidden="true"></span>

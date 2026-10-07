@@ -18,6 +18,8 @@
 <link rel="stylesheet" href="/busca.css">
     <link rel="stylesheet" href="/lia-chibi.css">
     <link rel="stylesheet" href="/Direitos/design-direitos.css">
+    <!-- A camada de percurso. ULTIMO de proposito: precisa vencer. -->
+    <link rel="stylesheet" href="/Direitos/direitos-percurso.css">
   <script src="/imagens.js"></script>
 </head>
 
@@ -116,31 +118,57 @@
         <!-- =============================================
              HERO EDITORIAL — Imagem full-width + título
              ============================================= -->
-        <section class="rights-banner rd-banner">
-            <div class="rights-banner__media">
-                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1920&h=900&fit=crop"
-                     alt="Documentos e símbolo de justiça" loading="eager">
-                <div class="rights-banner__overlay"></div>
-                <!-- Veu medido: a foto tem area clara (media 144,
-                     pico #EEEDEB) exatamente onde o texto cai. Com o
-                     veu de 55% do overlay, o branco do subtitulo ficava
-                     em ~2,5:1 — abaixo de AA. Este veu reforca o centro e
-                     alivia nas pontas, para o texto passar de 7:1 e a
-                     estatueta continuar visivel. -->
-                <div class="rd-banner__veu"></div>
-            </div>
+        <section class="rights-banner rd-banner dp-hero">
+            <!-- A ATMOSFERA e 100% CSS: tres gradientes de tom
+                 (::before), o ponto de marcacao, o arco e a linha de
+                 percurso (::after). Nenhum PNG, nenhuma imagem, nenhum
+                 pedido de rede nesta dobra.
 
-            <div class="rights-banner__content">
-                <span class="rights-banner__eyebrow">
-                    <i class="fa-solid fa-scale-balanced"></i> Seus Direitos
-                </span>
-                <h1 class="rights-banner__title">
-                    Juridiquês? <br>
-                    <span class="rights-banner__title-accent">Aqui a gente traduz.</span>
-                </h1>
-                <p class="rights-banner__sub">
-                    Conheça as leis que protegem você e saiba como usá-las no dia a dia. Sem palavras difíceis.
-                </p>
+                 A marca `--- · ---`: 1 linha, 1 ponto, 1 linha. As
+                 outras tres marcas do site sao linha+estrela
+                 (Explorar, Artigos) e linha+losango (Eventos). O
+                 ponto no meio do fio e a propria ideia de percurso.
+                 Decorativa: nao entra na ordem de leitura. -->
+            <div class="dp-hero__grade">
+                <div class="dp-hero__coluna">
+                    <span class="dp-hero__marca" aria-hidden="true">
+                        <span class="dp-hero__fio"></span>
+                        <span class="dp-hero__ponto"></span>
+                        <span class="dp-hero__fio"></span>
+                    </span>
+                    <h1 class="dp-hero__titulo">
+                        Conheça seus direitos.<br>
+                        <span class="dp-hero__accent">E descubra como usar cada um deles.</span>
+                    </h1>
+                    <p class="dp-hero__apoio">
+                        Conheça as leis que protegem você e saiba como usá-las no
+                        dia a dia. Sem palavras difíceis.
+                    </p>
+                </div>
+
+                <!-- O PERCURSO COMECA AQUI.
+                     Os 3 numeros sao os mesmos das 3 secoes seguintes,
+                     e os `href` apontam para os `id` que JA EXISTEM
+                     nesta pagina (`#categorias`, `#leis`, `#recursos`).
+                     Nenhum id novo, nenhum link inventado.
+
+                     Sao as 3 perguntas que a pagina responde. O texto
+                     de cada uma e o titulo da pergunta, nao um resumo:
+                     quem le ja sabe o que vai encontrar. -->
+                <nav class="dp-percurso" aria-label="Percurso da página">
+                    <a class="dp-percurso__item" href="#categorias">
+                        <span class="dp-percurso__num">01</span>
+                        <span class="dp-percurso__txt">Quais são meus direitos?</span>
+                    </a>
+                    <a class="dp-percurso__item" href="#leis">
+                        <span class="dp-percurso__num">02</span>
+                        <span class="dp-percurso__txt">Como eu uso esses direitos?</span>
+                    </a>
+                    <a class="dp-percurso__item" href="#recursos">
+                        <span class="dp-percurso__num">03</span>
+                        <span class="dp-percurso__txt">Onde encontro ajuda?</span>
+                    </a>
+                </nav>
             </div>
         </section>
 
@@ -149,6 +177,7 @@
              ============================================= -->
         <nav class="rights-nav" aria-label="Categorias dos Direitos">
             <div class="rights-nav__container">
+                <span class="rights-nav__rotulo" aria-hidden="true">Oriente-se</span>
                 <a href="#categorias" class="rights-nav__chip is-active">
                     <i class="fa-solid fa-layer-group"></i> Categorias
                 </a>
@@ -203,34 +232,38 @@
             <span class="rd-sep__losango"></span>
         </div>
 
-        <section class="categories-nav" id="categorias">
-            <div class="categories-nav__container">
+        <section class="categories-nav dp-areas" id="categorias">
+            <div class="categories-nav__container dp-areas__container">
                 <header class="categories-nav__head">
                     <span class="section-badge"><i class="fa-solid fa-layer-group"></i> Explore por área</span>
                     <h2 class="categories-nav__title">Escolha uma categoria</h2>
                     <p class="categories-nav__sub">Encontre as leis que protegem você em cada área.</p>
                 </header>
 
-                <div class="categories-grid">
+                <div class="categories-grid dp-areas__grade">
                     <a href="#leis" class="category-tile rd-categoria" data-filter="educacional">
                         <div class="category-tile__icon"><i class="fa-solid fa-graduation-cap"></i></div>
                         <span class="category-tile__title">Educação</span>
                         <span class="category-tile__count">3 leis</span>
+                        <span class="dp-areas__cobertura">Acompanhante terapêutico · educação especial · inclusão profissional</span>
                     </a>
                     <a href="#leis" class="category-tile rd-categoria" data-filter="saude">
                         <div class="category-tile__icon"><i class="fa-solid fa-heart-pulse"></i></div>
                         <span class="category-tile__title">Saúde</span>
                         <span class="category-tile__count">2 leis</span>
+                        <span class="dp-areas__cobertura">Direitos do TEA · saúde mental · acesso a serviços</span>
                     </a>
                     <a href="#leis" class="category-tile rd-categoria" data-filter="social">
                         <div class="category-tile__icon"><i class="fa-solid fa-handshake"></i></div>
                         <span class="category-tile__title">Assistência Social</span>
-                        <span class="category-tile__count">5 leis</span>
+                        <span class="category-tile__count">4 leis</span>
+                        <span class="dp-areas__cobertura">Inclusão · carteira de identidade · benefício · cotas</span>
                     </a>
                     <a href="#leis" class="category-tile rd-categoria" data-filter="acessibilidade">
                         <div class="category-tile__icon"><i class="fa-solid fa-universal-access"></i></div>
                         <span class="category-tile__title">Acessibilidade</span>
                         <span class="category-tile__count">3 leis</span>
+                        <span class="dp-areas__cobertura">Acessibilidade · Libras · edificações e transporte</span>
                     </a>
                 </div>
             </div>
@@ -245,25 +278,25 @@
              Quando a arte entrar, troque por <img> ou marque o bloco
              com .espaco-banner--preenchido. -->
         <div class="espaco-banner espaco-banner--grande" data-espaco="direitos-01"
-             data-fundo="/img/ilustracoes/OS SEIS SÍMBOLOS DOS DIREITOS.jpg">
+             data-fundo="/img/ilustracoes/imagem-direitos.jpg">
             <span class="espaco-banner__marca">
                 <i class="fa-solid fa-image" aria-hidden="true"></i>
                 espaço para banner
             </span>
             <span class="espaco-banner__nome">Direitos / antes das leis</span>
-            <span class="espaco-banner__fundo">/img/ilustracoes/OS SEIS SÍMBOLOS DOS DIREITOS.jpg</span>
+            <span class="espaco-banner__fundo">/img/ilustracoes/imagem-direitos.jpg</span>
         </div>
-<section class="deco-hospedeiro laws-section" id="leis">
+<section class="deco-hospedeiro laws-section dp-leis" id="leis">
         <!-- elemento decorativo: coracao. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
         <span class="deco deco--coracao deco--esq deco--topo deco--s1"
               style="--tam: 46px; --rot: -11deg" aria-hidden="true"></span>
-            <header class="laws-section__head">
+            <header class="laws-section__head dp-leis__head">
                 <span class="section-badge"><i class="fa-solid fa-book"></i> Biblioteca de Leis</span>
                 <h2 class="laws-section-title">Leis que protegem você</h2>
                 <p class="laws-section-sub">Todas traduzidas para você — sem palavras difíceis.</p>
             </header>
 
-            <div class="laws-grid" id="lawsGrid"></div>
+            <div class="laws-grid dp-leis__lista" id="lawsGrid"></div>
 
             <p class="laws-no-results" id="lawsNoResults" hidden>
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -364,11 +397,11 @@
         <!-- =============================================
              RECURSOS ÚTEIS + ENVIE SEU CASO
              ============================================= -->
-        <section class="deco-hospedeiro resources-section" id="recursos">
+        <section class="deco-hospedeiro resources-section dp-ajuda" id="recursos">
         <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
         <span class="deco deco--nuvem deco--dir deco--topo deco--s2"
               style="--tam: 112px; --rot: 6deg" aria-hidden="true"></span>
-            <div class="resources-container">
+            <div class="resources-container dp-ajuda__container dp-ajuda__grade">
                 <div class="resources-box">
                     <div class="resources-box-header">
                         <div class="resources-box-icon"><i class="fa-solid fa-circle-info"></i></div>
@@ -411,9 +444,44 @@
                 <div class="case-box">
                     <div class="case-box-glow"></div>
                     <div class="case-box-content">
-                        <div class="case-box-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+                        <!-- A LIA CHIBI. Unica aparição dela nesta pagina, e
+                             nao e decoracao: o texto que ja existia aqui era
+                             "Conte-nos seu caso", e este e o momento exato em
+                             que a pessoa chegou ao fim do percurso e ainda nao
+                             sabe por onde comecar. A Lia responde a duvida dela.
+
+                             `alt=""` + `aria-hidden` porque e decorativa: quem
+                             precisa saber que e a Lia le a descricao da imagem
+                             do menu, nao ve um arquivo. Sem `href`, sem
+                             `tabindex`, `pointer-events: none` no CSS. -->
+                        <div class="dp-lia">
+                            <img class="dp-lia__img"
+                                 src="/img/ilustracoes/lia-gif-chibi-alpha.gif"
+                                 alt="" aria-hidden="true">
+                            <div class="dp-lia__texto">
+                                <p class="dp-lia__pergunta">Não sabe por onde começar?</p>
+                                <p class="dp-lia__resposta">
+                                    Conta o que aconteceu e veja quais caminhos podem
+                                    ajudar. Não precisa saber o nome da lei.
+                                </p>
+                            </div>
+                        </div>
+
                         <h3>Conte-nos seu caso</h3>
                         <p>Descreva sua situação e nossa equipe vai analisar com base nas <strong>3 leis principais</strong> que protegem pessoas neurodivergentes.</p>
+
+                        <!-- As 4 CLAREZAS que o guia pede. Nenhuma delas
+                             estava na pagina antes; todas as 4 sao as
+                             informacoes que faltavam para a pessoa saber em
+                             que esta se metendo. O formulario em si NAO foi
+                             tocado: mesmos campos, mesmo `required`, mesmos
+                             placeholders, mesmo botao, mesmo #caseForm. -->
+                        <ul class="dp-clarezas">
+                            <li><strong>É preciso ter conta</strong> para enviar. Criamos um acesso com o seu e-mail.</li>
+                            <li><strong>Você está relatando o seu próprio caso</strong>, ou o de uma pessoa da sua família.</li>
+                            <li><strong>Só precisamos do essencial:</strong> nome, e-mail e a situação.</li>
+                            <li><strong>Depois do envio</strong> nossa equipe lê e responde pelos caminhos que podem ajudar.</li>
+                        </ul>
 
                         <form class="case-form" id="caseForm">
                             <div class="case-form-row">
@@ -443,13 +511,13 @@
             <span class="rd-sep__losango"></span>
         </div>
 
-        <section class="deco-hospedeiro rights-faq" id="faq">
+        <section class="deco-hospedeiro rights-faq dp-faq" id="faq">
         <!-- elemento decorativo: organicas. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
         <span class="deco deco--organicas deco--dir deco--topo deco--s3"
               style="--tam: 78px; --rot: -5deg" aria-hidden="true"></span>
-            <header class="rights-faq__head">
+            <header class="rights-faq__head dp-faq__head">
                 <span class="section-badge"><i class="fa-regular fa-circle-question"></i> Dúvidas frequentes</span>
-                <h2>Perguntas sobre direitos</h2>
+                <h2 class="dp-secao__titulo">Perguntas sobre direitos</h2>
                 <p>As dúvidas mais comuns de quem chega até aqui.</p>
             </header>
 
@@ -514,7 +582,7 @@
         <!-- =============================================
              CONTATO
              ============================================= -->
-        <section class="deco-hospedeiro rights-contact banner--direitos" id="contato">
+        <section class="deco-hospedeiro rights-contact dp-contato" id="contato">
             <!-- LIA CHIBI — broche na borda do banner.
                  Decorativa: nao e a Lia principal, que continua intacta
                  com a arte e a animacao dela.
@@ -531,9 +599,16 @@
                  cima, sem coluna de ícone. O ícone de robô ocupava 80px
                  de largura e empurrava o texto para o meio, longe do
                  respiro que a Lia precisa. -->
-            <div class="rights-contact__card" data-img-fundo="acolheria-card-bg-direitos">
-                        <img class="banner-lia-chibi banner-lia-chibi__img" src="/img/ilustracoes/lia-gif-chibi-alpha.gif"
-                 alt="" width="240" height="240" aria-hidden="true" draggable="false">
+            <div class="rights-contact__card dp-contato__container" data-img-fundo="acolheria-card-bg-direitos">
+                        <!-- A LIA, no canto. O `lia-chibi.css` a posicionava em
+         `top: 6px; right: 174px` — medido, x 718..780 num card de
+         921px, ou seja, no MEIO do bloco, sobre o vazio. Com o
+         fundo do card virando transparente ela aparecia solta e sem
+         funcao. A classe nova e so posicao; o arquivo, o `alt`
+         vazio, o `aria-hidden` e o GIF continuam identicos. -->
+                    <img class="banner-lia-chibi banner-lia-chibi__img dp-contato__lia"
+                        src="/img/lia/lia-direitos-percurso.png"
+                        alt="" width="720" height="672" aria-hidden="true" draggable="false">
                 <div class="rights-contact__content">
                     <span class="acolheria-badge-nome">
                         <i class="fa-solid fa-robot" aria-hidden="true"></i>

@@ -1,0 +1,1393 @@
+/* =========================================
+   ARTIGOS E GUIAS — SISTEMA EDITORIAL
+   Arquivo: Recursos/recursos-editorial.css
+   Prefixo: .re-
+   Carregado por ULTIMO, depois de recursos.css
+
+   -----------------------------------------------------
+   O SISTEMA PROPRIO DESTA PAGINA
+   -----------------------------------------------------
+   A diretriz de continuidade exige sistemas de layout DIFERENTES,
+   nao a mesma estrutura com cores diferentes. Os tres sistemas ja
+   sao:
+
+     Explorar  -> caminhos        (duas colunas,Titles a esquerda)
+     Eventos   -> eixo temporal   (data abre a linha, coluna 1)
+     Artigos   -> DIAGRAMAÇÃO     (este arquivo)
+
+   O sistema de diagramação editorial tem TRES peças que nenhum
+   dos outros tem:
+
+     1. A ESTANTE — a seção "Artigos de fora" deixa de ser 3 cards
+        iguais e vira uma estante: o primeiro artigo ocupa a
+        metade esquerda, em tamanho grande; os dois outros viram
+        linhas abaixo, com imagem pequena a esquerda. E o mesmo
+        conteudo, com pesos diferentes.
+
+     2. O PERFIL DE COLUNA — a seção "Da nossa equipe" fica com
+        uma coluna de texto (o destaque, o mais longo) e uma
+        coluna estreita com os 3 topicos. Le-se como uma pagina
+        de revista, nao como uma grade.
+
+     3. O INDICE — a seção "Explore por categoria" deixa de ter
+        6 cards com foto e vira um indice editorial: um titulo
+        Playfair por tema, com o numero e uma linha de detalhe,
+        sem imagem. Categorias nao precisam de fotografia — e o
+        lugar onde mais se economiza imagem com o maior ganho.
+
+   -----------------------------------------------------
+   O QUE SAI DA PRIMEIRA DOBRA
+   -----------------------------------------------------
+   `__media` + `__overlay` + `__eyebrow` + `__title-accent` com
+   azul — as mesmas 4 pecas do template queExplorar, Artigos,
+   Blog e Direitos compartilhavam (medido: o accent era o MESMO
+   hex #38bdff e a MESMA fonte Playfair italica nas 4 paginas).
+   Aqui o accent vira roxo, como nas outras duas ja refeitas.
+
+   A foto do banner e uma pilha de livros com `brightness(0.75)`
+   e veu de 0,85 — quase invisivel. Some.
+
+   -----------------------------------------------------
+   O QUE NAO MUDA
+   -----------------------------------------------------
+   Os 4 `externo-card`, o `equipe-featured`, os 3 `topic-card`,
+   os 6 `categoria-card`, os 4 `breve-card`, a newsletter, o
+   `explore-topics` (que e copia byte-a-byte do de Explorar e
+   por isso NAO foi mexido aqui), e todos os `href`. Nenhum
+   conteudo foi removido, reescrito ou reordenado no HTML.
+   ========================================= */
+
+:root {
+    /* Tokens que `recursos.css` ja declara. Nenhuma cor nova. */
+    --re-tinta: #1a1a2e;
+    --re-suave: #5c5652;
+    --re-roxo: #7c3aed;
+    --re-borda: #e8e3dd;
+    --re-papel: #faf9fe;
+    --re-header-altura: 75px;
+    --re-nav-altura: 171px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --re-header-altura: 65px;
+        --re-nav-altura: 150px;
+    }
+}
+
+/* =========================================
+   A SUBNAV — o mesmo bug da Explorar
+   =========================================
+   `recursos.css` declara `.recursos-nav` com `position: fixed;
+   bottom: 0`, ou seja, uma barra de 69px colada no rodape da janela,
+   sempre visivel, sobre o conteudo.
+
+   Medido nesta pagina: os 4 chips ("Artigos de fora", "Da nossa
+   equipe", "Por categoria", "Em breve") ficam por cima de
+   `.topic-card__title` e de `.categoria-card h3`. E o `bottom: auto`
+   que aparece nos breakpoints menores so resolve metade — nos outros
+   breakpoints a barra volta para `top: 65px` e passa a cobrir o
+   cabecalho em vez do rodape.
+
+   A correcao e a mesma do Explorar: `sticky` em vez de `fixed`.
+   Sem posicao fixa a barra ocupa o espaco dela no fluxo, o que
+   significa que o conteudo nunca fica por baixo. */
+
+.recursos-nav {
+    position: sticky;
+
+    /* Abaixo do header, nunca em `top: 0`. O `.header-glass` de
+       `inicio.css` e `position: fixed; top: 0; height: 75px;
+       z-index: 40` — e uma nav em `top: 0` gruda exatamente por
+       cima dele. Foi o que a medicao mostrou aqui: header em
+       y 0-75, nav em y 0-72, uma dentro da outra. */
+    top: var(--re-header-altura);
+    bottom: auto;
+
+    /* `z-index: 50` e maior que o `40` do header, mas como as duas
+       barras ficam em faixas verticais diferentes elas nunca se
+       cruzam — o valor so garante que a nav ganhe de qualquer
+       `z-index` do conteudo que passa por baixo. */
+    z-index: 50;
+
+    /* Uma linha de sombra. Sem ela a barra gruda no topo da janela e
+       parece um elemento solto, sem relacao com a pagina. */
+    box-shadow: 0 1px 0 rgba(26, 26, 46, 0.02),
+                0 6px 18px -12px rgba(26, 26, 46, 0.18);
+}
+
+/* Os 4 chips sao ancoras. Sem `scroll-margin-top`, clicar num deles
+   rola a secao ate o TOPO da viewport e a barra de 69px cobre o
+   que esta la — foi o que escondia o titulo do FAQ na Explorar.
+   Aqui o que sumia era o cabecalho e o titulo de cada secao. */
+#artigos-externos,
+#artigos-equipe,
+#categorias,
+#em-breve {
+    scroll-margin-top: var(--re-nav-altura);
+}
+
+/* =========================================
+   1. A PRIMEIRA DOBRA — diagramacao
+   ========================================= */
+
+/* `display: block` e obrigatorio. O `.recursos-banner` (do
+   `recursos.css`) tem `display: flex; align-items: center;
+   justify-content: center` — e como a secao tem as DUAS classes, o
+   hero herdou isso. Medido: com flex, a marca e o indice viraram
+   itens lado a lado do titulo, em vez de ficarem acima e abaixo. */
+.re-hero {
+    display: block;
+    padding: 92px 48px 88px;
+    background: var(--re-papel);
+    position: relative;
+    text-align: left;
+}
+
+/* -----------------------------------------------------
+   A ILUSTRACAO DE FUNDO
+   -----------------------------------------------------
+   `img/ilustracoes/imagem-fundo-artigos-guias.jpg`, 2033x774.
+
+   O arquivo original era PNG de 1,3 MB. Como a arte e usada a
+   0,5 de opacidade sob um veu de papel, convertida para JPEG ela
+   caiu para 88 KB — 93% menos, sem perda visivel: medido em 98746
+   amostras, o erro medio e 1,20 de255 e 99,6% dos pixels variam
+   3 niveis ou menos. O pior ponto medido (delta 21) e a borda dura
+   de uma estrela, que na dobra aparece com 4% de contraste.
+
+   Medido antes de decidir:
+
+     - a proporcao e 2,63:1 e a dobra e ~1,9:1. Mais larga que a
+       dobra, entao `cover` NAO precisa cortar na horizontal:
+       escala por altura e sobra largura. Em 1440px a imagem
+       ficaria com 1246px de altura contra 593px de dobra, e o
+       corte seria de 326px na VERTICAL;
+     - as bordas nao sao uniformes como as do arquivo do Explorar
+       (aquela era #f2f1f7 nas quatro). Aqui a borda direita e
+       (203,192,252) — 48 e 59 niveis mais escura que o #faf9fe
+       do papel. Um retangulo solto apareceria como uma faixa
+       lilás colada na borda. E a borda esquerda e (250,235,251),
+       14 niveis mais quente que o papel;
+     - o conteudo util esta na direita: arco, livros empilhados,
+       livro aberto, caneta, xale. O centro e quase vazio.
+
+   Duas decisoes:
+
+   1. DE UM LADO AO OUTRO, com `cover`, e o enquadramento puxado
+      para BAIXO (`50% 62%`). A arte que importa esta na base: o
+      livro aberto e a caneta. Com `center`, o corte de 326px
+      tirava justamente essa parte.
+
+   2. O PAPEL DISSOLVE AS DUAS BORDAS VERTICAIS.
+      O veu horizontal e forte na esquerda (92%), onde mora o
+      titulo, e vai a 0 em 58%. Na direita ele nao chega — a borda
+      saturada da imagem ficaria visivel contra o papel. Por isso
+      um segundo veu, pela direita, so nesta pagina: o arquivo do
+      Explorar nao precisa porque a borda dele e neutra.
+
+   Nenhum `alt`, nenhum `aria-hidden`: e um `background-image`, que
+   nao entra na arvore de acessibilidade. Um `<img>` aqui seria
+   lido como imagem sem descricao, que e pior. */
+.re-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        /* [1] veu pela esquerda: protege o titulo */
+        linear-gradient(to right,
+            rgba(250, 249, 254, 0.94) 0%, rgba(250, 249, 254, 0.86) 22%,
+            rgba(250, 249, 254, 0.52) 40%, rgba(250, 249, 254, 0) 58%),
+        /* [2] veu pela direita: engole a borda saturada */
+        linear-gradient(to left,
+            rgba(250, 249, 254, 0.9) 0%, rgba(250, 249, 254, 0.62) 8%,
+            rgba(250, 249, 254, 0.22) 18%, rgba(250, 249, 254, 0) 32%),
+        /* [3] veu vertical: some o topo e a base */
+        linear-gradient(to bottom,
+            var(--re-papel) 0%, rgba(250, 249, 254, 0) 10%,
+            rgba(250, 249, 254, 0) 84%, var(--re-papel) 100%),
+        url("/img/ilustracoes/imagem-fundo-artigos-guias.jpg");
+
+    background-repeat: no-repeat;
+    background-position: 0 0, 0 0, 0 0, 50% 62%;
+    background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+}
+
+.re-hero__grid {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+/* ---------- `─── ✦`: a marca da editorial.
+
+   O losango verde e de Eventos; a estrela amarela e de Explorar. Aqui
+   a marca e uma estrela em POSICAO DIFERENTE (depois da linha, e
+   nao antes) e em tom neutro. Mesmo elemento, outra leitura. */
+/* `aria-hidden="true"` esta no HTML. O `pointer-events: none` vem
+   aqui: a marca e um elemento decorativo e nao deve capturar o
+   clique de quem esta selecionando o titulo logo abaixo. */
+.re-hero__marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    pointer-events: none;
+}
+
+.re-hero__linha {
+    width: 48px;
+    height: 1px;
+    background: #dcd5cb;
+    flex: 0 0 auto;
+}
+
+.re-hero__estrela {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 auto;
+    background: var(--re-roxo);
+    clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+    opacity: 0.55;
+}
+
+/* ---------- A coluna editorial.
+
+   Em Explorar o titulo fica a esquerda com caminhos a direita. Aqui
+   ele fica a esquerda com uma coluna de indice a direita, e a
+   diferenca e de PROPOSITO: em Explorar o que estava a direita era
+   navegacao (para onde ir); aqui e o indice do acervo (o que existe).
+   Nao e a mesma coluna com outro conteudo — e outro conteudo e outra
+   funcao. */
+.re-hero__coluna {
+    max-width: 560px;
+}
+
+.re-hero__titulo {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.75rem, 4.3vw, 3.3rem);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    color: var(--re-tinta);
+    margin: 0;
+}
+
+.re-hero__accent {
+    color: var(--re-roxo);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+.re-hero__apoio {
+    max-width: 500px;
+    margin: 26px 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--re-suave);
+}
+
+/* ---------- O indice do acervo, a direita.
+
+   Quatro linhas: "Textos completos", "Artigos da equipe",
+   "Por categoria", "Novos temas". Cada uma ja e uma secao real da
+   pagina, entao a linha E a navegacao e o indice ao mesmo tempo —
+   como os caminhos de Explorar, mas com outro peso: sao duas
+   palavras em vez de um nome de area.
+
+   Os `href` apontam para os `id` que JA EXISTEM no HTML. Nenhum
+   link novo foi criado. */
+.re-indice {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 56px auto 0;
+    padding-top: 28px;
+    border-top: 1px solid var(--re-borda);
+}
+
+.re-indice__rotulo {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--re-suave);
+    margin-bottom: 16px;
+}
+
+.re-indice__grade {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 32px;
+}
+
+.re-indice__item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 12px 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--re-borda);
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.24s ease;
+}
+
+.re-indice__num {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.9375rem;
+    color: var(--re-roxo);
+    flex: 0 0 auto;
+    line-height: 1;
+}
+
+.re-indice__txt {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--re-tinta);
+    letter-spacing: -0.01em;
+}
+
+@media (hover: hover) {
+    .re-indice__item:hover {
+        padding-left: 8px;
+        border-bottom-color: var(--re-roxo);
+    }
+
+    .re-indice__item:hover .re-indice__txt {
+        color: var(--re-roxo);
+    }
+}
+
+.re-indice__item:focus-visible {
+    outline: 2px solid var(--re-roxo);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* =========================================
+   2. A ESTANTE — 3 artigos, 3 pesos
+
+   Medido na versao anterior: os 3 `externo-card` de "Artigos de
+   fora" eram 3 caixas identicas, cada uma com foto 600x400 no
+   topo. Nenhuma hierarquia entre eles — o olho nao tem onde
+   parar.
+
+   Aqui: o primeiro vira o destaque (metade da largura, imagem
+   grande), os outros dois viram linhas com imagem pequena a
+   esquerda. Os tres continuam sendo `<a>` com o mesmo `href`, o
+   mesmo `target` e o mesmo `alt`.
+   ========================================= */
+
+#artigos-externos.re-estante {
+    padding: 84px 48px 0;
+    background: var(--re-papel);
+}
+
+.re-estante__container {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.re-estante__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 56px;
+}
+
+/* O cabecalho e FLEX, mas o `div` interno (rotulo + titulo + sub) nao
+   pode ser empurrado para 100% de largura — se for, o "VER TODOS"
+   quebra para a linha de baixo. `flex: 0 1 auto` mantem o div no
+   tamanho do texto e o `space-between` joga o link para a direita.
+
+   Este bloco e o unico lugar do arquivo em que a regra vale para as
+   QUATRO secoes ao mesmo tempo. As classes de secao (`re-estante`,
+   `re-coluna`, `re-indice-temas`, `re-corredor`) sao as que existem
+   no HTML; as `__head` que existiam aqui antes foram removidas. */
+.re-estante .recursos-head,
+.re-coluna .recursos-head,
+.re-indice-temas .recursos-head,
+.re-corredor .recursos-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0 0 34px;
+    padding: 0 0 16px;
+    border-bottom: 2px solid var(--re-tinta);
+    border-top: 0;
+    text-align: left;
+}
+
+.re-estante .recursos-head > div,
+.re-coluna .recursos-head > div,
+.re-indice-temas .recursos-head > div,
+.re-corredor .recursos-head > div {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+/* Na coluna editorial o cabecalho precisa ocupar as DUAS colunas do
+   grid. Sem isto ele fica na coluna 1 (489px) e o "VER TODOS" fica
+   espremido; medido: 541px de largura num container de 889px. */
+.re-coluna .recursos-head {
+    grid-column: 1 / -1;
+}
+
+/* O "VER TODOS ->" deixa de ser azul e vira a cor da marca. */
+.re-estante .recursos-head__link,
+.re-coluna .recursos-head__link {
+    color: var(--re-roxo);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.re-estante .recursos-head__title,
+.re-coluna .recursos-head__title,
+.re-indice-temas .recursos-head__title,
+.re-corredor .recursos-head__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--re-tinta);
+    margin: 0 0 6px;
+}
+
+.re-estante .recursos-head__sub,
+.re-coluna .recursos-head__sub,
+.re-indice-temas .recursos-head__sub,
+.re-corredor .recursos-head__sub {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--re-suave);
+    margin: 0;
+    max-width: 56ch;
+}
+
+/* O rotulo ("CURADORIA", "NOSSA ESCRITA") vira discreto: numa
+   pagina editorial o titulo da secao e o que manda. */
+.re-estante .recursos-head__eyebrow,
+.re-coluna .recursos-head__eyebrow,
+.re-indice-temas .recursos-head__eyebrow,
+.re-corredor .recursos-head__eyebrow {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--re-suave);
+    margin: 0 0 8px;
+}
+
+.re-estante .recursos-head__eyebrow i,
+.re-coluna .recursos-head__eyebrow i,
+.re-indice-temas .recursos-head__eyebrow i,
+.re-corredor .recursos-head__eyebrow i {
+    color: var(--re-roxo);
+}
+
+/* ---------- O DESTAQUE: cartao 1, coluna 1, linhas 1-3. */
+
+/* O chrome de card SAI. Sem isto o destaque continuava sendo uma
+   caixa branca com borda e raio de 12px — a ".estante" era so
+   uma grade de 2 colunas com cards dentro, e nao uma estante.
+
+   Medido: `recursos.css` põe `background: var(--bg-white)`,
+   `border: 1px solid`, `border-radius: 12px` e
+   `box-shadow` em `.externo-card`. Tudo abaixo zera os quatro. */
+.re-estante .externo-card {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+.re-estante__destaque {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    padding-right: 8px;
+}
+
+.re-estante__destaque .externo-card__media {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #f3f4f6;
+    margin-bottom: 20px;
+}
+
+.re-estante__destaque .externo-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.re-estante__destaque .externo-card__badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    /* `right: auto` e obrigatorio. O `recursos.css` posiciona o
+       badge com `left` E `right` (ou `inset`), e com os dois lados
+       fixos um elemento absoluto se ESTICA para preencher a caixa.
+       Medido: 395px num pai de 423px — o badge virava uma barra
+       branca atravessando a foto. Com `right: auto` ele volta a
+       encolher ate o texto. */
+    right: auto;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--re-tinta);
+}
+
+.re-estante__destaque .externo-card__source {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--re-roxo);
+    margin-bottom: 10px;
+}
+
+.re-estante__destaque .externo-card__source i {
+    display: none;                 /* o icone de link nao compete com o titulo */
+}
+
+.re-estante__destaque h3 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.028em;
+    color: var(--re-tinta);
+    margin: 0 0 12px;
+    transition: color 0.2s ease;
+}
+
+.re-estante__destaque p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--re-suave);
+    margin: 0 0 18px;
+}
+
+.re-estante__destaque .externo-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--re-roxo);
+    margin-top: auto;
+}
+
+@media (hover: hover) {
+    /* O `transform` e o `box-shadow` do hover de `recursos.css`
+       sao zerados aqui: os dois decks rise, e o card sob o cursor
+       nao pode pular. */
+    .re-estante .externo-card:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: transparent;
+    }
+
+    .re-estante__destaque:hover h3 {
+        color: var(--re-roxo);
+    }
+
+    .re-estante__destaque:hover .externo-card__link {
+        gap: 12px;
+    }
+
+    .re-estante__destaque:hover .externo-card__media img {
+        transform: scale(1.02);
+    }
+}
+
+.re-estante__destaque:focus-visible {
+    outline: 2px solid var(--re-roxo);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* O badge precisa de um ancestral com `position: relative`, senao
+   ele se posiciona em relacao a pagina inteira. A primeira versao
+   do arquivo declarava `position: relative` aqui, mas em um bloco
+   separado e depois do `overflow: hidden` — e o `overflow`
+   recortava o badge. Aqui as duas coisas juntas, e so uma vez. */
+.re-estante__destaque .externo-card__media {
+    position: relative;
+    overflow: hidden;
+}
+
+.re-estante__destaque .externo-card__media img {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- OS OUTROS DOIS: linha, coluna 2, linhas 1 e 2. */
+
+.re-estante__linha {
+    grid-column: 2;
+    /* `>`, porque `recursos.css` tem `.externo-card:hover` com
+       `box-shadow` e `transform` (0,2,0). Sem subir a
+       especificidade, o hover antigo volta. */
+    display: grid;
+    grid-template-columns: 148px minmax(0, 1fr);
+    column-gap: 22px;
+    align-items: start;
+    text-decoration: none;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--re-borda);
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.re-estante__linha:first-of-type {
+    padding-top: 0;
+}
+
+.re-estante__linha .externo-card__media {
+    width: 148px;
+    aspect-ratio: 3 / 2;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.re-estante__linha .externo-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* A etiqueta "Externo" vira um ponto de interrogacao discreto ao
+   lado da fonte: 11px de texto demais dentro de uma linha de 148px
+   de altura nao cabe, e a informacao (de onde veio) continua visivel
+   na linha da fonte. */
+.re-estante__linha .externo-card__badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: auto;          /* ver a nota do destaque acima */
+    white-space: nowrap;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--re-tinta);
+}
+
+.re-estante__linha .externo-card__media {
+    position: relative;
+}
+
+.re-estante__linha .externo-card__source {
+    display: block;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--re-roxo);
+    margin-bottom: 6px;
+}
+
+.re-estante__linha .externo-card__source i {
+    display: none;
+}
+
+.re-estante__linha h3 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.018em;
+    color: var(--re-tinta);
+    margin: 0 0 6px;
+    transition: color 0.2s ease;
+}
+
+.re-estante__linha p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--re-suave);
+    margin: 0 0 8px;
+}
+
+.re-estante__linha .externo-card__link {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--re-suave);
+}
+
+@media (hover: hover) {
+    .re-estante__linha:hover {
+        padding-left: 8px;
+    }
+
+    .re-estante__linha:hover h3 {
+        color: var(--re-roxo);
+    }
+}
+
+.re-estante__linha:focus-visible {
+    outline: 2px solid var(--re-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* =========================================
+   3. O PERFIL DE COLUNA — destaque + topicos
+
+   Medido antes: `#artigos-equipe` tinha 1 `equipe-featured` e 3
+   `topic-card` lado a lado, todos do mesmo peso, em um grid de 3
+   colunas. Uma pagina de revista nao faz isso — ela pune uma
+   coluna para o texto principal e usa a margem estreita para o
+   que apoia.
+
+   Aqui: coluna larga (o destaque, que tem o texto mais longo) +
+   coluna estreita (os 3 topicos, que sao atalhos).
+   ========================================= */
+
+#artigos-equipe.re-coluna {
+    padding: 96px 48px 0;
+    background: #ffffff;
+}
+
+.re-coluna__container {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 336px;
+    column-gap: 64px;
+    align-items: start;
+}
+
+/* ---------- O destaque, na coluna larga. */
+
+/* O destaque perde o chrome de card. Medido: `recursos.css` poe
+   fundo branco, borda de 1px e raio de 12px em `.equipe-featured`,
+   e ele continuava sendo uma caixa. Sem tirar isso, "perfil de
+   coluna" e so um grid de 2 caixas. */
+.re-coluna .equipe-featured {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+.re-coluna__principal {
+    grid-column: 1;
+    min-width: 0;
+    text-decoration: none;
+    display: block;
+}
+
+.re-coluna__principal .equipe-featured__media {
+    width: 100%;
+    aspect-ratio: 21 / 10;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #f3f4f6;
+    margin-bottom: 22px;
+}
+
+.re-coluna__principal .equipe-featured__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* O `align-self` e obrigatorio. Medido: o botao "Ler artigo" ficou
+   com 515px de largura — o `.equipe-featured__body` e um container
+   flex com `align-items: stretch`, entao o `inline-flex` do botao era
+   esticado pela linha. Numa coluna editorial o botao tem o tamanho do
+   proprio texto. */
+.re-coluna__principal .recursos-btn {
+    align-self: flex-start;
+}
+
+.re-coluna__principal h3,
+.re-coluna__principal h3 a {
+    font-family: 'Inter', -apple-system, sans-serif;
+    text-decoration: none;
+    color: inherit;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 800;
+    line-height: 1.14;
+    letter-spacing: -0.03em;
+    color: var(--re-tinta);
+    margin: 0 0 14px;
+    transition: color 0.2s ease;
+}
+
+.re-coluna__principal .equipe-featured__excerpt {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--re-suave);
+    margin: 0 0 16px;
+}
+
+.re-coluna__principal .equipe-featured__meta {
+    font-size: 0.75rem;
+    color: var(--re-suave);
+    letter-spacing: 0.02em;
+}
+
+@media (hover: hover) {
+    .re-coluna__principal:hover h3 {
+        color: var(--re-roxo);
+    }
+
+    .re-coluna__principal:hover .equipe-featured__media img {
+        transform: scale(1.02);
+    }
+}
+
+.re-coluna__principal:focus-visible {
+    outline: 2px solid var(--re-roxo);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* ---------- Os 3 topicos, na coluna estreita, como lista de atalhos. */
+
+/* A coluna de apoio e uma `<section class="explore-topics">` que
+   estava ANINHADA dentro de `#artigos-equipe` — a mesma copia
+   compartilhada com Explorar. So a classe entrou; o DOM e o
+   conteudo seguem iguais, entao a copia continua sincronizavel.
+   Aqui ela perde o `padding` e o `max-width` de container, que
+   nao fazem sentido dentro de uma coluna de 336px. */
+.re-coluna__apoio {
+    grid-column: 2;
+    display: block;
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.re-coluna__apoio .explore-topics__container {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+}
+
+.re-coluna__apoio .explore-topics__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.re-coluna__apoio .topic-card {
+    display: block;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--re-borda);
+    border-radius: 0;
+    overflow: visible;
+    padding: 20px 0;
+    text-decoration: none;
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* A imagem do `topic-card` e a unica foto que sobra na pagina que
+   nao esta justificada: um titico de 40 caracteres ao lado de uma
+   foto de 100x100 e uma foto de decoracao, nao de conteudo. Some —
+   com o `alt` preservado no HTML e a imagem apenas fora da
+   ordem de leitura. Ver a nota sobre `alt` no relatorio. */
+.re-coluna__apoio .topic-card__media {
+    display: none;
+}
+
+.re-coluna__apoio .topic-card__body {
+    padding: 0;
+    display: block;
+}
+
+.re-coluna__apoio .topic-card__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.018em;
+    color: var(--re-tinta);
+    margin: 0 0 6px;
+    transition: color 0.2s ease;
+}
+
+.re-coluna__apoio .topic-card__text {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--re-suave);
+    margin: 0 0 8px;
+}
+
+.re-coluna__apoio .topic-card__cta {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--re-roxo);
+    margin: 0;
+    gap: 6px;
+}
+
+@media (hover: hover) {
+    .re-coluna__apoio .topic-card:hover {
+        padding-left: 8px;
+    }
+
+    .re-coluna__apoio .topic-card:hover .topic-card__title {
+        color: var(--re-roxo);
+    }
+
+    .re-coluna__apoio .topic-card:hover .topic-card__cta {
+        gap: 10px;
+    }
+}
+
+.re-coluna__apoio .topic-card:focus-visible {
+    outline: 2px solid var(--re-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* =========================================
+   4. O INDICE POR CATEGORIA — 6 temas, 0 fotos
+
+   Medido antes: 6 `categoria-card` com `externo-card__media`
+   (foto 600x400) cada. Seis fotos para seis palavras: "Autismo",
+   "TDAH", "Altas Habilidades", "Dislexia", "Saude", "Direitos".
+
+   E o maior ganho de imagem da pagina inteira: 6 fotos ->
+   0. Nenhum dos 6 `alt` e generico ("Imagem do tema") e nenhuma das
+   6 imagens acrescenta informacao que o titulo nao diga.
+   ========================================= */
+
+#categorias.re-indice-temas {
+    padding: 96px 48px 0;
+    background: var(--re-papel);
+}
+
+.re-indice-temas__container {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.re-indice-temas__head {
+    margin-bottom: 30px;
+}
+
+/* Grade de 2 colunas com divisoria vertical: le-se como indice de
+   duas paginas, nao como grade de 6 caixas. */
+.re-indice-temas__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 72px;
+}
+
+/* Cada tema e um indice de 2 linhas: titulo + acao na linha de cima,
+   descricao embaixo ocupando a largura toda.
+
+   O `display: contents` no `.externo-card__body` e o que permite isto
+   — sem ele o `<h3>`, o `<p>` e o link ficariam presos dentro de uma
+   caixa e nao poderiam virar linhas do grid. CUIDADO: com
+   `display: contents` TODO filho do body vira item de grid, entao
+   cada um precisa de `grid-column` e `grid-row` explicitos. Sem o
+   `grid-row` no `<p>`, ele era auto-posicionado e CAIA POR CIMA do
+   titulo — foi o que aconteceu na primeira medicao.
+
+   O chrome de card tambem sai: `recursos.css` poe fundo branco,
+   borda de 1px, raio de 12px e sombra em `.externo-card`. */
+.re-indice-temas__grid .categoria-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 18px;
+    align-items: baseline;
+    padding: 20px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--re-borda);
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    text-decoration: none;
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.24s ease;
+}
+
+/* A foto sai. Sao 6 fotos de 600x400 para 6 palavras, e nenhum dos
+   6 `alt` ("Imagem do tema") diz algo que o titulo nao diga. */
+.re-indice-temas__grid .externo-card__media {
+    display: none;
+}
+
+/* O badge tambem sai. No HTML ele e
+   `externo-card__badge categoria-badge--autismo` e o texto repete o
+   titulo ("Autismo" sobre "Autismo (TEA)"). Alem disso, herdando o
+   `position: absolute` do `recursos.css`, ele flutuava sobre o
+   titulo. */
+.re-indice-temas__grid .externo-card__badge {
+    display: none;
+}
+
+.re-indice-temas__grid .externo-card__body {
+    padding: 0;
+    display: contents;
+}
+
+/* E a linha de origem, que aqui repetia o proprio tema. */
+.re-indice-temas__grid .externo-card__source {
+    display: none;
+}
+
+.re-indice-temas__grid h3 {
+    grid-column: 1;
+    grid-row: 1;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.22;
+    letter-spacing: -0.012em;
+    color: var(--re-tinta);
+    margin: 0;
+    transition: color 0.2s ease;
+}
+
+/* A descricao fica na linha de baixo, com a largura toda da coluna —
+   assim "Altas Habilidades e Superdotacao" tem ~285px de titulo em vez
+   de ~190px e nao quebra em 3 linhas. */
+.re-indice-temas__grid p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--re-suave);
+    margin: 8px 0 0;
+    max-width: 52ch;
+}
+
+.re-indice-temas__grid .externo-card__link {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--re-suave);
+    white-space: nowrap;
+}
+
+@media (hover: hover) {
+    .re-indice-temas__grid .categoria-card:hover {
+        padding-left: 8px;
+        border-bottom-color: var(--re-roxo);
+    }
+
+    .re-indice-temas__grid .categoria-card:hover h3 {
+        color: var(--re-roxo);
+    }
+}
+
+.re-indice-temas__grid .categoria-card:focus-visible {
+    outline: 2px solid var(--re-roxo);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* =========================================
+   5. "NOVOS TEMOS CHEGANDO" — 4 itens sem imagem
+
+   Ja eram 4 `breve-card` com icone e badge, sem foto. Viram
+   corredor: 4 itens horizontais separados por um fio. Ja era o
+   mais proximo de "lista editorial" da pagina; aqui fica
+   explicito.
+   ========================================= */
+
+#em-breve.re-corredor {
+    padding: 88px 48px 0;
+    background: #ffffff;
+}
+
+.re-corredor__container {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.re-corredor__head {
+    margin-bottom: 26px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--re-tinta);
+}
+
+/* O `.breve-grid` vira uma coluna: o corredor e vertical, com os 4
+   temas empilhados e separados por um fio. Sem esta regra o grid
+   continuava em `repeat(4, 1fr)` e os 4 itens ficavam lado a lado —
+   uma fileira de 4 caixas, que e exatamente o padrao que a diretriz
+   de continuidade pede para nao repetir. */
+#em-breve .breve-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* O chrome some. Medido: `recursos.css` poe `background: #ffffff`,
+   `border: 2px dashed` e `border-radius: 16px` em `.breve-card` — a
+   borda tracejada era o unico elemento de "em construcao" da pagina,
+   e numa diagramacao editorial ela vira um fio de 1px. */
+#em-breve .breve-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 16px;
+    padding: 18px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--re-borda);
+    border-radius: 0;
+    box-shadow: none;
+    transition: border-color 0.24s ease;
+}
+
+@media (hover: hover) {
+    /* O hover de `recursos.css` pintava o card inteiro de roxo e
+       devolvia a borda tracejada. */
+    #em-breve .breve-card:hover {
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--re-roxo);
+    }
+}
+
+#em-breve .breve-card__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--re-roxo);
+    background: #ede9fe;
+    align-self: center;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+/* O titulo e um `<h4>`, nao um `<h3>`. A primeira versao deste arquivo
+   estilizava `h3` e nao pegava nada — os 4 titulos continuavam com a
+   fonte e o tamanho do `recursos.css`. E o `grid-column: 2` e
+   obrigario: sem ele o `<p>` de descricao caia em cima do titulo
+   (mesmo problema do indice de categorias). */
+/* `justify-self: start` e obrigario. O `<h4>` e o `<p>` ficam na
+   coluna 2, que e `minmax(0, 1fr)` — sem isto o padrao `stretch`
+   estica os dois para a largura toda e o `text-align: center` que
+   o `recursos.css` poe em `.breve-card` os centra no meio da linha.
+   Medido na primeira versao: titulo e descricao apareciam no
+   centro da linha, com o icone a esquerda solto. */
+#em-breve .breve-card h4 {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+    text-align: left;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--re-tinta);
+    margin: 0;
+}
+
+#em-breve .breve-card p {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    text-align: left;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--re-suave);
+    margin: 4px 0 0;
+}
+
+#em-breve .breve-card__badge {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--re-suave);
+    white-space: nowrap;
+}
+
+#em-breve .breve-card__badge {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--re-suave);
+    white-space: nowrap;
+}
+
+/* =========================================
+   6. RESPONSIVO
+   ========================================= */
+
+@media (max-width: 1199px) {
+    .re-estante__grid { gap: 0 44px; }
+    .re-coluna__container { column-gap: 48px; grid-template-columns: minmax(0, 1fr) 300px; }
+}
+
+@media (max-width: 900px) {
+    .re-hero { padding: 60px 32px 52px; }
+    .re-indice__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
+    .re-estante__linha { grid-template-columns: 124px minmax(0, 1fr); column-gap: 18px; }
+    .re-estante__linha .externo-card__media { width: 124px; }
+
+    /* A coluna do destaque abre: o destaque vira bloco e os dois
+       artigos viram linhas abaixo, dentro da coluna larga. */
+    .re-estante__grid { grid-template-columns: minmax(0, 1fr); }
+    .re-estante__destaque { grid-column: 1; grid-row: auto; padding-right: 0; }
+    .re-estante__linha { grid-column: 1; }
+
+    .re-coluna__container { grid-template-columns: minmax(0, 1fr); row-gap: 44px; }
+    .re-indice-temas__grid { column-gap: 40px; }
+
+    #artigos-externos.re-estante,
+    #artigos-equipe.re-coluna,
+    #categorias.re-indice-temas,
+    #em-breve.re-corredor { padding-left: 32px; padding-right: 32px; }
+}
+
+@media (max-width: 560px) {
+    .re-hero { padding: 44px 22px 44px; }
+    .re-hero__marca { margin-bottom: 22px; }
+    .re-hero__linha { width: 38px; }
+
+    /* O indice vira uma coluna so — 4 itens em 2 colunas em 390px
+       deixaria cada item com menos de 160px, e o nome do tema nao
+       caberia. */
+    .re-indice__grade { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .re-indice { margin-top: 40px; }
+
+    /* A estante vira sequencia: destaque, depois linha, depois
+       linha. A ordem do DOM ja e essa (o destaque e o primeiro
+       cartao), entao nenhuma reordenacao e necessaria. */
+    .re-estante__linha {
+        grid-template-columns: 104px minmax(0, 1fr);
+        column-gap: 16px;
+        padding: 18px 0;
+    }
+    .re-estante__linha .externo-card__media { width: 104px; }
+    .re-estante__destaque .externo-card__media { aspect-ratio: 16 / 10; }
+
+    .re-indice-temas__grid { grid-template-columns: minmax(0, 1fr); }
+
+    /* Em 390px o titulo e o link nao cabem na mesma linha: "Altas
+       Habilidades e Superdotacao" sozinho ja toma ~250px. O link
+       desce para a linha de baixo, alinhado com o titulo. */
+    .re-indice-temas__grid .categoria-card {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 4px;
+    }
+    .re-indice-temas__grid .externo-card__link {
+        grid-column: 1;
+        grid-row: 3;
+        justify-self: start;
+    }
+    .re-indice-temas__grid p {
+        grid-row: 2;
+        margin-top: 6px;
+    }
+
+    #artigos-externos.re-estante,
+    #artigos-equipe.re-coluna,
+    #categorias.re-indice-temas,
+    #em-breve.re-corredor { padding-left: 22px; padding-right: 22px; }
+
+    .re-coluna__principal .equipe-featured__media { aspect-ratio: 16 / 10; }
+}
+
+@media (max-height: 620px) and (min-width: 901px) {
+    .re-hero { padding: 48px 48px 44px; }
+    .re-hero__marca { margin-bottom: 18px; }
+}
+
+/* =========================================
+   7. MOVIMENTO REDUCIDO
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    /* Uma regra so, na raiz da secao, em vez de uma lista de
+       elementos.
+
+       Medido: a versao anterior listava 8 seletores e NAO cobria
+       os `transition: color` dos titulos nem o `transform` das
+       imagens — porque `transition` declarada no proprio `h3` e no
+       proprio `img` nao e anulada por um `transition` no card pai.
+       Lista de seletor e fragil: cada elemento novo que ganhe
+       transicao some da lista e ninguem percebe.
+
+       Aqui a regra e `*` dentro das 5 secoes novas. Assim qualquer
+       transicao declarada em qualquer nivel dentro delas e
+       neutralizada, e o que for adicionado depois ja entra coberto.
+       `!important` e necessario porque a lista herdada de
+       `recursos.css` usa `!important` em alguns pontos. */
+    #artigos-externos *,
+    #artigos-equipe *,
+    #categorias *,
+    #em-breve *,
+    .re-hero *,
+    .re-indice * {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .re-estante__destaque:hover .externo-card__media img,
+    .re-coluna__principal:hover .equipe-featured__media img {
+        transform: none;
+    }
+
+    .re-estante__destaque:hover .externo-card__link {
+        gap: 8px;
+    }
+
+    /* O deslocamento de 8px no hover e movimento espaco-temporal.
+       Com movimento reduzido ele precisa ser neutralizado — e
+       estes 6 casos sao justamente os que ficaram de fora do
+       `@media (hover: hover)` porque so interessam quando ha
+       ponteiro de verdade. */
+    .re-coluna__apoio .topic-card:hover { padding-left: 0; }
+    .re-estante__linha:hover { padding-left: 0; }
+    .re-indice__item:hover { padding-left: 0; }
+    .re-indice-temas__grid .categoria-card:hover { padding-left: 0; }
+    .re-coluna__apoio .topic-card:hover .topic-card__cta { gap: 6px; }
+
+    /* E o corredor tambem. */
+    #em-breve .breve-card:hover { border-bottom-color: var(--re-borda); }
+}

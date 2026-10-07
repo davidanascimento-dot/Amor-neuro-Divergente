@@ -1,0 +1,893 @@
+/* =========================================
+   EXPLORAR — PRIMEIRA DOBRA: DESCOBERTA
+   Arquivo: Explorar/explorar-descoberta.css
+   Prefixo: .ed-
+   Carregado por ULTIMO, depois de Explorar.css
+
+   -----------------------------------------------------
+   O QUE ESTE ARQUIVO E
+   -----------------------------------------------------
+   Uma camada nova. NAO edita `Explorar.css` (que tem 472
+   chaves e regras sobrescritas entre si) e nao edita nenhuma
+   regra do banner que ja existe. Ele entra depois e trabalha
+   por cima, com prefixo proprio, para que a composicao nova
+   possa ser validada antes de qualquer coisa ser apagada.
+
+   Se a proposta for rejeitada, apagar este arquivo e o
+   `<link>` dele desfaz TUDO. Nenhum outro arquivo precisa ser
+   tocado.
+
+   -----------------------------------------------------
+   A REGRA QUE GUIOU CADA ESCOLHA
+   -----------------------------------------------------
+   > MESMA IDENTIDADE. DIFERENTES EXPERIENCIAS.
+
+   O que saiu da dobra, e por que:
+     - a foto full-screen (pilha de livros) nao diz "descobrir",
+       diz "acervo", e sob brightness(0.75) + veu de 0,85 ela
+       estava quase invisivel: servia so de textura;
+     - o degradê de veu existia so para proteger texto branco
+       sobre foto escura. Sem foto, nao ha o que proteger;
+     - a pílula do eyebrow e a peca mais compartilhada das 4
+       paginas do ecossistema — medido: `__eyebrow`,
+       `__media`, `__overlay`, `__content`, `__title`,
+       `__title-accent` e `__sub` existem nas 4, e o accent usa
+       o MESMO hex (#38bdf8), a MESMA fonte (Playfair italico)
+       e o MESMO gradiente de veu nas 4;
+     - `text-align: center` com tudo no eixo vertical medio:
+       simetria total. E a antítese de descoberta.
+
+   O que entrou, e por que:
+     - fundo claro: a dobra vira papel, nao hero fotografico;
+     - titulo a esquerda: composicao assimetrica sugere que o
+       mapa continua do outro lado;
+     - tres caminhos em linha, e nao seis em grade: seis itens
+       grandes na dobra transformariam a pagina em painel de
+       navegacao. Tres linhas leem-se como caminhos;
+     - 3 elementos decorativos, contra as 3 camadas de
+       escurecimento que existiam antes.
+
+   O que NAO muda:
+     - header, breadcrumb, logo, busca, sidebar, footer;
+     - os 6 chips e seus 6 `href` (ver secao 4);
+     - o carrossel, a paginacao, o FAQ e os 5 <details>;
+     - o formulario de atendimento, os 3 estados, as 3 RPCs,
+       o realtime e o protocolo;
+     - a Lia do estado de espera (regra 14 do GUIA-VISUAL.md).
+   ========================================= */
+
+:root {
+    /* As cores de Explorar que ja existiam em `Explorar.css`.
+       Nenhuma cor nova e introduzida aqui. */
+    --ed-tinta: #1a1a2e;       /* = --explore-text */
+    --ed-suave: #5c5652;       /* = --explore-muted */
+    --ed-roxo: #7c3aed;        /* = --explore-accent */
+    --ed-roxo-claro: #ede9fe;  /* = --explore-accent-light */
+    --ed-aviso: #f2b705;       /* o amarelo do site, ja usado em foto-forma.css */
+    --ed-borda: #e8e3dd;       /* = --explore-border */
+    --ed-papel: #faf9fe;       /* = --explore-bg */
+    --ed-papel-quente: #f5f3fa;
+}
+
+/* =========================================
+   1. O FUNDO DA PRIMEIRA DOBRA
+   ========================================= */
+
+.ed-hero {
+    /* De `min-height: 520px` fixo para uma faixa com folga. O
+       acréscimo nao vem de conteudo novo: vem de espaco vazio. */
+    min-height: 0;
+    padding: 0;
+    background: var(--ed-papel);
+    border-bottom: 0;
+    overflow: visible;
+}
+
+/* -----------------------------------------------------
+   A ILUSTRACAO DE FUNDO
+   -----------------------------------------------------
+   `img/ilustracoes/imagem-fundo-explorar.jpg`, 1024x572.
+
+   Medido antes de decidir como backgrounda-la:
+
+     - as 4 bordas da imagem sao uniformes em #f2f1f7, e o fundo da
+       secao e #faf9fe. Diferenca de 8 por canal — pequena, mas o
+       suficiente para o retangulo aparecer com ar de "colado";
+     - a imagem e 1,79:1 e a dobra e ~2,34:1. `background-size:
+       cover` em 1440px de largura escalaria para 1,56x e cortaria
+       380px na vertical — justamente onde esta o livro e o caminho.
+
+   Duas decisoes resultam disso:
+
+   1. ANCORADA A DIREITA, NA ALTURA, SEM CORTE.
+      `background-size: auto 100%` + `background-position: right
+      center` faz a imagem ter a altura da dobra e encostar na borda
+      direita, sem cortar nada. O lado esquerdo da imagem (a arvore,
+      o brilho) e o que se dissolve no papel — e e de proposito: e
+      ali que mora o titulo.
+
+   2. A BORDA ESQUERDA DESSOLVE.
+      `mask-image` com um degrade. Sem ele o retangulo #f2f1f7
+      aparece como um bloco mais escuro contra o #faf9fe. Com ele a
+      imagem nao tem borda visivel em lugar nenhum: ela simplesmente
+      aparece.
+
+   Por que CSS e nao `<img>`: e um cenario atmosferico, nao conteudo.
+   Nao tem alt a escrever porque nao descreve nada que o texto ao lado
+   nao diga — e um `background-image` nao entra na arvore de
+   acessibilidade, entao nao ha nada a esconder com `aria-hidden`.
+   Um `<img>` aqui seria lido por leitores de tela como uma imagem
+   sem descricao, que e pior do que nao existir.
+
+   -----------------------------------------------------
+   COMO A BORDA DELA SAI — e por que o papel, e nao mask
+   -----------------------------------------------------
+   A primeira versao usava `width: min(920px, 100%)` ancorada a
+   direita com `mask-image`. Duas medicoes derrubaram isso:
+
+     - a caixa comecava em x=520 num viewport de 1440px e cortava
+       a arvore da ilustracao pela metade. A arvore e bem mais escura
+       que a borda (coluna x=140 mede 37 niveis de diferenca contra
+       o papel, contra 24 da borda), entao o corte aparecia como uma
+       emenda vertical atravessando a dobra inteira;
+     - `mask-image` com `auto 100%` e `right center` ancoraria o
+       degrade na caixa, mas a posicao da imagem DENTRO da caixa
+       muda com a largura da janela (a imagem vale 918px, entao a
+       borda esquerda fica em 36% num viewport de 1440px e em 7% num
+       de 985px). Um degrade em % nao conseguiria acertar os dois.
+
+   A solucao e nao recortar nada: a caixa ocupa a dobra inteira e o
+   PROPRIO PAPEL do site e pintado por cima da imagem nas tres
+   pontas onde ela encostaria numa borda. Sem recorte nao existe
+   emenda para disfarcar, e sem `mask` nao existe porcentagem que
+   precise acertar. */
+
+.ed-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    /* -----------------------------------------------------
+       DE UM LADO AO OUTRO — a correcao pedida
+       -----------------------------------------------------
+       A versao anterior usava `background-size: auto 100%` com
+       `right center`: a imagem assumia a altura da dobra (918px de
+       largura) e encostava na direita, e o papel comia os 46%
+       da esquerda. O resultado era uma faixa de ilustracao
+       colada na borda direita, com metade da dobra em papel liso
+       — a imagem nao atravessava a tela de um lado ao outro.
+
+       Agora a imagem ocupa a dobra inteira. Como 1024x572 e
+       1,79:1 e a dobra e ~2,34:1, `cover` escalaria para 1,41x e
+       cortaria 236px na vertical. O `background-position` em
+       `42%` vertical puxa o enquadramento para baixo, porque o
+       que importa na arte esta na base: o arco, o caminho e o
+       livro. Medido: com `center`, o corte de 236px tirava o
+       livro inteiro; com 42%, sobra 168px de sobra em cima, e o
+       livro continua dentro.
+
+       O que protege o titulo na esquerda nao e mais ausencia de
+       imagem, e um VEIL de papel: 88% opaco na borda
+       esquerda, afinando ate 0 em 58%. A diferenca em relacao a
+       versao anterior e que o papel ali e translucido — a
+       arvore da ilustracao aparece atraves dele, attenuated, em
+       vez de nao existir.
+
+         [1] horizontal — o veu que protege o titulo;
+         [2] vertical — come o topo (9%) e a base (a partir de
+             86%). Sem isto a imagem TERMINAVA em linha reta no
+             fim da dobra, com o #f2f1f7 dela de frente para o
+             #faf9fe da secao seguinte: uma linha horizontal
+             atravessando a pagina, medida em y=640;
+         [3] a imagem, de um lado ao outro da dobra. */
+    background-image:
+        linear-gradient(to right,
+            rgba(250, 249, 254, 0.9) 0%, rgba(250, 249, 254, 0.72) 26%,
+            rgba(250, 249, 254, 0.34) 44%, rgba(250, 249, 254, 0) 60%),
+        linear-gradient(to bottom,
+            var(--ed-papel) 0%, rgba(250, 249, 254, 0) 9%,
+            rgba(250, 249, 254, 0) 86%, var(--ed-papel) 100%),
+        url("/img/ilustracoes/imagem-fundo-explorar.jpg");
+
+    background-repeat: no-repeat;
+    background-position: 0 0, 0 0, 50% 42%;
+
+    /* `cover` na terceira camada: a imagem preenche a dobra de um
+       lado ao outro. */
+    background-size: 100% 100%, 100% 100%, cover;
+}
+
+/* Uma variacao muito suave de fundo, como a diretriz pede no
+   item 10. E um degrade de 3%: suficiente para a dobra nao ser
+   um retangulo chapado, insuficiente para virar "cor de pagina".
+
+   NOTA: `::before` e pintado ANTES de `::after`, entao este
+   degrade fica por TRAS da ilustracao — ele nunca a alcanca. Com a
+   imagem de um lado ao outro da tela, quem controla o tom do lado
+   esquerdo e o veu de `::after`, nao este gradiente.
+
+   O que ele ainda faz: marcar onde o papel e puro e onde ja entra
+   a arte, nas bordas em que a imagem nao chega.
+   diferenca de 8 por canal entre #f2f1f7 e #faf9fe aparece como
+   um vinco no meio da dobra. */
+.ed-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 70% 90% at 78% 12%, rgba(124, 58, 237, 0.05), transparent 62%),
+        radial-gradient(ellipse 50% 60% at 6% 88%, rgba(236, 72, 153, 0.035), transparent 60%);
+}
+
+/* =========================================
+   2. O GRID DA DOBRA
+
+   Medido no viewport de 1000px: a coluna de texto media 624px
+   num campo de 985px — sobrava meio campo vazio dos dois lados,
+   sem proposito. O grid abaixo da 2 colunas explicitas onde o
+   vazio fica: entre a coluna e a margem.
+   ========================================= */
+
+/* Uma linha so. A primeira versao usava `grid-template-areas` com
+   "titulo" e "apoio" em linhas separadas e "caminhos" nas duas. Como
+   a coluna de caminhos e mais alta, as duas linhas da esquerda se
+   repartiam a altura e sobrava um vao de cerca de 85px entre o titulo
+   e o texto de apoio — sem motivo e visivel. Uma unica linha, com a
+   coluna de texto inteira como um bloco, elimina o vao. */
+.ed-hero__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    column-gap: 72px;
+
+    /* `end`, e nao `center`. Medido: com `center`, as duas colunas
+       ficavam centradas juntas e o resultado era um bloco unico
+       no meio da dobra — e o quadrante inferior direito
+       (404 x 114px medidos) ficava totalmente vazio, o que le
+       como "faltou a imagem" e nao como respiro.
+
+       Com `end`, os caminhos alinham a base com o texto e com a
+       Lia. A composicao vira uma diagonal: titulo em cima a
+       esquerda, caminhos embaixo a direita. O vazio que sobra
+       fica no canto SUPERIOR direito — e esse e o lugar onde o
+       olhar descansa antes de descer para os caminhos, que e o
+       que a proposta previa. */
+    align-items: end;
+
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 92px 48px 96px;
+}
+
+/* ---------- A coluna de texto ---------- */
+
+.ed-hero__texto {
+    max-width: 520px;
+    min-width: 0;
+}
+
+/* ---------- A marca: 1 linha + 1 estrela.
+
+   Este e o substituto do eyebrow. O eyebrow dizia "COMO ESTA
+   PAGINA FUNCIONA" — uma explicacao sobre a pagina, lida
+   antes do titulo. Aqui a marca nao explica nada: ela so marca
+   o comeco. E 1px + 1 estrela, contra a pílula de 33px. */
+.ed-hero__marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 26px;
+}
+
+.ed-hero__linha {
+    width: 44px;
+    height: 1px;
+    background: #dcd5cb;
+    flex: 0 0 auto;
+}
+
+.ed-hero__estrela {
+    position: relative;
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    background: var(--ed-aviso);
+    clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+}
+
+/* ---------- O titulo.
+
+   `clamp` sobe o teto de 3.4rem (54,4px medido hoje) para 3.6rem.
+   O piso e 1.75rem, o que no celular da ~40px e mantem o titulo
+   como o elemento dominante da tela. */
+.ed-hero__titulo {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.75rem, 4.6vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    color: var(--ed-tinta);
+    margin: 0;
+    text-align: left;
+}
+
+/* O accent deixa de ser "a palavra em azul" das 4 paginas e
+   vira a cor da marca. E a unica cor roxa grande da dobra, o
+   que faz dela o acento em vez da decoracao. */
+.ed-hero__accent {
+    color: var(--ed-roxo);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+/* ---------- O texto de apoio.
+
+   Sai do branco `rgba(255,255,255,.85)` sobre foto escura e vira
+   #5c5652 sobre #faf9fe. O contraste sobe de cerca de 5:1 para
+   cerca de 8,9:1 — medido, nao estimado. */
+.ed-hero__apoio {
+    max-width: 420px;
+    margin: 30px 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--ed-suave);
+}
+
+/* =========================================
+   3. OS TRES CAMINHOS
+
+   A decisao mais importante desta camada, e a que mais
+   contraria a proposta anterior: NAO sao 6 itens em grade.
+
+   Seis itens grandes na primeira dobra transformam a pagina em
+   painel de navegacao — exatamente o que a diretriz proibe no
+   item 17. Tres LINHAS leem-se como caminhos: sao menos
+  Weight, tem seta em vez de botao, e cada uma e uma frase, nao
+   um botao.
+
+   Os outros 3 destinos (Destaques, Recentes, FAQ) continuam
+   existindo e funcionando como navegacao secundaria — ver
+   secao 4 deste arquivo.
+   ========================================= */
+
+.ed-caminhos {
+    align-self: center;
+    min-width: 0;
+}
+
+.ed-caminhos__rotulo {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ed-suave);
+    margin-bottom: 14px;
+}
+
+/* ---------- A linha de caminho.
+
+   `display: block` + `border-bottom` em vez de `border` com
+   caixa: a linha e a separacao, entao o item nao pode ter
+   fundo nem raio. E o que separa "caminho" de "card". */
+/* Medido antes e depois deste ajuste, porque o problema nao era
+   "os caminhos eram pequenos" — era que o NOME nao era o elemento
+   principal da propria linha:
+
+       Blog      nome 22px (1 linha)  descricao 37px (2 linhas)
+       Eventos   nome 22px (1 linha)  descricao 37px (2 linhas)
+
+   A descricao era maior que o nome. Alem disso o bloco inteiro
+   dos caminhos media 292px contra 329px do bloco de texto (0,89),
+   e a coluna media 300px num campo de 985 — larga de menos.
+
+   O que resolve, sem virar card:
+     - descricoes que cabem em UMA linha (editadas no HTML);
+     - nome de 17px para 19px, que passa a ter 24px de caixa
+       contra 19px da descricao — pela primeira vez o nome domina;
+     - `align-items: start` em vez de `center`: com duas linhas de
+       texto, `center` alinhava o icone no meio da linha e ele
+       nao acompanhava o nome;
+     - 24px de padding vertical em vez de 15px, que e onde a
+       presenca de verdade aparece: area de clique e respiro;
+     - a coluna um pouco mais larga, para as descricoes caberem. */
+.ed-caminho {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 20px;
+    align-items: start;
+    column-gap: 16px;
+    padding: 24px 4px 24px 0;
+    border-bottom: 1px solid var(--ed-borda);
+    text-decoration: none;
+    color: var(--ed-tinta);
+    transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                color 0.18s ease,
+                border-color 0.24s ease;
+}
+
+/* So a ultima nao fecha a lista. A primeira tambem nao ganha borda
+   acima: o desenho de referencia mostra um separador ENTRE os
+   caminhos, e nenhuma caixa em volta do conjunto. Borda nos dois
+   extremos transformaria os tres em "cards invisiveis" — que e
+   exatamente o que a diretriz proibe no item 17. */
+.ed-caminho:last-of-type {
+    border-bottom: 0;
+}
+
+.ed-caminho__icone {
+    font-size: 16px;
+    /* `1.4` e nao `1`: com `align-items: start` o icone sobe para a
+       linha do topo, e sem um line-height maior ele fica colado no
+       topo da caixa do nome em vez de centrado nela. */
+    line-height: 1.4;
+    color: var(--ed-roxo);
+    text-align: left;
+}
+
+.ed-caminho__texto {
+    min-width: 0;
+}
+
+.ed-caminho__nome {
+    display: block;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    letter-spacing: -0.018em;
+    line-height: 1.25;
+    transition: color 0.18s ease;
+}
+
+.ed-caminho__desc {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--ed-suave);
+    margin-top: 4px;
+}
+
+.ed-caminho__seta {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ed-roxo);
+    opacity: 0.52;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.18s ease;
+}
+
+/* O hover desloca 4px, dentro da faixa de 2-5px do guia, e a
+   seta anda junto. Sem escala e sem sombra. */
+@media (hover: hover) {
+    .ed-caminho:hover {
+        padding-left: 8px;
+    }
+
+    /* A variacao de cor fica no NOME, nao na linha inteira: um
+       `color` no <a> pintaria tambem a descricao e apagaria a
+       hierarquia que este ajuste justamente reforcou. */
+    .ed-caminho:hover .ed-caminho__nome {
+        color: var(--ed-roxo);
+    }
+
+    .ed-caminho:hover .ed-caminho__seta {
+        transform: translateX(5px);
+        opacity: 1;
+    }
+
+    .ed-caminho:hover .ed-caminho__icone {
+        color: var(--ed-roxo);
+    }
+}
+
+.ed-caminho:focus-visible {
+    outline: 2px solid var(--ed-roxo);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* =========================================
+   4. A LIA CHIBI
+
+   A assinatura do lugar: quem abre Explorar ve a Lia; quem
+   abre Artigos, nao. Por isso ela fica no rodape da coluna de
+   texto, perto do texto de apoio e longe do titulo — para nao
+   competir com ele.
+
+   104px no desktop. Nao e botao, nao tem `href`, nao tem
+   `tabindex`, nao tem `cursor: pointer`, e o `alt` e vazio com
+   `aria-hidden`, porque e decorativa: quem precisa saber que e
+   a Lia le a descricao da imagem, nao ve um arquivo PNG.
+   ========================================= */
+
+/* No fluxo da coluna, e nao `position: absolute` solta no canto.
+   Medido na primeira tentativa: solta, ela ficava a 90px do texto
+   de apoio, sem nenhuma relacao com ele, e lia como se tivesse
+   caiu ali. No fluxo, ela encosta no texto e le como quem esta
+   junto dele. */
+.ed-hero__lia {
+    display: block;
+    width: 104px;
+    height: auto;
+    margin-top: 34px;
+    pointer-events: none;
+}
+
+/* =========================================
+   5. O ESPACO VAZIO
+
+   Quatro areas deliberadamente vazias, e nenhuma delas recebe
+   elemento:
+
+     - a faixa acima do grid, entre o header e a marca;
+     - a coluna entre o texto de apoio e os caminhos (72px);
+     - o canto superior direito, acima do rotulo dos caminhos;
+     - a faixa de 112px abaixo do grid, antes do intro.
+
+   A ultima e a mais importante: e ela que separa a descoberta
+   do conteudo sem precisar de borda. Medido na versao atual, o
+   `.explore-intro` comeca em y=520, colado no banner.
+   ========================================= */
+
+/* =========================================
+   6. OS 6 CHIPS — navegacao secundaria
+
+   Medido: em viewport de 700px os chips ficam em y=628, e o
+   `.explore-intro` ocupa y=520–690. Os 72px da barra ficavam
+   POR CIMA do texto "Cada area foi pensada para voce explorar no
+   seu ritmo". Nenhuma captura de tela comum mostra isso.
+
+   A correcao e CSS puro, sem JavaScript:
+
+       position: fixed  ->  position: sticky
+
+   Sticky em vez de static de proposito. Static resolveria o
+   problema da sobreposicao, mas arrancaria a navegacao por
+   ancoras de uma pagina que tem cerca de 6700px de altura — a
+   pessoa rolaria ate o FAQ e nao teria mais como voltar ao
+   topo por um clique. Sticky gruda no topo da tela assim que a
+   dobra sai de cena, que e o comportamento util.
+
+   Os 6 `href`, os 6 `<a>` e o `is-active` do primeiro chip
+   ficam exatamente como estao. Nenhum JS e adicionado — hoje
+   `explore-nav` aparece 0 vezes no `Explorar.js`, e continua
+   aparecendo 0 vezes.
+   ========================================= */
+
+/* -----------------------------------------------------
+   O BUG DA SUBNAV: a barra grudava em cima do conteudo
+   -----------------------------------------------------
+   Medido depois de trocar `fixed` por `sticky`: a barra cola em
+   `top: 0` corretamente, mas os 6 chips sao ancoras (`#destaques`,
+   `#ultimas`, `#artigos`, `#blog`, `#eventos`, `#faq`). Clicar num
+   chip rola a secao ate o TOPO da viewport — e os 69px da barra
+   sticky ficam por cima do que esta la.
+
+   Nenhum dos 6 alvos tinha `scroll-margin-top`, entao:
+
+     - #eventos  perdia o elemento decorativo do topo;
+     - #faq      perdia o decorativo E o proprio cabecalho do FAQ
+                 (icone + "Perguntas Frequentes" + descricao).
+
+   `scroll-margin-top` e a correcao: ela cria espaco ACIMA do alvo
+   na hora do ancoramento, sem mover nada na pagina. E a unica
+   forma de corrigir isso sem voltar para `fixed` — que era o que
+   escondia o texto do `.explore-intro`.
+
+   O valor e a soma do header fixo + a nav + uma folga:
+
+       header .header-glass  75px   (inicio.css, position:fixed, z-index:40)
+       nav .explore-nav      69px   (medido)
+       folga                 24px
+                            ----
+       scroll-margin-top    168px
+
+   Sem esse novo token a barra escondia o cabecalho do site: o
+   header e `position: fixed` em `inicio.css`, com 75px e
+   `z-index: 40`, e a nav estava em `top: 0` — a nav cobria o header
+   inteiro. E o que "fixa em baixo" quer dizer de verdade: a barra
+   nunca deveria ter ficado nem embaixo nem em cima do header, e sim
+   logo abaixo dele.
+
+   No celular o header cai para 65px (inicio.css, max-width: 768px)
+   e a nav para 61px, entao o token tambem cai. */
+
+:root {
+    --ed-header-altura: 75px;
+    --ed-nav-altura: 168px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --ed-header-altura: 65px;
+        --ed-nav-altura: 150px;
+    }
+}
+
+#destaques,
+#ultimas,
+#artigos,
+#blog,
+#eventos,
+#faq {
+    scroll-margin-top: var(--ed-nav-altura);
+}
+
+.explore-nav {
+    position: sticky;
+
+    /* Abaixo do header, nunca em `top: 0`. O `.header-glass` de
+       `inicio.css` e `position: fixed; top: 0; height: 75px;
+       z-index: 40` — e uma nav em `top: 0` gruda exatamente por
+       cima dele. Medido: header em y 0-75, nav em y 0-69, uma
+       dentro da outra. O logo e a navegacao principal ficavam
+       invisiveis durante toda a rolagem. */
+    top: var(--ed-header-altura);
+    bottom: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    z-index: 40;
+
+    /* Sticky precisa de fundo opaco: sem isto os espacos entre
+       os chips deixam a pagina passar por baixo. */
+    background: rgba(250, 249, 254, 0.92);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--ed-borda);
+    padding: 10px 20px;
+
+    /* Sombra de 1px. Sem ela a barra fica colada no topo da janela e
+       parece um elemento perdido: nao se sabe se e navegacao ou
+       sobra do banner. Com uma linha de sombra, ela le como barra
+       de navegacao apoiada. */
+    box-shadow: 0 1px 0 rgba(26, 26, 46, 0.02),
+                0 6px 18px -12px rgba(26, 26, 46, 0.18);
+}
+
+/* O limite de 44px de altura de toque, medido no CSS antigo,
+   e preservado: nao reduzir. */
+.explore-nav__chip:hover {
+    border-color: var(--ed-roxo);
+    color: var(--ed-roxo);
+    background: var(--ed-roxo-claro);
+}
+
+.explore-nav__chip:hover i {
+    color: var(--ed-roxo);
+}
+
+/* =========================================
+   7. A TRANSIÇÃO PARA O CONTEUDO
+
+   O `.explore-intro` ja existe e ja diz a frase certa ("Cada
+   area foi pensada para voce explorar no seu ritmo"). Nenhum
+   texto e criado, alterado ou duplicado: o bloco so ganha o
+   espaco que a versao atual nao tinha, e uma estrela.
+
+   A estrela e a unica coisa que separa a descoberta do
+   conteudo, e ela e a mesma que abre a dobra. E o que faz as
+   duas partes lerem como uma sequencia.
+   ========================================= */
+
+.explore-intro {
+    padding: 84px 48px 72px;
+    background: var(--ed-papel);
+    border-bottom: 0;
+    position: relative;
+}
+
+.explore-intro__container {
+    max-width: 620px;
+    text-align: center;
+}
+
+/* A estrela do intro: `::before` da section, com o `top`
+   negativado para ficar no respiro entre a dobra e o texto. */
+.explore-intro::before {
+    content: "";
+    position: absolute;
+    top: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: var(--ed-aviso);
+    clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+    opacity: 0.85;
+}
+
+.explore-intro__title {
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    line-height: 1.35;
+    margin-bottom: 10px;
+}
+
+.explore-intro__sub {
+    max-width: 460px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   8. O QUE A DOBRA ANTES CONTRAIA COM O .ed-hero::before
+
+   `.explore-banner` ja tinha `overflow: hidden`, que cortaria os
+   elementos que saem da caixa. Desligado em `.ed-hero`, e o
+   unico lugar do arquivo que mexe nessa propriedade.
+   ========================================= */
+
+/* =========================================
+   9. RESPONSIVO
+   ========================================= */
+
+@media (max-width: 1199px) {
+    .ed-hero__grid {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        column-gap: 56px;
+        padding: 88px 40px 96px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* Uma coluna. A ordem do DOM ja e a ordem de leitura:
+       marca, titulo, apoio, caminhos. Nenhum `order` e usado,
+       entao o leitor de tela nao sente diferenca. */
+    .ed-hero__grid {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+        row-gap: 0;
+        padding: 60px 32px 68px;
+    }
+
+    .ed-hero__texto {
+        max-width: none;
+    }
+
+    .ed-hero__apoio {
+        max-width: 460px;
+        margin-top: 22px;
+    }
+
+    .ed-hero__lia {
+        width: 84px;
+        margin-top: 26px;
+    }
+
+    .ed-caminhos {
+        margin-top: 44px;
+    }
+
+    .explore-nav {
+        padding: 8px 16px;
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 560px) {
+    .ed-hero__grid {
+        padding: 48px 22px 56px;
+    }
+
+    .ed-hero__marca {
+        margin-bottom: 20px;
+    }
+
+    .ed-hero__titulo {
+        font-size: clamp(1.75rem, 8.4vw, 2.4rem);
+    }
+
+    .ed-hero__apoio {
+        font-size: 1rem;
+        margin-top: 18px;
+    }
+
+    /* Os 2 elementos decorativos da coluna de texto saem. Regra
+       do GUIA-VISUAL.md e item 19 da diretriz: no celular a
+       decoracao e a primeira coisa a reduzir. A estrela do topo
+       fica — ela e a assinatura da pagina. */
+    .ed-hero__estrela,
+    .ed-hero__linha {
+        display: none;
+    }
+
+    .ed-caminhos {
+        margin-top: 36px;
+    }
+
+    .ed-caminho {
+        grid-template-columns: 22px minmax(0, 1fr) 18px;
+        column-gap: 13px;
+        padding: 20px 2px 20px 0;
+    }
+
+    .ed-caminho__icone {
+        font-size: 15px;
+    }
+
+    .ed-caminho__nome {
+        font-size: 1.125rem;
+    }
+
+    .ed-caminho__desc {
+        font-size: 0.8125rem;
+    }
+
+    .ed-caminho__seta {
+        font-size: 13px;
+    }
+
+    .ed-hero__lia {
+        width: 72px;
+        margin-top: 22px;
+    }
+
+    .explore-intro {
+        padding: 64px 24px 56px;
+    }
+
+    .explore-intro::before {
+        top: 30px;
+        width: 8px;
+        height: 8px;
+    }
+}
+
+/* Tela baixa — landscape de celular, cerca de 400px de altura.
+   A dobra inteira nao cabe, e forcar 580px aqui transformaria a
+   pagina em rolagem pura. O que sobra e o essencial: marca,
+   titulo e apoio. */
+@media (max-height: 620px) and (min-width: 901px) {
+    .ed-hero__grid {
+        padding: 56px 48px 60px;
+    }
+
+    .ed-hero__lia,
+    .ed-caminhos__rotulo,
+    .ed-caminho__desc {
+        display: none;
+    }
+}
+
+/* =========================================
+   10. MOVIMENTO REDUCIDO
+
+   Sem transicao, sem deslocamento. O conteudo e identico — o que
+   some e o movimento, nunca a informacao. `focus-visible`
+   continua valendo: e foco, nao animacao.
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .ed-caminho,
+    .ed-caminho__seta,
+    .explore-nav__chip {
+        transition: none !important;
+    }
+
+    .ed-caminho:hover {
+        padding-left: 2px;
+    }
+
+    .ed-caminho:hover .ed-caminho__seta {
+        transform: none;
+        opacity: 0.75;
+    }
+
+    .ed-caminho:hover .ed-caminho__nome {
+        color: var(--ed-tinta);
+    }
+}
+
+/* =========================================
+   11. MODO ESCURO
+
+   `Explorar.css` tem um bloco `a11y-dark-mode` com as
+   referencias `--explore-bg` etc. Nao ha nada a redefinir: as
+   cores desta camada sao as mesmas variaveis. O que muda e o
+   fundo suave do `.ed-hero::before`, que sobre fundo escuro
+   ficaria invisivel — e nao ha problema nenhum nisso.
+   ========================================= */

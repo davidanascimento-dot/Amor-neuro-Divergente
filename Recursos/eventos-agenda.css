@@ -1,0 +1,676 @@
+/* =========================================
+   EVENTOS — AGENDA
+   Arquivo: Recursos/eventos-agenda.css
+   Prefixo: .ag-
+   Carregado por ULTIMO, depois de eventos.css
+
+   -----------------------------------------------------
+   O DIAGNOSTICO QUE GUIOU TUDO
+   -----------------------------------------------------
+   A pagina ja tinha TUDO que uma agenda precisa:
+
+       .event-date-badge  > .event-day (22) + .event-month (JUN)
+       .event-meta        > horario · local · participantes
+       .event-tag         > Online / Presencial / Hibrido / Gratuito
+       .event-btn         > Inscrever-se
+       <h3> + <p>         > titulo e descricao
+
+   Nenhum dado novo foi criado. O que faltava era a HIERARQUIA.
+
+   Medido na versao anterior, dentro de cada card:
+
+     - a FOTO ocupa 250px e vem primeiro no DOM. E o elemento
+       visualmente dominante, entao o card lia como "foto com
+       texto" e nao como agenda;
+     - a DATA e uma badge de 68px, com o dia em 20px — menor que
+       o titulo do evento (17px em negrito) e muito menor que a
+       foto;
+     - 2 das 4 fotos sao LITERALMENTE a mesma imagem
+       (photo-1573497620053), em dois eventos diferentes;
+     - o card tem fundo branco + borda + raio: chrome de card.
+
+   A ordem proposta no guia e:
+       DATA -> EVENTO -> INFORMACAO -> ACAO
+   Hoje ela e:
+       FOTO -> DATA -> evento -> informacao -> acao
+
+   O que esta camada faz, sem mexer em nenhum dado:
+     1. a DATA vira o elemento que abre a linha;
+     2. a FOTO vira uma miniatura pequena no fim da linha;
+     3. o chrome de card some — a lista vira lista;
+     4. a acao continua sendo botao (participar e acao, nao
+       leitura).
+
+   -----------------------------------------------------
+   O QUE NAO MUDA
+   -----------------------------------------------------
+   .event-image img, .event-day, .event-month, .event-tag,
+   .event-meta, .event-btn, <h3>, <p>: todos preservados, com os
+   mesmos textos, os mesmos `alt` e as mesmas classes. Nenhum
+   conteudo foi removido, reescrito ou recriado.
+
+   O `href="#" dos 4 "Inscrever-se" ja era `#` antes. Nao foi
+   tocado — e funcionalidade de fora, nao de layout.
+   ========================================= */
+
+:root {
+    /* As cores que `eventos.css` ja declara. Nenhuma cor nova. */
+    --ag-tinta: #1a1a2e;
+    --ag-suave: #5c5652;
+    --ag-roxo: #7c3aed;
+    --ag-roxo-claro: #ede9fe;
+    --ag-borda: #e8e3dd;
+    --ag-papel: #faf9fe;
+
+    /* O acento de "tempo/atividade" que o guia pede para Eventos.
+       E o verde que ja existe no site (`--accent-mint` em
+       inicio.css, `#10b981`). Nao e uma cor nova: e um token que
+       ja era usado, trazido para ca. */
+    --ag-tempo: #10b981;
+}
+
+/* =========================================
+   1. A PRIMEIRA DOBRA — a agenda
+   ========================================= */
+
+.ag-hero {
+    padding: 96px 48px 84px;
+    background: var(--ag-papel);
+    position: relative;
+    text-align: left;      /* era `center` em .page-hero */
+}
+
+/* Uma variacao suave de fundo, como Explorar. Mesmo tom, mesma
+   intensidade — a familia visual se reconhece. */
+.ag-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 60% 80% at 84% 18%, rgba(16, 185, 129, 0.05), transparent 62%);
+}
+
+.ag-hero__marca,
+.ag-hero__texto {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+/* ---------- `────── ◆`: a marca da agenda.
+
+   Um losango e uma linha. Os dois decorativos. A escolha do losango
+   (e nao da estrela de quatro pontas que abre Explorar) e o que
+   faz as duas paginas pertencerem a mesma familia sem repetirem o
+   mesmo elemento no mesmo lugar. */
+.ag-hero__marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.ag-hero__linha {
+    width: 52px;
+    height: 1px;
+    background: #dcd5cb;
+    flex: 0 0 auto;
+}
+
+.ag-hero__losango {
+    width: 11px;
+    height: 11px;
+    flex: 0 0 auto;
+    background: var(--ag-tempo);
+    border-radius: 2px;
+    transform: rotate(45deg);
+}
+
+/* ---------- O eixo vertical.
+
+   Uma linha fina de roxo na esquerda do bloco de texto. E o
+   unico elemento que diferencia esta pagina das outras tres: em
+   Explorar o eixo era o espaco entre duas colunas; aqui ele e
+   desenhado, porque uma pagina de agenda tem um eixo de tempo.
+
+   Implementado com `border-left` no container e `padding-left` no
+   texto — nunca com `::before` + `z-index`, que e fragil de
+   manter e quebra emeco de layout. */
+.ag-hero__texto {
+    border-left: 2px solid var(--ag-roxo);
+    padding-left: 36px;
+}
+
+.ag-hero__titulo {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.75rem, 4.4vw, 3.35rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    color: var(--ag-tinta);
+    margin: 0;
+}
+
+/* O accent e roxo, como em Explorar. O MESMO token, o mesmo
+   papel: a cor da marca no titulo. */
+.ag-hero__accent {
+    color: var(--ag-roxo);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+}
+
+.ag-hero__apoio {
+    max-width: 520px;
+    margin: 26px 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--ag-suave);
+    text-align: left;
+}
+
+/* =========================================
+   2. A LISTA — de cards para agenda
+   ========================================= */
+
+.events-section {
+    padding: 24px 48px 96px;
+    background: var(--ag-papel);
+}
+
+.events-section .section-title {
+    max-width: 1120px;
+    margin: 0 auto 40px;
+    text-align: left;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ag-suave);
+}
+
+.events-list {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;              /* era 24px: o espaco agora vem do padding da linha */
+}
+
+/* ---------- A LINHA.
+
+   Tres colunas: DATA | CONTEUDO | MINIATURA.
+
+   A data abre a linha. A miniatura vai para o fim. O meio fica
+   com o que a pessoa le para decidir se vai. */
+.event-card {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr) 132px;
+    align-items: start;
+    column-gap: 32px;
+    padding: 30px 0;
+
+    /* O chrome de card sai: sem fundo, sem borda em volta, sem
+       raio. O que separa as linhas e um fio, nao uma caixa. */
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--ag-borda);
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* `grid-auto-flow: row` empacota de forma ESPARSA: depois de
+       colocar a coluna 1 e a coluna 3, o cursor ja passou da 3 e
+       o item da coluna 2 desce para a linha seguinte. Medido:
+       `grid-template-rows` resolvia para "96px 210px" — duas
+       linhas, com o texto inteiro abaixo da data.
+
+       `dense` resolveria o desenho, mas de gracao: a ordem
+      _PASSAGEM_ do DOM e o que o leitor de tela anuncia, e ela
+       precisa comecar pela data. Fixar `grid-row: 1` mantem a
+       ordem de leitura livre e o desenho correto. */
+    grid-auto-flow: row;
+}
+
+.event-card > .event-date-badge,
+.event-card > .event-body,
+.event-card > .event-image {
+    grid-row: 1;
+}
+
+.event-card:last-child {
+    border-bottom: 0;
+}
+
+/* ---------- A DATA.
+
+   O `.event-date-badge` era um quadrado roxo de 68px com o dia em
+   20px. Medido: o titulo do evento (17px, peso 700) era MAIOR que
+   o dia. Invertido: o dia vira o maior numero da linha e o mes
+   vira um rotulo em caixa alta acima dele.
+
+   `flex-direction: column` de novo — `eventos.css` tinha mudado
+   para `row` no breakpoint de 720px, e para uma agenda o mes em
+   cima do dia e o que se le. */
+.event-date-badge {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2px;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    text-align: left;
+}
+
+.event-day {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 2.75rem;      /* era 20px */
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    color: var(--ag-roxo);
+}
+
+.event-month {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ag-suave);
+}
+
+/* ---------- O CONTEUDO. */
+
+.event-body {
+    grid-column: 2;
+    display: block;
+    padding: 0;
+    gap: 0;
+    min-width: 0;
+}
+
+.event-info {
+    min-width: 0;
+}
+
+/* As etiquetas (Online / Gratuito) continuam etiquetas. Ficam
+   MENORES e mais quietas: em uma agenda, o que decide e a data,
+   a hora e o local — nao se o evento e gratuito. */
+.event-tags {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 10px;
+    flex-wrap: wrap;
+}
+
+.event-tag {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.event-info h3 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.28;
+    letter-spacing: -0.018em;
+    color: var(--ag-tinta);
+    margin: 0 0 8px;
+}
+
+.event-info p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--ag-suave);
+    margin: 0 0 14px;
+    max-width: 62ch;
+}
+
+/* Horario · local · participantes: uma linha, do mais importante
+   ao menos. O horario vem primeiro porque e o que a pessoa
+   precisa antes de qualquer outra coisa. */
+.event-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.8125rem;
+    color: var(--ag-suave);
+    margin: 0 0 18px;
+}
+
+.event-meta i {
+    color: var(--ag-roxo);
+}
+
+/* ---------- A ACAO.
+
+   Continua sendo botao. "Participar" e uma ACOA, nao uma leitura:
+   virar um link de texto apagaria o unico elemento que convida
+   alguem a fazer alguma coisa na pagina inteira. */
+.event-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 26px;
+    background: var(--ag-roxo);
+    color: #ffffff;
+    border: 1px solid var(--ag-roxo);
+    text-decoration: none;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                gap 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.18s ease;
+}
+
+.event-btn:hover {
+    background: #6d28d9;
+    border-color: #6d28d9;
+    gap: 12px;
+}
+
+.event-btn:focus-visible {
+    outline: 2px solid var(--ag-roxo);
+    outline-offset: 3px;
+}
+
+/* ---------- A MINIATURA.
+
+   A coluna 3. Ela vem antes de `.event-body` no DOM (o badge foi
+   promoted para o inicio do card), mas `grid-column` explicito
+   coloca cada elemento onde ele deve estar. E por isso que a
+   ordem no HTML pode ser a de leitura — data primeiro — sem
+   obrigar o desenho a acompanhar a ordem visual.
+
+   Era a elemento dominante com 250px. Vira uma marca de 132px no
+   fim da linha — ainda e uma foto, ainda tem `alt`, mas nao
+   governa a linha.
+
+   O canto suavemente arredondado mantem a familia visual com o
+   tratamento de fotos ja validado no `foto-forma.css`. Nao e o
+   mesmo recorte organico: aqui a forma e um retangulo com raio
+   pequeno, porque um blob de 4 lados desiguais em 132px vira
+   ruido. */
+/* `>`, e nao `.event-image` solto. Seletor de filho direto vale
+   0,2,0 contra 0,1,0 do `eventos.css` — e o `align-self: center`
+   desta regra chegava enquanto o `height` nao. Sem saber qual regra
+   estava barrando o `height`, subir a especificidade resolve os
+   dois de uma vez, e `>` nao tem custo: so existe um nivel de
+   filho em cada card. */
+/* `min-height: 0` e a linha que faz esta regra funcionar.
+
+   O `eventos.css` tem, no fim do arquivo:
+
+       .event-image { min-height: 100%; }
+
+   `min-height: 100%` de uma linha de grid de 211px vale 211px. E na
+   CSS, quando `min-height` e `max-height` se contradizem, **o
+   minimo vence**. Entao `height: 96px` e `max-height: 96px` aqui
+   eran letra morta: o elemento media 211px, e nenhuma quantidade de
+   `height` ou `max-height` resolvia — era preciso zerar o minimo.
+
+   Foi o que aconteceu: nem `!important` nem `style` inline mudavam
+   nada, porque o `min-height` herdado continuava mandando. */
+.event-card > .event-image {
+    position: relative;
+    min-height: 0;
+    grid-column: 3;
+    /* `center`, e nao o `start` herdado do card. Medido: o corpo
+       tem cerca de 210px e a miniatura 96px. Com `start` o vazio
+       ficava TODO abaixo da miniatura; centrado, ele se divide em
+       dois e a linha fica equilibrada. */
+    align-self: center;
+    width: 132px;
+    height: 96px;
+    max-height: 96px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+/* O `img` e `position: absolute` dentro de uma caixa `relative`.
+
+   Isso nao e estetica, e uma saida: com `height: 100%` dentro de um
+   pai de altura declarada, a imagem ESTICAVA o pai para 210px
+   (a altura da linha) em vez de caber nos 96px declarados — e o
+   `max-height: 96px` do pai nao segurava. Um filho absoluto nao
+   participa do calculo de altura do pai, entao a caixa fica com
+   os 96px declarados, aconteca o que acontecer com a imagem
+   dentro. Medido depois da mudanca: 96px nos 4 eventos. */
+.event-card > .event-image img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* O hover da linha: 3px, dentro da faixa de 2-5px do guia. A
+   seta do botao ja anda sozinha; aqui e a linha que responde. */
+@media (hover: hover) {
+    .event-card:hover {
+        transform: translateY(-3px);
+        box-shadow: none;
+    }
+
+    .event-card:hover .event-info h3 {
+        color: var(--ag-roxo);
+    }
+}
+
+.event-card:focus-within {
+    transform: translateY(-3px);
+}
+
+/* =========================================
+   3. A SECAO DE TIPOS
+
+   Fica como lista quiet: 4 rotulos curtos, sem card. E a
+   unica parte da pagina que nao e sobre datas, entao nao
+   compete com a agenda.
+   ========================================= */
+
+.categories-section {
+    padding: 72px 48px 96px;
+    background: #ffffff;
+    border-top: 1px solid var(--ag-borda);
+}
+
+.categories-section > .container {
+    max-width: 1120px;
+}
+
+.categories-section .section-title {
+    max-width: 1120px;
+    margin: 0 auto 28px;
+    text-align: left;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ag-suave);
+}
+
+/* =========================================
+   4. RESPONSIVO
+   ========================================= */
+
+@media (max-width: 900px) {
+    .ag-hero {
+        padding: 60px 32px 56px;
+    }
+
+    .ag-hero__texto {
+        padding-left: 24px;
+    }
+
+    .events-section,
+    .categories-section {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+
+    /* Duas colunas: DATA | CONTEUDO. A miniatura desce para o
+       fim do conteudo, como um registro do que o evento e. */
+    .event-card {
+        grid-template-columns: 84px minmax(0, 1fr);
+        column-gap: 24px;
+        padding: 26px 0;
+    }
+
+    /* Em duas colunas cada elemento volta a fluir: data e imagem
+       na linha 1, o texto ocupa a coluna larga ao lado. */
+    .event-card > .event-date-badge,
+    .event-card > .event-body,
+    .event-card > .event-image {
+        grid-row: auto;
+    }
+
+    .event-day {
+        font-size: 2.25rem;
+    }
+
+    .event-card > .event-image {
+        min-height: 0;
+        grid-column: 2;
+        grid-row: 2;
+        align-self: start;
+        width: 100%;
+        max-width: 200px;
+        height: 88px;
+        max-height: 88px;
+        margin-top: 18px;
+    }
+}
+
+@media (max-width: 560px) {
+    .ag-hero {
+        padding: 44px 22px 44px;
+    }
+
+    .ag-hero__marca {
+        margin-bottom: 22px;
+    }
+
+    .ag-hero__linha {
+        width: 40px;
+    }
+
+    .ag-hero__texto {
+        padding-left: 20px;
+    }
+
+    /* Uma coluna: DATA em cima, conteudo embaixo. A data continua
+       sendo a primeira coisa lida — que e o ponto.
+
+       `grid-column: auto` nos tres e obrigatorio. A regra base
+       fixa `.event-body` na coluna 2 e a badge na coluna 1; com o
+       grid reduzido a UMA coluna, a coluna 2 deixa de existir e o
+       navegador cria uma implicita. O resultado medido: a badge
+       ocupa a coluna 1 inteira e o texto entra por cima dela —
+       a data aparecia cortado atras das etiquetas.
+
+       E o seletor precisa de `>`, como na base: `.event-date-badge`
+       sozinho vale 0,1,0 contra 0,2,0 de `.event-card >
+       .event-date-badge`, e perdia. */
+    .event-card {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 16px;
+        padding: 24px 0;
+    }
+
+    .event-card > .event-date-badge,
+    .event-card > .event-body,
+    .event-card > .event-image {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .event-card > .event-date-badge {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    .event-day {
+        font-size: 2rem;
+    }
+
+    .event-card > .event-image {
+        min-height: 0;
+        grid-column: 1;
+        max-width: 100%;
+        height: 120px;
+        max-height: 120px;
+        margin-top: 4px;
+    }
+
+    .event-info h3 {
+        font-size: 1.125rem;
+    }
+
+    .events-section,
+    .categories-section {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+}
+
+/* Tela baixa: o hero encolhe para o essencial. */
+@media (max-height: 620px) and (min-width: 901px) {
+    .ag-hero {
+        padding: 48px 48px 44px;
+    }
+
+    .ag-hero__marca {
+        margin-bottom: 18px;
+    }
+}
+
+/* =========================================
+   5. MOVIMENTO REDUCIDO
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .event-card,
+    .event-btn {
+        transition: none !important;
+    }
+
+    .event-card:hover,
+    .event-card:focus-within {
+        transform: none;
+    }
+
+    .event-btn:hover {
+        gap: 8px;
+    }
+}
+
+/* =========================================
+   6. MODO ESCURO
+
+   `eventos.css` tem um bloco de dark mode proprio. Nao ha nada a
+   redefinir: todas as cores desta camada vem dos tokens que ele
+   ja declara.
+   ========================================= */

@@ -17,6 +17,8 @@
 
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
+    <!-- A camada editorial. ULTIMO de proposito: precisa vencer. -->
+    <link rel="stylesheet" href="/Recursos/recursos-editorial.css">
   <script src="/imagens.js"></script>
 </head>
 <body>
@@ -119,25 +121,60 @@
         <!-- =============================================
              BANNER EDITORIAL
              ============================================= -->
-        <section class="recursos-banner">
-            <div class="recursos-banner__media">
-                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&h=900&fit=crop"
-                     alt="Livros e leitura em ambiente tranquilo" loading="eager">
-                <div class="recursos-banner__overlay"></div>
+        <section class="recursos-banner re-hero">
+            <!-- Marca `─── ✦`: a estrela vem DEPOIS da linha, e em roxo
+                 neutro — em Explorar ela vem antes e em amarelo; em Eventos
+                 o elemento e um losango verde. Mesmo vocabulario, tres
+                 leituras. Decorativa: nao entra na ordem de leitura. -->
+            <div class="re-hero__marca" aria-hidden="true">
+                <span class="re-hero__linha"></span>
+                <span class="re-hero__estrela"></span>
             </div>
 
-            <div class="recursos-banner__content">
-                <span class="recursos-banner__eyebrow">
-                    <i class="fa-solid fa-book-open"></i> Biblioteca de conteúdos
-                </span>
-                <h1 class="recursos-banner__title">
-                    Artigos e Guias para <br>
-                    <span class="recursos-banner__title-accent">entender sem esforço</span>
-                </h1>
-                <p class="recursos-banner__sub">
-                    Textos completos sobre autismo, TDAH, dislexia e outras neurodivergências. Escritos com clareza, sem jargão desnecessário.
-                </p>
+            <div class="re-hero__grid">
+                <div class="re-hero__coluna">
+                    <h1 class="re-hero__titulo">
+                        Encontre algo<br>
+                        <span class="re-hero__accent">para entender melhor.</span>
+                    </h1>
+                    <p class="re-hero__apoio">
+                        Textos completos sobre autismo, TDAH, dislexia e outras
+                        neurodivergências. Escritos com clareza, sem jargão
+                        desnecessário.
+                    </p>
+                </div>
             </div>
+
+            <!-- O INDICE DO ACERVO.
+                 Quatro linhas, cada uma apontando para uma secao que JA
+                 EXISTE nesta pagina (#artigos-externos, #artigos-equipe,
+                 #categorias, #em-breve). Nenhum link novo foi criado: sao os
+                 mesmos quatro blocos, agora Legiveis de cima.
+
+                 Diferenca em relacao aos caminhos de Explorar: aqui a coluna
+                 da direita e o INDICE do acervo (o que existe para ler),
+                 nao navegacao para outra pagina (para onde ir). -->
+            <nav class="re-indice" aria-label="Índice do acervo">
+                <span class="re-indice__rotulo">O que tem aqui</span>
+                <div class="re-indice__grade">
+                    <a class="re-indice__item" href="#artigos-externos">
+                        <span class="re-indice__num">01</span>
+                        <span class="re-indice__txt">Textos completos</span>
+                    </a>
+                    <a class="re-indice__item" href="#artigos-equipe">
+                        <span class="re-indice__num">02</span>
+                        <span class="re-indice__txt">Artigos da equipe</span>
+                    </a>
+                    <a class="re-indice__item" href="#categorias">
+                        <span class="re-indice__num">03</span>
+                        <span class="re-indice__txt">Por categoria</span>
+                    </a>
+                    <a class="re-indice__item" href="#em-breve">
+                        <span class="re-indice__num">04</span>
+                        <span class="re-indice__txt">Novos temas</span>
+                    </a>
+                </div>
+            </nav>
         </section>
 
        
@@ -159,9 +196,9 @@
         </nav>
 
        
-        <section class="recursos-section" id="artigos-externos">
-            <div class="recursos-section__container">
-                <header class="recursos-head">
+        <section class="recursos-section re-estante" id="artigos-externos">
+            <div class="recursos-section__container re-estante__container">
+                <header class="recursos-head re-estante__head">
                     <div>
                         <span class="recursos-head__eyebrow">
                             <i class="fa-solid fa-globe"></i> Curadoria
@@ -176,58 +213,58 @@
                     </a>
                 </header>
 
-                <div class="recursos-grid">
+                <div class="recursos-grid re-estante__grid">
 
-                    <a href="#" class="externo-card" target="_blank" rel="noopener">
-                        <div class="externo-card__media">
-                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
-                            <span class="externo-card__badge">Externo</span>
-                        </div>
-                        <div class="externo-card__body">
-                            <span class="externo-card__source">
-                                <i class="fa-solid fa-link"></i> Harvard Business Review
-                            </span>
-                            <h3>Por que empresas neurodiversas inovam mais</h3>
-                            <p>Estudo sobre como times neurodiversos trazem perspectivas únicas para resolver problemas complexos.</p>
-                            <span class="externo-card__link">
-                                Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </span>
-                        </div>
-                    </a>
+                    <a href="#" class="externo-card re-estante__destaque" target="_blank" rel="noopener">
+            <div class="externo-card__media">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
+            <span class="externo-card__badge">Externo</span>
+            </div>
+            <div class="externo-card__body">
+            <span class="externo-card__source">
+            <i class="fa-solid fa-link"></i> Harvard Business Review
+            </span>
+            <h3>Por que empresas neurodiversas inovam mais</h3>
+            <p>Estudo sobre como times neurodiversos trazem perspectivas únicas para resolver problemas complexos.</p>
+            <span class="externo-card__link">
+            Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+            </div>
+            </a>
 
-                    <a href="#" class="externo-card" target="_blank" rel="noopener">
-                        <div class="externo-card__media">
-                            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
-                            <span class="externo-card__badge">Externo</span>
-                        </div>
-                        <div class="externo-card__body">
-                            <span class="externo-card__source">
-                                <i class="fa-solid fa-link"></i> The Atlantic
-                            </span>
-                            <h3>O mito da "normalidade" no trabalho</h3>
-                            <p>Uma reflexão sobre como padrões de produtividade tradicionais excluem profissionais neurodivergentes.</p>
-                            <span class="externo-card__link">
-                                Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </span>
-                        </div>
-                    </a>
+                    <a href="#" class="externo-card re-estante__linha" target="_blank" rel="noopener">
+            <div class="externo-card__media">
+            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
+            <span class="externo-card__badge">Externo</span>
+            </div>
+            <div class="externo-card__body">
+            <span class="externo-card__source">
+            <i class="fa-solid fa-link"></i> The Atlantic
+            </span>
+            <h3>O mito da "normalidade" no trabalho</h3>
+            <p>Uma reflexão sobre como padrões de produtividade tradicionais excluem profissionais neurodivergentes.</p>
+            <span class="externo-card__link">
+            Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+            </div>
+            </a>
 
-                    <a href="#" class="externo-card" target="_blank" rel="noopener">
-                        <div class="externo-card__media">
-                            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
-                            <span class="externo-card__badge">Externo</span>
-                        </div>
-                        <div class="externo-card__body">
-                            <span class="externo-card__source">
-                                <i class="fa-solid fa-link"></i> Scientific American
-                            </span>
-                            <h3>Autismo e a ciência das diferenças neurológicas</h3>
-                            <p>Panorama científico sobre como o cérebro autista processa informações e emoções de forma única.</p>
-                            <span class="externo-card__link">
-                                Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </span>
-                        </div>
-                    </a>
+                    <a href="#" class="externo-card re-estante__linha" target="_blank" rel="noopener">
+            <div class="externo-card__media">
+            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=600&h=400&fit=crop" alt="Artigo externo" loading="lazy">
+            <span class="externo-card__badge">Externo</span>
+            </div>
+            <div class="externo-card__body">
+            <span class="externo-card__source">
+            <i class="fa-solid fa-link"></i> Scientific American
+            </span>
+            <h3>Autismo e a ciência das diferenças neurológicas</h3>
+            <p>Panorama científico sobre como o cérebro autista processa informações e emoções de forma única.</p>
+            <span class="externo-card__link">
+            Ler no original <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+            </div>
+            </a>
 
                 </div>
             </div>
@@ -248,9 +285,9 @@
             <span class="espaco-banner__nome">Artigos / entre texto de fora e da casa</span>
             <span class="espaco-banner__fundo">/img/ilustracoes/AS DUAS MÃOS.jpg</span>
         </div>
-<section class="recursos-section recursos-section--alt" id="artigos-equipe">
-            <div class="recursos-section__container">
-                <header class="recursos-head">
+<section class="recursos-section recursos-section--alt re-coluna" id="artigos-equipe">
+            <div class="recursos-section__container re-coluna__container">
+                <header class="recursos-head re-coluna__head">
                     <div>
                         <span class="recursos-head__eyebrow">
                             <i class="fa-solid fa-pen-nib"></i> Nossa escrita
@@ -266,7 +303,7 @@
                 </header>
 
                 <!-- Artigo em destaque -->
-                <article class="equipe-featured">
+                <article class="equipe-featured re-coluna__principal">
                     <a href="/Recursos/recursos.html" class="equipe-featured__media">
                         <img src="/img/recursos-hero-DaGrMSNl - Copia.jpg" alt="Artigo em destaque" loading="lazy">
                     </a>
@@ -293,7 +330,7 @@
                     </div>
                 </article>
 
-             <section class="explore-topics" id="topicos">
+             <section class="explore-topics re-coluna__apoio" id="topicos">
             <div class="explore-topics__container">
                 <div class="explore-topics__grid">
 
@@ -354,15 +391,15 @@
             </div>
         </section>
 
-        <section class="recursos-section" id="categorias">
-    <div class="recursos-section__container">
-        <header class="recursos-head recursos-head--center">
+        <section class="recursos-section re-indice-temas" id="categorias">
+    <div class="recursos-section__container re-indice-temas__container">
+        <header class="recursos-head recursos-head--center re-indice-temas__head">
             <span class="recursos-head__eyebrow"><i class="fa-solid fa-layer-group"></i> Temas</span>
             <h2 class="recursos-head__title">Explore por categoria</h2>
             <p class="recursos-head__sub">Escolha um tema e mergulhe nos conteúdos feitos com cuidado para você.</p>
         </header>
 
-        <div class="recursos-grid">
+        <div class="recursos-grid re-indice-temas__grid">
 
             <a href="/Recursos/autismo/autismo.html" class="externo-card categoria-card">
                 <div class="externo-card__media">
@@ -473,9 +510,9 @@
         <!-- =============================================
              EM BREVE — Novos temas
              ============================================= -->
-        <section class="recursos-section recursos-section--alt" id="em-breve">
-            <div class="recursos-section__container">
-                <header class="recursos-head recursos-head--center">
+        <section class="recursos-section recursos-section--alt re-corredor" id="em-breve">
+            <div class="recursos-section__container re-corredor__container">
+                <header class="recursos-head recursos-head--center re-corredor__head">
                     <span class="recursos-head__eyebrow"><i class="fa-solid fa-sparkles"></i> Em breve</span>
                     <h2 class="recursos-head__title">Novos temas chegando</h2>
                     <p class="recursos-head__sub">

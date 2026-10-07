@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="Explorar.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
+    <!-- A camada nova da primeira dobra. ULTIMO de proposito: precisa vencer. -->
+    <link rel="stylesheet" href="/Explorar/explorar-descoberta.css">
   <script src="/imagens.js"></script>
 </head>
 
@@ -113,24 +115,101 @@
         <!-- =============================================
              HERO EDITORIAL — Imagem full-width + título
              ============================================= -->
-        <section class="explore-banner">
-            <div class="explore-banner__media">
-                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&h=900&fit=crop"
-                     alt="Pessoa lendo em ambiente tranquilo" loading="eager">
-                <div class="explore-banner__overlay"></div>
-            </div>
+                <!-- =============================================
+             PRIMEIRA DOBRA — DESCOBERTA
+             Substitui o banner "foto + veu + eyebrow + titulo
+             central" que era o mesmo template de Artigos,
+             Blog e Direitos.
 
-            <div class="explore-banner__content">
-                <span class="explore-banner__eyebrow">
-                    <i class="fa-solid fa-compass"></i> Explorar
-                </span>
-                <h1 class="explore-banner__title">
-                    Identifique e aprimore <br>
-                    <span class="explore-banner__title-accent">suas habilidades</span>
-                </h1>
-                <p class="explore-banner__sub">
-                    Artigos, guias e recursos organizados com calma. Sem pressa, sem ruído.
-                </p>
+             O que saiu (e foi verificado sem dependencia no JS
+             antes de sair): a foto, o degradê de veu e a pílula
+             do eyebrow. Zero ocorrencias de `explore-banner__media`,
+             `explore-banner__overlay` ou `explore-banner__eyebrow`
+             no Explorar.js e nos outros 7 scripts do site.
+
+             O que ficou: o titulo, o texto de apoio e a ordem
+             do DOM (marca, titulo, apoio, caminhos). O leitor
+             de tela nao sente nenhuma mudanca, porque nada foi
+             reordenado — o grid e CSS e o `grid-template-areas`
+             mantem a ordem do HTML.
+
+             NAO HÁ ILUSTRAÇÃO NESTA DOBRA. A ilustracao
+             "A ESTANTE DAS POSSIBILIDADES.jpg" existe no disco,
+             mas e uma faixa panoramica de 1024x576 com fundo
+             creme opaco — nao serve como peca de canto, e
+             colocala sobre o fundo #faf9fe mostraria a borda
+             retangular do arquivo. O espaco do canto inferior
+             direito fica vazio de proposito.
+             ============================================= -->
+        <section class="explore-banner ed-hero">
+            <div class="ed-hero__grid">
+
+                <div class="ed-hero__texto">
+                    <!-- A marca substitui o eyebrow: 1 linha + 1 estrela.
+                         Decorativa, entao nao entra na ordem de leitura. -->
+                    <span class="ed-hero__marca" aria-hidden="true">
+                        <span class="ed-hero__linha"></span>
+                        <span class="ed-hero__estrela"></span>
+                    </span>
+
+                    <h1 class="explore-banner__title ed-hero__titulo">
+                        Descubra o que<br>
+                        <span class="explore-banner__title-accent ed-hero__accent">existe aqui.</span>
+                    </h1>
+
+                    <p class="explore-banner__sub ed-hero__apoio">
+                        Artigos, guias, histórias e eventos para você explorar no seu ritmo.
+                    </p>
+
+                    <!-- A Lia Chibi. Decorativa: e a assinatura do lugar.
+                         No fluxo da coluna, nao solta no canto — quem abre
+                         Explorar ve a Lia; quem abre Artigos, nao.
+                         `alt` vazio + `aria-hidden`: leitor de tela nao
+                         ganha nada com "Lia Chibi". -->
+                    <img class="ed-hero__lia" src="/img/ilustracoes/lia-gif-chibi-alpha.gif"
+                         alt="" aria-hidden="true" width="104" height="72"
+                         loading="lazy" decoding="async">
+                </div>
+
+
+                <!-- OS TRES CAMINHOS.
+                     Deliberadamente 3, e nao 6: seis itens grandes
+                     na primeira dobra transformariam a pagina em
+                     painel de navegacao. Os outros 3 destinos
+                     (Destaques, Recentes, FAQ) continuam existindo
+                     como navegacao secundaria, logo abaixo, na
+                     `.explore-nav` — com os 6 `href` intactos. -->
+                <nav class="ed-caminhos" aria-label="Por onde começar">
+                    <span class="ed-caminhos__rotulo">Explore por onde começar</span>
+
+                    <a class="ed-caminho" href="/Recursos/recursos.html">
+                        <i class="ed-caminho__icone fa-solid fa-book-open" aria-hidden="true"></i>
+                        <span class="ed-caminho__texto">
+                            <span class="ed-caminho__nome">Artigos e Guias</span>
+                            <span class="ed-caminho__desc">Conteúdos para entender melhor.</span>
+                        </span>
+                        <i class="ed-caminho__seta fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+
+                    <a class="ed-caminho" href="/blog/blog.html">
+                        <i class="ed-caminho__icone fa-solid fa-pen-nib" aria-hidden="true"></i>
+                        <span class="ed-caminho__texto">
+                            <span class="ed-caminho__nome">Blog</span>
+                            <span class="ed-caminho__desc">Novidades, histórias e conteúdos.</span>
+                        </span>
+                        <i class="ed-caminho__seta fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+
+                    <a class="ed-caminho" href="/Recursos/eventos.html">
+                        <i class="ed-caminho__icone fa-regular fa-calendar-days" aria-hidden="true"></i>
+                        <span class="ed-caminho__texto">
+                            <span class="ed-caminho__nome">Eventos</span>
+                            <span class="ed-caminho__desc">Coisas acontecendo por aqui.</span>
+                        </span>
+                        <i class="ed-caminho__seta fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </nav>
+
             </div>
         </section>
 
