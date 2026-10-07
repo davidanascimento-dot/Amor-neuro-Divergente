@@ -807,118 +807,6 @@
 }
 
 /* =========================================
-   3b. A FAIXA — a arte do slot `direitos-01`
-
-   Fica entre as 4 areas e as 12 leis, que e exatamente onde o slot foi
-   reservado ("Direitos / antes das leis"). E o unico respiro da
-   pagina: as 4 areas sao 4 linhas de navegacao e as 12 leis sao 12
-   linhas de dado — as duas partes mais carregadas. A faixa e o
-   suspiro entre elas.
-
-   -----------------------------------------------------
-   DE UM LADO AO OUTRO — e por que `100vw + 28`
-   -----------------------------------------------------
-   `100vw` mede a janela INCLUINDO a barra de rolagem vertical
-   (15 a 17 px medidos), enquanto `100%` do pai mede so a area util.
-   Centralizar pelo classico `50% - 50vw` deixaria a faixa 7 px curta
-   de um lado e abriria um vao de pagina na borda oposta — foi medido
-   em -21 px a esquerda e +7 px a direita.
-
-   Puxar os DOIS lados pelo mesmo valor fecha o vao sem depender de
-   qual lado a barra ocupa. E porque o elemento e bloco, as duas
-   margens somam exatamente a largura excedente: 100vw + 28 - 14 - 14
-   = 100% do pai. Estoura 14 px de cada lado e preenche o pai inteiro;
-   o corte extra cai em linha transparente, dentro do `overflow`.
-
-   Os numeros sao os do proprio `espacos-banner.css`, medidos nele —
-   o site ja resolveu isso uma vez e o comprimento da barra nao muda
-   entre paginas. Nao e copia de estilo: e o mesmo numero.
-
-   -----------------------------------------------------
-   A ALTURA: 32/9 corta a arte, e e para isso que ela foi escolhida
-   -----------------------------------------------------
-   A arte e 1024x434, ou 2,36:1. Numa faixa de 32/9 (3,56:1) o
-   `cover` mostra 66% da altura dela e corta 34% — 147 px. Com
-   -----------------------------------------------------
-   A ALTURA: 22/7, e o enquadramento que NAO come as pastas
-   -----------------------------------------------------
-   A arte e 1024x434, ou 2,36:1. Numa faixa de 22/7 (3,14:1) o
-   `cover` mostra 74% da altura dela e corta 26%.
-
-   O numero nao foi escolhido no olho: foi medido. Com 32/9 (3,56:1)
-   a faixa mostrava so 66% da arte e o intervalo visivel ia de 19% a
-   86% da altura — mas as pastas com documento e visto verde estao
-   de 58% a 92%. A regiao de 86% a 92% ficava FORA, e a captura
-   mostrou as pastas cortadas no meio.
-
-   Em 22/7 o visivel vai de 18% a 100% e as pastas entram inteiras. O
-   que ainda sai sao os papeis soltos do canto superior esquerdo, que
-   sao atmosfera — e o corte de 18% pega so o vazio acima deles.
-
-   A 74% visivel a faixa mede 327 px numa janela de 985 e 467 px numa
-   de 1440. Contra as 12 leis, que ocupam perto de 1560 px, sao 23% do
-   bloco: respiro, nao peso.
-   */
-
-.dp-faixa {
-    position: relative;
-    display: block;
-
-    /* O estouro dos dois lados — ver a nota acima. */
-    width: calc(100vw + 28px);
-    max-width: none;
-    margin-inline: -14px;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: none;
-    overflow: hidden;
-
-    aspect-ratio: 22 / 7;
-}
-
-/* -----------------------------------------------------
-   POR QUE O SELetor CARREGA `espaco-banner--preenchido` NA FRENTE
-   -----------------------------------------------------
-   O `espacos-banner.css` escreve, na regra que serve a QUALQUER
-   imagem dentro de um espaco preenchido:
-
-       .espaco-banner--preenchido img { object-fit: contain; }
-
-   Isso e (0,1,1). Um `.dp-faixa__arte` sozinho e (0,1,0) e perde.
-   Medido: com `contain` a arte entrava inteira e centralizada, e a
-   faixa media 289 px de altura com a arte ocupando so os 193 px do
-   centro — sobrava metade da faixa vazia dos dois lados.
-
-   O `contain` esta certo para o uso comum do arquivo: uma arte de
-   proporcao livre num espaco livre, sem cortar nada. Aqui o
-   preenchimento e proposital — `cover` com `object-position` e o que
-   faz a faixa parecer uma faixa.
-*/
-.espaco-banner--preenchido .dp-faixa__arte {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 72%;
-}
-
-/* Em tela estreita a faixa abre para perto de 1,9:1. Medido: em 22/7
-   uma janela de 390 px daria 124 px de altura, e as pastas — que e o
-   que a arte diz — sobrariam em 92 px, quase um decalque. */
-@media (max-width: 768px) {
-    .dp-faixa {
-        aspect-ratio: 17 / 9;
-    }
-
-    .espaco-banner--preenchido .dp-faixa__arte {
-        /* Na tela estreita o visivel abre para 78%: sobra folga para
-           as pastas sem que a faixa vire um bloco de altura. */
-        object-position: 50% 80%;
-    }
-}
-
-/* =========================================
    4. AS 12 LEIS — linhas de percurso
 
    O JS gera o markup. `renderLaws()` produz, por lei:
@@ -1269,6 +1157,140 @@
     color: var(--dp-roxo);
     opacity: 0.6;
     margin-right: 8px;
+}
+
+/* =========================================
+   4b. AS FONTES — a assinatura da procedencia
+
+   Ato III (CONFERIR) da proposta de rolagem. Ate aqui a secao vinha
+   inteira do `direitos.css`, sem uma regra sequer no percurso: era a
+   mais "de fora" e a mais silenciosa da pagina — 341px, um titulo
+   centralizado, uma frase e 6 chips brancos com borda.
+
+   O QUE MUDA, E POR QUE
+
+   1. A brasao da Republica entra aqui, e SO aqui.
+
+      Medido no banco: as 12 leis apontam todas para
+      `planalto.gov.br`, e o Planalto NAO aparecia nesta secao. A
+      pagina mostrava 12 links para o Planalto sem nunca identificar
+      a origem num lugar onde a pessoa pudesse conferir. Este e o
+      unico ponto do percurso em que a pergunta "de onde veio isto?"
+      tem resposta, e por isso a assinatura e aqui.
+
+      O arquivo e `img/ilustracoes/leis-planalto-alfa.png`: o mesmo
+      brasao que estava no disco, com o fundo branco removido por
+      flood fill a partir da borda. Nao se pode simplesmente apagar todo
+      o branco — o brasao tem estrelas brancas dentro do circulo azul
+      (medido: alfa 255 no centro depois do recorte), e elas
+      teriam sumido junto. Sem o recorte, o quadrado branco de
+      #ffffff sobre o papel #faf9fe apareceria como um retangulo de
+      6 niveis de diferenca, exatamente como o slot de banner que
+      existe no site.
+
+      A imagem tem 4 cores a 100% de saturacao (#0099cc, #339933,
+      #ffcc00, #cc0033) — mais vivas que qualquer cor da pagina, que
+      vive entre 2% e 100%. Por isso ela NAO se repete nas 12 leis:
+      uma vez, como assinatura do bloco. Repetida, seria 12 vezes a
+      mesma imagem, sem diferenciar nada.
+
+   2. O brasao e o container viram grade de 2 colunas.
+
+      A secao era `text-align: center` com o container em 889px. Com
+      uma assinatura a esquerda, centralizar o texto deixaria o
+      brasao sozinho no canto, sem relacao com o que ele assina. A
+      grade amarra os dois: o brasao responde ao bloco, o bloco
+      responde ao brasao.
+
+   3. O titulo alinha a esquerda, como as outras 3 cabecalhas.
+
+      Medido antes: `categories-nav__head`, `laws-section__head` e
+      `dp-faq__head` tem todas 106px de altura e o mesmo esqueleto
+      (badge 10px + h2 22px + p 15px + fio 2px). Esta era a unica
+      com titulo centralizado. Alinhar fecha a incoerencia sem
+      mexer nas outras tres.
+   */
+
+.sources-banner.dp-fonte {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 56px;
+
+    /* O `border-top` que o `direitos.css` deixa aqui e a unica
+       divisoria de 1px da pagina. Mantem: e a marca de "bloco de
+       referencia". */
+    background: var(--dp-papel);
+}
+
+/* O brasao: 190px. Medido: a 240px ele media 262px de altura e
+   empurrava a secao de 341px para 470px — quase do tamanho do Ato
+   III inteiro, que e uma secao de texto. A 190px ele ocupa 193px
+   de altura: presente, sem virar o assunto. */
+.dp-fonte__brasao {
+    display: block;
+    width: 190px;
+    height: auto;
+    margin: 0 auto;
+
+    /* O arquivo tem 0px de margem propria, entao a distancia do
+       texto e do container, e nao de dentro da imagem. */
+    opacity: 0.9;
+
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.sources-banner .sources-banner__container {
+    max-width: none;
+    margin: 0;
+    text-align: left;
+}
+
+.sources-banner .sources-banner__title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.024em;
+    color: var(--dp-tinta);
+    margin: 0 0 10px;
+}
+
+.sources-banner .sources-banner__text {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--dp-suave);
+    max-width: 62ch;
+    margin: 0 0 26px;
+}
+
+/* ---------- Tela estreita: o brasao sobe e encolhe.
+
+   Medido: em 2 colunas, uma janela de 390px deixaria a coluna do
+   texto com ~150px — 5 palavras por linha. O brasao vem para cima,
+   menor, e o texto volta a ter a largura util. */
+@media (max-width: 768px) {
+    .sources-banner.dp-fonte {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 26px;
+        padding: 40px 22px;
+    }
+
+    .dp-fonte__brasao {
+        width: 132px;
+    }
+}
+
+@media (max-width: 560px) {
+    .sources-banner.dp-fonte {
+        padding: 32px 18px;
+    }
+
+    .dp-fonte__brasao {
+        width: 112px;
+    }
 }
 
 /* =========================================

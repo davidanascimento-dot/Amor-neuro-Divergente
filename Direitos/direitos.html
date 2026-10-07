@@ -321,18 +321,46 @@
             <span class="espaco-banner__nome">Direitos / depois das leis</span>
             <span class="espaco-banner__fundo">/img/ilustracoes/A MARCA &quot;VALIDAR&quot;.jpg</span>
         </div>
-<section class="deco-hospedeiro sources-banner">
+<section class="deco-hospedeiro sources-banner dp-fonte">
         <!-- elemento decorativo: organicas. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
         <span class="deco deco--organicas deco--dir deco--base deco--s2"
               style="--tam: 80px; --rot: 8deg" aria-hidden="true"></span>
-            <div class="sources-banner__container">
-                <h3 class="sources-banner__title">
-                    <i class="fa-solid fa-book-open-reader"></i> Quer se aprofundar?
-                </h3>
-                <p class="sources-banner__text">
-                    Sites oficiais e organizações sérias que tratam de direitos de pessoas neurodivergentes e PCD.
-                </p>
-                <div class="sources-banner__list">
+            <!-- ---------- A ASSINATURA DA PROCEDENCIA.
+
+                 Este e o Ato III (CONFERIR): o unico ponto da pagina em que a
+                 pergunta "de onde veio esta informacao?" tem resposta. Medido:
+                 as 12 leis apontam para planalto.gov.br, e o Planalto NAO
+                 aparecia em lugar nenhum desta secao -- so como uma pilula
+                 lilás na INTRO. Ou seja, a pagina mostrava 12 links para o
+                 Planalto sem nunca identificar a origem.
+
+                 O brasao entra aqui e so aqui. Uma vez, e grande: e o unico
+                 momento em que a pessoa precisa acreditar na procedencia. Em
+                 qualquer outro lugar seria enfeite -- e, por ser uma imagem de
+                 4 cores a 100% de saturacao, brigaria com o texto em vez de
+                 sustenta-lo.
+
+                 `alt=""` + `aria-hidden`: o brasao nao acrescenta informacao ao
+                 leitor de tela -- o texto ao lado declara a procedencia com
+                 palavras. E decorativo por definicao aqui.
+
+                 O arquivo e o mesmo que voce colocou, com o fundo branco
+                 removido por flood fill a partir da borda (nao apagando todo o
+                 branco: o brasao tem estrelas brancas dentro do circulo azul,
+                 e elas sobreviveram intactas). Sem isso ele apareceria como um
+                 quadrado branco sobre o papel. -->
+                <img class="dp-fonte__brasao"
+                     src="/img/ilustracoes/leis-planalto-alfa.png"
+                     alt="" width="444" height="450" aria-hidden="true" draggable="false">
+
+                <div class="sources-banner__container">
+                    <h3 class="sources-banner__title">
+                        <i class="fa-solid fa-book-open-reader"></i> Quer se aprofundar?
+                    </h3>
+                    <p class="sources-banner__text">
+                        Sites oficiais e organizações sérias que tratam de direitos de pessoas neurodivergentes e PCD.
+                    </p>
+                    <div class="sources-banner__list">
                     <a href="https://www.gov.br/mdh/pt-br" target="_blank" rel="noopener" class="source-pill">
                         <i class="fa-solid fa-landmark"></i> Ministério dos Direitos Humanos
                     </a>
