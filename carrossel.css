@@ -97,6 +97,21 @@
   color: inherit;
   transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
+
+/* Cartao de comunidade sem pagina de destino ainda. Mantem o desenho
+   e a posicao; nao finge que ha clique. */
+.ct-card--sem-destino {
+    cursor: default;
+}
+
+.ct-card--sem-destino:hover {
+    transform: none;
+}
+
+.ct-card--sem-destino .ct-card__link {
+    opacity: 0.5;
+}
+
 .ct-card:hover {
   border-color: #ddd6fe;
   transform: translateY(-3px);

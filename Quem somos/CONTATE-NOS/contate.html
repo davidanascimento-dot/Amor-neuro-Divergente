@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Saúde mental faz parte da saúde como um todo. Cuidar dela significa ter condições de reconhecer o que está acontecendo e buscar apoio quando necessário.">
+    <meta name="description" content="Encontrou um problema no site, tem uma sugestão ou quer avisar que alguma informação precisa ser revisada? Este espaço existe para isso.">
     <link rel="icon" type="image/x-icon" href="/img/logo-LHN9gCw1.png">
-    <title>Saúde mental: cuidar de como estamos também importa — Amor NeuroDivergente</title>
+    <title>Fale com a gente — Amor NeuroDivergente</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -952,61 +952,58 @@
             .footer-main { grid-template-columns: 1fr; }
         }
   
-            /* ---------- A composicao desta pagina.
-               Cada artigo tem a sua. O que muda nao e a paleta — e a
-               forma como o texto se organiza. */
-            .article-content .an-eixos { display: grid; grid-template-columns: repeat(3, 1fr);
-                gap: 20px; margin: 34px 0 12px; }
-            .article-content .an-eixo { padding: 20px 18px; border: 1px solid var(--border-color);
-                border-top: 3px solid var(--primary); border-radius: 12px; background: var(--bg-white); }
-            .article-content .an-eixo__n { display: block; font: 700 12px var(--font-main);
-                letter-spacing: .14em; color: var(--primary); margin-bottom: 8px; }
-            .article-content .an-eixo h3 { font: 700 1.0625rem var(--font-main);
-                color: var(--text-dark); margin-bottom: 6px; }
-            .article-content .an-eixo p { font-size: .9375rem; line-height: 1.6; color: var(--text-body); }
+            /* ---------- Pagina institucional: nao e artigo.
 
-            .article-content .an-grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-                gap: 12px; margin: 26px 0; }
-            .article-content .an-item { padding: 16px 18px; border: 1px solid var(--border-color);
-                border-radius: 12px; background: var(--bg-white); display: flex;
-                gap: 12px; align-items: flex-start; }
-            .article-content .an-item i { color: var(--primary); margin-top: 4px; font-size: .9rem; }
-            .article-content .an-item p { font-size: .9375rem; line-height: 1.55; color: var(--text-body); }
-
-            .article-content .an-confronto { display: grid; grid-template-columns: 1fr 1fr;
-                gap: 22px; margin: 28px 0; }
-            .article-content .an-confronto > div { padding: 22px; border-radius: 14px; }
-            .article-content .an-confronto .an-sim { background: #f0fdf4; border: 1px solid #bbf7d0; }
-            .article-content .an-confronto .an-nao { background: #fff7ed; border: 1px solid #fed7aa; }
-            .article-content .an-confronto h3 { font: 700 1rem var(--font-main);
-                margin-bottom: 10px; letter-spacing: -.01em; }
-            .article-content .an-confronto .an-sim h3 { color: #15803d; }
-            .article-content .an-confronto .an-nao h3 { color: #c2410c; }
-            .article-content .an-confronto ul { padding-left: 18px; }
-            .article-content .an-confronto li { font-size: .9375rem; line-height: 1.6;
-                color: var(--text-body); margin-bottom: 5px; }
-
-            .article-content .an-fecho { margin: 36px 0 8px; padding: 24px 26px;
-                border-radius: 14px; background: var(--bg-white);
-                border: 1px solid var(--border-color); border-left: 4px solid var(--accent); }
-            .article-content .an-fecho h3 { font: 700 1.0625rem var(--font-main);
-                color: var(--text-dark); margin-bottom: 8px; }
-            .article-content .an-fecho p { font-size: 1rem; line-height: 1.65; color: var(--text-body); }
-
-            .article-content .an-fontes { margin: 40px 0 8px; padding-top: 24px;
-                border-top: 1px solid var(--border-color); }
-            .article-content .an-fontes h3 { font: 700 .75rem var(--font-main);
-                letter-spacing: .13em; text-transform: uppercase; color: var(--text-muted);
+               Sem foto de capa, sem data, sem "min de leitura". O que
+               organiza a leitura aqui sao os BLOCOS: cada um tem um
+               nome em maiuscula e um texto curto. */
+            .inst-main { padding: 72px 32px 88px; background: var(--bg-body); }
+            .inst-container { max-width: 860px; margin: 0 auto; }
+            .inst-titulo { font: 800 clamp(1.9rem, 4.2vw, 2.6rem)/1.12 var(--font-main);
+                letter-spacing: -.035em; color: var(--text-dark);
+                margin-bottom: 22px; }
+            .inst-lead { font: 700 1.25rem/1.65 var(--font-main);
+                color: var(--text-dark); margin-bottom: 40px; }
+            .inst-bloco { margin-bottom: 44px; }
+            .inst-bloco__rot { font: 700 .75rem var(--font-main); letter-spacing: .13em;
+                text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+            .inst-bloco h2 { font: 700 1.5rem var(--font-main); letter-spacing: -.02em;
+                color: var(--text-dark); margin-bottom: 12px; }
+            .inst-bloco p { font-size: 1rem; line-height: 1.75; color: var(--text-body);
                 margin-bottom: 14px; }
-            .article-content .an-fontes ul { list-style: none; padding: 0; }
-            .article-content .an-fontes li { margin-bottom: 9px; font-size: .875rem; line-height: 1.55; }
-            .article-content .an-fontes a { color: var(--accent); text-decoration: none;
-                border-bottom: 1px solid rgba(124,58,237,.3); }
-            .article-content .an-fontes a:hover { border-bottom-color: var(--accent); }
+            .inst-bloco p:last-child { margin-bottom: 0; }
+            .inst-lista { list-style: none; padding: 0; display: grid; gap: 16px;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+            .inst-lista li { padding: 18px 20px; background: var(--bg-white);
+                border: 1px solid var(--border-color); border-radius: 12px; }
+            .inst-lista h3 { font: 700 .9375rem var(--font-main); color: var(--text-dark);
+                margin-bottom: 6px; }
+            .inst-lista p { font-size: .875rem; line-height: 1.6; color: var(--text-body); }
+            .inst-fecho { margin-top: 48px; padding: 28px 30px; border-radius: 16px;
+                background: var(--bg-white); border: 1px solid var(--border-color);
+                border-left: 4px solid var(--accent); }
+            .inst-fecho p { font: 600 1.0625rem/1.65 var(--font-main); color: var(--text-dark); }
+
+            .inst-form { max-width: 620px; }
+            .inst-campo { margin-bottom: 20px; }
+            .inst-campo label { display: block; font: 600 .875rem var(--font-main);
+                color: var(--text-dark); margin-bottom: 7px; }
+            .inst-campo input, .inst-campo textarea { width: 100%; padding: 12px 14px;
+                font: 400 1rem var(--font-main); color: var(--text-dark);
+                background: var(--bg-white); border: 1px solid var(--border-color);
+                border-radius: 10px; }
+            .inst-campo textarea { min-height: 150px; resize: vertical; }
+            .inst-campo input:focus, .inst-campo textarea:focus {
+                outline: 2px solid var(--accent); outline-offset: 1px; }
+            .inst-enviar { padding: 14px 30px; font: 700 1rem var(--font-main);
+                color: #fff; background: var(--accent); border: 0; border-radius: 10px;
+                cursor: pointer; }
+            .inst-aviso { margin-top: 28px; padding: 16px 20px; border-radius: 12px;
+                background: #fffbeb; border: 1px solid #fde68a; }
+            .inst-aviso p { font-size: .875rem; line-height: 1.6; color: #78350f; }
 
             @media (max-width: 720px) {
-                .article-content .an-eixos { grid-template-columns: 1fr; }
-                .article-content .an-confronto { grid-template-columns: 1fr; }
+                .inst-main { padding: 44px 20px 56px; }
             }
 
   </style>
@@ -1015,8 +1012,6 @@
   <script src="/imagens.js"></script>
 </head>
 <body>
-
-    <div class="reading-progress" id="readingProgress"></div>
 
     <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
         <i class="fa-solid fa-bars"></i>
@@ -1048,16 +1043,13 @@
             <a href="/login/login.html" class="sidebar-link small" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
         </div>
     </aside>
-    <main id="conteudoPrincipal">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <header class="header-glass" id="headerGlass">
         <nav class="breadcrumb-nav" aria-label="Breadcrumb">
                 <a href="/inicio.html">Início</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <a href="/Explorar/Explorar.html">Explorar</a>
-                <i class="fa-solid fa-chevron-right"></i>
-                <span>Saúde Mental</span>
+                <span>Contato</span>
             </nav>
         <a href="/inicio.html" class="logo">
             <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
@@ -1067,158 +1059,72 @@
         </nav>
     </header>
 
-    <section class="article-hero">
-        <div class="article-hero__media">
-            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1920&h=900&fit=crop"
-                 alt="Pessoa em um ambiente calmo e arejado" loading="eager">
-            <div class="article-hero__overlay"></div>
-        </div>
-        <div class="article-hero__content">
-            <span class="article-hero__eyebrow">
-                <i class="fa-solid fa-puzzle-piece"></i>Artigo • Saúde Mental</span>
-            <h1 class="article-hero__title">
-                Saúde mental: <br>
-                <span class="article-hero__title-accent">cuidar de como estamos também importa</span>
-            </h1>
-            <p class="article-hero__sub">Saúde mental é parte da saúde. Este texto é informativo e não substitui avaliação profissional.</p>
-        </div>
-    </section>
+    
+    <main class="inst-main">
+        <div class="inst-container">
+                    <h1 class="inst-titulo">Fale com a gente</h1>
+            <p class="inst-lead">Encontrou algum problema no site? Tem uma sugestão? Quer
+            avisar que alguma informação precisa ser revisada?</p>
 
-    <section class="article-meta-bar">
-        <div class="article-meta-bar__container">
-            <div class="article-meta-bar__left">
-                <span class="article-meta-bar__author">
-                    <span class="article-meta-bar__avatar">E</span>
-                    <span class="article-meta-bar__author-info">
-                        <strong>Equipe AND</strong>
-                        <em>· Redação</em>
-                    </span>
-                </span>
-            </div>
-            <div class="article-meta-bar__right">
-                <span><i class="fa-regular fa-calendar"></i> 15 de janeiro, 2026</span>
-                <span><i class="fa-regular fa-clock"></i> 6 min de leitura</span>
-            </div>
-        </div>
-    </section>
-
-    <article class="article-container">
-        <div class="article-content" id="articleContent">
-
-            
-            <p class="article-lead">
-                Saúde mental faz parte da saúde como um todo. Ela está relacionada à maneira
-                como lidamos com emoções, pensamentos, relações, mudanças e situações do cotidiano.
-            </p>
-            <p>Cuidar da saúde mental não significa estar feliz o tempo inteiro. Também não
-            significa que uma pessoa nunca terá momentos difíceis.</p>
-            <p>Significa ter condições de reconhecer o que está acontecendo e buscar apoio quando
-            necessário.</p>
-
-            <h2>Saúde mental não é apenas ausência de problemas</h2>
-            <p>Todas as pessoas podem passar por períodos de estresse, tristeza, preocupação,
-            irritação ou cansaço.</p>
-            <p>O que merece atenção é quando determinadas experiências se tornam persistentes,
-            intensas ou começam a interferir significativamente na vida cotidiana.</p>
-
-            <h2>Alguns sinais merecem atenção</h2>
-            <p>Pode ser importante conversar com alguém de confiança ou buscar ajuda profissional
-            quando existe:</p>
-            <ul>
-                <li>sofrimento emocional persistente;</li>
-                <li>mudanças importantes no sono;</li>
-                <li>alterações significativas no apetite;</li>
-                <li>dificuldade para realizar atividades do cotidiano;</li>
-                <li>isolamento;</li>
-                <li>preocupação ou medo que interferem na rotina;</li>
-                <li>sensação persistente de sobrecarga;</li>
-                <li>dificuldade para lidar com situações que antes eram administráveis.</li>
-            </ul>
-            <p>Um sinal isolado não determina uma condição de saúde mental. O contexto é importante.</p>
-
-            <h2>Pedir ajuda não é fracassar</h2>
-            <p>Conversar com um psicólogo, médico ou outro profissional qualificado pode ajudar a
-            compreender melhor aquilo que está acontecendo.</p>
-            <p>Também é importante construir uma rede de apoio com pessoas de confiança.</p>
-
-            <h2>Pequenos cuidados também contam</h2>
-            <p>Dependendo da situação, algumas práticas podem contribuir para o bem-estar:</p>
-            <div class="an-grade">
-                <div class="an-item"><i class="fa-regular fa-sun"></i>
-                    <p>Manter uma rotina possível</p></div>
-                <div class="an-item"><i class="fa-regular fa-bed"></i>
-                    <p>Dormir adequadamente</p></div>
-                <div class="an-item"><i class="fa-solid fa-utensils"></i>
-                    <p>Alimentar-se de forma regular</p></div>
-                <div class="an-item"><i class="fa-solid fa-person-walking"></i>
-                    <p>Movimentar o corpo</p></div>
-                <div class="an-item"><i class="fa-regular fa-mug-hot"></i>
-                    <p>Ter momentos de descanso</p></div>
-                <div class="an-item"><i class="fa-solid fa-user-group"></i>
-                    <p>Manter contato com pessoas importantes</p></div>
-            </div>
-            <p>Esses cuidados não substituem tratamento profissional quando ele é necessário.</p>
-
-            <div class="an-fecho">
-                <h3>Para lembrar</h3>
-                <p><strong>Você não precisa esperar tudo ficar insuportável para pedir ajuda.</strong></p>
+            <div class="inst-bloco">
+                <p>Este espaço existe para isso.</p>
+                <p>O Amor NeuroDivergente está em construção, e ouvir quem utiliza o site
+                ajuda a identificar o que pode ser melhorado.</p>
             </div>
 
-            <div class="an-fontes">
-                <h3>Fontes e referências</h3>
-                <ul>
-                    <li><a href="https://www.who.int/" target="_blank" rel="noopener">Organização Mundial
-                    da Saúde (OMS)</a> — materiais sobre saúde mental.</li>
-                    <li><a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener">Ministério da
-                    Saúde (Brasil)</a> — políticas e orientações em saúde mental.</li>
-                    <li><a href="https://www.apa.org/topics/mental-health" target="_blank" rel="noopener">American
-                    Psychological Association (APA)</a> — orientação em saúde mental.</li>
+            <div class="inst-bloco">
+                <div class="inst-bloco__rot">Sobre o que você pode falar</div>
+                <h2>Quatro formas de contribuir</h2>
+                <ul class="inst-lista">
+                    <li><h3>Enviar uma sugestão</h3><p>Conte uma ideia que poderia
+                    melhorar o site.</p></li>
+                    <li><h3>Informar um problema</h3><p>Encontrou um link quebrado, erro
+                    de texto ou alguma dificuldade de acessibilidade? Avise.</p></li>
+                    <li><h3>Sugerir um conteúdo</h3><p>Existe algum assunto que você
+                    gostaria de encontrar por aqui?</p></li>
+                    <li><h3>Falar sobre acessibilidade</h3><p>Se alguma parte do site
+                    estiver difícil de utilizar, queremos saber.</p></li>
                 </ul>
             </div>
 
-        </div>
-        <div class="article-tags">
-            <span class="article-tag">Saúde Mental</span>
-            <span class="article-tag">Diagnóstico</span>
-            <span class="article-tag">Vida Adulta</span>
-            <span class="article-tag">Comunicação</span>
-        </div>
-
-        <div class="article-share">
-            <span class="article-share__label">Compartilhar:</span>
-            <a href="#" class="article-share__btn" aria-label="Compartilhar no WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href="#" class="article-share__btn" aria-label="Compartilhar no X"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="#" class="article-share__btn" aria-label="Copiar link"><i class="fa-solid fa-link"></i></a>
-        </div>
-    </article>
-
-    <section class="area-comentarios">
-        <header class="area-comentarios__head">
-            <h2>Área de comentários (<span id="totalComentarios">0</span>)</h2>
-            <p>Compartilhe sua experiência — toda voz importa. 💜</p>
-        </header>
-
-        <div class="novo-comentario-container">
-            <div class="usuario-info">
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><rect width='44' height='44' fill='%230ea5e9'/><text x='50%25' y='54%25' text-anchor='middle' font-size='20' fill='white' font-family='sans-serif' dominant-baseline='middle'>V</text></svg>" alt="Sua foto de perfil" class="sidebarAvatar" id="userAvatar">
-                <span class="nome-usuario" id="userName">Visitante</span>
+            <div class="inst-bloco">
+                <div class="inst-bloco__rot">Antes de enviar</div>
+                <div class="inst-aviso">
+                    <p>Evite compartilhar informações pessoais desnecessárias.</p>
+                    <p style="margin-top:8px">Se você estiver procurando atendimento
+                    médico, psicológico, jurídico ou outro serviço especializado, o contato
+                    com o Amor NeuroDivergente <strong>não substitui</strong> o atendimento
+                    profissional adequado.</p>
+                </div>
             </div>
-            <form class="form-comentario" id="formComentario">
-                <textarea class="campo-texto" id="campoComentario"
-                          placeholder="Escreva seu comentário..."
-                          aria-label="Escreva seu comentário"
-                          maxlength="2000"></textarea>
-                <button type="submit" class="btn-enviar" id="btnPublicar">Publicar</button>
-            </form>
-        </div>
 
-        <div class="lista-comentarios" id="listaComentarios">
-            <p class="carregando-comentarios">Carregando comentários...</p>
-        </div>
-    </section>
+            <div class="inst-bloco">
+                <div class="inst-bloco__rot">Mensagem</div>
+                <h2>O que você gostaria de contar para a gente?</h2>
+                <form class="inst-form" action="#" method="post">
+                    <div class="inst-campo">
+                        <label for="ct-nome">Seu nome</label>
+                        <input type="text" id="ct-nome" name="nome" autocomplete="name" required>
+                    </div>
+                    <div class="inst-campo">
+                        <label for="ct-email">Seu e-mail</label>
+                        <input type="email" id="ct-email" name="email" autocomplete="email" required>
+                    </div>
+                    <div class="inst-campo">
+                        <label for="ct-mensagem">Sua mensagem</label>
+                        <textarea id="ct-mensagem" name="mensagem" required></textarea>
+                    </div>
+                    <button type="submit" class="inst-enviar">Enviar mensagem</button>
+                </form>
+            </div>
 
+            <div class="inst-fecho">
+                <p>Recebemos sua mensagem. Obrigado por ajudar a construir o Amor
+                NeuroDivergente.</p>
+            </div>
+        </div>
     </main>
-    <footer class="footer">
+<footer class="footer">
         <div class="footer-main">
             <div class="footer-col">
                 <h4>Navegue</h4>

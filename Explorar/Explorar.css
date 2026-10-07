@@ -250,6 +250,13 @@
   
 }
 
+/* Carta de topico sem pagina ainda. Mantem a leitura como carta, mas
+   nao finge que o clique funciona: sem cursor de mao e sem realce. */
+.topic-card--sem-destino { cursor: default; }
+.topic-card--sem-destino:hover { transform: none; box-shadow: var(--shadow-sm); }
+.topic-card--sem-destino .topic-card__cta { opacity: .55; }
+
+
 .topic-card__media {
     width: 100%;
     aspect-ratio: 16 / 10;

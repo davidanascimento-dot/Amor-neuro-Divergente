@@ -707,6 +707,24 @@ body.a11y-reduce-motion .logo-text {
             background-color: rgba(255, 255, 255, 0.08);
         }
 
+        /* ---------- BOTAO SEM DESTINO
+
+           Aponta para uma pagina que ainda nao existe. Mantem desenho e
+           posicao -- e o que segura o layout do slide -- mas nao finge
+           que ha clique: sem cursor de mao e sem o realce do hover.
+           O texto diz "em breve", que e a verdade. */
+        .btn--sem-destino {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.84;
+        }
+
+        .btn--sem-destino:hover {
+            background-color: inherit;
+            transform: none;
+        }
+
+
         /* Barra de Progresso e Controles Inferiores */
         .controls {
             position: absolute;
@@ -1390,6 +1408,12 @@ body.a11y-reduce-motion .logo-text {
     color: var(--primary);
     transition: all var(--transition);
 }
+/* Carta sem pagina de leitura ainda. Mantem o desenho do botao, mas
+   nao finge que ha destino: some o icone de seta e baixa o contraste.
+   O texto "Em breve" diz o mesmo que a ausencia de link. */
+.blog-link--sem-destino { cursor: default; opacity: .68; pointer-events: none; }
+.blog-link--sem-destino:hover { transform: none; opacity: .68; }
+
 
 .blog-link:hover {
     gap: 10px;

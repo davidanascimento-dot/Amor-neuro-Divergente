@@ -93,7 +93,6 @@
     </aside>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content" id="mainContent">
 
@@ -171,7 +170,6 @@
                          loading="lazy" decoding="async">
                 </div>
 
-
                 <!-- OS TRES CAMINHOS.
                      Deliberadamente 3, e nao 6: seis itens grandes
                      na primeira dobra transformariam a pagina em
@@ -213,29 +211,7 @@
             </div>
         </section>
 
-        <nav class="explore-nav" aria-label="Categorias do Explorar">
-            <div class="explore-nav__container">
-                <a href="#destaques" class="explore-nav__chip is-active">
-                    <i class="fa-solid fa-star"></i> Destaques
-                </a>
-                <a href="#ultimas" class="explore-nav__chip">
-                    <i class="fa-solid fa-newspaper"></i> Recentes
-                </a>
-                <a href="#artigos" class="explore-nav__chip">
-                    <i class="fa-solid fa-book-open"></i> Artigos
-                </a>
-                <a href="#blog" class="explore-nav__chip">
-                    <i class="fa-solid fa-pen-nib"></i> Blog
-                </a>
-    
-                <a href="#eventos" class="explore-nav__chip">
-                    <i class="fa-regular fa-calendar-days"></i> Eventos
-                </a>
-                <a href="#faq" class="explore-nav__chip">
-                    <i class="fa-regular fa-circle-question"></i> FAQ
-                </a>
-            </div>
-        </nav>
+        
 
         <!-- =============================================
              INTRO — "Clique em um dos tópicos abaixo"
@@ -290,7 +266,7 @@
                         </div>
                     </a>
 
-                    <a href="#ferramentas" class="topic-card">
+                    <span class="topic-card topic-card--sem-destino" aria-disabled="true">
                         <div class="topic-card__media">
                             <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=500&fit=crop"
                                  alt="Pessoa analisando gráficos" loading="lazy">
@@ -305,7 +281,7 @@
                                 Acessar <i class="fa-solid fa-arrow-right"></i>
                             </span>
                         </div>
-                    </a>
+                    </span>
 
                     <a href="#blog" class="topic-card">
                         <div class="topic-card__media">
@@ -327,7 +303,6 @@
                 </div>
             </div>
         </section>
-
 
         <section class="explore-highlights" id="destaques">
             <div class="container">
@@ -409,7 +384,6 @@
                 </div>
             </div>
         </section>
-
 
         
         <section class="explore-latest" id="ultimas">
@@ -493,11 +467,11 @@
 
                 <article class="featured-card">
                     <div class="featured-card__media explore-section-image">
-                        <img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa em ambiente calmo" loading="lazy">
+                        <a href="/blog/post-masking.html" class="featured-card__link" aria-hidden="true" tabindex="-1"><img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa em ambiente calmo" loading="lazy"></a>
                     </div>
                     <div class="featured-card__body explore-section-text">
                         <span class="tag tag--autismo">Autismo</span>
-                        <h3 class="featured-card__title">O dia em que você para de sobreviver e começa a viver</h3>
+                        <h3 class="featured-card__title"><a href="/blog/post-masking.html">O dia em que você para de sobreviver e começa a viver</a></h3>
                         <p class="featured-card__excerpt">
                             Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo.
                             Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda
@@ -510,7 +484,7 @@
                             </span>
                             <span class="meta-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
                         </div>
-                        <a href="/Recursos/recursos.html" class="explore-btn">
+                        <a href="/blog/post-masking.html" class="explore-btn">
                             Ler artigo <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
@@ -535,11 +509,11 @@
 
                 <article class="featured-card">
                     <div class="featured-card__media explore-section-image">
-                        <img src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg" alt="Mãos digitando em um notebook" loading="lazy">
+                        <a href="/blog/blog.html" class="featured-card__link" aria-hidden="true" tabindex="-1"><img src="/img/Mãos digitando em um notebook, com caderno de anotações colorido ao lado.jpg" alt="Mãos digitando em um notebook" loading="lazy"></a>
                     </div>
                     <div class="featured-card__body explore-section-text">
                         <span class="tag tag--autismo">Comunidade</span>
-                        <h3 class="featured-card__title">Histórias reais da nossa comunidade</h3>
+                        <h3 class="featured-card__title"><a href="/blog/blog.html">Histórias reais da nossa comunidade</a></h3>
                         <p class="featured-card__excerpt">
                             Histórias reais, reflexões e experiências da nossa comunidade — escritas por quem vive
                             a neurodivergência todos os dias.
@@ -578,11 +552,11 @@
 
                 <article class="featured-card">
                     <div class="featured-card__media explore-section-image">
-                        <img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.avif" alt="Grupo de pessoas sentadas em círculo" loading="lazy">
+                        <a href="/Recursos/eventos.html" class="featured-card__link" aria-hidden="true" tabindex="-1"><img src="/img/Grupo de pessoas sentadas em círculo, algumas com fones de ouvido, em uma sala com iluminação suave.avif" alt="Grupo de pessoas sentadas em círculo" loading="lazy"></a>
                     </div>
                     <div class="featured-card__body explore-section-text">
                         <span class="tag tag--autismo">Encontros</span>
-                        <h3 class="featured-card__title">Grupos de apoio e workshops</h3>
+                        <h3 class="featured-card__title"><a href="/Recursos/eventos.html">Grupos de apoio e workshops</a></h3>
                         <p class="featured-card__excerpt">
                             Grupos de apoio, workshops e encontros sobre neurodiversidade — em ambientes seguros,
                             com respeito ao seu tempo e ao seu limite sensorial.
@@ -847,7 +821,6 @@
 
 </div>
 
-
         
         <!-- FOOTER -->
         <footer class="footer">
@@ -864,12 +837,12 @@
                     <h4>Sobre</h4>
                     <a href="/Quem somos/quem-somos.html">Quem somos</a>
                     <a href="/blog/blog.html">Blog</a>
-                    <a href="/contato/contato.html">Contato</a>
+                    <a href="/Quem somos/CONTATE-NOS/contate.html">Contato</a>
                 </div>
                 <div class="footer-col">
                     <h4>Apoie</h4>
                     <a href="/loja/loja.html">Loja</a>
-                    <a href="/doações/doações.html">Doações</a>
+                    <a href="/apoiar/apoiar.html">Doações</a>
                 </div>
                 <div class="footer-col">
                     <h4>Redes</h4>
@@ -939,7 +912,6 @@
 <script src="/vlibras.js"></script>
 </body>
 </html>
-
 
 <script src="/pular-conteudo.js"></script>
 <script src="/busca-indice.js"></script>
