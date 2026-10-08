@@ -317,7 +317,7 @@
     function iniciar() {
         if (!INDICE.length) return;
         if (!criar()) return;
-        desenrar('');
+        desenhar('');
     }
 
     window.Busca = { buscar: buscar, abrir: abrir, fechar: fechar, total: INDICE.length };

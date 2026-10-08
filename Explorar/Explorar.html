@@ -164,9 +164,24 @@
                          No fluxo da coluna, nao solta no canto — quem abre
                          Explorar ve a Lia; quem abre Artigos, nao.
                          `alt` vazio + `aria-hidden`: leitor de tela nao
-                         ganha nada com "Lia Chibi". -->
-                    <img class="ed-hero__lia" src="/img/ilustracoes/lia-gif-chibi-alpha.gif"
-                         alt="" aria-hidden="true" width="104" height="72"
+                         ganha nada com "Lia Chibi".
+
+                         Este e o lugar DELA: aqui estava antes de a Lia
+                         sentada ocupar a fresta do nav, e aqui voltou em
+                         2026-10-08. Sao duas representacoes diferentes
+                         da mesma identidade — a animada assina o texto, a
+                         sentada assina o caminho. Nao e uma trocando pela
+                         outra.
+
+                         O `height` do HTML e 104 e nao 72 como estava: o
+                         arquivo e 240x240, quadrado. Com `height="72"` o
+                         navegador reservava uma caixa 104x72 e a Lia
+                         aparecia achatada ate o CSS `height: auto` entrar.
+                         O `alt` e `aria-hidden` ja desativavam a
+                         descricao, entao o erro era invisivel. -->
+
+                    <img class="ed-hero__lia-movel" src="/img/ilustracoes/lia-gif-chibi-alpha.gif"
+                         alt="" aria-hidden="true" width="104" height="104"
                          loading="lazy" decoding="async">
                 </div>
 
@@ -176,7 +191,19 @@
                      painel de navegacao. Os outros 3 destinos
                      (Destaques, Recentes, FAQ) continuam existindo
                      como navegacao secundaria, logo abaixo, na
-                     `.explore-nav` — com os 6 `href` intactos. -->
+                     `.explore-nav` — com os 6 `href` intactos.
+
+                     A Lia sentada entra como primeira filha do nav, e
+                     nao dentro do link: assim o clique dela nao amplia a
+                     area clicavel da linha.
+
+                     ONDE ELA FICOU: saiu do fluxo da coluna de texto e
+                     foi para a fresta a esquerda deste nav, na altura da
+                     linha "Artigos e Guias". Nao coube EM CIMA da linha:
+                     o header e `position: fixed` com 75px e o nav comeca
+                     a 13-17px abaixo dele, entao uma figura de 84px
+                     entraria 67px dentro do header. Medido, nao estimado.
+                     E a imagem e o `png` com alfa: ferramentas/recortar-lia.py. -->
                 <nav class="ed-caminhos" aria-label="Por onde começar">
                     <span class="ed-caminhos__rotulo">Explore por onde começar</span>
 
@@ -209,6 +236,43 @@
                 </nav>
 
             </div>
+
+            <!-- A Lia SENTADA, como marca d'agua no lado direito da dobra.
+
+                 ONDE ELA FICOU E POR QUE: antes ela era uma figura
+                 pequena ao lado da linha "Artigos e Guias". Agora e a
+                 mesma imagem em escala grande, no vazio a direita do nav,
+                 ATRAS do texto: `z-index: 1` contra `z-index: 2` do grid
+                 acima dela. Pintada entre a ilustracao de fundo
+                 (`.ed-hero::after`, `z-index: 0`) e o conteudo.
+
+                 SEM COR, CLARA E TRANSPARENTE: `grayscale(1)` tira o
+                 marrom do cabelo e o tom da pele, `brightness(1.45)`
+                 puxa tudo para um unico tom claro, e `opacity` faz dela
+                 uma presenca de fundo. Sem cor nenhuma e sem migracao:
+                 e a mesma identidade, na mesma pose, so que apagada.
+
+                 O asset NAO foi mexido: e o mesmo PNG de 158x300,
+                'apenas exibido maior. O `width`/`height` do HTML seguem
+                 a razao 158:300, senao o navegador estica.
+
+                 Medido, o vazio a direita do nav dentro do hero:
+
+                     390px   22px de largura     600px   62px
+                     768px  146px                900px  212px
+                     985px   87px               1100px  144px
+                    1200px  166px               1280px  206px
+                    1440px  286px               1600px  366px
+
+                 Nenhuma dessas medidas comporta uma figura de 230px sem
+                 invadir o nav — e e exatamente isso que se quer: ela fica
+                 ATRAS das linhas, nao ao lado delas. `pointer-events:
+                 none` garante que a figura nao roube o clique de nenhum
+                 link, e `alt=""` + `aria-hidden` porque leitor de tela nao
+                 ganha nada com uma marca d'agua. -->
+            <img class="ed-hero__lia-sentada" src="/img/lia/lia-sentada-explorar.png"
+                 alt="" aria-hidden="true" width="121" height="230"
+                 loading="lazy" decoding="async">
         </section>
 
         
@@ -328,7 +392,7 @@
                             <div class="hl-card__media">
                                 <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=600&fit=crop" alt="Comunicação inclusiva" loading="lazy">
                                 <div class="hl-card__overlay"></div>
-                                <button class="hl-card__play" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
+                                <button class="hl-card__play" type="button" tabindex="-1" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
                                 <h3 class="hl-card__title">Como tornar a comunicação mais inclusiva para profissionais neurodivergentes</h3>
                             </div>
                         </a>
@@ -337,7 +401,7 @@
                             <div class="hl-card__media">
                                 <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=600&fit=crop" alt="Neurodivergência na infância" loading="lazy">
                                 <div class="hl-card__overlay"></div>
-                                <button class="hl-card__play" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
+                                <button class="hl-card__play" type="button" tabindex="-1" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
                                 <h3 class="hl-card__title">Neurodivergência na infância e adolescência</h3>
                             </div>
                         </a>
@@ -354,7 +418,7 @@
                             <div class="hl-card__media">
                                 <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop" alt="Autismo e saúde mental" loading="lazy">
                                 <div class="hl-card__overlay"></div>
-                                <button class="hl-card__play" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
+                                <button class="hl-card__play" type="button" tabindex="-1" aria-hidden="true"><i class="fa-solid fa-play"></i></button>
                                 <h3 class="hl-card__title">Autismo e Saúde Mental</h3>
                             </div>
                         </a>
@@ -719,12 +783,12 @@
 
                     <div class="form-group full-width">
                         <label for="form-assunto">Assunto *</label>
-                        <input type="text" id="form-assunto" placeholder="Ex.: D├║vida sobre laudo, den├║ncia, sugest├úo..." required>
+                        <input type="text" id="form-assunto" placeholder="Ex.: Dúvida sobre laudo, denúncia, sugestão..." required>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="form-caso">Conte-nos seu caso *</label>
-                        <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa ­ƒî▒" required></textarea>
+                        <textarea id="form-caso" maxlength="4000" placeholder="Descreva com o detalhe que conseguir. Sem pressa 🌱" required></textarea>
                         <div class="char-counter"><span id="current-chars">0</span>/4000</div>
                     </div>
 
@@ -733,7 +797,7 @@
                     </button>
 
                     <p class="privacy-notice">
-                        Ao enviar, voc├¬ concorda com nossa pol├¡tica de privacidade. Seus dados s├úo tratados com sigilo.
+                        Ao enviar, você concorda com nossa política de privacidade. Seus dados são tratados com sigilo.
                     </p>
                 </form>
                         </div>
@@ -828,9 +892,9 @@
                 <div class="footer-col">
                     <h4>Navegue</h4>
                     <a href="/inicio.html">Início</a>
-                    <a href="/explorar/explorar.html">Explorar</a>
+                    <a href="/Explorar/Explorar.html">Explorar</a>
                     <a href="/comunidade/comunidade.html">Comunidade</a>
-                    <a href="/direitos/direitos.html">Direitos</a>
+                    <a href="/Direitos/direitos.html">Direitos</a>
                     <a href="/chat-Ia/chat-Ia.html">AcolherIA</a>
                 </div>
                 <div class="footer-col">
@@ -904,14 +968,6 @@
     <script src="/Acolher-IA/seguranca.js"></script>
     <script src="/Acolher-IA/Acolher-IA.js"></script>
     </div>
-
-<script src="/pular-conteudo.js"></script>
-<script src="/busca-indice.js"></script>
-<script src="/busca.js"></script>
-<script src="/userway.js"></script>
-<script src="/vlibras.js"></script>
-</body>
-</html>
 
 <script src="/pular-conteudo.js"></script>
 <script src="/busca-indice.js"></script>

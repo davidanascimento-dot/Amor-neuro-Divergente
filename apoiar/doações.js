@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (sidebarAvatar && savedAvatar) {
             sidebarAvatar.src = savedAvatar;
-            sidebarAvatar.onerror = () => { sidebarAvatar.src = '/img/avatar-padrao.png'; };
+            sidebarAvatar.onerror = () => { sidebarAvatar.src = '/img/foto-padrão.jpg'; };
         }
         if (sidebarUserName && savedName) sidebarUserName.textContent = savedName;
         if (sidebarUserEmail && savedEmail) sidebarUserEmail.textContent = savedEmail;

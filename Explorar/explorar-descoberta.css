@@ -505,18 +505,8 @@
    a Lia le a descricao da imagem, nao ve um arquivo PNG.
    ========================================= */
 
-/* No fluxo da coluna, e nao `position: absolute` solta no canto.
-   Medido na primeira tentativa: solta, ela ficava a 90px do texto
-   de apoio, sem nenhuma relacao com ele, e lia como se tivesse
-   caiu ali. No fluxo, ela encosta no texto e le como quem esta
-   junto dele. */
-.ed-hero__lia {
-    display: block;
-    width: 104px;
-    height: auto;
-    margin-top: 34px;
-    pointer-events: none;
-}
+/* A Lia sentada saiu daqui. Onde ela foi parar e por que esta na
+   secao 12, no fim do arquivo. */
 
 /* =========================================
    5. O ESPACO VAZIO
@@ -526,8 +516,13 @@
 
      - a faixa acima do grid, entre o header e a marca;
      - a coluna entre o texto de apoio e os caminhos (72px);
-     - o canto superior direito, acima do rotulo dos caminhos;
      - a faixa de 112px abaixo do grid, antes do intro.
+
+   O canto superior direito deixou de ser uma delas: a Lia animada
+   foi para la em 2026-10-08. E o unico canto que ganhou peca — a
+   escolha mantem a regra de no maximo tres elementos decorativos na
+   dobra (a marca, a Lia sentada e a Lia animada), e nenhuma delas
+   compete com o titulo.
 
    A ultima e a mais importante: e ela que separa a descoberta
    do conteudo sem precisar de borda. Medido na versao atual, o
@@ -753,11 +748,6 @@
         margin-top: 22px;
     }
 
-    .ed-hero__lia {
-        width: 84px;
-        margin-top: 26px;
-    }
-
     .ed-caminhos {
         margin-top: 44px;
     }
@@ -821,11 +811,6 @@
         font-size: 13px;
     }
 
-    .ed-hero__lia {
-        width: 72px;
-        margin-top: 22px;
-    }
-
     .explore-intro {
         padding: 64px 24px 56px;
     }
@@ -846,7 +831,6 @@
         padding: 56px 48px 60px;
     }
 
-    .ed-hero__lia,
     .ed-caminhos__rotulo,
     .ed-caminho__desc {
         display: none;
@@ -891,3 +875,219 @@
    fundo suave do `.ed-hero::before`, que sobre fundo escuro
    ficaria invisivel — e nao ha problema nenhum nisso.
    ========================================= */
+
+
+/* =========================================
+   12. A LIA ANIMADA
+
+   GIF de 17 quadros, 240x240, no FLUXO da coluna de texto logo abaixo
+   do paragrafo de apoio. E onde ela estava antes de a sentada ir para
+   a fresta do nav, e onde voltou em 2026-10-08.
+
+   104px no desktop, 84px a 900px, 72px a 560px: numeros do HEAD, nao
+   mexidos. O que mudou foi so o height do atributo no HTML, que
+   estava 72 num arquivo quadrado de 240x240 — o CSS tem
+   height: auto, entao em tempo de execucao a Lia aparecia quadrada
+   de todo jeito, mas o navegador reservava uma caixa 104x72 antes de
+   o CSS entrar. lt vazio nao denuncia forma errada.
+
+   No fluxo, e nao position: absolute solta no canto. Medido na
+   primeira tentativa: solta, ela ficava a 90px do texto de apoio, sem
+   nenhuma relacao com ele, e lia como se tivesse caido ali. No fluxo
+   ela encosta no texto e le como quem esta junto dele.
+
+   Decorativa: lt=" + ria-hidden no HTML e pointer-events: none
+   aqui. Nao recebe foco e nao e clicavel.
+   ========================================= */
+
+.ed-hero__lia-movel {
+    display: block;
+    width: 104px;
+    height: auto;
+    margin-top: 34px;
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    .ed-hero__lia-movel {
+        width: 84px;
+        margin-top: 26px;
+    }
+}
+
+@media (max-width: 560px) {
+    .ed-hero__lia-movel {
+        width: 72px;
+        margin-top: 22px;
+    }
+}
+
+/* --- 2. Tela baixa e larga ---------------------------------------
+   Notebook deitado ou janela baixa: a dobra inteira nao cabe, e forcar
+   a altura da coluna aqui transformaria a pagina em rolagem pura. O que
+   sobra e o essencial: marca, titulo e apoio. */
+@media (max-height: 620px) and (min-width: 901px) {
+    .ed-hero__lia-movel,
+    .ed-caminhos__rotulo,
+    .ed-caminho__desc {
+        display: none;
+    }
+}
+
+/* --- 3. Movimento reduzido ---------------------------------------
+   A animada e GIF, e o navegador nao respeita prefers-reduced-motion
+   em imagem — nao existe atributo que faca um GIF parar. Esconder e a
+   unica forma de respeitar a preferencia de verdade. Quem pediu
+   reducao ve a Lia sentada da secao 13, que e estatica. */
+@media (prefers-reduced-motion: reduce) {
+    .ed-hero__lia-movel {
+        display: none;
+    }
+}
+
+
+/* =========================================
+   13. A LIA SENTADA COMO MARCA D'AGUA
+
+   Ela era uma figura pequena ao lado da linha "Artigos e Guias". Agora
+   e a MESMA imagem em escala grande, no vazio a direita do nav, ATRAS
+   do texto — como marca d'agua.
+
+   O asset nao foi mexido: continua sendo
+   `img/lia/lia-sentada-explorar.png`, 158x300. So muda o tamanho que
+   ele ocupa na tela e o tratamento.
+
+   --------------------------------------------------------------
+   COMO ELA VAI FICAR ATRAS DO TEXTO
+
+   A dobra tem tres camadas, nesta ordem de pintura:
+
+     1. `.ed-hero::before`  z-index 0   o degrade suave
+     2. `.ed-hero::after`   z-index 0   a ilustracao de fundo + veus
+     3. a Lia               z-index 1   <-- nova camada
+     4. `.ed-hero__grid`    z-index 2   marca, titulo, apoio, caminhos
+
+   Sem o passo 3, qualquer coisa ancorada no topo do hero ficaria ATRAS
+   da ilustracao: `::after` e o ultimo filho do elemento, entao e ele
+   que pinta por ultimo entre os `z-index: 0`. A Lia precisa de um
+   `z-index: 1` proprio para passar por cima da arte, e o grid sobe
+   para `2` para que o texto continue na frente dela.
+
+   O grid tem `z-index: 1` em uma unica regra do arquivo, e nenhum
+   `z-index: 2` ou `3` existe aqui — por isso subir para `2` nao
+   disputa com nada.
+
+   --------------------------------------------------------------
+   SEM COR, CLARA E TRANSPARENTE
+
+   `grayscale(1)` tira o marrom do cabelo e o tom da pele: sobra um
+   unico tom, sem cor. `brightness(1.45)` levanta esse tom para o
+   registro claro, e o `opacity` faz o resto — ela vira presenca de
+   fundo em vez de peca.
+
+   Os tres valores nao sao decorativos: `grayscale` sozinho deixaria
+   a pele cinza-media, parecendo sombra; `brightness` sozinho manteria
+   o contraste entre cabelo e roupa, parecendo foto esmaecida. juntos
+   dao uma silhueta clara unica.
+
+   Medido na composicao: a figura tem 121x230px. A opacidade de 0.2
+   a mantem abaixo do texto em contraste percebido, sem apagar o
+   contorno. `pointer-events: none` impede que ela roube o clique de
+   qualquer link por baixo.
+   ========================================= */
+
+.ed-hero {
+    position: relative;
+}
+
+/* --- a camada do texto sobe para ficar na frente da marca d'agua --- */
+.ed-hero__grid {
+    z-index: 2;
+}
+
+/* --- a Lia, marca d'agua --------------------------------------- */
+.ed-hero__lia-sentada {
+    position: absolute;
+
+    /* `right: 16%` medido para a figura NAO ficar colada na borda do
+       nav. A 11% ela terminava 8px depois dele (1147 contra 1139) e
+       lia como se estivesse ao lado das linhas, nao atras delas. A 16%
+       a borda esquerda dela entra em x=1059, uns 80px dentro do nav:
+       ela atravessa as duas primeiras linhas e parte da terceira.
+
+       Isso NAO atrapalha a leitura: a 0.2 de opacidade ela e pintada
+       antes do grid, entao as setas roxas das linhas continuam por
+       cima dela, inteiras. O que se ve e a figura passando por tras.
+
+       `top: 24%` a centra na altura do nav (que comeca em y=125 e
+       termina em y=445 na dobra de 574px), que e onde a fresta esta
+       de verdade. */
+    right: 16%;
+    top: 24%;
+
+    /* A medida e pela ALTURA porque a imagem e retrato (158x300,
+       razao 1.899). Travar a largura esticaria a figura. */
+    height: 230px;
+    width: auto;
+
+    /* Sem cor, clara, transparente. Ver a nota acima. */
+    filter: grayscale(1) brightness(1.45);
+    opacity: 0.22;
+
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* --------------------------------------------------------------
+   A ESCALA POR LARGURA
+
+   A figura encolhe conforme a dobra. Abaixo de 900px o nav ocupa a
+   largura toda e desce para baixo do texto, entao nao ha canto vazio
+   ao lado: ela fica ATRAS do proprio nav, que e o mesmo efeito de
+   marca d'agua. O `top` muda de 24% para 52/55% por causa disso — com
+   24% ela caia no respiro entre o apoio e o nav, ou seja ao lado da
+   Lia animada, e nao atras do texto.
+
+     390px   140px   a figura e alta para uma coluna so
+     900px   170px   o nav ainda e largo
+    1200px   190px   o vazio da direita ainda e pequeno
+    1440px   230px   286px de vazio comportam bem
+   -------------------------------------------------------------- */
+@media (max-width: 600px) {
+    .ed-hero__lia-sentada {
+        height: 140px;
+        /* Na coluna unica o nav desce para baixo do texto, entao o
+           respiro entre o apoio e o nav e grande demais para ela. A
+           30% ela ficava nesse respiro (206..346 numa dobra de 686px),
+           isolada ao lado da Lia animada. A 55% ela entra atras das
+           linhas: o nav comeca em y=338 e ela vai de 377 a 517. */
+        top: 55%;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+    .ed-hero__lia-sentada {
+        height: 170px;
+        top: 52%;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1200px) {
+    .ed-hero__lia-sentada {
+        height: 190px;
+    }
+}
+
+/* Tela baixa e larga: notebook deitado ou janela encolhida. A dobra
+   inteira nao cabe, forcar 230px aqui amontoaria a figura no campo de
+   visao. Some com ela, como as outras regras de tela baixa somem com
+   os elementos da coluna. */
+@media (max-height: 620px) and (min-width: 901px) {
+    .ed-hero__lia-sentada {
+        display: none;
+    }
+}
+
+/* Sem animacao: um filtro estatico nao precisa de guarda. Mas quem
+   pediu reducao de movimento recebe a figura apagada da mesmo jeito,
+   porque a marca d'agua nao depende de movimento nenhum. */

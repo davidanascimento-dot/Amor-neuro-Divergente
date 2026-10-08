@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const fotoDaNuvem = userMetadata?.avatar_url;
                 const fotoDoHistoricoLocal = buscarFotoNoHistoricoLocal(data.user.email);
-                const fotoFinal = fotoDaNuvem || fotoDoHistoricoLocal || '/img/avatar-padrao.png';
+                const fotoFinal = fotoDaNuvem || fotoDoHistoricoLocal || '/img/foto-padrão.jpg';
 
                 localStorage.setItem('userAvatar', fotoFinal);
                 salvarFotoNoHistoricoLocal(data.user.email, fotoFinal);
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         data: {
                             first_name: firstName,
                             last_name: lastName,
-                            avatar_url: '/img/avatar-padrao.png'
+                            avatar_url: '/img/foto-padrão.jpg'
                         }
                     }
                 });
@@ -253,10 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('userLoggedIn', 'true');
                     localStorage.setItem('userName', firstName);
                     localStorage.setItem('userEmail', email);
-                    localStorage.setItem('userAvatar', '/img/avatar-padrao.png');
+                    localStorage.setItem('userAvatar', '/img/foto-padrão.jpg');
                     localStorage.setItem('userRole', 'user');
                     
-                    salvarFotoNoHistoricoLocal(email, '/img/avatar-padrao.png');
+                    salvarFotoNoHistoricoLocal(email, '/img/foto-padrão.jpg');
                     
                     // Transição ativada no cadastro também para dar boas-vindas
                     executarTransicaoCoracao('/inicio.html');

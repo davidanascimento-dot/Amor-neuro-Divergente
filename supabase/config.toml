@@ -1,2 +1,7 @@
 [functions.acolheria]
-verify_jwt = false
+# verify_jwt = false e a raza pela qual a funcao respondia HTTP 200 sem
+# nenhuma chave: bastava um POST com curl para gastar cota da Groq.
+#
+# Com verify_jwt = true o Supabase exige um JWT valido (anon ou usuario),
+# e o index.ts passa a poder confiar no cabecalho Authorization.
+verify_jwt = true

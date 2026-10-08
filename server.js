@@ -187,7 +187,25 @@ function contentType(filePath) {
         '.html': 'text/html; charset=utf-8',
         '.js': 'text/javascript; charset=utf-8',
         '.json': 'application/json; charset=utf-8',
-        '.svg': 'image/svg+xml'
+        '.svg': 'image/svg+xml',
+        // As imagens saiam como application/octet-stream porque nao
+        // estavam neste mapa. O Chrome aceitava pela snifferizacao na
+        // maioria dos casos, mas abrir a imagem direto na barra de
+        // endereco falhava com ERR_FAILED. Em producao (Netlify, Vercel)
+        // o Content-Type vem da extensao; aqui ele vem daqui.
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.webp': 'image/webp',
+        '.avif': 'image/avif',
+        '.gif': 'image/gif',
+        '.ico': 'image/x-icon',
+        '.woff': 'font/woff',
+        '.woff2': 'font/woff2',
+        '.mp4': 'video/mp4',
+        '.webm': 'video/webm',
+        '.mp3': 'audio/mpeg',
+        '.txt': 'text/plain; charset=utf-8'
     };
     return types[path.extname(filePath).toLowerCase()] || 'application/octet-stream';
 }

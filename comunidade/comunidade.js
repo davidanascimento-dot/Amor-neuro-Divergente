@@ -1487,7 +1487,7 @@ window.handleCommentSubmit = async function(e) {
                 post_id: postId,
                 author_id: currentUser.id,
                 author_name: profile?.username || 'Usuário',
-                author_avatar: profile?.avatar_url || '/img/avatar-padrao.png',
+                author_avatar: profile?.avatar_url || '/img/foto-padrão.jpg',
                 content: text,
                 is_active: true,
                 created_at: new Date().toISOString()
@@ -2411,7 +2411,7 @@ if (groupImageUploadArea) {
     const isPrivate = g.is_private === true;
     const memberCount = g.members || 0;
     const categoryName = g.category || 'Geral';
-    const imageUrl = g.image_url && g.image_url !== '/img/grupo-padrao.png' ? g.image_url : null;
+    const imageUrl = g.image_url && g.image_url !== '/img/foto-padrão.jpg' ? g.image_url : null;
     const isMember = g.is_member === true || g.name === 'Geral';
     const initial = (g.name || 'G').charAt(0).toUpperCase();
 
@@ -2654,7 +2654,7 @@ if (groupImageUploadArea) {
         const name = document.getElementById('groupName')?.value.trim();
         const description = document.getElementById('groupDescription')?.value.trim();
         const category = document.getElementById('groupCategory')?.value || 'Geral';
-        const imageUrl = document.getElementById('groupImage')?.value.trim() || '/img/grupo-padrao.png';
+        const imageUrl = document.getElementById('groupImage')?.value.trim() || '/img/foto-padrão.jpg';
         const isPrivate = document.getElementById('groupPrivate')?.checked || false;
 
         if (!name) {
