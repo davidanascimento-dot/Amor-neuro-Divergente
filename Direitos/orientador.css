@@ -9,8 +9,101 @@
    que vem da classe `.deco` que já existe em `elementos-decorativos.css`.
    ========================================================================== */
 
+/* ==========================================================================
+   ORIENTADOR.CSS — "Vamos encontrar um caminho?"
+
+   Duas camadas: a marca é vibrante, a leitura é tranquila.
+
+   O site fala roxo e rosa. A página de leitura usa azul. Nao e outro site:
+   e o mesmo site com o volume baixo, para quem precisa ler sem brigar com
+   o que ve.
+
+   --------------------------------------------------------------------------
+   CONTRASTE — medido antes de aplicar, nao depois
+
+   A paleta foi verificada com a formula de luminancia relativa do WCAG.
+   Um tom proposed nao passou e foi escurecido mantendo o matiz:
+
+     texto principal  #253449 sobre #F0F7FF ...... 11.68:1  ok
+     texto principal  #253449 sobre #DCEBFA ..... 10.39:1  ok
+     roxo de marca    #8A2BE2 sobre branco ......  5.96:1  ok
+     botao/link       #2E6AB2 sobre branco ......  5.50:1  ok
+     botao/link       #2E6AB2 sobre #F0F7FF .....  5.09:1  ok
+     rosa de marca    #FF1493 sobre branco ......  3.64:1  so texto grande
+     rosa de marca    #FF1493 sobre #F0F7FF .....  3.37:1  so texto grande
+
+   O azul dos botoes foi pedido como #3478C9. Medido, ele da 4.49:1 com
+   texto branco — reprova por 0.01. Escureci para #2E6AB2, que e o mesmo
+   matiz (213 graus) com menos luminosidade, e passa em todos os fundos.
+
+   O rosa passa do minimo de 3.0 para interface e texto grande, mas nao
+   chega a 4.5. Por isso ele aqui aparece como ACOENTO — um ponto, uma
+   regra — e nunca como letra pequena.
+   ========================================================================== */
+
+/* ==========================================================================
+   ORIENTADOR.CSS
+
+   Este arquivo NÃO tem cor própria.
+
+   As cores vêm de `leitura.css`, o sistema visual das páginas de leitura do
+   projeto. aqui só ficam as decisões que são do orientador: a grade das
+   áreas, a sequência de perguntas e o desenho do resultado.
+
+   Por que o bloco abaixo existe, sendo que ele não define cor nenhuma:
+   porque o resto deste arquivo usa nomes `--leitura-*`, e sem a ponte
+   elas não existiriam aqui. Apontar para o sistema é o que impede que as
+   duas listas de tom se separem de novo — que foi o que aconteceu quando
+   o orientador ganhou uma paleta própria.
+   ========================================================================== */
+
 .or-orientador {
+    /* Ponte para o sistema. O `fallback` não é decoração: é o que garante
+       que a seção ainda tem cor se `leitura.css` falhar ao carregar. */
+    --leitura-fundo:       var(--fundo, #F7F9FD);
+    --leitura-suave:       var(--acao-suave, #DCEBFA);
+    --leitura-borda:       var(--divisoria, #DDE5F2);
+    --leitura-acao:        var(--acao, #2E6AB2);
+    --leitura-acao-forte:  var(--acao-forte, #245694);
+    --leitura-texto:       var(--texto-titulo, #253449);
+    --leitura-texto-fraco: var(--texto-fraco, #5A6577);
+
+    /* O roxo e o rosa NÃO são declarados aqui. Eles vêm por herança de
+       `leitura.css`, que é quem os possui. Redeclarar seria pedir uma
+       variável a si mesma — e foi exatamente isso que aconteceu na
+       primeira tentativa: o badge da etapa saía transparente. */
+
     padding: 0 48px 72px;
+}
+
+/* O respiro da leitura. Sem caixa em volta do texto: a linha corre solta e
+   o olho nao para em cada paragrafo. O limite de largura e o que segura a
+   linha — 68 caracteres e o maximo confortavel numa tela. */
+.or-cabecalho,
+.or-passo__titulo,
+.or-passo__sub,
+.or-pergunta__legenda,
+.or-bloco__titulo,
+.or-b1__texto,
+.or-b1__pergunta,
+.or-b2__porque,
+.or-b2__notas li,
+.or-passos li,
+.or-docs__lista li,
+.or-docs__nota,
+.or-b3__legenda,
+.or-b3__obs,
+.or-fonte dt,
+.or-fonte dd,
+.or-fonte__nota,
+.or-limites__lista li,
+.or-envio__texto,
+.or-envio__nota,
+.or-prep__texto,
+.or-prep__rodape,
+.or-orgao__escopo,
+.or-orgao__quando {
+    max-width: var(--respiro, 68ch);
 }
 
 /* --------------------------------------------------------------------------
@@ -29,33 +122,43 @@
     font-weight: 800;
     line-height: 1.15;
     letter-spacing: -0.02em;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
 
 .or-sub {
     margin: 14px 0 0;
     font-size: 1.05rem;
     line-height: 1.7;
-    color: var(--text-medium, #5c5652);
+    color: var(--leitura-texto-fraco);
 }
 
 /* A promessa de privacidade fica visível, e não num rodapé. Ela é o que
-   faz a pessoa arriscar responder. */
+   faz a pessoa arriscar responder.
+
+   Ela fica NUA: sem fundo, sem borda, sem pílula. Era um retângulo branco
+   com cantos redondos, e retângulo sem função é a caixa que a paleta veio
+   tirar. A frase é uma frase — está no mesmo nível do texto, com o mesmo
+   peso, e o cadeado é o que marca a natureza dela. Quem precisa que ela
+   grite é quem ainda não sabe que o site não guarda nada; e a forma de
+   mostrar isso não é enclose, é dizer. */
 .or-privacidade {
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 9px;
-    margin: 22px 0 0;
-    padding: 10px 18px;
-    background: #fff;
-    border: 1px solid var(--border-color, #e8e3dd);
-    border-radius: 999px;
-    font-size: 0.87rem;
-    line-height: 1.5;
-    color: var(--text-medium, #5c5652);
+    margin: 24px 0 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--leitura-texto-fraco);
     text-align: left;
 }
-.or-privacidade i { color: var(--rd-verde, #10b981); flex: 0 0 auto; }
+/* O cadeado da nota de privacidade. Fica na cor de acao: e um icone de
+   informacao, nao um status. Verde aqui era a unica cor do arquivo que
+   nao vinha do sistema. */
+.or-privacidade i { color: var(--leitura-acao); flex: 0 0 auto; }
 
 /* --------------------------------------------------------------------------
    AVISO (copiado, erro de cópia)
@@ -84,22 +187,22 @@
     margin: 0 0 10px;
     font-size: 1.25rem;
     font-weight: 800;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
 
 .or-passo__sub {
     margin: 0 0 26px;
     font-size: 0.93rem;
     line-height: 1.65;
-    color: var(--text-medium, #5c5652);
+    color: var(--leitura-texto-fraco);
 }
 
 .or-passo__contexto {
     margin: 0 0 6px;
     font-size: 0.9rem;
-    color: var(--text-muted, #8a827c);
+    color: var(--leitura-texto-fraco);
 }
-.or-passo__contexto strong { color: var(--rd-roxo, #7c3aed); }
+.or-passo__contexto strong { color: var(--leitura-acao); }
 
 .or-progresso {
     display: flex;
@@ -111,12 +214,12 @@
     flex: 1;
     height: 4px;
     border-radius: 999px;
-    background: #e8e3dd;
+    background: var(--leitura-borda);
     transition: background 0.25s ease;
 }
 .or-progresso[data-passo="1"] .or-progresso__etapa:nth-child(-n+1),
 .or-progresso[data-passo="2"] .or-progresso__etapa:nth-child(-n+2),
-.or-progresso[data-passo="3"] .or-progresso__etapa { background: var(--rd-roxo, #7c3aed); }
+.or-progresso[data-passo="3"] .or-progresso__etapa { background: var(--marca-roxo); }
 
 /* --------------------------------------------------------------------------
    PASSO 1 — as áreas
@@ -133,7 +236,7 @@
     gap: 7px;
     padding: 20px 22px;
     background: #fff;
-    border: 2px solid var(--border-color, #e8e3dd);
+    border: 2px solid var(--leitura-borda);
     border-radius: 16px;
     text-align: left;
     cursor: pointer;
@@ -141,14 +244,14 @@
     transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 .or-area:hover {
-    border-color: var(--rd-roxo, #7c3aed);
+    border-color: var(--leitura-acao);
     transform: translateY(-2px);
     box-shadow: 0 8px 22px rgba(124, 58, 237, 0.1);
 }
 
 .or-area--ativo {
-    border-color: var(--rd-roxo, #7c3aed);
-    background: var(--rd-roxo-claro, #ede9fe);
+    border-color: var(--leitura-acao);
+    background: var(--leitura-suave);
 }
 
 .or-area__topo {
@@ -156,36 +259,46 @@
     align-items: center;
     gap: 10px;
 }
-.or-area__topo i { color: var(--rd-roxo, #7c3aed); font-size: 1.05rem; }
+.or-area__topo i { color: var(--leitura-acao); font-size: 1.05rem; }
 
 .or-area__rotulo {
     font-weight: 800;
     font-size: 1rem;
     line-height: 1.35;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
 
 .or-area__resumo {
     font-size: 0.86rem;
     line-height: 1.55;
-    color: var(--text-muted, #8a827c);
+    color: var(--leitura-texto-fraco);
 }
 
 /* A marca de conteúdo em preparação fica no próprio cartão, e não só
    quando a pessoa clica — é informação de que este caminho é mais fraco
    que os outros. */
+/* Selo "em preparacao". O rosa vira o ponto, nao a letra: medido em
+   3.37:1 sobre azul claro, ele passa so como acento. A palavra fica em
+   azul-escuro, que passa com folga. */
 .or-area__aviso {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     align-self: flex-start;
-    margin-top: 3px;
-    padding: 3px 10px;
-    background: #fffbeb;
-    border: 1px solid #fde68a;
-    border-radius: 999px;
-    font-size: 0.68rem;
+    margin-top: 4px;
+    font-size: 0.72rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #92400e;
+    color: var(--leitura-texto-fraco);
+}
+.or-area__aviso::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--marca-rosa);
+    flex: 0 0 auto;
 }
 
 /* --------------------------------------------------------------------------
@@ -203,7 +316,7 @@
     margin: 0 0 14px;
     font-size: 1.04rem;
     font-weight: 700;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
 
 .or-opcoes {
@@ -218,15 +331,15 @@
     gap: 10px;
     padding: 13px 16px;
     background: #fff;
-    border: 1px solid var(--border-color, #e8e3dd);
+    border: 1px solid var(--leitura-borda);
     border-radius: 12px;
     cursor: pointer;
     font-size: 0.93rem;
     line-height: 1.45;
-    color: var(--text-medium, #5c5652);
+    color: var(--leitura-texto-fraco);
     transition: border-color 0.16s ease, background 0.16s ease;
 }
-.or-opcao:hover { border-color: var(--rd-roxo, #7c3aed); }
+.or-opcao:hover { border-color: var(--leitura-acao); }
 
 /* O `input` fica escondido, não o `label`: o clique continua valendo e o
    teclado continua funcionando, porque o input segue focável. */
@@ -237,13 +350,13 @@
     height: 1px;
 }
 .or-opcao:has(input:checked) {
-    border-color: var(--rd-roxo, #7c3aed);
-    background: var(--rd-roxo-claro, #ede9fe);
-    color: var(--text-dark, #1a1a2e);
+    border-color: var(--leitura-acao);
+    background: var(--leitura-suave);
+    color: var(--leitura-texto);
     font-weight: 600;
 }
 .or-opcao:has(input:focus-visible) {
-    outline: 3px solid var(--rd-roxo, #7c3aed);
+    outline: 3px solid var(--leitura-acao);
     outline-offset: 2px;
 }
 
@@ -257,96 +370,106 @@
         top: 50%;
         width: 16px;
         height: 16px;
-        border: 2px solid var(--border-color, #e8e3dd);
+        border: 2px solid var(--leitura-borda);
         border-radius: 50%;
         transform: translateY(-50%);
     }
-    .or-opcao:has(input:checked) { border-color: var(--rd-roxo, #7c3aed); }
+    .or-opcao:has(input:checked) { border-color: var(--leitura-acao); }
 }
 
 /* --------------------------------------------------------------------------
    AÇÕES
    -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   AÇÕES
+
+   Azul para tudo que é função, com três estados bem separados:
+
+     normal     azul medio, texto branco   5.50:1
+     hover      azul mais escuro
+     secudario  fundo azul muito claro, texto azul-escuro   11.68:1
+
+   O roxo NAO entra aqui. Botao e acao; roxo e identidade. Misturar os dois
+   e o que faz um site parecer amador.
+   -------------------------------------------------------------------------- */
 .or-acoes {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 32px;
+    margin-top: 34px;
 }
 
-.or-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    padding: 13px 24px;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    font: inherit;
-    font-weight: 700;
-    font-size: 0.94rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-.or-btn:hover { transform: translateY(-1px); }
-
-.or-btn--primario {
-    background: var(--rd-roxo, #7c3aed);
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.26);
-}
-.or-btn--secundario {
-    background: #fff;
-    color: var(--text-dark, #1a1a2e);
-    border-color: var(--border-color, #e8e3dd);
-}
-.or-btn--oficial {
-    background: #fff;
-    color: var(--rd-roxo, #7c3aed);
-    border-color: var(--rd-roxo, #7c3aed);
-}
-.or-btn--fantasma {
-    background: transparent;
-    color: var(--text-muted, #8a827c);
-    border-color: transparent;
-    padding-left: 12px;
-    padding-right: 12px;
-}
-.or-btn--fantasma:hover { color: var(--rd-roxo, #7c3aed); }
+/* Secundario: fundo azul muito claro, texto azul-escuro. Da 11.68:1 — bem
+   acima do minimo, e sem parecer um botao fraco. */
 
 /* --------------------------------------------------------------------------
    PASSO 3 — o resultado
-   -------------------------------------------------------------------------- */
-.or-resultado { display: flex; flex-direction: column; gap: 18px; }
 
+   SEM CAIXA. Sem fundo, sem borda, sem sombra.
+
+   A primeira versão desenhava cada bloco como um cartão branco com borda e
+   sombra. Na tela, isso vira um parede de caixas empilhadas: cinco
+   contornos, cinco sombras, cinco fundos — e quem tem dificuldade de
+   processar informação visual gasta energia só separando o que importa do
+   que é enfeite.
+
+   O que separa um bloco do outro agora é ESPAÇO e o número. O que destaca
+   algo é cor — e cor só aparece onde significa alguma coisa: passo que a
+   resposta trouxe à tona, aviso de cuidado, e a ressalva do que a página
+   não garante.
+
+   Regra prática daqui: se uma caixa não carrega significado, ela sai.
+   ------------------------------------------------------------------------ */
+.or-resultado { display: flex; flex-direction: column; }
+
+/* A divisoria faz o trabalho de separacao. Uma borda em volta do bloco
+   resolve o mesmo e custa o dobro: quatro lados, uma superficie e um
+   segundo plano que compete com o texto. A linha separa por uma fracao
+   disso — e o respiro continua igual dos dois lados, que e o que faz a
+   pagina nao parecer lista de caixas.
+
+   O espaco saiu do `gap` e foi para o `padding`, porque `gap` contaria
+   a linha como distancia e a linha acabaria colada no bloco de baixo.
+
+   As duas regras antigas fundiram nesta. Estavam separadas, e a segunda
+   (que zerava o padding) vencia a primeira — o respiro nunca chegou a
+   aparecer. Regra duplicada do mesmo seletor nao e organizacao, e uma das
+   duas sempre mente sobre o que a pagina esta fazendo. */
 .or-bloco {
-    padding: 26px 28px;
-    background: #fff;
-    border: 1px solid var(--border-color, #e8e3dd);
-    border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    padding: 0 0 46px;
+    background: none;
+    border: 0;
+    border-top: 0;
+    box-shadow: none;
 }
+
+.or-bloco + .or-bloco {
+    border-top: 1px solid var(--leitura-borda);
+    padding-top: 46px;
+}
+
+/* O ultimo bloco nao repete o respiro: depois dele vem o botao de enviar
+   o resumo, e dois respiros seguidos viram um buraco. */
+.or-bloco--fim { padding-bottom: 0; }
 
 .or-bloco__cabecalho {
     display: flex;
     align-items: center;
     gap: 13px;
-    padding-bottom: 16px;
-    margin-bottom: 18px;
-    border-bottom: 1px solid var(--rd-roxo-claro, #ede9fe);
+    margin-bottom: 20px;
 }
 
 .or-bloco__numero {
     flex: 0 0 auto;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     display: grid;
     place-items: center;
-    background: var(--rd-roxo, #7c3aed);
+    background: var(--marca-roxo);
     color: #fff;
     border-radius: 9px;
     font-weight: 800;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
 }
 
 .or-bloco__titulo {
@@ -354,14 +477,14 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: 1.06rem;
+    font-size: 1.18rem;
     font-weight: 800;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
     line-height: 1.35;
 }
-.or-bloco__titulo i { color: var(--rd-roxo, #7c3aed); }
+.or-bloco__titulo i { color: var(--leitura-acao); }
 .or-bloco__titulo:focus-visible {
-    outline: 3px solid var(--rd-roxo, #7c3aed);
+    outline: 3px solid var(--leitura-acao);
     outline-offset: 4px;
     border-radius: 6px;
 }
@@ -372,7 +495,7 @@
     font-size: 1.04rem;
     font-weight: 700;
     line-height: 1.6;
-    color: var(--rd-roxo, #7c3aed);
+    color: var(--leitura-acao);
 }
 .or-b1__pergunta {
     display: flex;
@@ -381,37 +504,36 @@
     margin: 0 0 10px;
     font-size: 0.95rem;
     line-height: 1.6;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
-.or-b1__pergunta i { color: var(--rd-amarelo, #f59e0b); margin-top: 3px; }
+.or-b1__pergunta i { color: var(--marca-rosa); margin-top: 3px; }
 .or-b1__artigos {
     margin: 0;
     font-size: 0.84rem;
-    color: var(--text-muted, #8a827c);
+    color: var(--leitura-texto-fraco);
 }
 
 /* --- bloco 2 */
 .or-b2__lei {
     display: block;
-    padding: 15px 18px;
-    margin-bottom: 14px;
-    background: var(--rd-papel, #faf9fe);
-    border: 1px solid var(--border-color, #e8e3dd);
-    border-radius: 12px;
+    padding: 0 0 6px;
+    margin-bottom: 16px;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid var(--leitura-suave);
     text-decoration: none;
 }
-.or-b2__lei:hover { border-color: var(--rd-roxo, #7c3aed); }
 .or-b2__lei-nome {
     display: block;
     font-weight: 800;
-    font-size: 1rem;
-    color: var(--text-dark, #1a1a2e);
+    font-size: 1.05rem;
+    color: var(--leitura-texto);
 }
 .or-b2__lei-ident {
     display: block;
     margin-top: 3px;
-    font-size: 0.83rem;
-    color: var(--rd-roxo, #7c3aed);
+    font-size: 0.85rem;
+    color: var(--leitura-acao);
     font-weight: 600;
 }
 
@@ -419,86 +541,85 @@
     margin: 0 0 14px;
     font-size: 0.93rem;
     line-height: 1.65;
-    color: var(--text-medium, #5c5652);
+    color: var(--leitura-texto-fraco);
 }
 
 .or-b2__notas { list-style: none; padding: 0; margin: 0; }
 .or-b2__notas li {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    background: #fffbeb;
-    border-left: 4px solid var(--rd-amarelo, #f59e0b);
+    gap: 11px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    background: var(--leitura-suave);
+    border-left: 4px solid var(--leitura-acao);
     border-radius: 0 10px 10px 0;
-    font-size: 0.9rem;
-    line-height: 1.62;
-    color: #78350f;
+    font-size: 0.94rem;
+    line-height: 1.68;
+    color: var(--leitura-texto);
 }
-.or-b2__notas i { color: #b45309; margin-top: 3px; flex: 0 0 auto; }
+.or-b2__notas i { color: var(--leitura-acao); margin-top: 4px; flex: 0 0 auto; }
 
 /* --- bloco 3 */
 .or-passos { margin: 0; padding-left: 24px; }
 .or-passos li {
-    margin-bottom: 13px;
-    font-size: 0.95rem;
-    line-height: 1.68;
-    color: var(--text-medium, #5c5652);
+    margin-bottom: 16px;
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--leitura-texto-fraco);
 }
-.or-passos li::marker { color: var(--rd-roxo, #7c3aed); font-weight: 700; }
+.or-passos li::marker { color: var(--leitura-acao); font-weight: 700; }
 
-/* O passo que a resposta trouxe à tona. */
+/* O passo que a resposta trouxe à tona. Este fundo é um dos poucos que
+   ficaram: aqui a cor carrega significado, não enfeite. */
 .or-passos .or-passo--destaque {
-    padding: 13px 16px;
-    background: var(--rd-roxo-claro, #ede9fe);
-    border-radius: 10px;
-    color: var(--text-dark, #1a1a2e);
+    padding: 14px 18px;
+    margin: 0 0 18px -18px;
+    background: var(--leitura-suave);
+    border-radius: 0 10px 10px 0;
+    border-left: 4px solid var(--leitura-acao);
+    color: var(--leitura-texto);
     font-weight: 600;
 }
 
 .or-b3__legenda {
-    margin: 4px 0 0;
+    margin: 6px 0 0;
     font-size: 0.8rem;
-    color: var(--rd-roxo, #7c3aed);
+    color: var(--leitura-acao);
     font-weight: 600;
 }
 
 .or-docs {
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid var(--rd-roxo-claro, #ede9fe);
+    margin-top: 28px;
 }
 .or-docs__titulo {
-    margin: 0 0 10px;
-    font-size: 0.9rem;
+    margin: 0 0 12px;
+    font-size: 0.92rem;
     font-weight: 800;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
 .or-docs__lista { margin: 0; padding-left: 20px; }
 .or-docs__lista li {
-    margin-bottom: 6px;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    color: var(--text-medium, #5c5652);
-}
-.or-docs__lista li::marker { color: var(--rd-roxo, #7c3aed); }
-.or-docs__nota {
-    margin: 8px 0 0;
-    font-size: 0.8rem;
+    margin-bottom: 8px;
+    font-size: 0.93rem;
     line-height: 1.6;
-    color: var(--text-muted, #8a827c);
+    color: var(--leitura-texto-fraco);
+}
+.or-docs__lista li::marker { color: var(--leitura-acao); }
+.or-docs__nota {
+    margin: 10px 0 0;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--leitura-texto-fraco);
 }
 
 .or-b3__obs {
-    margin: 18px 0 0;
-    padding: 13px 17px;
-    background: var(--rd-papel, #faf9fe);
-    border-left: 4px solid var(--rd-roxo, #7c3aed);
-    border-radius: 0 10px 10px 0;
-    font-size: 0.9rem;
-    line-height: 1.65;
-    color: var(--text-medium, #5c5652);
+    margin: 26px 0 0;
+    padding-left: 16px;
+    border-left: 3px solid var(--leitura-suave);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--leitura-texto-fraco);
 }
 
 /* --- bloco 4 */
@@ -508,112 +629,109 @@
     margin: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 12px;
+    gap: 26px 32px;
 }
 .or-orgao {
-    padding: 16px 18px;
-    background: var(--rd-papel, #faf9fe);
-    border: 1px solid var(--border-color, #e8e3dd);
-    border-radius: 13px;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
 }
 .or-orgao--prioritario {
-    background: var(--rd-roxo-claro, #ede9fe);
-    border-color: var(--rd-roxo, #7c3aed);
+    background: none;
+    border: 0;
+    border-left: 3px solid var(--leitura-acao);
+    padding-left: 14px;
 }
 .or-orgao__topo {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 10px;
     margin-bottom: 6px;
 }
 .or-orgao__nome {
     font-weight: 800;
-    font-size: 0.94rem;
-    color: var(--text-dark, #1a1a2e);
+    font-size: 0.98rem;
+    color: var(--leitura-texto);
 }
-.or-orgao__custo {
-    flex: 0 0 auto;
-    padding: 3px 9px;
-    background: var(--rd-verde, #10b981);
-    color: #fff;
-    border-radius: 999px;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
+
 .or-orgao__quando {
     margin: 0 0 5px;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     font-weight: 600;
     line-height: 1.55;
-    color: var(--rd-roxo, #7c3aed);
+    color: var(--leitura-acao);
 }
 .or-orgao__escopo {
     margin: 0;
-    font-size: 0.87rem;
-    line-height: 1.6;
-    color: var(--text-medium, #5c5652);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--leitura-texto-fraco);
 }
 
 /* --- bloco 5 */
 .or-fonte {
     display: grid;
     grid-template-columns: minmax(150px, auto) 1fr;
-    gap: 10px 26px;
-    margin: 0 0 20px;
+    gap: 8px 28px;
+    margin: 0 0 24px;
 }
 .or-fonte dt {
     font-size: 0.8rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--text-muted, #8a827c);
+    color: var(--leitura-texto-fraco);
 }
 .or-fonte dd {
     margin: 0;
-    font-size: 0.93rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    line-height: 1.55;
-    color: var(--text-dark, #1a1a2e);
+    line-height: 1.6;
+    color: var(--leitura-texto);
 }
 
 .or-fonte__nota {
-    margin: 16px 0 0;
-    padding: 13px 17px;
-    background: #fffbeb;
-    border: 1px solid #fde68a;
-    border-radius: 11px;
-    font-size: 0.88rem;
-    line-height: 1.65;
-    color: #78350f;
+    margin: 24px 0 0;
+    padding-left: 17px;
+    border-left: 3px solid var(--leitura-borda);
+    font-size: 0.94rem;
+    line-height: 1.72;
+    color: var(--leitura-texto-fraco);
 }
 
-.or-limites { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--rd-roxo-claro, #ede9fe); }
+.or-limites {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--leitura-borda);
+}
 .or-limites__titulo {
-    margin: 0 0 10px;
-    font-size: 0.92rem;
+    margin: 0 0 14px;
+    font-size: 1rem;
     font-weight: 800;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
 .or-limites__lista { margin: 0; padding-left: 20px; }
 .or-limites__lista li {
-    margin-bottom: 7px;
-    font-size: 0.89rem;
-    line-height: 1.62;
-    color: var(--text-medium, #5c5652);
+    margin-bottom: 10px;
+    font-size: 0.93rem;
+    line-height: 1.68;
+    color: var(--leitura-texto-fraco);
 }
-.or-limites__lista li::marker { color: var(--rd-roxo, #7c3aed); }
+.or-limites__lista li::marker { color: var(--leitura-acao); }
 
 /* --------------------------------------------------------------------------
    EM PREPARAÇÃO
    -------------------------------------------------------------------------- */
+/* O fundo e a informacao: esta parte ainda nao foi conferida, e ela
+   precisa parecer diferente do que esta conferido. O rosa entra aqui como
+   acento — nunca como letra, porque 3.37:1 nao segura texto pequeno. */
 .or-prep {
+    position: relative;
     padding: 28px;
-    background: #fffbeb;
-    border: 1px solid #fde68a;
-    border-radius: 16px;
+    background: var(--leitura-suave);
+    border-left: 4px solid var(--marca-rosa);
+    border-radius: 0 12px 12px 0;
 }
 .or-prep__titulo {
     display: flex;
@@ -622,85 +740,84 @@
     margin: 0 0 12px;
     font-size: 1.1rem;
     font-weight: 800;
-    color: #92400e;
+    color: var(--leitura-texto);
 }
 .or-prep__texto {
-    margin: 0 0 18px;
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: #78350f;
+    margin: 0 0 20px;
+    font-size: 0.98rem;
+    line-height: 1.74;
+    color: var(--leitura-texto);
 }
 .or-prep__links { list-style: none; padding: 0; margin: 0 0 16px; }
-.or-prep__links li { margin-bottom: 9px; }
+.or-prep__links li { margin-bottom: 10px; }
 .or-prep__links a {
     display: inline-flex;
     align-items: center;
     gap: 9px;
-    padding: 11px 17px;
-    background: #fff;
-    border: 1px solid #fcd34d;
-    border-radius: 11px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #92400e;
-    text-decoration: none;
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: var(--leitura-acao);
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
-.or-prep__links a:hover { border-color: #b45309; }
 .or-prep__rodape {
     margin: 0;
-    font-size: 0.83rem;
-    line-height: 1.65;
-    color: #92400e;
+    font-size: 0.87rem;
+    line-height: 1.7;
+    color: var(--leitura-texto-fraco);
     font-style: italic;
 }
 
 /* --------------------------------------------------------------------------
-   ENVIAR RESUMO
+   ENVIAR RESUMO — sem caixa. É um passo opcional no fim da leitura, não
+   uma seção: moldura aqui rouba o foco do conteúdo.
    -------------------------------------------------------------------------- */
 .or-envio {
-    padding: 26px 28px;
-    background: var(--rd-papel, #faf9fe);
-    border: 1px solid var(--border-color, #e8e3dd);
-    border-radius: 16px;
+    padding: 30px 0 0;
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--leitura-borda);
 }
 .or-envio__titulo {
     margin: 0 0 10px;
     font-size: 1.05rem;
     font-weight: 800;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
 }
 .or-envio__texto {
-    margin: 0 0 18px;
-    font-size: 0.94rem;
-    line-height: 1.7;
-    color: var(--text-medium, #5c5652);
+    margin: 0 0 20px;
+    max-width: 64ch;
+    font-size: 0.95rem;
+    line-height: 1.72;
+    color: var(--leitura-texto-fraco);
 }
 .or-envio__acoes { display: flex; flex-wrap: wrap; gap: 12px; }
 .or-envio__nota {
-    margin: 16px 0 0;
-    font-size: 0.82rem;
-    line-height: 1.6;
-    color: var(--text-muted, #8a827c);
+    margin: 18px 0 0;
+    max-width: 64ch;
+    font-size: 0.84rem;
+    line-height: 1.68;
+    color: var(--leitura-texto-fraco);
 }
 .or-envio__rotulo {
     display: block;
     margin: 16px 0 6px;
     font-size: 0.86rem;
     font-weight: 700;
-    color: var(--text-medium, #5c5652);
+    color: var(--leitura-texto-fraco);
 }
 .or-envio__campo {
     width: 100%;
     padding: 14px;
     font: 0.82rem/1.55 ui-monospace, Menlo, Consolas, monospace;
-    color: var(--text-dark, #1a1a2e);
+    color: var(--leitura-texto);
     background: #fff;
-    border: 1px solid var(--border-color, #e8e3dd);
+    border: 1px solid var(--leitura-borda);
     border-radius: 10px;
     resize: vertical;
 }
 .or-envio__campo:focus-visible {
-    outline: 3px solid var(--rd-roxo, #7c3aed);
+    outline: 3px solid var(--leitura-acao);
     outline-offset: 2px;
 }
 
@@ -713,7 +830,7 @@
 .or-prep__links a:focus-visible,
 #orVerResultado:focus-visible,
 #orVoltarAreas:focus-visible {
-    outline: 3px solid var(--rd-roxo, #7c3aed);
+    outline: 3px solid var(--leitura-acao);
     outline-offset: 3px;
     border-radius: 12px;
 }
@@ -747,14 +864,11 @@
     .or-progresso__etapa { transition: none; }
 }
 
-body.a11y-dark-mode .or-bloco,
-body.a11y-dark-mode .or-area,
-body.a11y-dark-mode .or-opcao,
-body.a11y-dark-mode .or-privacidade,
-body.a11y-dark-mode .or-envio__campo {
-    background: #1a1a2e;
-    border-color: #2d2d44;
-}
+/* O modo escuro nao pinta esta secao. O fundo e da PAGINA, e a pagina
+   inteira troca de cor por token — inclusive o fundo dela. Pintar aqui de
+   novo recriaria a faixa escura que a paleta clara ja eliminou: uma secao
+   de outra cor dentro de uma pagina de uma cor so. */
+
 body.a11y-dark-mode .or-titulo,
 body.a11y-dark-mode .or-passo__titulo,
 body.a11y-dark-mode .or-pergunta__legenda,
@@ -766,9 +880,10 @@ body.a11y-dark-mode .or-envio__titulo,
 body.a11y-dark-mode .or-docs__titulo,
 body.a11y-dark-mode .or-limites__titulo,
 body.a11y-dark-mode .or-b2__lei-nome,
-body.a11y-dark-mode .or-btn--secundario {
-    color: #f1f5f9;
+body.a11y-dark-mode .or-fonte dd {
+    color: #E8EEF7;
 }
+
 body.a11y-dark-mode .or-sub,
 body.a11y-dark-mode .or-passo__sub,
 body.a11y-dark-mode .or-privacidade,
@@ -777,18 +892,64 @@ body.a11y-dark-mode .or-opcao,
 body.a11y-dark-mode .or-b2__porque,
 body.a11y-dark-mode .or-passos li,
 body.a11y-dark-mode .or-orgao__escopo,
+body.a11y-dark-mode .or-orgao__quando,
 body.a11y-dark-mode .or-envio__texto,
+body.a11y-dark-mode .or-envio__nota,
 body.a11y-dark-mode .or-limites__lista li,
-body.a11y-dark-mode .or-forte {
-    color: #b8b0a8;
+body.a11y-dark-mode .or-b3__obs,
+body.a11y-dark-mode .or-fonte__nota,
+body.a11y-dark-mode .or-b1__artigos,
+body.a11y-dark-mode .or-docs__nota {
+    color: #A8B6CB;
 }
+
+/* acoes em azul claro no escuro: o mesmo tom nao passaria sobre fundo escuro */
+body.a11y-dark-mode .or-b1__texto,
 body.a11y-dark-mode .or-bloco__titulo i,
 body.a11y-dark-mode .or-area__topo i,
 body.a11y-dark-mode .or-passo__contexto strong,
-body.a11y-dark-mode .or-b1__texto { color: #c4b5e8; }
-body.a11y-dark-mode .or-fonte dd { color: #f1f5f9; }
-body.a11y-dark-mode .or-b2__lei,
-body.a11y-dark-mode .or-orgao,
-body.a11y-dark-mode .or-envio { background: #131a2c; border-color: #2d2d44; }
-body.a11y-dark-mode .or-passos .or-passo--destaque { background: #2d1f52; color: #f1f5f9; }
-body.a11y-dark-mode .or-aviso { background: #052e26; border-color: #065f46; color: #a7f3d0; }
+body.a11y-dark-mode .or-b3__legenda,
+body.a11y-dark-mode .or-orgao__quando {
+    color: #8AB4F8;
+}
+
+body.a11y-dark-mode .or-area,
+body.a11y-dark-mode .or-opcao,
+body.a11y-dark-mode .or-envio__campo {
+    background: #1A2338;
+    border-color: #2C3A55;
+}
+body.a11y-dark-mode .or-area--ativo,
+body.a11y-dark-mode .or-opcao:has(input:checked) {
+    background: #1E3358;
+    border-color: #8AB4F8;
+}
+
+body.a11y-dark-mode .or-passos .or-passo--destaque,
+body.a11y-dark-mode .or-b2__notas li,
+body.a11y-dark-mode .or-btn--secundario {
+    background: #1E3358;
+    border-color: #8AB4F8;
+    color: #E8EEF7;
+}
+body.a11y-dark-mode .or-b2__notas i { color: #8AB4F8; }
+
+body.a11y-dark-mode .or-prep {
+    background: #33241A;
+    border-left-color: var(--marca-rosa);
+}
+body.a11y-dark-mode .or-prep__titulo,
+body.a11y-dark-mode .or-prep__texto { color: #F5D9B8; }
+body.a11y-dark-mode .or-prep__rodape { color: #C9B49A; }
+body.a11y-dark-mode .or-prep__links a { color: #8AB4F8; }
+
+body.a11y-dark-mode .or-envio,
+body.a11y-dark-mode .or-limites {
+    border-top-color: #2C3A55;
+}
+body.a11y-dark-mode .or-b2__lei { border-bottom-color: #2C3A55; }
+body.a11y-dark-mode .or-b3__obs { border-left-color: #2C3A55; }
+body.a11y-dark-mode .or-fonte__nota { border-left-color: #2C3A55; }
+body.a11y-dark-mode .or-orgao--prioritario { border-left-color: #8AB4F8; }
+body.a11y-dark-mode .or-btn--oficial { color: #8AB4F8; border-color: #8AB4F8; }
+body.a11y-dark-mode .or-aviso { background: #052E26; border-color: #065F46; color: #A7F3D0; }

@@ -1,0 +1,458 @@
+/* ==========================================================================
+   LEITURA.CSS — o sistema visual das páginas de leitura do Amor NeuroDivergente
+
+   Este arquivo não é do "Seus Direitos". É de qualquer página em que a
+   pessoa vai ler bastante: direitos, artigos, guias. A próxima que existir
+   carrega este arquivo e já nasce no mesmo sistema — mesma cor de texto,
+   mesmo botão, mesmo foco de teclado, mesma divisória.
+
+   --------------------------------------------------------------------------
+   A IDEA
+   --------------------------------------------------------------------------
+
+   Não é uma página azul. É uma página DO AMOR NEURODIVERGENTE que usa o azul
+   para trazer tranquilidade.
+
+   Três famílias, comCada uma fazendo um trabalho:
+
+     MARCA     roxo #8A2BE2 e rosa #FF1493 — identidade. Logo, número da
+               etapa, acento raro. Nunca o corpo do texto.
+     LEITURA   azul-escuro, cinza-frio e azul-suave — o texto e o fundo.
+               Aqui vive a maior parte da tela, e é por isso que é o tom
+               mais tranquilo.
+     AÇÃO      azul médio — botão, link, o que se clica.
+
+   O cabeçalho não entra neste arquivo. Ele já carrega o logo rosa e roxo
+   sobre fundo branco, e essa é a identidade: a barra de cima é a marca, o
+   resto é leitura.
+
+   --------------------------------------------------------------------------
+   CONTRASTE — medido, não estimado
+
+   Formula de luminancia relativa do WCAG, conferida antes de escrever a
+   regra. Os numeros valem para texto normal (minimo 4.5:1) e para interface
+   (minimo 3.1:1).
+
+     #253449 sobre #F7F9FD ...... 11.96:1   texto principal
+     #3E4A5C sobre #F7F9FD .......  8.52:1   corpo
+     #4A5A72 sobre #F7F9FD .......  6.65:1   subtitulo
+     #5A6577 sobre #F7F9FD .......  5.59:1   legenda
+     #2E6AB2 sobre #F7F9FD .......  5.21:1   link e acao
+     #245694 sobre #F7F9FD .......  7.03:1   acao em hover
+     branco sobre #2E6AB2 ........  5.50:1   texto do botao
+     branco sobre #245694 ........  7.41:1   botao em hover
+     #253449 sobre #DCEBFA ....... 10.39:1   botao secundario
+     #8A2BE2 sobre #F7F9FD .......  5.65:1   numero da etapa
+     #FF1493 sobre #F7F9FD .......  3.45:1   acento (nao e texto)
+
+   DOIS AJUSTES NECESSARIOS, ambos medidos:
+
+   1. O azul dos botoes foi proposto como #3478C9. Medido, ele da 4.49:1
+      com texto branco — reprova por 0.01. Aqui esta #2E6AB2, que e o
+      MESMO MATIZ (213 graus), so com menos luminosidade.
+
+   2. O rosa da marca da 3.45:1 sobre o fundo. Passa como acento e como
+      texto grande, mas nao como letra pequena. Entao ele aqui aparece
+      como ponto, borda ou barra — nunca como corpo de texto. Rosa sobre
+      roxo daria 1.64:1: os dois nunca juntos.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. OS TOKENS
+
+   Ficam num seletor de classe, e nao no `:root`. O motivo e escopo: se
+   estes nomes fossem globais, mudando `--marca-roxo` aqui mudaria o site
+   inteiro. Com classe, so a pagina de leitura responde.
+   ========================================================================== */
+
+.leitura,
+.pagina-leitura {
+    /* --- fundo: quase branco, toque frio entre azul e lavanda --------- */
+    /* Escolhido por medicao, nao por gosto: e o tom mais proximo de branco
+       que ainda puxa para o frio. O fundo anterior da pagina era #FAF9FE,
+       que ja era quase branco mas puxava para o lilac. */
+    --fundo:            #F7F9FD;
+
+    /* --- texto: do mais forte ao mais fraco --------------------------- */
+    --texto-titulo:     #253449;   /* 11.96:1 — titulos de secao */
+    --texto-subtitulo:  #4A5A72;   /*  6.65:1 — linha de apoio */
+    --texto-corpo:      #3E4A5C;   /*  8.52:1 — o corpo da leitura */
+    --texto-fraco:      #5A6577;   /*  5.59:1 — legendas e notas */
+
+    /* --- divisoria: linha clara, nao caixa --------------------------- */
+    --divisoria:        #DDE5F2;
+
+    /* --- acao: azul e so para o que se clica ------------------------- */
+    --acao:             #2E6AB2;
+    --acao-forte:       #245694;
+    --acao-suave:       #DCEBFA;
+
+    /* --- marca: identidade, nunca corpo de texto ---------------------- */
+    --marca-roxo:       #8A2BE2;
+    --marca-rosa:       #FF1493;
+
+    /* --- forma --------------------------------------------------------- */
+    --raio:             14px;
+    --respiro:          68ch;    /* largura maxima de linha: o que segura a
+                                    leitura em telas largas */
+
+    color: var(--texto-corpo);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   2. A PAGINA
+
+   O fundo e da PAGINA, nao de um bloco. Uma secao colorida dentro de uma
+   pagina clara parece importada de outro site — e era exatamente o defeito
+   da primeira versao, em que o orientador carregava o azul sozinho.
+   ========================================================================== */
+
+body.pagina-leitura { background: var(--fundo, #F7F9FD); }
+
+/* As secoes desta pagina NAO declaram "eu sou o fundo". Elas declaram
+   `--dp-papel`, que vale #faf9fe desde a primeira linha do
+   `direitos-percurso.css` — o lilás que era o fundo da pagina antes. Por
+   isso o topo da pagina e o resto da pagina ainda sao duas cores: o
+   orientador herdou o fundo novo, e o banner em cima dele ficou com o
+   antigo.
+
+   A correcao nao é paintar o banner. É alinhar o TOKEN, aqui, uma vez.
+   Qualquer seção que depois disser "use o papel da página" passa a usar
+   o papel da página de verdade, sem que ninguém precise lembrar de
+   editar duas. E o escuro vem de graça: `--fundo` já gira, então
+   `--dp-papel` gira junto. */
+.pagina-leitura { --dp-papel: var(--fundo, #F7F9FD); }
+
+/* O fundo escuro nao confia no token. Duas regras disputam a mesma
+   propriedade com a MESMA especificidade — `body` do inicio.css, que usa
+   `--bg-body`, e esta. Empate de especificidade se resolve por ordem de
+   arquivo, e uma folha que entra depois muda o resultado sem ninguem
+   perceber. Por isso o escuro repete o par de classes: dois pontos de
+   especificidade acima de qualquer `body` ou `body.a11y-dark-mode`, e nao
+   ha dispute. O token continua sendo a fonte; aqui so se garante quem
+   vence a dispute. */
+body.a11y-dark-mode.pagina-leitura { background: #131A2C; }
+
+.leitura-main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 104px 24px 96px;
+}
+
+/* ==========================================================================
+   3. HIERARQUIA DE TEXTO
+
+   Titulo azul-escuro, apoio com roxo ou azul, corpo em cinza-frio. A
+   hierarquia se faz por PESO e COR, nunca por caixa: quem tem dificuldade
+   de processar informacao visual gasta energia separando o que importa
+   do que e enfeite.
+   ========================================================================== */
+
+.leitura-titulo {
+    margin: 0;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.9rem, 4.4vw, 2.7rem);
+    font-weight: 800;
+    line-height: 1.16;
+    letter-spacing: -0.02em;
+    color: var(--texto-titulo, #253449);
+}
+
+.leitura-subtitulo {
+    margin: 12px auto 0;
+    max-width: var(--respiro, 68ch);
+    font-size: 1.06rem;
+    line-height: 1.72;
+    color: var(--texto-subtitulo, #4A5A72);
+}
+
+.leitura-secao-titulo {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.35;
+    color: var(--texto-titulo, #253449);
+}
+
+.leitura-secao-titulo i { color: var(--marca-roxo, #8A2BE2); }
+
+.leitura-corpo {
+    max-width: var(--respiro, 68ch);
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--texto-corpo, #3E4A5C);
+}
+
+.leitura-nota {
+    max-width: var(--respiro, 68ch);
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--texto-fraco, #5A6577);
+}
+
+/* ==========================================================================
+   4. DIVISORIA
+
+   Linha clara, o suficiente para separar e fraca demais para competir com o
+   texto. E mais barata, visualmente, do que uma borda em volta de um bloco.
+   ========================================================================== */
+
+.leitura-divisa {
+    height: 1px;
+    border: 0;
+    margin: 40px 0;
+    background: var(--divisoria, #DDE5F2);
+}
+
+/* ==========================================================================
+   5. O NUMERO DA ETAPA — o unico lugar com roxo cheio
+
+   E identidade: diz onde a pessoa esta. Por isso o/badge/: e o unico que
+   carrega o roxo como superficie. Medido em 5.65:1 com texto branco.
+   ========================================================================== */
+
+.leitura-etapa {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: var(--marca-roxo, #8A2BE2);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   6. BOTOES — tres estados bem separados
+
+     normal     azul medio, texto branco     5.50:1
+     hover      azul mais escuro             7.41:1
+     secundario azul muito claro, texto escuro  10.39:1
+
+   O roxo NAO entra em botao. Botao e acao; roxo e identidade. Misturar os
+   dois e o que faz um sistema parecersem criterio.
+   ========================================================================== */
+
+.leitura-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 24px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.leitura-btn--primario {
+    background: var(--acao, #2E6AB2);
+    color: #fff;
+}
+.leitura-btn--primario:hover { background: var(--acao-forte, #245694); }
+
+.leitura-btn--secundario {
+    background: var(--acao-suave, #DCEBFA);
+    color: var(--texto-titulo, #253449);
+}
+.leitura-btn--secundario:hover { background: #C7DEF7; }
+
+.leitura-btn--contorno {
+    background: transparent;
+    color: var(--acao, #2E6AB2);
+    border-color: var(--acao, #2E6AB2);
+}
+.leitura-btn--contorno:hover { background: var(--acao-suave, #DCEBFA); }
+
+.leitura-btn--texto {
+    background: transparent;
+    color: var(--texto-fraco, #5A6577);
+    padding-left: 12px;
+    padding-right: 12px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.leitura-btn--texto:hover { color: var(--acao, #2E6AB2); }
+
+/* ==========================================================================
+   7. LINK DENTRO DO TEXTO
+
+   Sublinhado sempre, nao so no hover: quem le com dificuldade de
+  processar informacao precisa saber onde o texto vira navegacao antes de
+   chegar perto.
+   ========================================================================== */
+
+.leitura-link {
+    color: var(--acao, #2E6AB2);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+.leitura-link:hover { color: var(--acao-forte, #245694); }
+
+/* ==========================================================================
+   8. FOCO DE TECLADO
+
+   Um anel so, o mesmo em tudo. Duas razoes: quem navega por teclado
+   precisa de um alvo previsivel, e uma linha a mais de CSS e uma a menos
+   de divergencia entre paginas.
+   ========================================================================== */
+
+.leitura :focus-visible,
+.leitura-btn:focus-visible,
+body.pagina-leitura :focus-visible {
+    outline: 3px solid var(--acao, #2E6AB2);
+    outline-offset: 3px;
+    border-radius: 8px;
+}
+
+/* ==========================================================================
+   9. AVISO — a unica superficie com cor de preenchimento
+
+   Amarelo e vermelho sao alarmes. Usar para "isto ainda nao foi conferido"
+   e para "isto nao garante resultado" e o que faz o aviso ser lido.
+   ========================================================================== */
+
+.leitura-aviso {
+    padding: 16px 20px;
+    border-left: 4px solid var(--acao, #2E6AB2);
+    border-radius: 0 10px 10px 0;
+    background: var(--acao-suave, #DCEBFA);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--texto-titulo, #253449);
+}
+
+.leitura-aviso--atencao {
+    border-left-color: var(--marca-rosa, #FF1493);
+}
+
+/* ==========================================================================
+   11. SELO
+
+   O selo "GRATUITO" dos orgaos foi, por muito tempo, um retangulo verde com
+   texto branco: #10B981, medido em 2.54:1. Reprovava — e e texto pequeno,
+   que e onde a diferenca de contraste mais pesa.
+
+   Agora ele usa o mesmo desenho do botao secundario: fundo azul-suave e
+   texto azul-escuro, 10.39:1. O verde fica no PONTO, que e onde a
+   informacao esta de fato: "este orgao e gratuito". Um ponto nao precisa
+   de 4.5:1 — precisa de 3:1 para ser visto, e #059669 da 3.11 sobre o
+   azul-suave.
+   ========================================================================== */
+
+.leitura-selo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    padding: 3px 10px;
+    background: var(--acao-suave, #DCEBFA);
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--texto-titulo, #253449);
+}
+
+.leitura-selo::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #059669;
+    flex: 0 0 auto;
+}
+
+/* ==========================================================================
+   12. MODO ESCURO
+
+   Vive aqui, e nao em cada pagina, pelo mesmo motivo do movimento: uma
+   regra que se repete em tres arquivos esta errada em um deles em algum
+   momento. O modo escuro redefine os TOKENS, e tudo que le token acompanha
+   sozinho — inclusive o que ja estava escrito antes desta regra existir.
+
+   Os tons escuros nao sao "a cor de claro escurecida". Sao os mesmos tons
+   de claro com a luminosidade invertida, medidos de novo:
+
+     #E8EEF7 sobre #131A2C .... 14.86:1   titulo
+     #D5DEEC sobre #131A2C .... 12.78:1   corpo
+     #C8D3E4 sobre #131A2C .... 11.47:1   subtitulo
+     #A8B6CB sobre #131A2C .....  8.43:1   legenda
+     #8AB4F8 sobre #131A2C .....  8.22:1   acao
+     #AEC9FA sobre #131A2C .... 10.34:1   acao em hover
+     #131A2C sobre #8AB4F8 .....  8.22:1   texto do botao no escuro
+     #E8EEF7 sobre #1E3358 .... 10.78:1   botao secundario
+     #B57BEA sobre #131A2C .....  5.76:1   numero da etapa
+     #FF7EC4 sobre #131A2C .....  7.45:1   acento da marca
+
+   O roxo clareou e o rosa tambem. No claro eles passam em 5.96:1 e 3.45:1;
+   no escuro o mesmo tom ficaria apagado contra o fundo navy.
+
+   A EXCECAO E O BOTAO PRIMARIO, que se INVERTE: azul claro com texto
+   escuro. Com texto branco da 1.55:1 — pior que ilegivel. E o unico
+   elemento do sistema que muda de figura no escuro, porque e o unico que
+   carrega texto sobre superficie de marca.
+   ========================================================================== */
+
+body.a11y-dark-mode {
+    --fundo:           #131A2C;
+    --texto-titulo:    #E8EEF7;
+    --texto-subtitulo: #C8D3E4;
+    --texto-corpo:     #D5DEEC;
+    --texto-fraco:     #A8B6CB;
+    --divisoria:       #2C3A55;
+    --acao:            #8AB4F8;
+    --acao-forte:      #AEC9FA;
+    --acao-suave:      #1E3358;
+    --marca-roxo:      #B57BEA;
+    --marca-rosa:      #FF7EC4;
+}
+
+/* O primario vira luz com tinta escura. O secundario mantem a figura —
+   superficie suave, texto de leitura — porque ali nao ha texto branco
+   para inverter. */
+body.a11y-dark-mode .leitura-btn--primario { color: #131A2C; }
+body.a11y-dark-mode .leitura-btn--secundario { color: var(--texto-titulo, #E8EEF7); }
+body.a11y-dark-mode .leitura-btn--secundario:hover { background: #27406B; }
+
+/* O ponto verde do selo: o mesmo tom passaria (3.34:1), mas num fundo
+   escuro um ponto de baixa contrasto some antes de ser percebido. */
+body.a11y-dark-mode .leitura-selo::before { background: #34D399; }
+
+/* ==========================================================================
+   13. MOVIMENTO
+
+   Quem pede reducao de movimento nao recebe transicao nenhuma. A regra
+   esta aqui e nao em cada pagina, para que nenhuma escape.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .leitura *,
+    .leitura-btn {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+body.a11y-reduce-motion .leitura *,
+body.a11y-reduce-motion .leitura-btn {
+    animation: none !important;
+    transition: none !important;
+}

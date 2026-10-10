@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="direitos.css">
     <link rel="stylesheet" href="orientador.css">
+    <!-- O sistema visual das paginas de leitura. Depois de tudo, para
+         vencer: o fundo e a tipografia sao do sistema, nao da secao. -->
+    <link rel="stylesheet" href="leitura.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
     <link rel="stylesheet" href="/lia-chibi.css">
@@ -24,7 +27,7 @@
   <script src="/imagens.js"></script>
 </head>
 
-<body>
+<body class="pagina-leitura">
 
     <!-- MODAL ACOLHERIA -->
     <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
@@ -318,11 +321,11 @@
                 </p>
                 <div class="or-perguntas" id="orPerguntas"></div>
                 <div class="or-acoes">
-                    <button type="button" class="or-btn or-btn--primario" id="orVerResultado">
+                    <button type="button" class="or-btn leitura-btn leitura-btn--primario" id="orVerResultado">
                         <i class="fa-solid fa-compass" aria-hidden="true"></i>
                         Ver meu caminho
                     </button>
-                    <button type="button" class="or-btn or-btn--fantasma" id="orVoltarAreas">
+                    <button type="button" class="or-btn leitura-btn leitura-btn--texto" id="orVoltarAreas">
                         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                         Trocar de área
                     </button>

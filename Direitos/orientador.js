@@ -362,7 +362,7 @@
             b1.appendChild(q);
         }
 
-        b1.appendChild(el('p', 'or-b1__artigos', 'Base: ' + (sit.artigos || '')));
+        b1.appendChild(el('p', 'or-b1__artigos', 'Base legal: ' + (sit.artigos || '')));
         caixa.appendChild(b1);
 
         // ---------- 2. Quais leis podem ser relevantes
@@ -456,7 +456,7 @@
             var topo = document.createElement('div');
             topo.className = 'or-orgao__topo';
             topo.appendChild(el('span', 'or-orgao__nome', o.nome));
-            if (o.custo) topo.appendChild(el('span', 'or-orgao__custo', o.custo));
+            if (o.custo) topo.appendChild(el('span', 'leitura-selo', o.custo));
             li.appendChild(topo);
             if (o.quando) li.appendChild(el('p', 'or-orgao__quando', o.quando));
             if (o.escopo) li.appendChild(el('p', 'or-orgao__escopo', o.escopo));
@@ -467,6 +467,7 @@
 
         // ---------- 5. Consulte a fonte original
         var b5 = blocoResultado('5', 'Consulte a fonte original', 'fa-solid fa-book');
+        b5.className += ' or-bloco--fim';   // a divisoria e o respiro fecham nele
         var assinatura = el('dl', 'or-fonte');
         [
             ['Nome oficial', lei.nomeOficial || lei.nomePopular],
@@ -480,7 +481,7 @@
         b5.appendChild(assinatura);
 
         var oficial = document.createElement('a');
-        oficial.className = 'or-btn or-btn--oficial';
+        oficial.className = 'or-btn leitura-btn leitura-btn--contorno';
         oficial.href = lei.url;
         oficial.target = '_blank';
         oficial.rel = 'noopener noreferrer';
@@ -595,7 +596,7 @@
 
         var acoes = el('div', 'or-envio__acoes');
 
-        var copiar = el('button', 'or-btn or-btn--primario');
+        var copiar = el('button', 'or-btn leitura-btn leitura-btn--primario');
         copiar.type = 'button';
         copiar.appendChild(icone('fa-solid fa-copy'));
         copiar.appendChild(document.createTextNode(' Copiar resumo'));
@@ -612,7 +613,7 @@
         });
         acoes.appendChild(copiar);
 
-        var email = el('button', 'or-btn or-btn--secundario');
+        var email = el('button', 'or-btn leitura-btn leitura-btn--secundario');
         email.type = 'button';
         email.appendChild(icone('fa-solid fa-envelope'));
         email.appendChild(document.createTextNode(' Abrir no e-mail'));
@@ -661,7 +662,7 @@
     }
 
     function botaoReiniciar() {
-        var b = el('button', 'or-btn or-btn--fantasma');
+        var b = el('button', 'or-btn leitura-btn leitura-btn--texto');
         b.type = 'button';
         b.appendChild(icone('fa-solid fa-rotate-left'));
         b.appendChild(document.createTextNode(' Recomeçar'));
