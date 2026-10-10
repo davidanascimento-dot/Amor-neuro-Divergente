@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/espacos-banner.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="direitos.css">
+    <link rel="stylesheet" href="orientador.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
 <link rel="stylesheet" href="/busca.css">
     <link rel="stylesheet" href="/lia-chibi.css">
@@ -261,7 +262,87 @@
             <span class="espaco-banner__nome">Direitos / antes das leis</span>
             <span class="espaco-banner__fundo">/img/ilustracoes/imagem-direitos.jpg</span>
         </div>
-<section class="deco-hospedeiro laws-section dp-leis" id="leis">
+<!-- =============================================
+             ORIENTADOR DE CAMINHOS
+
+             Vai ANTES da biblioteca de leis, e não depois. A pessoa chega
+             aqui com uma dúvida concreta e não com um nome de lei na
+             cabeça; se a lista de leis viesse primeiro, ela teria que
+             adivinhar qual dela é a sua.
+
+             A seção é montada por `orientador.js`, a partir de
+             `window.PERCURSOS`. Sem JavaScript, o que aparece é o aviso de
+             explicito abaixo — e a biblioteca logo abaixo funciona igual.
+
+             Sem backend: o resumo nunca é enviado a lugar nenhum.
+             ============================================= -->
+        <section class="deco-hospedeiro or-orientador" id="orOrientador"
+                 aria-labelledby="orTitulo">
+            <!-- elemento decorativo: nuvens. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
+            <span class="deco deco--nuvem deco--dir deco--topo deco--s3"
+                  style="--tam: 92px; --rot: -5deg" aria-hidden="true"></span>
+
+            <header class="or-cabecalho">
+                <span class="section-badge">
+                    <i class="fa-solid fa-compass" aria-hidden="true"></i> Vamos encontrar um caminho?
+                </span>
+                <h2 class="or-titulo" id="orTitulo">Conte o que está acontecendo</h2>
+                <p class="or-sub">
+                    Você não precisa saber o nome de nenhuma lei. Escolha a situação
+                    mais parecida com a sua e a gente aponta onde a lei fala sobre isso.
+                </p>
+                <p class="or-privacidade">
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    Nada de nome, diagnóstico, CPF ou laudo. As respostas ficam só
+                    neste navegador e não vão para lugar nenhum.
+                </p>
+            </header>
+
+            <p class="or-aviso" id="orAviso" role="status" hidden></p>
+
+            <!-- ---------- PASSO 1 ---------- -->
+            <div class="or-passo" id="orPasso1" hidden>
+                <h3 class="or-passo__titulo">Em qual área você precisa de ajuda?</h3>
+                <div class="or-areas" id="orAreas"></div>
+            </div>
+
+            <!-- ---------- PASSO 2 ---------- -->
+            <div class="or-passo" id="orPasso2" hidden>
+                <p class="or-passo__contexto">
+                    Sobre <strong id="orPerguntaArea"></strong>
+                </p>
+                <h3 class="or-passo__titulo">Agora, duas perguntas sobre esse caso</h3>
+                <p class="or-passo__sub">
+                    Responda o que quiser. Deixar em branco também funciona —
+                    você vai receber a orientação geral assim mesmo.
+                </p>
+                <div class="or-perguntas" id="orPerguntas"></div>
+                <div class="or-acoes">
+                    <button type="button" class="or-btn or-btn--primario" id="orVerResultado">
+                        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                        Ver meu caminho
+                    </button>
+                    <button type="button" class="or-btn or-btn--fantasma" id="orVoltarAreas">
+                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                        Trocar de área
+                    </button>
+                </div>
+            </div>
+
+            <!-- ---------- PASSO 3 ---------- -->
+            <div class="or-passo" id="orPasso3" hidden>
+                <h3 class="or-passo__titulo">Seu caminho de orientação</h3>
+                <div class="or-resultado" id="orResultado"></div>
+            </div>
+
+            <div class="or-progresso" id="orProgresso" data-passo="1" aria-hidden="true">
+                <span class="or-progresso__etapa is-ativa"></span>
+                <span class="or-progresso__etapa"></span>
+                <span class="or-progresso__etapa"></span>
+            </div>
+        </section>
+
+        <section class="deco-hospedeiro laws-section dp-leis" id="leis">
         <!-- elemento decorativo: coracao. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
         <span class="deco deco--coracao deco--esq deco--topo deco--s1"
               style="--tam: 46px; --rot: -11deg" aria-hidden="true"></span>
@@ -359,46 +440,19 @@
         </section>
 
         <!-- =============================================
-             EDITORIAL GRID — Aprenda + Conecte-se
-             ============================================= -->
-        <section class="editorial-grid" id="editorial">
-            <div class="editorial-grid__container">
-                <article class="editorial-card">
-                    <div class="editorial-card__media">
-                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80" alt="Pessoa estudando" loading="lazy">
-                    </div>
-                    <div class="editorial-card__panel">
-                        <span class="editorial-card__eyebrow">Aprenda</span>
-                        <h3 class="editorial-card__title">Conheça seus direitos antes de precisar deles</h3>
-                        <p class="editorial-card__text">
-                            Identifique seus pontos fortes, entenda o que a lei garante e saiba como exigir seus direitos na escola, no trabalho ou na saúde.
-                        </p>
-                        <a href="#leis" class="btn-primary">
-                            Ver leis <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <article class="editorial-card editorial-card--reverse">
-                    <div class="editorial-card__media">
-                        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80" alt="Pessoas em reunião online" loading="lazy">
-                    </div>
-                    <div class="editorial-card__panel">
-                        <span class="editorial-card__eyebrow">Conecte-se</span>
-                        <h3 class="editorial-card__title">Encontre quem já passou pelo mesmo</h3>
-                        <p class="editorial-card__text">
-                            Nossa comunidade reúne pessoas neurodivergentes, famílias e profissionais. Compartilhe sua história e aprenda com quem entende.
-                        </p>
-                        <a href="/comunidade/comunidade.html" class="btn-primary">
-                            Entrar na comunidade <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- =============================================
              RECURSOS ÚTEIS + ENVIE SEU CASO
+
+             O bloco "EDITORIAL GRID — Aprenda / Conecte-se" que ficava
+             entre as fontes e esta secao foi removido. Medido: 1201 px
+             de altura, 15,4% da pagina inteira, com as duas imagens do
+             Unsplash sem carregar (`complete` falso, `naturalWidth` 0),
+             ou seja, espacovazio puro. Os dois cardes repetiam o que as
+             secoes vizinhas ja dizem — "Ver leis" apontava para #leis,
+             logo abaixo na mesma tela — e a comunidade ja tem entrada
+             propria na navegacao lateral.
+
+             O CSS correspondente foi retirado de direitos.css e a
+             entrada #editorial do indice de busca foi atualizada.
              ============================================= -->
         <section class="deco-hospedeiro resources-section dp-ajuda" id="recursos">
         <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
@@ -678,6 +732,14 @@
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
 
+    <!-- leis-dados.js ANTES de direitos.js, e ambos sem defer.
+         O padrao de <script> sem atributo e o do resto da pagina: o
+         navegador garante a ordem de execucao na leitura. Como
+         direitos.js so roda dentro de um DOMContentLoaded, ele leria a
+         global mesmo se a ordem virasse; a ordem explicita deixa o motivo
+         visivel para quem editar depois. -->
+    <script src="leis-dados.js"></script>
+    <script src="orientador.js"></script>
     <script src="direitos.js"></script>
     <script src="/Acolher-IA/seguranca.js"></script>
     <script src="/Acolher-IA/Acolher-IA.js"></script>

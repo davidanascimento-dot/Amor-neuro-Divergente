@@ -432,8 +432,6 @@ window.BUSCA_INDICE = [
             "Escolha uma categoria",
             "Leis que protegem você",
             "Quer se aprofundar?",
-            "Conheça seus direitos antes de precisar deles",
-            "Encontre quem já passou pelo mesmo",
             "Recursos Úteis",
             "Conte-nos seu caso",
             "Perguntas sobre direitos",

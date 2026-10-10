@@ -100,8 +100,9 @@
    1. A BARRA DE NAVEGACAO
    =========================================
    6 chips, vira regua: rotulo a esquerda, chips a direita.
-   Os 6 `href` (`#categorias`, `#leis`, `#editorial`, `#recursos`,
-   `#faq`, `#contato`) NAO foram tocados. */
+   Os `href` (`#categorias`, `#leis`, `#recursos`, `#faq`, `#contato`)
+   NAO foram tocados. Eram 6: o sexto, `#editorial`, foi junto com a
+   secao "Aprenda / Conecte-se" que ele alinhava. */
 
 .rights-nav {
     position: sticky;
@@ -202,11 +203,13 @@
     outline-offset: 2px;
 }
 
-/* Os 6 chips sao ancoras. Sem `scroll-margin-top`, clicar num deles
-   rola a secao ate o topo e a barra de 69px cobre o que esta la. */
+/* Os chips sao ancoras. Sem `scroll-margin-top`, clicar num deles
+   rola a secao ate o topo e a barra de 69px cobre o que esta la.
+
+   `#editorial` saiu daqui junto com a secao "Aprenda / Conecte-se" que
+   ele alinhava. Os outros cinco continuam. */
 #categorias,
 #leis,
-#editorial,
 #recursos,
 #faq,
 #contato {

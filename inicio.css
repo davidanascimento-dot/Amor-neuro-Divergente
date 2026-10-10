@@ -1085,14 +1085,15 @@ body.a11y-reduce-motion .logo-text {
 
 /* Badge da seção */
 .section-badge {
-    display: inline-block;
-    padding: 6px 18px;
-    border-radius: 30px;
-  background: linear-gradient(135deg,#e4c0a3,#8a7560);
+   
+    padding: 8px 20px;
+    border-radius: 5px;
+  background: linear-gradient(115deg,#d3e2f788,#b0f5f1d3);
   color: var(--bg-white);
     font-size: 13px;
     font-weight: 600;
-    margin-bottom: 12px;
+margin-bottom: 12px;
+    gap: 8px;
 }
 
 /* Badge do card (selo) */
@@ -1424,15 +1425,12 @@ body.a11y-reduce-motion .logo-text {
    CENTRAL DE DIREITOS
    ========================================= */
 .rights-quick-section {
-    border: 1px solid rgba(255, 157, 239, 0.452);
-    border-radius: 5pt;
-    margin: 10px;
-        margin-top: 40px;
-    padding: 70px 20px;
-    background: linear-gradient(135deg, #212025a1 30%, #0a030771 100%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&h=600&fit=crop') ;
 
+    margin: 0px;
+        margin-top: 20px;
+    padding: 70px 20px;
+    background: linear-gradient(135deg, #212025a1 80%, #0a030771 10%), url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1400&h=600&fit=crop');
     background-size: cover;
-    background-position: center;
     background-blend-mode: overlay;
 }
 
@@ -1448,8 +1446,9 @@ body.a11y-reduce-motion .logo-text {
 .rights-info h2 {
     font-size: 28px;
     font-weight: 800;
-    color: var(--text-primary);
-    margin: 8px 0 12px;
+    color: #c2bfbf;
+    margin: 0 0 16px 0;
+
 }
 
 .rights-info p {
@@ -1564,7 +1563,7 @@ transform: translateY(-8px);
 }
 
 .testimonials-redesign .section-badge {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 }
 
 .testimonials-redesign h2 { 
