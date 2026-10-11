@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Blog Amor NeuroDivergente — artigos, vídeos e histórias sobre autismo, TDAH e vivências neurodivergentes.">
+    <meta name="description" content="Blog Amor NeuroDivergente — artigos sobre autismo, TDAH e vivências neurodivergentes.">
     <title>Blog — Amor NeuroDivergente</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -133,7 +133,7 @@
                         <span class="bl-hero__accent">e informação de verdade</span>
                     </h1>
                     <p class="bl-hero__apoio">
-                        Textos e vídeos sobre autismo, TDAH, direitos e vida
+                        Textos sobre autismo, TDAH, direitos e vida
                         neurodivergente. No seu tempo, do seu jeito.
                     </p>
                 </div>
@@ -158,7 +158,7 @@
        
 
         <!-- =============================================
-        GRID EDITORIAL — Artigos e Vídeos
+        GRID EDITORIAL — os artigos
         ============================================= -->
         
         <!-- ESPAÇO PARA BANNER — Blog / antes do grid
@@ -181,172 +181,110 @@
                     <div>
                         <span class="blog-grid-section__eyebrow"><i class="fa-solid fa-fire"></i> Em alta</span>
                         <h2>Conteúdos da comunidade</h2>
-                        <p>Artigos e vídeos produzidos por profissionais, pessoas neurodivergentes e aliados.</p>
+                        <p>Artigos escritos por profissionais, pessoas neurodivergentes e aliados, e revisados na fonte oficial.</p>
                     </div>
                 </header>
 
                 <!-- GRID 3 COLUNAS -->
+                <!-- Categorias. O JS filtra por data-category; sem estes
+                     botoes o filtro era codigo morto. -->
+                <nav class="blog-nav" aria-label="Filtrar por categoria">
+                    <div class="blog-nav__container">
+                        <button type="button" class="blog-nav__chip active" data-filter="todos">Todos</button>
+                        <button type="button" class="blog-nav__chip" data-filter="autismo">Autismo</button>
+                        <button type="button" class="blog-nav__chip" data-filter="tdah">TDAH</button>
+                        <button type="button" class="blog-nav__chip" data-filter="aprendizagem">Aprendizagem</button>
+                        <button type="button" class="blog-nav__chip" data-filter="saude-mental">Saúde mental</button>
+                        <button type="button" class="blog-nav__chip" data-filter="habilidades">Habilidades</button>
+                        <button type="button" class="blog-nav__chip" data-filter="talentos">Talentos</button>
+                    </div>
+                </nav>
+
                 <div class="editorial-grid bl-fluxo" id="blogGrid">
 
-                    <!-- CARD 1 — ARTIGO -->
-                    
-
-                    <!-- CARD 2 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video bl-item bl-item--video-largo" data-category="comunicacao">
-                        <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
-                            <div class="video-thumb">
-                                <div class="video-thumb__split">
-                                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80" alt="Comunicação inclusiva" loading="lazy">
-                                    <div class="video-thumb__text">
-                                        <span class="video-thumb__label">PORTAL DOS<br>NEURODIVERGENTES</span>
-                                        <span class="video-thumb__author">por Isabella Saes, Jornalista</span>
-                                    </div>
-                                </div>
-                                <button class="video-thumb__play" aria-label="Reproduzir vídeo">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-pausa" data-category="tdah">
+                        <a href="/blog/post-procrastinacao.html" class="editorial-card__media">
+                            <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80" alt="Relógio e caderno sobre uma mesa" loading="lazy">
                         </a>
                         <div class="editorial-card__body">
+                            <p class="editorial-card__excerto">Você olha para uma tarefa, sabe que precisa começar, e continua adiando. A saída é diminuir o tamanho do primeiro passo.</p>
                             <h3 class="editorial-card__title">
-                                <a href="#">Como tornar a comunicação mais inclusiva para profissionais neurodivergentes</a>
+                                <a href="/blog/post-procrastinacao.html">O método dos “5 minutos” para começar uma tarefa</a>
                             </h3>
                         </div>
                     </article>
 
-                    <!-- CARD 3 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video bl-item bl-item--video-curto" data-category="autismo">
-                        <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
-                            <div class="video-thumb">
-                                <div class="video-thumb__split">
-                                    <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&q=80" alt="Neurodivergência na infância" loading="lazy">
-                                    <div class="video-thumb__text">
-                                        <span class="video-thumb__label">PORTAL DOS<br>NEURODIVERGENTES</span>
-                                        <span class="video-thumb__author">Tatiane Arruda, Psicóloga</span>
-                                    </div>
-                                </div>
-                                <button class="video-thumb__play" aria-label="Reproduzir vídeo">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-medio" data-category="autismo">
+                        <a href="/Recursos/autismo/autismo.html" class="editorial-card__media">
+                            <img src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&q=80" alt="Grupo diverso de pessoas em um círculo de apoio" loading="lazy">
                         </a>
                         <div class="editorial-card__body">
+                            <p class="editorial-card__excerto">Diagnóstico, stimming, comunicação e vida adulta — o que a pessoa é, e não o que a bookstores do stéréotype.</p>
                             <h3 class="editorial-card__title">
-                                <a href="#">Neurodivergência na infância e adolescência</a>
+                                <a href="/Recursos/autismo/autismo.html">Compreendendo o Espectro Autista: muito além dos estereótipos</a>
                             </h3>
                         </div>
                     </article>
 
-                    <!-- CARD 4 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-pausa" data-category="reflexao">
-                        <a href="#" class="editorial-card__media">
-                            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&q=80"
-                                 alt="Pessoa refletindo" loading="lazy">
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-medio" data-category="tdah">
+                        <a href="/Recursos/autismo/Tdah.html" class="editorial-card__media">
+                            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80" alt="Pessoa concentrada em uma mesa de trabalho" loading="lazy">
                         </a>
                         <div class="editorial-card__body">
+                            <p class="editorial-card__excerto">O que é TDAH, o que muda em cada idade e por que a rotina pesa tanto.</p>
                             <h3 class="editorial-card__title">
-                                <a href="#">Descobrindo o extraordinário que existe no comum</a>
+                                <a href="/Recursos/autismo/Tdah.html">TDAH: entendendo a atenção, a impulsividade e a rotina</a>
                             </h3>
                         </div>
                     </article>
 
-                    <!-- CARD 5 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video bl-item bl-item--video-curto" data-category="saude-mental">
-                        <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
-                            <div class="video-thumb">
-                                <div class="video-thumb__split">
-                                    <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&q=80" alt="Autismo e Saúde Mental" loading="lazy">
-                                    <div class="video-thumb__text">
-                                        <span class="video-thumb__label">INCLUSÃO EM<br>MOVIMENTO</span>
-                                        <p class="video-thumb__desc">Eu quero trazer vocês para uma reflexão sobre inclusão.</p>
-                                        <span class="video-thumb__author">por Thayane Abreu, Psicóloga</span>
-                                    </div>
-                                </div>
-                                <button class="video-thumb__play" aria-label="Reproduzir vídeo">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="aprendizagem">
+                        <a href="/Recursos/autismo/dislexia.html" class="editorial-card__media">
+                            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80" alt="Pessoa lendo um livro" loading="lazy">
                         </a>
                         <div class="editorial-card__body">
+                            <p class="editorial-card__excerto">A dislexia é uma diferença específica de aprendizagem. O que ela é e o que a escola pode fazer.</p>
                             <h3 class="editorial-card__title">
-                                <a href="#">Autismo e Saúde Mental: olhando além do diagnóstico</a>
+                                <a href="/Recursos/autismo/dislexia.html">Dislexia: quando ler e escrever exigem outros caminhos</a>
                             </h3>
                         </div>
                     </article>
 
-                    <!-- CARD 6 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="familia">
-                        <a href="#" class="editorial-card__media">
-                            <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&q=80"
-                                 alt="Burnout materno" loading="lazy">
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="saude-mental">
+                        <a href="/Recursos/autismo/saúde.html" class="editorial-card__media">
+                            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&q=80" alt="Pessoa em um ambiente calmo e arejado" loading="lazy">
                         </a>
                         <div class="editorial-card__body">
+                            <p class="editorial-card__excerto">Cuidar da saúde mental é parte de cuidar da saúde como um todo.</p>
                             <h3 class="editorial-card__title">
-                                <a href="#">Burnout em mães atípicas: quem cuida de quem cuida?</a>
+                                <a href="/Recursos/autismo/saúde.html">Saúde mental: cuidar de como estamos também importa</a>
                             </h3>
                         </div>
                     </article>
 
-                    <!-- CARD 7 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="tdah">
-                        <a href="#" class="editorial-card__media">
-                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80"
-                                 alt="Método dos 5 minutos" loading="lazy">
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="habilidades">
+                        <a href="/Recursos/autismo/altas-abilidades.html" class="editorial-card__media">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80" alt="Ambiente de aprendizagem com livros e cadernos" loading="lazy">
                         </a>
                         <div class="editorial-card__body">
+                            <p class="editorial-card__excerto">Desempenho ou potencial elevado em certas áreas não significa o mesmo desempenho em todas.</p>
                             <h3 class="editorial-card__title">
-                                <a href="#">O método dos "5 minutos" para vencer a procrastinação</a>
+                                <a href="/Recursos/autismo/altas-abilidades.html">Altas habilidades: quando os caminhos de aprendizagem são diferentes</a>
                             </h3>
                         </div>
                     </article>
 
-                    <!-- CARD 8 — VÍDEO -->
-                    <article class="editorial-card editorial-card--video bl-item bl-item--video-largo" data-category="direitos">
-                        <a href="#" class="editorial-card__media editorial-card__media--video" data-video-id="dQw4w9WgXcQ">
-                            <div class="video-thumb">
-                                <div class="video-thumb__split">
-                                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80" alt="Direitos" loading="lazy">
-                                    <div class="video-thumb__text">
-                                        <span class="video-thumb__label">DIREITOS<br>NEURODIVERGENTES</span>
-                                        <p class="video-thumb__desc">Como solicitar adaptações no trabalho e na escola.</p>
-                                        <span class="video-thumb__author">por Equipe Amor NeuroDivergente</span>
-                                    </div>
-                                </div>
-                                <button class="video-thumb__play" aria-label="Reproduzir vídeo">
-                                    <i class="fa-solid fa-play"></i>
-                                </button>
-                            </div>
+                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-curto" data-category="talentos">
+                        <a href="/Recursos/autismo/talentos.html" class="editorial-card__media">
+                            <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80" alt="Mesa com materiais de criação e desenho" loading="lazy">
                         </a>
                         <div class="editorial-card__body">
+                            <p class="editorial-card__excerto">Nem toda habilidade aparece em uma prova, em uma nota ou em um currículo.</p>
                             <h3 class="editorial-card__title">
-                                <a href="#">Como solicitar adaptações no trabalho: passo a passo</a>
+                                <a href="/Recursos/autismo/talentos.html">Talentos neurodivergentes: descubra aquilo que faz sentido para você</a>
                             </h3>
                         </div>
                     </article>
-
-                    <!-- CARD 9 — ARTIGO -->
-                    <article class="editorial-card editorial-card--article bl-item bl-item--artigo-medio" data-category="terapia">
-                        <a href="#" class="editorial-card__media">
-                            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80"
-                                 alt="Comunicação alternativa" loading="lazy">
-                        </a>
-                        <div class="editorial-card__body">
-                            <h3 class="editorial-card__title">
-                                <a href="#">Comunicação alternativa e aumentativa: o que é e como usar</a>
-                            </h3>
-                        </div>
-                    </article>
-
-                </div>
-
-                <!-- Paginação -->
-                <nav class="blog-pagination" aria-label="Paginação do blog">
-                    <button class="blog-pagination__page is-active">1</button>
-                    <button class="blog-pagination__page">2</button>
-                    <button class="blog-pagination__page">3</button>
-                    <button class="blog-pagination__page">4</button>
-                    <button class="blog-pagination__page">5</button>
-                </nav>
 
                 <!-- Estado vazio -->
                 <div class="blog-empty" id="blogEmpty" hidden>
@@ -368,7 +306,7 @@
             <div class="blog-newsletter__card">
                 <span class="blog-newsletter__icon"><i class="fa-regular fa-envelope"></i></span>
                 <h2>Receba novos conteúdos por e-mail</h2>
-                <p>Um resumo quinzenal com os melhores artigos e vídeos. Sem spam, prometido.</p>
+                <p>Um resumo quinzenal com os melhores artigos. Sem spam, prometido.</p>
                 <form class="blog-newsletter__form" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML='<i class=\'fa-solid fa-check\'></i> Inscrito!'; this.querySelector('input').value='';">
                     <input type="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
                     <button type="submit" class="btn-primary">

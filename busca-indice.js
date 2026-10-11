@@ -19,6 +19,28 @@ window.BUSCA_INDICE = [
         "resumo": "Conversa com a Lia",
         "migalha": ""
     },
+        {
+            "url": "/blog/post-procrastinacao.html",
+            "titulo": "O método dos “5 minutos” para começar uma tarefa",
+            "h1": "O método dos “5 minutos” para começar uma tarefa",
+            "descricao": "Você olha para uma tarefa, sabe que precisa começar, e continua adiando. O método dos cinco minutos reduz o tamanho do primeiro passo.",
+            "palavrasChave": []
+        },
+        {
+            "url": "/Recursos/autismo/talentos.html",
+            "titulo": "Talentos neurodivergentes: descubra aquilo que faz sentido para você",
+            "h1": "Talentos neurodivergentes: descubra aquilo que faz sentido para você",
+            "descricao": "Nem toda habilidade aparece em uma prova, em uma nota ou em um currículo. Aqui, talento não significa ser melhor do que outras pessoas — significa reconhecer possibilidades.",
+            "palavrasChave": ["talentos", "habilidades", "pontos fortes"]
+        },
+        {
+            "url": "/Quem somos/quem-somos.html",
+            "titulo": "Um espaço para entender, encontrar e pertencer",
+            "h1": "Um espaço para entender, encontrar e pertencer",
+            "descricao": "O Amor NeuroDivergente é um espaço que transforma informação complexa em conteúdo claro, acessível e próximo da vida cotidiana.",
+            "palavrasChave": []
+        },
+
     {
         "url": "/apoiar/apoiar.html",
         "titulo": "Doações",
@@ -66,9 +88,9 @@ window.BUSCA_INDICE = [
     },
     {
         "url": "/comunidade/detalhes-canal.html",
-        "titulo": "Comunidade — detalhes-canal",
-        "h1": "",
-        "descricao": "Artigo em detalhes-canal. O texto desta página ainda é o do artigo sobre autismo.",
+        "titulo": "Comunidade",
+        "h1": "Comunidade",
+        "descricao": "Detalhes de uma comunidade do Amor NeuroDivergente.",
         "secoes": [
             "Sobre esta comunidade",
             "Antes de participar",
@@ -81,9 +103,9 @@ window.BUSCA_INDICE = [
     },
     {
         "url": "/comunidade/grupo.html",
-        "titulo": "Comunidade — grupo",
-        "h1": "",
-        "descricao": "Artigo em grupo. O texto desta página ainda é o do artigo sobre autismo.",
+        "titulo": "Comunidade",
+        "h1": "Comunidade",
+        "descricao": "Grupos, canais e conversas do Amor NeuroDivergente.",
         "secoes": [
             "Sobre",
             "Publicações da comunidade",
@@ -255,9 +277,9 @@ window.BUSCA_INDICE = [
     },
     {
         "url": "/Recursos/autismo/altas-abilidades.html",
-        "titulo": "Compreendendo o Espectro Autista — Altas Habilidades",
-        "h1": "Compreendendo o Espectro Autista: muito além dos estereótipos",
-        "descricao": "Artigo em Altas Habilidades. O texto desta página ainda é o do artigo sobre autismo.",
+        "titulo": "Altas habilidades: quando os caminhos de aprendizagem são diferentes",
+        "h1": "Altas habilidades: quando os caminhos de aprendizagem são diferentes",
+        "descricao": "Altas habilidades ou superdotação descrevem pessoas com desempenho ou potencial elevado em determinadas áreas — e não significa facilidade em tudo.",
         "secoes": [
             "O que é o autismo?",
             "Diagnóstico: nunca é tarde",
@@ -272,7 +294,7 @@ window.BUSCA_INDICE = [
     },
     {
         "url": "/Recursos/autismo/autismo.html",
-        "titulo": "Compreendendo o Espectro Autista — Autismo (TEA)",
+        "titulo": "Compreendendo o Espectro Autista: muito além dos estereótipos",
         "h1": "Compreendendo o Espectro Autista: muito além dos estereótipos",
         "descricao": "Compreendendo o Espectro Autista: muito além dos estereótipos — diagnóstico, stimming, comunicação, vida adulta e o universo autista.",
         "secoes": [
@@ -289,9 +311,9 @@ window.BUSCA_INDICE = [
     },
     {
         "url": "/Recursos/autismo/dislexia.html",
-        "titulo": "Compreendendo o Espectro Autista — Dislexia e Outras Dificuldades de Aprendizagem",
-        "h1": "Compreendendo o Espectro Autista: muito além dos estereótipos",
-        "descricao": "Artigo em Dislexia e Outras Dificuldades de Aprendizagem. O texto desta página ainda é o do artigo sobre autismo.",
+        "titulo": "Dislexia: quando ler e escrever exigem outros caminhos",
+        "h1": "Dislexia: quando ler e escrever exigem outros caminhos",
+        "descricao": "A dislexia é uma diferença específica de aprendizagem que pode afetar habilidades de leitura e escrita. Não está relacionada à falta de inteligência, interesse ou esforço.",
         "secoes": [
             "O que é o autismo?",
             "Diagnóstico: nunca é tarde",
@@ -306,9 +328,9 @@ window.BUSCA_INDICE = [
     },
     {
         "url": "/Recursos/autismo/saúde.html",
-        "titulo": "Compreendendo o Espectro Autista — Saúde Mental e Bem-estar",
-        "h1": "Compreendendo o Espectro Autista: muito além dos estereótipos",
-        "descricao": "Artigo em Saúde Mental e Bem-estar. O texto desta página ainda é o do artigo sobre autismo.",
+        "titulo": "Saúde mental: cuidar de como estamos também importa",
+        "h1": "Saúde mental: cuidar de como estamos também importa",
+        "descricao": "Saúde mental faz parte da saúde como um todo. Cuidar dela significa ter condições de reconhecer o que está acontecendo e buscar apoio quando necessário.",
         "secoes": [
             "O que é o autismo?",
             "Diagnóstico: nunca é tarde",
@@ -323,9 +345,9 @@ window.BUSCA_INDICE = [
     },
     {
         "url": "/Recursos/autismo/Tdah.html",
-        "titulo": "Compreendendo o Espectro Autista — TDAH",
-        "h1": "Compreendendo o Espectro Autista: muito além dos estereótipos",
-        "descricao": "Artigo em TDAH. O texto desta página ainda é o do artigo sobre autismo.",
+        "titulo": "TDAH: entendendo a atenção, a impulsividade e a rotina",
+        "h1": "TDAH: entendendo a atenção, a impulsividade e a rotina",
+        "descricao": "O TDAH é uma condição do neurodesenvolvimento que pode influenciar a atenção, a organização e o controle dos impulsos. Entender como ele aparece ajuda a trocar julgamentos por comprehension.",
         "secoes": [
             "O que é o autismo?",
             "Diagnóstico: nunca é tarde",
@@ -387,7 +409,7 @@ window.BUSCA_INDICE = [
     {
         "url": "/blog/post-masking.html",
         "titulo": "O dia em que você para de sobreviver e começa a viver",
-        "h1": "",
+        "h1": "O dia em que você para de sobreviver e começa a viver",
         "descricao": "O dia em que você para de sobreviver e começa a viver — reflexão sobre masking, exaustão neurodivergente e o direito de existir sem se camuflar.",
         "secoes": [
             "O que sobreviver parece por dentro",

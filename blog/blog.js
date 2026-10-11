@@ -334,7 +334,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 9. FILTROS POR CATEGORIA (chips)
     // =============================================
     const blogNavChips = document.querySelectorAll('.blog-nav__chip');
-    const editorialCards = document.querySelectorAll('.editorial-card');
+    // `.bl-item`, e nao `.editorial-card`: o card em destaque do hero
+    // tambem tem `.editorial-card`, e filtrar por ela sumia com o
+    // destaque da pagina sempre que alguem clicasse num filtro.
+    const editorialCards = document.querySelectorAll('.bl-item');
     const blogEmpty = document.getElementById('blogEmpty');
 
     if (blogNavChips.length && editorialCards.length) {

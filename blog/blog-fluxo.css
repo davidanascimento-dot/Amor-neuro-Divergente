@@ -1385,4 +1385,38 @@
     .bl-item--artigo-medio:hover .editorial-card__media img {
         transform: none;
     }
+
+/* ---------- O excerto do card.
+   O card antigo so tinha titulo: a pessoa via um assunto e nada mais. O
+   excerto e uma linha a mais que diz se vale a pena clicar — e por isso
+   que o card deixou de ser um beco sem saida tambem no texto, e so no
+   link. */
+.editorial-card__excerto {
+    margin: 0 0 10px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--bl-suave);
+}
+
+/* No card largo a frase tem largura de sobra: pode ser maior. */
+.bl-item--artigo-pausa .editorial-card__excerto {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    max-width: 62ch;
+}
+
+/* Nos dois formatos de portrait, a altura e pouca. Tres linhas e corta —
+   sem reticencias, porque o corte no meio da palavra e pior que o
+   resumo curto. */
+.bl-item--artigo-medio .editorial-card__excerto,
+.bl-item--artigo-curto .editorial-card__excerto {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+/* No escuro, `--bl-suave` da 2,64:1 sobre o fundo da grade: reprova.
+   O tom abaixo e o mesmo que a secao da grade ja usava no cabecalho. */
+body.a11y-dark-mode .editorial-card__excerto { color: #94a3b8; }
+
 }
