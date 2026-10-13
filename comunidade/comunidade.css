@@ -322,6 +322,8 @@ body {
     background: var(--cx-bg-soft);
     color: var(--cx-text);
     border: 1px solid var(--cx-border);
+    /* "Administrar eventos" é um <a>, não um <button> — sem sublinhado. */
+    text-decoration: none;
 }
 
 .btn-create-group:hover,
@@ -1235,6 +1237,72 @@ body {
 .event-join-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* --- Coluna de botões: Participar (conta a entrada) + Entrar (o link) --- */
+.event-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    align-self: flex-start;
+}
+
+.event-enter-btn {
+    background: var(--cx-gold-bg);
+    color: var(--cx-gold);
+    border: 1px solid var(--cx-gold-soft);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.event-enter-btn:hover {
+    background: var(--cx-gold-soft);
+    color: var(--cx-text);
+}
+
+/* Ainda não confirmou presença: mostra o cadeado em vez deMentir que funciona. */
+.event-enter-btn.locked {
+    background: transparent;
+    color: var(--cx-muted-soft);
+    border-color: var(--cx-border);
+    opacity: 0.85;
+}
+
+.event-enter-btn.locked:hover {
+    background: transparent;
+    color: var(--cx-muted);
+    border-color: var(--cx-border);
+}
+
+/* Evento que já aconteceu */
+.event-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+}
+
+.event-badge-closed {
+    background: var(--cx-bg-soft);
+    border: 1px solid var(--cx-border);
+    color: var(--cx-muted);
 }
 
 /* ==========================================================================
@@ -3144,6 +3212,18 @@ body.a11y-dark-mode .event-join-btn.confirmed {
     border-color: #14532d;
     background: #12251a;
     color: #86efac;
+}
+
+body.a11y-dark-mode .event-enter-btn {
+    border-color: rgba(201, 169, 110, 0.35);
+    color: #e0c98a;
+}
+
+body.a11y-dark-mode .event-enter-btn.locked,
+body.a11y-dark-mode .event-badge-closed {
+    background: transparent;
+    border-color: var(--cx-border);
+    color: var(--cx-muted);
 }
 
 body.a11y-dark-mode .modal-container,

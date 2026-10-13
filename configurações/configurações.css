@@ -1788,6 +1788,43 @@ body {
 .form-control,
 .settings-content-card input,
 .settings-content-card textarea { background: var(--bg-white); color: var(--text-dark); border-color: var(--border-color); }
+
+/* =========================================
+   PERFIL — campos com fundo cinza claro
+   =========================================
+   A regra acima (paleta global) sobrescreve o --input-bg que a regra
+   original do .form-control previa, e o campo fica branco igual ao cartão,
+   perdendo a separação entre "campo" e "cartão".
+
+   Aqui os campos do painel de perfil voltam a usar o cinza, e no foco
+   ficam brancos para dar o mesmo destaque de antes. A regra é escopada em
+   #perfilPane de propósito: os campos de senha do painel "Minha conta"
+   também casam com .settings-content-card input e não devem mudar. */
+#perfilPane .form-control {
+    background-color: var(--input-bg);
+    color: var(--text-dark);
+    border-color: var(--border-color);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#perfilPane .form-control:hover {
+    border-color: var(--primary-light);
+}
+
+#perfilPane .form-control:focus {
+    background-color: var(--bg-white);
+    border-color: var(--primary);
+    color: var(--text-dark);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* O modo escuro mantem o fundo escuro dele (#0f0f1a), nao o cinza claro. */
+body.a11y-dark-mode #perfilPane .form-control,
+body.a11y-dark-mode #perfilPane .form-control:focus {
+    background-color: #0f0f1a;
+    border-color: #2d2d44;
+    color: #e8e3dd;
+}
 .profile-reading-card { background: var(--bg-secondary); border-color: var(--border-color); }
 body .footer { background: #f0f4f8; border-top-color: #d0dce8; }
 

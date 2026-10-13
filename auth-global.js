@@ -1,35 +1,56 @@
 /**
  * AUTH-GLOBAL.JS — Amor NeuroDivergente
- * Sistema global de autenticação (funciona em qualquer página)
+ * Sistema único de visitante / membro. Carregado nas páginas que usam Supabase.
  *
  * Uso:
- *   <script src="/auth-global.js" defer></script>
+ *   <script src="/auth-global.js"></script>      (depois de /js/supabase.js)
  *
- * Regras:
- *   - Visitante: vê "Entrar / Criar Conta", links restritos bloqueados
- *   - Logado:    vê perfil + "Sair", links restritos liberados
+ * O que resolve:
+ *   - Visitante x membro atualizado na hora, sem recarregar a página,
+ *     em qualquer aba e em qualquer página do site.
+ *   - A sessão do Supabase é a fonte da verdade; o localStorage é só o espelho
+ *     que o resto do site já lê (userLoggedIn, userName, userEmail, userAvatar).
+ *   - Botão "Sair" funciona igual em todas as páginas: encerra a sessão no
+ *     Supabase, limpa o espelho e volta o visitante ao estado de visitante.
+ *   - Quem não está logado não consegue editar o perfil em página nenhuma.
  */
 
 (function () {
     'use strict';
 
     /* =============================================================
-       CONFIGURAÇÃO — Rotas que exigem login
+       1. CONFIGURAÇÃO
        ============================================================= */
+
+    // Rotas que exigem sessão. Comparadas com o caminho já decodificado,
+    // senão "/configurações/" nunca casaria com "/configurac%C3%A7%C3%B5es/".
     const PROTECTED_ROUTES = [
         '/configurações/',
         '/configuracoes/',
-        '/perfil/',
         '/conta/',
         '/minha-conta/',
-        '/admin/'
+        '/admin/',
+        '/painel-admin/'
     ];
 
-    /* =============================================================
-       HELPERS
-       ============================================================= */
+    const CHAVES = ['userLoggedIn', 'userName', 'userEmail', 'userAvatar', 'userRole', 'userBio'];
+
+    // Tudo que mexe no perfil e precisa estar escondido para visitante.
+    const GATED_PROFILE_SELECTORS = [
+        '#openEditBtn',        // comunidade/perfil.html
+        '#editProfileBtn',     // configurações
+        '.profile-link',       // "Editar perfil" da sidebar
+        '#sidebarEditarPerfil',
+        '[data-target="perfilPane"]',
+        '#perfilPane'          // o painel em si, não só a aba que abre ele
+    ];
+
     const $  = (sel, ctx = document) => ctx.querySelector(sel);
     const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+
+    /* =============================================================
+       2. ESTADO — espelho entre o Supabase e o localStorage
+       ============================================================= */
 
     function isLoggedIn() {
         return localStorage.getItem('userLoggedIn') === 'true';
@@ -43,24 +64,130 @@
         };
     }
 
-    function isProtectedRoute(href) {
-        if (!href) return false;
-        const lower = href.toLowerCase();
-        return PROTECTED_ROUTES.some(route => lower.includes(route.toLowerCase()));
+    function gravaEspelho(user) {
+        const meta = (user && user.user_metadata) || {};
+        const nome = meta.first_name
+            || meta.full_name
+            || meta.name
+            || (user.email || '').split('@')[0]
+            || 'Usuário';
+
+        localStorage.setItem('userLoggedIn', 'true');
+        localStorage.setItem('userName', nome);
+        localStorage.setItem('userEmail', user.email || '');
+        if (meta.avatar_url) localStorage.setItem('userAvatar', meta.avatar_url);
+    }
+
+    function limpaEspelho() {
+        CHAVES.forEach(k => localStorage.removeItem(k));
+    }
+
+    /* Lê a sessão no Supabase e atualiza o espelho.
+       Devolve o usuário, ou null quando não há sessão / a página não tem Supabase. */
+    async function sincronizaComSupabase() {
+        const sb = window.supabaseClient;
+        if (!sb || !sb.auth || typeof sb.auth.getSession !== 'function') return null;
+
+        try {
+            const { data, error } = await sb.auth.getSession();
+            if (error) return null;
+
+            const user = data?.session?.user || null;
+            if (user) gravaEspelho(user);
+            else      limpaEspelho();
+
+            return user;
+        } catch (e) {
+            console.warn('[auth] não deu para ler a sessão:', e);
+            return null;
+        }
+    }
+
+    /* Fica de olho na sessão. É o que faz a troca visitante -> membro
+       acontecer sozinha, sem recarregar a página. */
+    function acompanhaSessao() {
+        const sb = window.supabaseClient;
+        if (!sb || !sb.auth || typeof sb.auth.onAuthStateChange !== 'function') return;
+
+        sb.auth.onAuthStateChange((evento, session) => {
+            if (evento === 'SIGNED_IN' && session?.user) {
+                gravaEspelho(session.user);
+            } else if (evento === 'SIGNED_OUT' || !session) {
+                limpaEspelho();
+            } else {
+                return; // TOKEN_REFRESHED e afins não mudam a tela
+            }
+            aplicaEstado();
+            console.log('[auth] sessão mudou para', evento, '- interface atualizada');
+        });
     }
 
     /* =============================================================
-       1. BLOQUEIO DE LINKS RESTRITOS (visitantes)
+       3. INTERFACE DE VISITANTE
        ============================================================= */
-    function applyProtectedLinksState() {
-        const logged = isLoggedIn();
+
+    function injetaEstilo() {
+        if (document.getElementById('authGlobalStyle')) return;
+        const s = document.createElement('style');
+        s.id = 'authGlobalStyle';
+        s.textContent = '.auth-hidden{display:none !important}';
+        document.head.appendChild(s);
+    }
+
+    /* Esconde (ou mostra) tudo que mexe no perfil conforme a sessão. */
+    function aplicaBloqueioPerfil() {
+        const logado = isLoggedIn();
+
+        GATED_PROFILE_SELECTORS.forEach(sel => {
+            $$(sel).forEach(el => {
+                el.classList.toggle('auth-hidden', !logado);
+                if (logado) el.removeAttribute('aria-disabled');
+                else el.setAttribute('aria-disabled', 'true');
+            });
+        });
+
+        // Links para perfil em geral: deslogado não entra no editor.
+        $$('a[href]').forEach(link => {
+            const href = link.getAttribute('href') || '';
+            if (!/perfil\.html/i.test(href)) return;
+            if (/\?id=/i.test(href)) return; // ver perfil de outra pessoa continua público
+
+            link.classList.toggle('auth-hidden', !logado);
+            if (logado) link.removeAttribute('aria-disabled');
+            else link.setAttribute('aria-disabled', 'true');
+        });
+    }
+
+    /* Clique em algo que exige sessão: explica e oferece o login. */
+    document.addEventListener('click', (e) => {
+        if (isLoggedIn()) return;
+
+        const alvo = e.target.closest(
+            GATED_PROFILE_SELECTORS.join(',') + ', a[aria-disabled="true"].is-locked'
+        );
+        if (!alvo) return;
+
+        // Link para o perfil de outra pessoa não é bloqueado aqui.
+        if (alvo.tagName === 'A' && /\?id=/i.test(alvo.getAttribute('href') || '')) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const destino = encodeURIComponent(window.location.pathname + window.location.search);
+        if (confirm('🔒 Você precisa estar logado para editar seu perfil.\n\nDeseja entrar ou criar uma conta agora?')) {
+            window.location.href = '/login/login.html?redirect=' + destino;
+        }
+    }, true);
+
+    /* Bloqueio de links restritos (cadeado + aviso). */
+    function aplicaEstadoDosLinks() {
+        const logado = isLoggedIn();
 
         $$('a[href]').forEach(link => {
             const href = link.getAttribute('href');
-            if (!isProtectedRoute(href)) return;
+            if (!rotaProtegida(href)) return;
 
-            if (logged) {
-                // Libera
+            if (logado) {
                 link.classList.remove('is-locked');
                 link.removeAttribute('aria-disabled');
                 link.removeAttribute('tabindex');
@@ -68,19 +195,14 @@
                     link.setAttribute('href', link.dataset.originalHref);
                     delete link.dataset.originalHref;
                 }
-                // Remove cadeado se existir
                 const lock = link.querySelector('.lock-icon');
                 if (lock) lock.remove();
             } else {
-                // Bloqueia
-                if (!link.dataset.originalHref) {
-                    link.dataset.originalHref = href;
-                }
+                if (!link.dataset.originalHref) link.dataset.originalHref = href;
                 link.classList.add('is-locked');
                 link.setAttribute('aria-disabled', 'true');
                 link.setAttribute('tabindex', '-1');
 
-                // Adiciona cadeado visual (uma vez só)
                 if (!link.querySelector('.lock-icon')) {
                     const lock = document.createElement('i');
                     lock.className = 'fa-solid fa-lock lock-icon';
@@ -91,9 +213,6 @@
         });
     }
 
-    /* =============================================================
-       2. INTERCEPTA CLIQUE EM LINKS BLOQUEADOS
-       ============================================================= */
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a.is-locked');
         if (!link) return;
@@ -101,109 +220,74 @@
         e.preventDefault();
         e.stopPropagation();
 
-        // Feedback amigável
+        const destino = encodeURIComponent(window.location.pathname + window.location.search);
         if (confirm('🔒 Você precisa estar logado para acessar esta área.\n\nDeseja entrar ou criar uma conta agora?')) {
-            window.location.href = '/login/login.html';
+            window.location.href = '/login/login.html?redirect=' + destino;
         }
     }, true);
 
-    /* =============================================================
-       3. PROTEÇÃO DE ROTA DIRETA (se cair na URL)
-       ============================================================= */
-    function guardCurrentRoute() {
-        const path = window.location.pathname.toLowerCase();
-        const blocked = PROTECTED_ROUTES.some(r => path.includes(r.toLowerCase()));
+    /* Header: avatar, nome, e-mail, botão Entrar/Sair. */
+    function aplicaEstado() {
+        const logado = isLoggedIn();
 
-        if (blocked && !isLoggedIn()) {
-            // Salva destino para redirecionar depois do login
-            sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-            window.location.replace('/login/login.html?redirect=' + encodeURIComponent(window.location.pathname));
-        }
-    }
-
-    /* =============================================================
-       4. TROCA DE BOTÕES NO HEADER (Entrar/Criar Conta ↔ Perfil)
-       ============================================================= */
-    function applyHeaderAuthState() {
-        const logged = isLoggedIn();
-
-        // --- Modo NOVO: se existir navGuest / navUser ---
         const navGuest = $('#navGuest');
         const navUser  = $('#navUser');
         if (navGuest && navUser) {
-            navGuest.hidden = logged;
-            navUser.hidden  = !logged;
+            navGuest.hidden = logado;
+            navUser.hidden  = !logado;
         }
 
-        // --- Modo COMPATÍVEL: esconde botões antigos no .nav-actions ---
+        // Botões antigos do header (.nav-actions)
         const navActions = $('.nav-actions');
         if (navActions) {
             const oldLogin  = navActions.querySelector('a.btn-text');
             const oldSignup = navActions.querySelector('a.btn-primary');
-            if (oldLogin)  oldLogin.style.display  = logged ? 'none' : '';
-            if (oldSignup) oldSignup.style.display = logged ? 'none' : '';
+            if (oldLogin)  oldLogin.style.display  = logado ? 'none' : '';
+            if (oldSignup) oldSignup.style.display = logado ? 'none' : '';
         }
 
-        // --- Atualiza dados do usuário (se existirem no HTML) ---
-        if (logged) {
+        if (logado) {
             const { name, email, avatar } = getUserData();
 
-            const map = {
-                headerAvatar:      avatar,
-                dropdownAvatar:    avatar,
-                sidebarAvatar:     avatar
-            };
-            Object.entries(map).forEach(([id, src]) => {
+            const avatares = { headerAvatar: avatar, dropdownAvatar: avatar, sidebarAvatar: avatar };
+            Object.entries(avatares).forEach(([id, src]) => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.src = src;
-                    el.onerror = () => { el.src = '/img/foto-padrão.jpg'; };
-                }
+                if (!el) return;
+                el.src = src;
+                el.onerror = () => { el.src = '/img/foto-padrão.jpg'; };
             });
 
-            const firstName = name.split(' ')[0];
-            const nameTargets = {
-                headerUserName:     firstName,
-                dropdownUserName:   name,
-                sidebarUserName:    name
-            };
-            Object.entries(nameTargets).forEach(([id, txt]) => {
+            const primeiro = name.split(' ')[0];
+            const nomes = { headerUserName: primeiro, dropdownUserName: name, sidebarUserName: name };
+            Object.entries(nomes).forEach(([id, txt]) => {
                 const el = document.getElementById(id);
                 if (el) el.textContent = txt;
             });
 
-            const emailTargets = ['dropdownUserEmail', 'sidebarUserEmail'];
-            emailTargets.forEach(id => {
+            ['dropdownUserEmail', 'sidebarUserEmail'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.textContent = email;
-                    // Só existe quando há sessão. Sem isso o placeholder
-                    // do HTML ("carregando@email.com") continuava na tela
-                    // de quem não entrou.
-                    el.hidden = false;
-                }
+                if (!el) return;
+                el.textContent = email;
+                el.hidden = false;
             });
 
             const editar = document.getElementById('sidebarEditarPerfil');
             if (editar) editar.hidden = false;
         } else {
-            // Sem sessão: e-mail e "Editar perfil" não têm o que mostrar.
-            // "Editar perfil" seria beco sem saída para quem não tem conta.
             ['dropdownUserEmail', 'sidebarUserEmail'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.textContent = '';
-                    el.hidden = true;
-                }
+                if (!el) return;
+                el.textContent = '';
+                el.hidden = true;
             });
             const editar = document.getElementById('sidebarEditarPerfil');
             if (editar) editar.hidden = true;
         }
 
-        // --- Atualiza botão "Sair/Entrar" da sidebar ---
+        // Botão Entrar / Sair
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
-            if (logged) {
+            if (logado) {
                 logoutBtn.innerHTML = '<i class="fa-solid fa-arrow-right-from-bracket"></i> Sair';
                 logoutBtn.setAttribute('href', '#');
                 logoutBtn.dataset.logged = 'true';
@@ -214,35 +298,86 @@
             }
         }
 
-        // --- Esconde dropdown do usuário quando deslogado ---
-        if (!logged) {
+        if (!logado) {
             const dropdown = $('#userDropdown');
             const toggle   = $('#userMenuToggle');
             if (dropdown) dropdown.hidden = true;
             if (toggle)   toggle.setAttribute('aria-expanded', 'false');
         }
+
+        aplicaBloqueioPerfil();
+        aplicaEstadoDosLinks();
+
+        // Qualquer página pode reagir a mudança olhando este atributo.
+        document.body.setAttribute('data-auth', logado ? 'member' : 'visitor');
     }
 
     /* =============================================================
-       5. LOGOUT GLOBAL (botão "Sair" da sidebar)
+       4. PROTEÇÃO DE ROTA
        ============================================================= */
+
+    function caminhoDecodificado(p) {
+        try { return decodeURIComponent(p); } catch (e) { return p; }
+    }
+
+    function rotaProtegida(href) {
+        if (!href) return false;
+        const alvo = caminhoDecodificado(href).toLowerCase();
+        return PROTECTED_ROUTES.some(rota => alvo.includes(rota.toLowerCase()));
+    }
+
+    function protegeRotaAtual() {
+        const caminho = caminhoDecodificado(window.location.pathname).toLowerCase();
+        const bloqueada = PROTECTED_ROUTES.some(rota => caminho.includes(rota.toLowerCase()));
+
+        if (bloqueada && !isLoggedIn()) {
+            const destino = window.location.pathname + window.location.search;
+            sessionStorage.setItem('redirectAfterLogin', destino);
+            window.location.replace('/login/login.html?redirect=' + encodeURIComponent(destino));
+            return true;
+        }
+        return false;
+    }
+
+    /* =============================================================
+       5. LOGOUT — igual em todas as páginas
+       ============================================================= */
+
+    async function sair() {
+        const destino = encodeURIComponent(window.location.pathname);
+
+        try {
+            const sb = window.supabaseClient;
+            if (sb && sb.auth && typeof sb.auth.signOut === 'function') {
+                await sb.auth.signOut();
+            }
+        } catch (e) {
+            console.warn('[auth] falha ao encerrar a sessão no Supabase:', e);
+        }
+
+        limpaEspelho();
+        aplicaEstado();
+        window.location.href = '/login/login.html?redirect=' + destino;
+    }
+
+    /* Captura antes dos scripts da página: assim o "Sair" abre UM confim só.
+       Sem isso, inicio.js / blog.js / loja.js etc. abriam um segundo diálogo
+       logo em seguida e limpavam o localStorage por conta própria. */
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('#logoutBtn');
         if (!btn) return;
-        if (btn.dataset.logged !== 'true') return; // se não estiver logado, deixa navegar normal
+        if (btn.dataset.logged !== 'true') return; // visitante: deixa seguir para o login
 
         e.preventDefault();
-        if (confirm('Tem certeza que deseja sair da sua conta?')) {
-            localStorage.removeItem('userLoggedIn');
-            applyHeaderAuthState();
-            applyProtectedLinksState();
-            window.location.href = '/login/login.html';
-        }
-    });
+        e.stopPropagation();
+
+        if (confirm('Tem certeza que deseja sair da sua conta?')) sair();
+    }, true);
 
     /* =============================================================
-       6. DROPDOWN DO USUÁRIO (header)
+       6. ABAS / DROPDOWN
        ============================================================= */
+
     function initUserDropdown() {
         const toggle   = $('#userMenuToggle');
         const dropdown = $('#userDropdown');
@@ -272,32 +407,29 @@
         });
     }
 
-    /* =============================================================
-       7. SINCRONIZAÇÃO ENTRE ABAS
-       ============================================================= */
+    // Outra aba entrou/saiu: o evento storage não dispara aqui, mas o espelho
+    // já muda e nós reagimos.
     window.addEventListener('storage', (e) => {
-        if ([
-            'userLoggedIn',
-            'userName',
-            'userEmail',
-            'userAvatar'
-        ].includes(e.key)) {
-            applyHeaderAuthState();
-            applyProtectedLinksState();
-        }
+        if (!e.key || CHAVES.includes(e.key)) aplicaEstado();
     });
 
     /* =============================================================
-       8. INICIALIZAÇÃO
+       7. INICIALIZAÇÃO
        ============================================================= */
-    function init() {
-        guardCurrentRoute();       // protege rota
-        applyHeaderAuthState();    // troca botões do header
-        applyProtectedLinksState(); // bloqueia links restritos
-        initUserDropdown();        // ativa dropdown
+
+    async function init() {
+        injetaEstilo();
+
+        // O espelho precisa bater com a sessão antes de qualquer decisão de UI.
+        await sincronizaComSupabase();
+        acompanhaSessao();
+
+        if (protegeRotaAtual()) return;
+
+        aplicaEstado();
+        initUserDropdown();
     }
 
-    // Espera o DOM estar pronto
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
@@ -305,14 +437,19 @@
     }
 
     /* =============================================================
-       9. API PÚBLICA (para uso em outras páginas)
+       8. API PÚBLICA
        ============================================================= */
+
     window.AuthGlobal = {
         isLoggedIn,
         getUserData,
-        refresh: () => {
-            applyHeaderAuthState();
-            applyProtectedLinksState();
+        sair,
+        refresh: aplicaEstado,
+        // Usado pelas páginas para "pintar" a interface depois de um login.
+        entrou: async (user) => {
+            if (user) gravaEspelho(user);
+            else await sincronizaComSupabase();
+            aplicaEstado();
         }
     };
 

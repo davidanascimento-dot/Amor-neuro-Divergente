@@ -913,7 +913,11 @@ subnavTabs.forEach(tab => {
 const HASH_TABS = ['forum', 'grupos', 'eventos', 'conversa'];
 
 function showHashTab() {
-    const tabId = String(window.location.hash || '').replace('#', '').toLowerCase();
+    /* Aceita #eventos e #screen-eventos: as outras páginas da comunidade
+       (explorar-grupos, meus-grupos, grupo, detalhes-canal) linkam usando
+       #screen-eventos, e antes esse prefixo não batia com nada. */
+    const bruto = String(window.location.hash || '').toLowerCase();
+    const tabId = bruto.replace('#', '').replace(/^screen-/, '');
     if (!HASH_TABS.includes(tabId)) return;
     if (tabId === 'grupos') {
         window.location.href = '/comunidade/explorar-grupos.html';
@@ -3282,15 +3286,22 @@ async function sendMessage() {
     // =============================================
     // 19. EVENTOS
     // =============================================
+    /* Como o card funciona:
+         1. "Participar" confirma a presença em event_participants e conta a entrada.
+         2. "Entrar" só aparece liberado depois que a pessoa confirmou presença.
+         Eventos que já passaram continuam listados, marcados como "Encerrado",
+         sem botão — assim a aba nunca fica vazia nem parece decorativa.
+       O admin cadastra tudo em /configurações/eventos/eventos.html. */
     async function renderEvents() {
         const grid = document.getElementById('eventsGrid');
         if (!grid) return;
 
+        /* Traz os ativos, do mais antigo ao mais recente. Sem cortar por data:
+           os que já aconteceram ficam visíveis como "Encerrado". */
         const { data: events, error } = await supabase
             .from('events')
             .select('*')
             .eq('is_active', true)
-            .gte('date', new Date().toISOString())
             .order('date', { ascending: true })
             .limit(20);
 
@@ -3298,43 +3309,91 @@ async function sendMessage() {
             grid.innerHTML = `
                 <div class="no-content" style="text-align:center;padding:40px 20px;color:#888;">
                     <i class="fa-solid fa-calendar" style="font-size:32px;display:block;margin-bottom:12px;opacity:0.3;"></i>
-                    <p>Nenhum evento agendado</p>
-                    <p style="font-size:13px;color:#aaa;">Fique de olho, em breve teremos novidades!</p>
+                    <p>Nenhum evento cadastrado ainda</p>
+                    <p style="font-size:13px;color:#aaa;">Os eventos são criados pela equipe no painel admin.</p>
                 </div>
             `;
             return;
         }
 
-      grid.innerHTML = events.map(ev => {
-    const date = new Date(ev.date);
-    const day = date.getDate().toString().padStart(2, '0');
-    const monthShort = date.toLocaleString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
-    const fullDate = date.toLocaleDateString('pt-BR', {
-        day: '2-digit', month: 'long', year: 'numeric'
-    });
-    const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        /* Uma consulta só traz quem participa de cada evento. Usamos isso para
+           a contagem e para saber se a pessoa já pode entrar no link.
+           Só mostramos número — nenhum id de usuário vai para a tela. */
+        const { data: inscricoes } = await supabase
+            .from('event_participants')
+            .select('event_id, user_id')
+            .in('event_id', events.map(ev => ev.id));
 
-    return `
-    <div class="event-card">
-        <div class="event-date">
-            <span class="event-day">${day}</span>
-            <span class="event-month">${monthShort}</span>
-        </div>
-        <div class="event-info">
-            <h4>${escapeHtml(ev.title || 'Evento')}</h4>
-            <p>${escapeHtml(ev.description || '')}</p>
-            <div class="event-meta">
-                <span><i class="fa-regular fa-calendar"></i> ${fullDate} às ${time}</span>
-                <span><i class="fa-regular fa-user"></i> ${ev.participants || 0} participantes</span>
-            </div>
-        </div>
-        <button class="event-join-btn" data-event-id="${ev.id}">
-            <i class="fa-solid fa-calendar-check"></i> Participar
-        </button>
-    </div>`;
-}).join('');
-              // ✅ BOTÕES DE PARTICIPAR — VERSÃO CORRIGIDA (sem 409)
-        document.querySelectorAll('.event-join-btn').forEach(btn => {
+        const porEvento = new Map();
+        for (const linha of inscricoes || []) {
+            if (!porEvento.has(linha.event_id)) porEvento.set(linha.event_id, new Set());
+            porEvento.get(linha.event_id).add(linha.user_id);
+        }
+
+        const agora = Date.now();
+        const meuId = currentUser?.id || null;
+
+        grid.innerHTML = events.map(ev => {
+            const data = new Date(ev.date);
+            const encerrado = data.getTime() < agora;
+            const pessoas = porEvento.get(ev.id) || new Set();
+            const confirmados = pessoas.size;
+            const confirmado = meuId ? pessoas.has(meuId) : false;
+
+            const dia = data.getDate().toString().padStart(2, '0');
+            const mes = data.toLocaleString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
+            const dataBR = data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+            const hora = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            const link = linkSeguro(ev.link || ev.meet_link);
+            const plataforma = escapeHtml(ev.platform || 'Google Meet');
+            const plural = confirmados === 1 ? 'participante' : 'participantes';
+
+            /* Ações do card. Encerrado não tem botão nenhum. */
+            let acoes = '<span class="event-badge event-badge-closed"><i class="fa-solid fa-flag-checkered"></i> Encerrado</span>';
+
+            if (!encerrado) {
+                acoes = `
+                    <button type="button" class="event-join-btn${confirmado ? ' confirmed' : ''}" data-event-id="${escapeHtml(ev.id)}" aria-pressed="${confirmado}">
+                        <i class="fa-solid ${confirmado ? 'fa-check' : 'fa-calendar-check'}"></i> ${confirmado ? 'Confirmado' : 'Participar'}
+                    </button>`;
+
+                if (link) {
+                    acoes += confirmado
+                        ? `<a class="event-enter-btn" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" title="Abrir o link do evento em uma nova aba">
+                               <i class="fa-solid fa-video"></i> Entrar
+                           </a>`
+                        : `<button type="button" class="event-enter-btn locked" data-entrar-bloqueado="true"
+                                   title="Confirme a presença para liberar o link"
+                                   aria-label="Entrar no evento. Bloqueado: confirme a presença primeiro.">
+                               <i class="fa-solid fa-lock"></i> Entrar
+                           </button>`;
+                }
+            }
+
+            return `
+            <article class="event-card" data-event-id="${escapeHtml(ev.id)}">
+                <div class="event-date">
+                    <span class="event-day">${dia}</span>
+                    <span class="event-month">${mes}</span>
+                </div>
+
+                <div class="event-info">
+                    <h4>${escapeHtml(ev.title || 'Evento')}</h4>
+                    ${ev.description ? `<p>${escapeHtml(ev.description)}</p>` : ''}
+                    <div class="event-meta">
+                        <span><i class="fa-regular fa-calendar"></i> ${dataBR} às ${hora}</span>
+                        <span><i class="fa-solid fa-video"></i> ${plataforma}</span>
+                        <span><i class="fa-regular fa-user"></i> ${confirmados} ${plural}</span>
+                    </div>
+                </div>
+
+                <div class="event-actions">${acoes}</div>
+            </article>`;
+        }).join('');
+
+        // ---- Participar: confirma/cancela a presença ----
+        grid.querySelectorAll('.event-join-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 if (!currentUser) {
                     showToast('Faça login para participar', 'error');
@@ -3345,62 +3404,92 @@ async function sendMessage() {
                 if (!eventId) return;
 
                 btn.disabled = true;
-                const originalHTML = btn.innerHTML;
+                const rotulo = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
                 try {
-                    // Verificar se já está inscrito
-                    const { data: existing } = await supabase
+                    const { data: existente } = await supabase
                         .from('event_participants')
                         .select('id')
                         .eq('event_id', eventId)
                         .eq('user_id', currentUser.id)
                         .maybeSingle();
 
-                    if (existing) {
-                        // Cancelar presença
-                        await supabase
+                    if (existente) {
+                        const { error } = await supabase
                             .from('event_participants')
                             .delete()
                             .eq('event_id', eventId)
                             .eq('user_id', currentUser.id);
-
+                        if (error) throw error;
                         showToast('Presença cancelada', 'info');
-                        btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Participar';
-                        btn.classList.remove('confirmed');
                     } else {
-                        // Confirmar presença — UPSERT evita 409
+                        /* upsert evita o 409 de quem clica duas vezes */
                         const { error } = await supabase
                             .from('event_participants')
                             .upsert(
                                 { event_id: eventId, user_id: currentUser.id },
                                 { onConflict: 'event_id,user_id', ignoreDuplicates: true }
                             );
-
-                        if (error && error.code !== '23505' && error.status !== 409) {
-                            throw error;
-                        }
-
-                        showToast('Presença confirmada! 🎉', 'success');
-                        btn.innerHTML = '✅ Confirmado';
-                        btn.classList.add('confirmed');
+                        if (error && error.code !== '23505' && error.status !== 409) throw error;
+                        showToast('Presença confirmada! 🎉 Agora o botão Entrar está liberado.', 'success');
                     }
+
+                    /* Redesenha: atualiza a contagem e libera (ou fecha) o Entrar. */
+                    await renderEvents();
                 } catch (err) {
-                    console.error('Erro:', err);
-                    if (err.code === '23505' || err.status === 409) {
-                        showToast('Você já confirmou presença! ✅', 'info');
-                        btn.innerHTML = '✅ Confirmado';
-                        btn.classList.add('confirmed');
-                    } else {
-                        showToast('Erro: ' + (err.message || 'Tente novamente'), 'error');
-                        btn.innerHTML = originalHTML;
-                    }
+                    console.error('Erro ao confirmar presença:', err);
+                    showToast('Erro: ' + (err.message || 'Tente novamente'), 'error');
+                    btn.innerHTML = rotulo;
                 } finally {
                     btn.disabled = false;
                 }
             });
         });
+
+        /* ---- Entrar bloqueado: explica o que falta, em vez de não fazer nada ---- */
+        grid.querySelectorAll('[data-entrar-bloqueado]').forEach(el => {
+            el.addEventListener('click', () => {
+                if (!currentUser) {
+                    showToast('Faça login e confirme presença para entrar', 'error');
+                    return;
+                }
+                showToast('Confirme presença primeiro para liberar o link', 'info');
+            });
+        });
     }
+
+    /* Só aceita http/https — barra javascript: e afins vindo do admin. */
+    function linkSeguro(url) {
+        if (!url) return '';
+        try {
+            const alvo = new URL(String(url).trim(), window.location.origin);
+            return (alvo.protocol === 'http:' || alvo.protocol === 'https:') ? alvo.href : '';
+        } catch (e) {
+            return '';
+        }
+    }
+
+    /* Evento novo ou editado no admin aparece aqui sem recarregar a página. */
+    let eventsSubscription = null;
+
+    function subscribeToEvents() {
+        if (eventsSubscription) {
+            supabase.removeChannel(eventsSubscription);
+            eventsSubscription = null;
+        }
+
+        eventsSubscription = supabase
+            .channel('community-events-sync')
+            .on('postgres_changes',
+                { event: '*', schema: 'public', table: 'events' },
+                () => { renderEvents(); }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') console.log('✅ Realtime de eventos conectado!');
+            });
+    }
+
     // =============================================
     // 20. SUBSCRIÇÕES REALTIME
     // =============================================
@@ -3529,6 +3618,7 @@ async function sendMessage() {
 
     subscribeToPosts();
     subscribeToComments();
+    subscribeToEvents();
 
     console.log('🚀 Comunidade pronta! 👍💬❤️');
     console.log('🔒 Sistema 100% seguro via Supabase RPC!');

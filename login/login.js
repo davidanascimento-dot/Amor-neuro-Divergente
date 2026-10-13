@@ -25,6 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =============================================
+    // DESTINO APÓS ENTRAR
+    // =============================================
+    /* O auth-global.js manda quem foi barrado para cá com ?redirect=.
+       Se o parâmetro não vier (ou vier ruim), usa o destino padrão.
+       Só aceita caminho interno: "/algo". Um "//site.com" viraria
+       redirecionamento para fora, então é descartado. */
+    function destinoAposLogin(padrao) {
+        try {
+            const bruto = new URLSearchParams(window.location.search).get('redirect');
+            if (!bruto) return padrao;
+
+            const caminho = decodeURIComponent(bruto);
+            if (caminho.startsWith('/') && !caminho.startsWith('//')) return caminho;
+        } catch (e) {
+            // Parâmetro malformado: segue para o destino padrão.
+        }
+        return padrao;
+    }
+
+    // =============================================
     // FUNÇÃO DA TRANSIÇÃO DO CORAÇÃO (ESTILO TIKTOK)
     // =============================================
     function executarTransicaoCoracao(urlRedirecionamento) {
@@ -194,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 salvarFotoNoHistoricoLocal(data.user.email, fotoFinal);
                 
                 // Dispara o efeito visual marcante antes de ir para o início
-                executarTransicaoCoracao('/inicio.html');
+                executarTransicaoCoracao(destinoAposLogin('/inicio.html'));
             }
         });
     }
@@ -259,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     salvarFotoNoHistoricoLocal(email, '/img/foto-padrão.jpg');
                     
                     // Transição ativada no cadastro também para dar boas-vindas
-                    executarTransicaoCoracao('/inicio.html');
+                    executarTransicaoCoracao(destinoAposLogin('/inicio.html'));
                 }
             } else {
                 showToast('Preencha todos os campos obrigatórios.', 'error');
@@ -290,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('userRole', 'admin');
             if (token) localStorage.setItem('adminToken', token);
             
-            executarTransicaoCoracao('/painel-admin/painel.html');
+            executarTransicaoCoracao(destinoAposLogin('/painel-admin/painel.html'));
         });
     }
 

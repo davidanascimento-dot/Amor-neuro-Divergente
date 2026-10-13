@@ -119,9 +119,10 @@
         <section class="community-screen" id="screen-eventos" role="tabpanel">
             <div class="screen-header">
                 <h2><i class="fa-regular fa-calendar"></i> Eventos</h2>
-                <button class="btn-create-event" id="openCreateEventBtn">
-                    <i class="fa-solid fa-plus"></i> Criar Evento
-                </button>
+                <a class="btn-create-event" href="/configurações/eventos/eventos.html"
+                   title="Os eventos são cadastrados pela equipe no painel admin">
+                    <i class="fa-solid fa-sliders"></i> Administrar eventos
+                </a>
             </div>
             <div class="events-grid" id="eventsGrid"></div>
         </section>
@@ -503,6 +504,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/supabase-config.js"></script>
 <script src="/js/supabase.js"></script>
+<script src="/auth-global.js"></script>
 <script src="/comunidade/honeypot.js"></script>
 <script src="/comunidade/comunidade.js"></script>
 <script src="/Acolher-IA/seguranca.js"></script>

@@ -37,61 +37,74 @@
     outline-offset: 2px;
 }
 
-/* ---------- A caixa de diálogo ---------- */
-.busca-caixa {
-    width: min(640px, 92vw);
-    max-height: 82vh;
-    /* O <dialog> nativo é centralizado por "margin: auto", mas o reset
-       global do site (* { margin: 0 }) apaga isso e a caixa abre no
-       canto superior esquerdo. Aqui a centralização é explícita. */
-    margin: auto;
-    padding: 0;
+/* ---------- A barra, dentro da navegação ----------
+   Não é modal: a lupa fica na nav, o campo cresce no lugar dela e o resto
+   dos itens encolhe para caber. O dropdown de resultados é "fixed" e
+   acompanha o campo, porque a nav costuma ter overflow escondido e
+   cortaria o dropdown se ele morasse dentro dela. */
+.busca-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    vertical-align: middle;
+}
+
+/* Encolhe o resto da nav enquanto a busca está aberta. */
+.busca-nav > *:not(.busca-inline) {
+    transition: max-width 0.25s ease, opacity 0.18s ease, padding 0.25s ease;
+}
+
+.busca-nav-comprimida > *:not(.busca-inline) {
+    max-width: 0 !important;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.busca-painel {
+    position: fixed;
+    z-index: 1200;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
     border: 1px solid var(--border-color, #e8e3dd);
-    border-radius: 18px;
+    border-radius: 14px;
     background: var(--bg-white, #ffffff);
     color: var(--text-dark, #1a1a2e);
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
     overflow: hidden;
     font-family: 'Inter', system-ui, sans-serif;
 }
 
-.busca-caixa::backdrop {
-    background: rgba(15, 10, 30, 0.55);
-    backdrop-filter: blur(3px);
-}
+.busca-painel[hidden] { display: none; }
 
-.busca-caixa[open] {
-    display: flex;
-    flex-direction: column;
-}
-
-.busca-campo-linha {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border-color, #e8e3dd);
-    flex-shrink: 0;
-}
-
-.busca-campo-icone {
-    color: var(--text-muted, #8a827c);
-    font-size: 0.95rem;
-    flex-shrink: 0;
-}
-
+/* O campo nasce recolhido e cresce no lugar da lupa quando a busca abre. */
 .busca-campo {
     flex: 1 1 auto;
     min-width: 0;
-    border: none;
-    background: transparent;
+    width: 0;
+    border: 1px solid var(--border-color, #e8e3dd);
+    border-radius: 8px;
+    background: var(--bg-body, #faf9fe);
     font: inherit;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--text-dark, #1a1a2e);
-    padding: 6px 0;
+    padding: 7px 12px;
+    opacity: 0;
+    transition: width 0.25s ease, opacity 0.18s ease, border-color 0.15s ease;
 }
 
-.busca-campo:focus { outline: none; }
+.busca-inline.busca-aberta .busca-campo {
+    width: clamp(180px, 32vw, 340px);
+    opacity: 1;
+}
+
+.busca-campo[hidden] { display: none; }
+.busca-campo:focus { outline: none; border-color: var(--primary, #7c3aed); }
 .busca-campo::placeholder { color: var(--text-muted, #8a827c); }
 
 /* O input type=search traz um X próprio no Chrome; escondido para não
@@ -113,15 +126,6 @@
 .busca-limpar:hover { background: var(--primary-light, #ede9fe); color: var(--primary, #7c3aed); }
 .busca-limpar[hidden] { display: none; }
 .busca-limpar:focus-visible { outline: 3px solid var(--primary, #7c3aed); outline-offset: 2px; }
-
-.busca-ajuda {
-    margin: 0;
-    padding: 8px 16px;
-    font-size: 0.76rem;
-    color: var(--text-muted, #8a827c);
-    border-bottom: 1px solid var(--border-color, #e8e3dd);
-    flex-shrink: 0;
-}
 
 .busca-resultados {
     flex: 1 1 auto;
@@ -198,15 +202,17 @@ body.a11y-dark-mode .busca-btn:hover {
     color: #fff;
 }
 
-body.a11y-dark-mode .busca-caixa {
+body.a11y-dark-mode .busca-painel {
     background: #1f1235;
     border-color: #3a2a58;
     color: #fff;
 }
 
-body.a11y-dark-mode .busca-campo { color: #fff; }
-body.a11y-dark-mode .busca-campo-linha,
-body.a11y-dark-mode .busca-ajuda { border-color: #3a2a58; }
+body.a11y-dark-mode .busca-campo {
+    color: #fff;
+    background: #2a1c44;
+    border-color: #3a2a58;
+}
 body.a11y-dark-mode .busca-limpar { background: #2a1c44; border-color: #3a2a58; color: #ddd; }
 body.a11y-dark-mode .busca-resultado-desc { color: #c9bcd9; }
 body.a11y-dark-mode .busca-resultado-titulo { color: #fff; }
@@ -216,8 +222,8 @@ body.a11y-dark-mode .busca-resultado-url { color: #c4b5fd; }
 
 /* ---------- Tela pequena ---------- */
 @media (max-width: 640px) {
-    .busca-caixa { width: 96vw; max-height: 88vh; }
-    .busca-ajuda { font-size: 0.72rem; }
+    .busca-inline.busca-aberta .busca-campo { width: min(58vw, 300px); }
+    .busca-painel { max-height: 62vh; }
     .busca-resultado { padding: 12px; }
 
     /* O botão herdava flex-shrink do flexbox do cabeçalho e apertava
@@ -230,6 +236,4 @@ body.a11y-dark-mode .busca-resultado-url { color: #c4b5fd; }
         height: 44px;
         margin-right: 8px;
     }
-
-    .busca-campo-linha { padding: 12px 14px; }
 }

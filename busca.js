@@ -12,8 +12,10 @@
  * lugar. Páginas sem cabeçalho não recebem busca — e são só login,
  * administração e a própria comunidade, que têm navegação própria.
  *
- * Diálogo: <dialog> nativo, com foco preso, Esc para fechar e foco de
- * volta para o botão. Funciona por teclado sem código extra.
+ * A barra fica NA NAV, não em modal: clicar na lupa expande o campo no
+ * lugar e encolhe o resto dos itens da navegação. Os resultados aparecem
+ * logo abaixo do campo. Sem backdrop, sem travar a página — quem navega
+ * pelo teclado continua indo e voltando sem perder o foco.
  */
 (function () {
     'use strict';
@@ -40,6 +42,36 @@
         return normalizar(texto).replace(/\s+/g, ' ').trim();
     }
 
+    /* Mesma tabela do gerador (ferramentas/gerar-indice-busca.py). Existe
+       porque três registros do índice foram gerados sem "categoria" e
+       apareciam soltos no grupo "Outras páginas". Python não está instalado
+       aqui, então o índice não pode ser regenerado agora. */
+    const CATEGORIAS = [
+        [/^comunidade\//, 'Comunidade'],
+        [/^(inicio|index)\.html/, 'Início'],
+        [/^chat-Ia\//, 'AcolherIA'],
+        [/^Direitos\//, 'Direitos'],
+        [/^Explorar\//, 'Conteúdos'],
+        [/^Recursos\//, 'Conteúdos'],
+        [/^blog\//, 'Conteúdos'],
+        [/^loja\//, 'Loja'],
+        [/^apoiar\//, 'Apoiar'],
+        [/^login\//, 'Conta'],
+        [/^(privacidade|termos)\.html/, 'Institucional']
+    ];
+
+    function categoriaDe(registro) {
+        if (registro && registro.categoria) return registro.categoria;
+        /* Os padrões são do gerador e não levam "/" no começo, mas a URL do
+           índice tem. Sem tirar a barra, nenhum casava. */
+        const caminho = String((registro && registro.url) || '');
+        const url = caminho.charAt(0) === '/' ? caminho.slice(1) : caminho;
+        for (let i = 0; i < CATEGORIAS.length; i++) {
+            if (CATEGORIAS[i][0].test(url)) return CATEGORIAS[i][1];
+        }
+        return 'Outras páginas';
+    }
+
     // -----------------------------------------------------------------
     // Busca
     // -----------------------------------------------------------------
@@ -50,11 +82,21 @@
      * e não a página que só menciona a palavra no meio de um parágrafo.
      */
     function pontuar(registro, termos) {
+        if (!registro) return 0;
+
         const titulo = chave(registro.titulo);
         const h1 = chave(registro.h1);
         const descricao = chave(registro.descricao);
-        const secoes = registro.secoes.map(chave);
-        const categoria = chave(registro.categoria);
+        const categoria = chave(categoriaDe(registro));
+
+        /* O índice não é uniforme: a maioria dos registros traz "secoes",
+           mas alguns (as páginas de artigo) trazem só "palavrasChave".
+           Sem isto, um registro sem "secoes" derrubava a busca inteira
+           com "Cannot read properties of undefined (reading 'map')". */
+        const secoesBrutas = Array.isArray(registro.secoes) ? registro.secoes
+            : (Array.isArray(registro.palavrasChave) ? registro.palavrasChave : []);
+        const extras = Array.isArray(registro.palavrasChave) ? registro.palavrasChave : [];
+        const secoes = secoesBrutas.concat(extras).map(chave).filter(Boolean);
 
         let pontos = 0;
         for (let i = 0; i < termos.length; i++) {
@@ -80,7 +122,7 @@
             if (categoria.indexOf(termo) !== -1) pontos += 8 * peso;
 
             // Sem nenhuma ocorrência: fora do resultado. Sem isto, a
-            // busca devolveria as 38 páginas para qualquer palavra.
+            // busca devolveria todas as páginas para qualquer palavra.
             if (!achouSecao && titulo.indexOf(termo) === -1 &&
                 h1.indexOf(termo) === -1 && descricao.indexOf(termo) === -1 &&
                 categoria.indexOf(termo) === -1) {
@@ -96,85 +138,120 @@
 
         const achados = [];
         for (let i = 0; i < INDICE.length; i++) {
-            const pontos = pontuar(INDICE[i], termos);
+            let pontos = 0;
+            try {
+                pontos = pontuar(INDICE[i], termos);
+            } catch (e) {
+                // Um registro quebrado não pode derrubar a busca inteira.
+                console.warn('[busca] registro ignorado:', INDICE[i] && INDICE[i].url, e);
+                continue;
+            }
             if (pontos > 0) achados.push({ registro: INDICE[i], pontos: pontos });
         }
 
         achados.sort(function (a, b) {
             if (b.pontos !== a.pontos) return b.pontos - a.pontos;
-            return a.registro.titulo.localeCompare(b.registro.titulo, 'pt-BR');
+            return String(a.registro.titulo || '').localeCompare(String(b.registro.titulo || ''), 'pt-BR');
         });
         return achados;
     }
 
     // -----------------------------------------------------------------
-    // Interface
+    // Interface — barra dentro da navegação
     // -----------------------------------------------------------------
 
     let botao = null;
-    let caixaDialogo = null;
     let campo = null;
+    let limpar = null;
+    let linha = null;
+    let painel = null;
     let areaResultados = null;
-    let contadorResultados = null;
+    let nav = null;
 
     function criar() {
-        // O botão entra no container de ações do cabeçalho, ao lado de
+        // A barra entra no container de ações do cabeçalho, ao lado de
         // "Entrar". Cada página do site tem um nome diferente para esse
         // container, e a lista abaixo é o que existe de fato — se cair
-        // numa classe que não está em nenhuma página, o botão não entra.
+        // numa classe que não está em nenhuma página, a busca não entra.
         const alvos = ['.nav-actions', '.landing-nav-actions', '.header-actions', '.header-links'];
         let onde = null;
         for (let i = 0; i < alvos.length && !onde; i++) {
             const alvo = document.querySelector(alvos[i]);
-            if (alvo && !alvo.querySelector('.busca-btn')) onde = alvo;
+            if (alvo && !alvo.querySelector('.busca-inline')) onde = alvo;
         }
         // Último recurso: o próprio cabeçalho. Melhor a lupa um pouco fora
         // do lugar ideal do que nenhuma lupa.
         if (!onde) {
             const cabecalho = document.querySelector('header');
-            if (cabecalho && !cabecalho.querySelector('.busca-btn')) onde = cabecalho;
+            if (cabecalho && !cabecalho.querySelector('.busca-inline')) onde = cabecalho;
         }
         if (!onde) return false;
+
+        nav = onde;
+        nav.classList.add('busca-nav');
+
+        linha = document.createElement('div');
+        linha.className = 'busca-inline';
 
         botao = document.createElement('button');
         botao.type = 'button';
         botao.className = 'busca-btn';
         botao.setAttribute('aria-label', 'Pesquisar no site');
+        botao.setAttribute('aria-expanded', 'false');
+        botao.setAttribute('aria-controls', 'buscaResultados');
         botao.title = 'Pesquisar no site';
         botao.innerHTML = '<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>';
-        botao.addEventListener('click', abrir);
-        onde.insertBefore(botao, onde.firstChild);
 
-        caixaDialogo = document.createElement('dialog');
-        caixaDialogo.className = 'busca-caixa';
-        caixaDialogo.setAttribute('aria-label', 'Pesquisar no site');
-        caixaDialogo.innerHTML = [
-            '<div class="busca-campo-linha">',
-            '  <i class="fa-solid fa-magnifying-glass busca-campo-icone" aria-hidden="true"></i>',
-            '  <input type="search" id="buscaCampo" class="busca-campo"',
-            '         placeholder="O que você procura?" autocomplete="off"',
-            '         aria-describedby="buscaAjuda" aria-controls="buscaResultados">',
-            '  <button type="button" class="busca-limpar" id="buscaLimpar" aria-label="Limpar pesquisa" hidden>',
-            '    <i class="fa-solid fa-xmark" aria-hidden="true"></i>',
-            '  </button>',
-            '</div>',
-            '<p class="busca-ajuda" id="buscaAjuda">',
-            '  Pesquisa nas páginas do site. Use a seta para navegar e Enter para abrir.',
-            '</p>',
-            '<div class="busca-resultados" id="buscaResultados" role="region" aria-live="polite"></div>'
-        ].join('');
-        document.body.appendChild(caixaDialogo);
+        campo = document.createElement('input');
+        campo.type = 'search';
+        campo.id = 'buscaCampo';
+        campo.className = 'busca-campo';
+        campo.placeholder = 'O que você procura?';
+        campo.autocomplete = 'off';
+        campo.hidden = true;
+        campo.setAttribute('aria-controls', 'buscaResultados');
 
-        campo = caixaDialogo.querySelector('#buscaCampo');
-        areaResultados = caixaDialogo.querySelector('#buscaResultados');
-        const limpar = caixaDialogo.querySelector('#buscaLimpar');
+        limpar = document.createElement('button');
+        limpar.type = 'button';
+        limpar.className = 'busca-limpar';
+        limpar.setAttribute('aria-label', 'Limpar pesquisa');
+        limpar.hidden = true;
+        limpar.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+
+        painel = document.createElement('div');
+        painel.className = 'busca-painel';
+        painel.id = 'buscaPainel';
+        painel.hidden = true;
+
+        areaResultados = document.createElement('div');
+        areaResultados.className = 'busca-resultados';
+        areaResultados.id = 'buscaResultados';
+        areaResultados.setAttribute('role', 'region');
+        areaResultados.setAttribute('aria-live', 'polite');
+        painel.appendChild(areaResultados);
+
+        linha.appendChild(botao);
+        linha.appendChild(campo);
+        linha.appendChild(limpar);
+        nav.insertBefore(linha, nav.firstChild);
+        document.body.appendChild(painel);
 
         let indiceAtivo = -1;
+
+        botao.addEventListener('click', function () {
+            if (linha.classList.contains('busca-aberta')) fechar(true);
+            else abrir();
+        });
 
         campo.addEventListener('input', function () {
             limpar.hidden = !campo.value;
             indiceAtivo = -1;
             desenhar(campo.value);
+            posicionar();
+        });
+
+        campo.addEventListener('focus', function () {
+            if (!painel.hidden) posicionar();
         });
 
         limpar.addEventListener('click', function () {
@@ -188,6 +265,12 @@
         // mouse precisa chegar na página, não só lê-la na lista.
         campo.addEventListener('keydown', function (ev) {
             const links = areaResultados.querySelectorAll('a');
+
+            if (ev.key === 'Escape') {
+                ev.preventDefault();
+                fechar(true);
+                return;
+            }
             if (!links.length) return;
 
             if (ev.key === 'ArrowDown') {
@@ -204,6 +287,18 @@
             }
         });
 
+        // Clicar fora fecha. Sem isso a barra ficaria aberta atravessando
+        // a página inteira enquanto a pessoa rola o conteúdo.
+        document.addEventListener('click', function (ev) {
+            if (!linha.classList.contains('busca-aberta')) return;
+            if (linha.contains(ev.target) || painel.contains(ev.target)) return;
+            fechar(false);
+        });
+
+        window.addEventListener('resize', function () {
+            if (!painel.hidden) posicionar();
+        });
+
         // "/" abre a busca de qualquer lugar, como em qualquer editor.
         document.addEventListener('keydown', function (ev) {
             if (ev.key !== '/' || ev.ctrlKey || ev.metaKey || ev.altKey) return;
@@ -218,6 +313,18 @@
         return true;
     }
 
+    /** O painel é "fixed" e acompanha o campo, porque a nav pode ter
+        overflow escondido e cortaria o dropdown se ele morasse dentro dela. */
+    function posicionar() {
+        if (!painel || !linha || painel.hidden) return;
+        const r = linha.getBoundingClientRect();
+        const largura = Math.max(r.width, 280);
+        const esquerda = Math.max(8, Math.min(r.right - largura, window.innerWidth - largura - 8));
+        painel.style.left = esquerda + 'px';
+        painel.style.top = (r.bottom + 8) + 'px';
+        painel.style.width = largura + 'px';
+    }
+
     function focar(links, i) {
         links.forEach(function (l, k) { l.classList.toggle('busca-resultado-ativo', k === i); });
         if (links[i]) {
@@ -227,24 +334,26 @@
     }
 
     function abrir() {
-        if (!caixaDialogo) return;
-        if (typeof caixaDialogo.showModal === 'function') {
-            if (!caixaDialogo.open) caixaDialogo.showModal();
-        } else {
-            caixaDialogo.setAttribute('open', '');   // navegador antigo
-        }
+        if (!linha) return;
+        linha.classList.add('busca-aberta');
+        // Encolhe o resto da navegação para o campo caber no lugar.
+        if (nav) nav.classList.add('busca-nav-comprimida');
+        campo.hidden = false;
+        painel.hidden = false;
+        botao.setAttribute('aria-expanded', 'true');
+        posicionar();
+        desenhar(campo.value);
         campo.focus();
-        campo.select();
     }
 
-    function fechar() {
-        if (!caixaDialogo) return;
-        if (typeof caixaDialogo.close === 'function' && caixaDialogo.open) {
-            caixaDialogo.close();
-        } else {
-            caixaDialogo.removeAttribute('open');
-        }
-        if (botao) botao.focus();      // o foco volta para onde saiu
+    function fechar(devolverFoco) {
+        if (!linha) return;
+        linha.classList.remove('busca-aberta');
+        if (nav) nav.classList.remove('busca-nav-comprimida');
+        painel.hidden = true;
+        campo.hidden = true;
+        botao.setAttribute('aria-expanded', 'false');
+        if (devolverFoco) botao.focus();
     }
 
     function desenhar(texto) {
@@ -277,7 +386,7 @@
         // isso" antes de ler o título.
         const grupos = {};
         achados.forEach(function (a) {
-            const c = a.registro.categoria;
+            const c = categoriaDe(a.registro);
             if (!grupos[c]) grupos[c] = [];
             grupos[c].push(a.registro);
         });
@@ -317,7 +426,6 @@
     function iniciar() {
         if (!INDICE.length) return;
         if (!criar()) return;
-        desenhar('');
     }
 
     window.Busca = { buscar: buscar, abrir: abrir, fechar: fechar, total: INDICE.length };

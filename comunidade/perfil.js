@@ -43,8 +43,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const targetUserId = profileIdFromUrl || currentUser?.id;
 
     if (!targetUserId) {
+        /* Visitor sem conta não tem perfil próprio: esconde o editor antes de
+           sair, senão o botão "Editar Perfil" ficaria visível e sem função. */
+        const btnEditar = document.getElementById('openEditBtn');
+        if (btnEditar) btnEditar.style.display = 'none';
         showError('Nenhum usuário especificado e você não está logado.');
         return;
+    }
+
+    /* Quem não tem sessão nunca abre o editor — nem no próprio perfil nem
+       olhando o de outra pessoa. */
+    if (!currentUser) {
+        const btnEditar = document.getElementById('openEditBtn');
+        if (btnEditar) btnEditar.style.display = 'none';
     }
 
     isOwnProfile = currentUser?.id === targetUserId;
