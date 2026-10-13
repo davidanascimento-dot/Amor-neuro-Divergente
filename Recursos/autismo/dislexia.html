@@ -1267,12 +1267,13 @@
 
     
 
+<script src="/js/supabase-config.js"></script>
 <script>
 /* =============================================
    0. CONFIGURAÇÃO SUPABASE
    ============================================= */
-const SUPABASE_URL      = 'https://qyixzontuhrxrrjrmzvy.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE';
+const SUPABASE_URL      = (window.SUPABASE_CONFIG || {}).url;
+const SUPABASE_ANON_KEY = (window.SUPABASE_CONFIG || {}).anonKey;
 
 /* =============================================
    1. BARRA DE PROGRESSO

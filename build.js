@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const { writeSupabaseConfig } = require('./scripts/supabase-config');
 
 const root = __dirname;
 const output = path.join(root, 'dist');
@@ -22,6 +23,11 @@ for (const filePath of findFiles(output)) {
         .replaceAll('%VITE_SUPABASE_ANON_KEY%', env.VITE_SUPABASE_ANON_KEY || '');
     fs.writeFileSync(filePath, html);
 }
+
+/* O .env pode não existir no build (na Vercel os valores vêm do painel), então
+   o dist sempre recebe o js/supabase-config.js freshly gerado, sem depender do
+   que estava em ./js durante o desenvolvimento. */
+writeSupabaseConfig(path.join(output, 'js'));
 
 console.log(`Site copiado para dist: ${findFiles(output).length} arquivos.`);
 
@@ -64,6 +70,7 @@ function shouldSkip(name) {
         'netlify.toml',
         'vercel.json',
         'supabase',
+        'scripts',
         '.vscode',
         // --- o que foi acrescentado na auditoria de entrega ---
         // Migracoes do banco. Sao 17 arquivos que descrevem o schema

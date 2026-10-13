@@ -116,13 +116,8 @@
 <!-- ✅ Versão que funciona em todo o projeto -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-    window.supabaseClient = supabase.createClient(
-        'https://qyixzontuhrxrrjrmzvy.supabase.co',   // ← MESMA URL da moderação
-        'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'                     // ← MESMA KEY da moderação
-    );
-    console.log('✅ Supabase pronto:', window.supabaseClient.supabaseUrl);
-</script>
+<script src="/js/supabase-config.js"></script>
+<script src="/js/supabase.js"></script>
 
 <script src="grupo.js"></script>
 

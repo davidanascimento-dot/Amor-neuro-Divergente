@@ -3,3 +3,9 @@
 !.env.example
 dist/
 node_modules/.vite/
+
+# Gerado a partir do .env — nunca versionar
+js/supabase-config.js
+
+# Vercel
+.vercel

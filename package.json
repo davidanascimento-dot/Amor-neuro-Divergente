@@ -1,8 +1,10 @@
 {
   "scripts": {
+    "predev": "node scripts/supabase-config.js",
     "dev": "vite",
     "dev:server": "node --watch server.js",
     "start": "vite",
+    "prebuild": "node scripts/supabase-config.js",
     "build": "node build.js",
     "preview": "vite preview"
   },

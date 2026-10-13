@@ -80,11 +80,10 @@
         </div>
     </div>
 
+    <script src="/js/supabase-config.js"></script>
+    <script src="/js/supabase.js"></script>
     <script>
-        const supabaseClient = supabase.createClient(
-            'https://qyixzontuhrxrrjrmzvy.supabase.co',
-            'sb_publishable_cPivIaJPzZRIRzkbFlAH_g_3R1_9auE'
-        );
+        const supabaseClient = window.supabaseClient;
 
         function showToast(message, type = 'info') {
             const existing = document.querySelector('.toast-message');
