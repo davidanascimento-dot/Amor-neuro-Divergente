@@ -4281,16 +4281,17 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     top: 138px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    padding: 15px 13px;
-    border: 0;
-    border-radius: 0 16px 16px 0;
-    background: #1b1b20;
-    color: #f4f4f5;
+    gap: 4px;
+    padding: 14px 10px;
+    border: 1px solid #e5e5ea;
+    border-left: 0;
+    border-radius: 0 8px 8px 0;
+    background: #ffffff;
+    color: #1b1b20;
 }
 
 .group-library-rail .groups-kicker {
-    color: #a7a7b0;
+    color: #8e8e93;
 }
 
 .group-library-link,
@@ -4301,9 +4302,9 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     gap: 10px;
     padding: 0 11px;
     border: 0;
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
-    color: #d5d5dc;
+    color: #3a3a42;
     font-size: 13px;
     font-weight: 700;
     text-align: left;
@@ -4312,25 +4313,25 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 .group-library-link:hover,
 .group-library-link.active,
 .group-library-create:hover {
-    background: #303038;
-    color: #fff;
+    background: #f0edfa;
+    color: #6d3bd1;
 }
 
 .group-library-create {
     margin-top: 8px;
-    color: #c9a9ff;
+    color: #6d3bd1;
     cursor: pointer;
 }
 
 .group-library-rule {
     height: 1px;
-    margin: 14px 11px;
-    background: #3a3a42;
+    margin: 10px 11px;
+    background: #e5e5ea;
 }
 
 .group-library-note {
-    margin: 10px 11px 0;
-    color: #a7a7b0;
+    margin: 8px 11px 0;
+    color: #8e8e93;
     font-size: 10px;
     line-height: 1.45;
 }

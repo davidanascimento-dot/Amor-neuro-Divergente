@@ -539,26 +539,31 @@ document.addEventListener('DOMContentLoaded', async () => {
                 chatBtn.href = `/comunidade/conversas.html?friend=${encodeURIComponent(targetUserId)}&name=${encodeURIComponent(profileUser?.username || '')}`;
             }
 
+            // Reset state classes
+            friendBtn.classList.remove('is-friends', 'is-pending', 'is-incoming');
+
             if (!rel || rel.status === 'rejected') {
                 friendBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Adicionar amigo';
-                friendBtn.className = 'btn-hero-primary';
+                friendBtn.className = 'btn-hero-friend';
                 friendBtn.disabled = false;
+                friendBtn.title = '';
                 if (chatBtn) chatBtn.style.display = 'none';
             } else if (rel.status === 'pending') {
                 if (rel.requester_id === currentUser.id) {
                     friendBtn.innerHTML = '<i class="fa-regular fa-clock"></i> Solicitação enviada';
-                    friendBtn.className = 'btn-hero-secondary';
+                    friendBtn.className = 'btn-hero-friend is-pending';
                     friendBtn.disabled = false;
                     friendBtn.title = 'Clique para cancelar solicitação';
                 } else {
                     friendBtn.innerHTML = '<i class="fa-solid fa-check"></i> Aceitar amizade';
-                    friendBtn.className = 'btn-hero-primary';
+                    friendBtn.className = 'btn-hero-friend is-incoming';
                     friendBtn.disabled = false;
+                    friendBtn.title = '';
                 }
                 if (chatBtn) chatBtn.style.display = 'none';
             } else if (rel.status === 'accepted') {
                 friendBtn.innerHTML = '<i class="fa-solid fa-user-check"></i> Amigos';
-                friendBtn.className = 'btn-hero-secondary';
+                friendBtn.className = 'btn-hero-friend is-friends';
                 friendBtn.disabled = false;
                 friendBtn.title = 'Clique para desfazer amizade';
                 if (chatBtn) chatBtn.style.display = 'inline-flex';

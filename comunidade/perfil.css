@@ -160,10 +160,15 @@
 /* Ações (botões) */
 .profile-hero-actions {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
     padding-bottom: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
+/* Botão primário (Editar Perfil, Adicionar amigo estado inicial) */
 .btn-hero-primary {
     padding: 10px 24px;
     background: #ffffff;
@@ -179,6 +184,7 @@
     gap: 8px;
     transition: all 0.2s;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    white-space: nowrap;
 }
 
 .btn-hero-primary:hover {
@@ -186,9 +192,118 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
+/* Botão ícone circular (Compartilhar) */
+.btn-hero-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    color: var(--pf-text);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn-hero-icon:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Base compartilhada para botões de texto no hero (amigo + chat) */
+.btn-hero-friend,
+.btn-hero-chat {
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 24px;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    border: 2px solid transparent;
+}
+
+/* Botão Amigo — estado padrão (Adicionar amigo) */
+.btn-hero-friend {
+    background: #ffffff;
+    color: var(--pf-text);
+    border-color: transparent;
+}
+
+.btn-hero-friend:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* Amigo — estado: são amigos */
+.btn-hero-friend.is-friends {
+    background: #eaf7ee;
+    color: #1f6b3a;
+    border-color: #b7e0c4;
+}
+
+.btn-hero-friend.is-friends:hover {
+    background: #fdeaea;
+    color: #b91c1c;
+    border-color: #f5c6c6;
+}
+
+/* Amigo — estado: solicitação pendente (enviada) */
+.btn-hero-friend.is-pending {
+    background: rgba(255, 255, 255, 0.85);
+    color: #92400e;
+    border: 2px dashed #d1a54b;
+}
+
+.btn-hero-friend.is-pending:hover {
+    background: #fef3c7;
+}
+
+/* Amigo — estado: solicitação recebida (aceitar) */
+.btn-hero-friend.is-incoming {
+    background: #6d3bd1;
+    color: #ffffff;
+    border-color: #6d3bd1;
+}
+
+.btn-hero-friend.is-incoming:hover {
+    background: #5b2cb8;
+}
+
+/* Botão Conversar */
+.btn-hero-chat {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--pf-text);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.btn-hero-chat:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+    color: var(--pf-text);
+    text-decoration: none;
+}
+
+/* Manter compatibilidade — .btn-hero-secondary legado aponta para estilo icon */
 .btn-hero-secondary {
     width: 42px;
     height: 42px;
+    min-width: 42px;
+    padding: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.9);
     border: none;
@@ -1208,9 +1323,18 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
         font-size: 13px;
     }
 
+    .btn-hero-icon,
     .btn-hero-secondary {
         width: 38px;
         height: 38px;
+        min-width: 38px;
+    }
+
+    .btn-hero-friend,
+    .btn-hero-chat {
+        height: 38px;
+        padding: 0 14px;
+        font-size: 13px;
     }
 
     .edit-modal {
@@ -1515,10 +1639,52 @@ body.a11y-dark-mode .btn-hero-primary {
     color: #fff;
 }
 
+body.a11y-dark-mode .btn-hero-icon,
+body.a11y-dark-mode .btn-hero-icon:hover,
 body.a11y-dark-mode .btn-hero-secondary,
 body.a11y-dark-mode .btn-hero-secondary:hover {
     background: rgba(34, 34, 58, .92);
     color: #f3eff8;
+}
+
+body.a11y-dark-mode .btn-hero-friend {
+    background: rgba(34, 34, 58, .92);
+    color: #f3eff8;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.a11y-dark-mode .btn-hero-friend.is-friends {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+body.a11y-dark-mode .btn-hero-friend.is-friends:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+body.a11y-dark-mode .btn-hero-friend.is-pending {
+    background: rgba(34, 34, 58, .92);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+body.a11y-dark-mode .btn-hero-friend.is-incoming {
+    background: #6d3bd1;
+    color: #ffffff;
+    border-color: #6d3bd1;
+}
+
+body.a11y-dark-mode .btn-hero-chat {
+    background: rgba(34, 34, 58, .92);
+    color: #f3eff8;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.a11y-dark-mode .btn-hero-chat:hover {
+    background: rgba(50, 50, 75, .95);
 }
 
 body.a11y-dark-mode .profile-about-card,
