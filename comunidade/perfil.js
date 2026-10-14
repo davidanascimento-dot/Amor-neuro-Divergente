@@ -239,14 +239,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Estatísticas
-        setText('statFollowers', formatNumber(p.followers_count));
-        setText('statFollowing', formatNumber(p.following_count));
         setText('statContrib', formatNumber(p.contribution_count));
 
         // Botão de editar só no próprio perfil
         const editBtn = document.getElementById('openEditBtn');
         if (editBtn) {
             editBtn.style.display = isOwnProfile ? 'flex' : 'none';
+        }
+
+        // Ações de amizade no perfil de terceiros
+        if (!isOwnProfile) {
+            loadFriendshipHero();
         }
     }
 
@@ -489,9 +492,133 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const total = (postsCount || 0) + (commentsCount || 0);
             setText('statContrib', formatNumber(total));
+
+            // Amigos aceitos da pessoa
+            const { count: friendsCount } = await supabase
+                .from('friendships')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'accepted')
+                .or(`requester_id.eq.${targetUserId},receiver_id.eq.${targetUserId}`);
+            setText('statFriends', formatNumber(friendsCount || 0));
+
+            // Solicitações pendentes (se for o próprio perfil)
+            const reqWrap = document.getElementById('statRequestsWrapper');
+            if (isOwnProfile && currentUser) {
+                const { count: requestsCount } = await supabase
+                    .from('friendships')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'pending')
+                    .eq('receiver_id', currentUser.id);
+                setText('statRequests', formatNumber(requestsCount || 0));
+                if (reqWrap) reqWrap.style.display = 'flex';
+            } else if (reqWrap) {
+                reqWrap.style.display = 'none';
+            }
         } catch (e) {
             console.warn('Erro ao carregar stats:', e);
         }
+    }
+
+    async function loadFriendshipHero() {
+        if (!currentUser || isOwnProfile || !targetUserId) return;
+        const friendBtn = document.getElementById('profileFriendBtn');
+        const chatBtn = document.getElementById('profileChatBtn');
+        if (!friendBtn) return;
+
+        friendBtn.style.display = 'inline-flex';
+
+        // Buscar relacionamento entre currentUser e targetUserId
+        const { data: f } = await supabase
+            .from('friendships')
+            .select('*')
+            .or(`and(requester_id.eq.${currentUser.id},receiver_id.eq.${targetUserId}),and(requester_id.eq.${targetUserId},receiver_id.eq.${currentUser.id})`)
+            .maybeSingle();
+
+        function renderHeroBtn(rel) {
+            if (chatBtn) {
+                chatBtn.href = `/comunidade/conversas.html?friend=${encodeURIComponent(targetUserId)}&name=${encodeURIComponent(profileUser?.username || '')}`;
+            }
+
+            if (!rel || rel.status === 'rejected') {
+                friendBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Adicionar amigo';
+                friendBtn.className = 'btn-hero-primary';
+                friendBtn.disabled = false;
+                if (chatBtn) chatBtn.style.display = 'none';
+            } else if (rel.status === 'pending') {
+                if (rel.requester_id === currentUser.id) {
+                    friendBtn.innerHTML = '<i class="fa-regular fa-clock"></i> Solicitação enviada';
+                    friendBtn.className = 'btn-hero-secondary';
+                    friendBtn.disabled = false;
+                    friendBtn.title = 'Clique para cancelar solicitação';
+                } else {
+                    friendBtn.innerHTML = '<i class="fa-solid fa-check"></i> Aceitar amizade';
+                    friendBtn.className = 'btn-hero-primary';
+                    friendBtn.disabled = false;
+                }
+                if (chatBtn) chatBtn.style.display = 'none';
+            } else if (rel.status === 'accepted') {
+                friendBtn.innerHTML = '<i class="fa-solid fa-user-check"></i> Amigos';
+                friendBtn.className = 'btn-hero-secondary';
+                friendBtn.disabled = false;
+                friendBtn.title = 'Clique para desfazer amizade';
+                if (chatBtn) chatBtn.style.display = 'inline-flex';
+            }
+        }
+
+        renderHeroBtn(f);
+
+        friendBtn.onclick = async () => {
+            friendBtn.disabled = true;
+            try {
+                const { data: currentRel } = await supabase
+                    .from('friendships')
+                    .select('*')
+                    .or(`and(requester_id.eq.${currentUser.id},receiver_id.eq.${targetUserId}),and(requester_id.eq.${targetUserId},receiver_id.eq.${currentUser.id})`)
+                    .maybeSingle();
+
+                if (!currentRel || currentRel.status === 'rejected') {
+                    const { data: rpcRes, error: rpcErr } = await supabase.rpc('send_friend_request', { p_receiver_id: targetUserId });
+                    if (rpcErr || rpcRes?.success === false) {
+                        const { data: inserted, error: insErr } = await supabase
+                            .from('friendships')
+                            .insert({ requester_id: currentUser.id, receiver_id: targetUserId, status: 'pending' })
+                            .select().maybeSingle();
+                        if (insErr) throw insErr;
+                        renderHeroBtn(inserted);
+                    } else {
+                        renderHeroBtn({ requester_id: currentUser.id, receiver_id: targetUserId, status: 'pending' });
+                    }
+                    showToast('Solicitação de amizade enviada!', 'success');
+                } else if (currentRel.status === 'pending' && currentRel.receiver_id === currentUser.id) {
+                    const { error: updErr } = await supabase.from('friendships').update({ status: 'accepted' }).eq('id', currentRel.id);
+                    if (updErr) throw updErr;
+                    currentRel.status = 'accepted';
+                    renderHeroBtn(currentRel);
+                    loadStats();
+                    showToast('Amizade aceita!', 'success');
+                } else if (currentRel.status === 'pending' && currentRel.requester_id === currentUser.id) {
+                    const { error: delErr } = await supabase.from('friendships').delete().eq('id', currentRel.id);
+                    if (delErr) throw delErr;
+                    renderHeroBtn(null);
+                    showToast('Solicitação cancelada.', 'info');
+                } else if (currentRel.status === 'accepted') {
+                    if (!confirm(`Deseja realmente desfazer a amizade com @${profileUser?.username || 'este usuário'}?`)) {
+                        friendBtn.disabled = false;
+                        return;
+                    }
+                    const { error: delErr } = await supabase.from('friendships').delete().eq('id', currentRel.id);
+                    if (delErr) throw delErr;
+                    renderHeroBtn(null);
+                    loadStats();
+                    showToast('Amizade desfeita.', 'info');
+                }
+            } catch (err) {
+                console.error('Erro na ação de amizade:', err);
+                showToast(err.message || 'Erro ao processar ação de amizade.', 'error');
+            } finally {
+                friendBtn.disabled = false;
+            }
+        };
     }
 
     // =============================================
@@ -631,7 +758,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // A previa mostra quem ainda dá para seguir ou adicionar. Se todo
         // mundo da previa ja esta conectado, completa com os proximos da
         // lista para o card nunca ficar vazio sem motivo.
-        const conectaveis = pessoas.filter(p => !p.is_following && p.friendship_status !== 'accepted');
+        const conectaveis = pessoas.filter(p => p.friendship_status !== 'accepted');
         const previa = (conectaveis.length ? conectaveis : pessoas).slice(0, PREVIA_PESSOAS);
 
         suggestedProfiles = previa;
@@ -737,24 +864,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const acoes = document.createElement('div');
         acoes.className = 'suggested-profile-actions';
 
-        const seguir = document.createElement('button');
-        seguir.type = 'button';
-        seguir.className = 'suggestion-follow-button';
-        seguir.dataset.acao = 'seguir';
-        seguir.dataset.userId = pessoa.id;
-        atualizarBotaoSeguir(seguir, pessoa);
+        const amigoBtn = document.createElement('button');
+        amigoBtn.type = 'button';
+        amigoBtn.className = 'suggestion-friend-button';
+        amigoBtn.dataset.acao = 'amizade';
+        amigoBtn.dataset.userId = pessoa.id;
+        atualizarBotaoAmizade(amigoBtn, pessoa);
 
-        acoes.append(seguir);
+        acoes.append(amigoBtn);
 
         if (!compacto) {
-            const adicionar = document.createElement('button');
-            adicionar.type = 'button';
-            adicionar.className = 'suggestion-friend-button';
-            adicionar.dataset.acao = 'amizade';
-            adicionar.dataset.userId = pessoa.id;
-            atualizarBotaoAmizade(adicionar, pessoa);
-            acoes.append(adicionar);
-
             const conversar = document.createElement('a');
             conversar.className = 'suggestion-chat-button';
             conversar.href = `/comunidade/conversas.html?friend=${encodeURIComponent(pessoa.id)}&name=${encodeURIComponent(pessoa.username)}`;
@@ -792,36 +911,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     // =============================================
     // 8.1.3 AÇÕES
     // =============================================
-    function atualizarBotaoSeguir(botao, pessoa, ocupado = false) {
-        const seguindo = pessoa.is_following;
-        botao.disabled = ocupado;
-        botao.classList.toggle('is-following', seguindo);
-        botao.setAttribute('aria-pressed', String(seguindo));
-        botao.setAttribute('aria-label', `${seguindo ? 'Deixar de seguir' : 'Seguir'} ${pessoa.username}`);
-        botao.title = seguindo ? 'Deixar de seguir' : 'Seguir';
-        botao.textContent = ocupado ? '...' : (seguindo ? 'Seguindo' : 'Seguir');
-    }
-
     function atualizarBotaoAmizade(botao, pessoa, ocupado = false) {
         const status = pessoa.friendship_status;
-        // 'pending' sem is_requester significa que o PEDIDO VEIO DA OUTRA
-        // PESSOA. Nao ha como responder daqui: o botao desliga e manda
-        // para o perfil, onde a solicitacao aparece.
         const veioDeles = status === 'pending' && !pessoa.is_requester;
-        botao.disabled = ocupado || status === 'accepted' || status === 'blocked' || veioDeles;
-        botao.classList.toggle('is-pending', status === 'pending');
+        botao.disabled = ocupado || status === 'blocked';
+        botao.classList.toggle('is-pending', status === 'pending' && pessoa.is_requester);
         botao.classList.toggle('is-friends', status === 'accepted');
         botao.classList.toggle('is-incoming', veioDeles);
 
         let rotulo = 'Adicionar';
         if (status === 'accepted') rotulo = 'Amigos';
-        else if (status === 'pending') rotulo = veioDeles ? 'Te pediu' : 'Solicitado';
+        else if (status === 'pending') rotulo = veioDeles ? 'Aceitar' : 'Solicitado';
         else if (status === 'blocked') rotulo = 'Indisponível';
 
         botao.setAttribute('aria-label', `${rotulo}: ${pessoa.username}`);
         botao.title = veioDeles
-            ? 'Esta pessoa enviou um pedido de amizade. Abra o perfil para aceitar ou recusar.'
-            : rotulo;
+            ? 'Clique para aceitar o pedido de amizade'
+            : (status === 'accepted' ? 'Vocês são amigos' : rotulo);
         botao.textContent = ocupado ? '...' : rotulo;
     }
 
@@ -831,8 +937,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             || null;
     }
 
-    // Redesenha so a linha de quem agiu: a lista inteira nao precisa
-    // recarregar, e recarregar perderia o foco do botao.
     function atualizarLinha(userId) {
         const pessoa = acharPessoa(userId);
         if (!pessoa) return;
@@ -840,46 +944,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!node.dataset || !node.dataset.userId) return;
             const item = node.closest('.suggested-profile-item');
             if (!item) return;
-            const seguir = item.querySelector('[data-acao="seguir"]');
             const amizade = item.querySelector('[data-acao="amizade"]');
-            if (seguir) atualizarBotaoSeguir(seguir, pessoa);
             if (amizade) atualizarBotaoAmizade(amizade, pessoa);
         });
-    }
-
-    async function alternarSeguir(userId, botao) {
-        if (!currentUser || !isValidUuid(userId) || userId === currentUser.id) return;
-        const pessoa = acharPessoa(userId);
-        if (!pessoa || botao.disabled) return;
-
-        const estavaSeguindo = pessoa.is_following;
-        const vaiSeguir = !estavaSeguindo;
-        atualizarBotaoSeguir(botao, pessoa, true);
-
-        const pedido = vaiSeguir
-            ? supabase.from('follows').insert({ follower_id: currentUser.id, followed_id: userId })
-            : supabase.from('follows').delete()
-                .eq('follower_id', currentUser.id)
-                .eq('followed_id', userId);
-
-        const { error } = await pedido;
-        if (error) {
-            console.error('❌ Erro ao atualizar seguimento:', error);
-            atualizarBotaoSeguir(botao, pessoa);
-            showToast('Não foi possível atualizar o seguimento. Tente novamente.', 'error');
-            return;
-        }
-
-        pessoa.is_following = vaiSeguir;
-        if (vaiSeguir) followedUserIds.add(userId); else followedUserIds.delete(userId);
-
-        atualizarBotaoSeguir(botao, pessoa);
-        atualizarLinha(userId);
-        atualizarEstatisticasPerfil(userId, vaiSeguir);
-        showToast(
-            vaiSeguir ? `Agora você segue @${pessoa.username}` : `Você deixou de seguir @${pessoa.username}`,
-            'success'
-        );
     }
 
     async function pedirAmizade(userId, botao) {
@@ -892,11 +959,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data, error } = await supabase.rpc('send_friend_request', { p_receiver_id: userId });
 
         if (error || data?.success === false) {
-            const msg = data?.error || error?.message || 'Não foi possível enviar o pedido de amizade.';
-            console.warn('⚠️ Pedido de amizade não enviado:', msg);
-            atualizarBotaoAmizade(botao, pessoa);
-            showToast(msg, 'error', 5000);
-            return;
+            // Fallback direto
+            const { error: insErr } = await supabase
+                .from('friendships')
+                .insert({ requester_id: currentUser.id, receiver_id: userId, status: 'pending' });
+
+            if (insErr) {
+                console.warn('⚠️ Erro ao enviar pedido de amizade:', insErr);
+                atualizarBotaoAmizade(botao, pessoa);
+                showToast('Não foi possível enviar o pedido de amizade.', 'error');
+                return;
+            }
         }
 
         pessoa.friendship_status = 'pending';
@@ -906,16 +979,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         showToast(`Pedido de amizade enviado para @${pessoa.username}.`, 'success');
     }
 
-    function atualizarEstatisticasPerfil(userId, isFollowing) {
-        if (!profileUser) return;
+    async function aceitarAmizade(userId, botao) {
+        if (!currentUser || !isValidUuid(userId)) return;
+        const pessoa = acharPessoa(userId);
+        if (!pessoa || botao.disabled) return;
 
-        const delta = isFollowing ? 1 : -1;
+        atualizarBotaoAmizade(botao, pessoa, true);
+
+        let success = false;
+        if (pessoa.friendship_id) {
+            const { data, error } = await supabase.rpc('respond_friend_request', {
+                p_friendship_id: pessoa.friendship_id,
+                p_action: 'accepted'
+            });
+            if (!error && data?.success !== false) success = true;
+        }
+
+        if (!success) {
+            let query = supabase.from('friendships').update({ status: 'accepted' });
+            if (pessoa.friendship_id) query = query.eq('id', pessoa.friendship_id);
+            else query = query.eq('requester_id', userId).eq('receiver_id', currentUser.id);
+            const { error: updErr } = await query;
+            if (updErr) {
+                console.warn('⚠️ Erro ao aceitar amizade:', updErr);
+                atualizarBotaoAmizade(botao, pessoa);
+                showToast('Não foi possível aceitar a amizade.', 'error');
+                return;
+            }
+        }
+
+        pessoa.friendship_status = 'accepted';
+        atualizarBotaoAmizade(botao, pessoa);
+        atualizarLinha(userId);
+        atualizarEstatisticasPerfil(userId, true);
+        showToast(`Você e @${pessoa.username} agora são amigos!`, 'success');
+    }
+
+    function atualizarEstatisticasPerfil(userId, deltaIsFriend = true) {
         if (isOwnProfile) {
-            profileUser.following_count = Math.max(0, (Number(profileUser.following_count) || 0) + delta);
-            setText('statFollowing', formatNumber(profileUser.following_count));
-        } else if (profileUser.id === userId) {
-            profileUser.followers_count = Math.max(0, (Number(profileUser.followers_count) || 0) + delta);
-            setText('statFollowers', formatNumber(profileUser.followers_count));
+            const cur = Number(document.getElementById('statFriends')?.textContent) || 0;
+            const delta = deltaIsFriend ? 1 : -1;
+            setText('statFriends', formatNumber(Math.max(0, cur + delta)));
         }
     }
 
@@ -981,8 +1085,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!botao || !container.contains(botao)) return;
             event.preventDefault();
             const userId = botao.dataset.userId;
-            if (botao.dataset.acao === 'seguir') alternarSeguir(userId, botao);
-            else if (botao.dataset.acao === 'amizade') pedirAmizade(userId, botao);
+            const pessoa = acharPessoa(userId);
+            if (botao.dataset.acao === 'amizade') {
+                if (pessoa && pessoa.friendship_status === 'pending' && !pessoa.is_requester) {
+                    aceitarAmizade(userId, botao);
+                } else if (pessoa && (!pessoa.friendship_status || pessoa.friendship_status === 'rejected')) {
+                    pedirAmizade(userId, botao);
+                }
+            }
         });
     }
 

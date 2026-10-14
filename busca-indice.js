@@ -175,7 +175,7 @@ window.BUSCA_INDICE = [
         "descricao": "Perfil — Amor NeuroDivergente",
         "secoes": [
             "Sobre",
-            "Quem seguir",
+            "Sugestões de amizade",
             "Comunidade",
             "Editar Perfil"
         ],

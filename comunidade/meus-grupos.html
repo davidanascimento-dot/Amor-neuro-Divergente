@@ -45,7 +45,8 @@
         <div class="group-library-layout">
             <aside class="group-library-rail" aria-label="Navegação de grupos">
                 <span class="groups-kicker">COMUNIDADES</span>
-                <a class="group-library-link active" href="/comunidade/meus-grupos.html"><i class="fa-solid fa-layer-group"></i> Meus grupos</a>
+                <a class="group-library-link active" id="railLinkMyGroups" href="#meus-grupos"><i class="fa-solid fa-layer-group"></i> Meus grupos</a>
+                <a class="group-library-link" id="railLinkMembers" href="#membros"><i class="fa-solid fa-user-group"></i> Pessoas & Amigos</a>
                 <a class="group-library-link" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-compass"></i> Explorar</a>
                 <a class="group-library-link" href="/comunidade/explorar-grupos.html#groupInviteForm"><i class="fa-solid fa-key"></i> Usar código</a>
                 <span class="group-library-rule"></span>
@@ -53,7 +54,12 @@
                 <p class="group-library-note">Públicos e privados, no mesmo lugar.</p>
             </aside>
 
-            <section class="group-library-content" aria-labelledby="myGroupsHeading">
+            <section class="group-library-content" id="myGroupsSection" aria-labelledby="myGroupsHeading">
+                <nav class="my-groups-mobile-nav" aria-label="Seletor de área móvel">
+                    <button class="my-groups-mobile-tab active" id="mobileTabGroups" type="button"><i class="fa-solid fa-layer-group"></i> Grupos</button>
+                    <button class="my-groups-mobile-tab" id="mobileTabMembers" type="button"><i class="fa-solid fa-user-group"></i> Pessoas & Amigos</button>
+                </nav>
+
                 <div class="page-heading group-library-heading">
                     <div>
                         <span class="groups-kicker">SEU ESPAÇO</span>
@@ -79,6 +85,40 @@
                 </section>
 
                 <div class="group-library-footer-note"><i class="fa-solid fa-circle-info"></i> Use o código de convite dentro de cada grupo privado para chamar alguém.</div>
+            </section>
+
+            <section class="group-library-content" id="membersSection" aria-labelledby="membersHeading" hidden>
+                <nav class="my-groups-mobile-nav" aria-label="Seletor de área móvel">
+                    <button class="my-groups-mobile-tab" id="mobileTabGroupsFromMembers" type="button"><i class="fa-solid fa-layer-group"></i> Grupos</button>
+                    <button class="my-groups-mobile-tab active" id="mobileTabMembersFromMembers" type="button"><i class="fa-solid fa-user-group"></i> Pessoas & Amigos</button>
+                </nav>
+
+                <div class="page-heading group-library-heading">
+                    <div>
+                        <span class="groups-kicker">COMUNIDADE</span>
+                        <h1 id="membersHeading">Pessoas & Amigos</h1>
+                        <p id="membersSubtitle">Todas as contas do Amor NeuroDivergente. Conecte-se e adicione amigos.</p>
+                    </div>
+                    <div class="group-library-total" aria-live="polite"><strong id="membersCount">0</strong><span>pessoas</span></div>
+                </div>
+
+                <label class="group-library-search" for="membersSearch">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="membersSearch" type="search" placeholder="Buscar pessoas por nome ou @usuario..." autocomplete="off">
+                </label>
+                <div class="my-groups-filters" role="group" aria-label="Filtrar pessoas e amizades">
+                    <button class="my-group-filter active" data-member-filter="all" type="button">Todas as contas</button>
+                    <button class="my-group-filter" data-member-filter="friends" type="button"><i class="fa-solid fa-user-check"></i> Amigos</button>
+                    <button class="my-group-filter" data-member-filter="incoming" type="button"><i class="fa-solid fa-inbox"></i> Solicitações recebidas <span id="incomingBadge" class="filter-counter-badge" hidden>0</span></button>
+                    <button class="my-group-filter" data-member-filter="outgoing" type="button"><i class="fa-solid fa-paper-plane"></i> Enviadas</button>
+                    <button class="my-group-filter" data-member-filter="suggestions" type="button"><i class="fa-solid fa-user-plus"></i> Sugestões</button>
+                </div>
+
+                <section class="my-groups-grid" id="membersGrid" aria-live="polite">
+                    <div class="groups-empty"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando membros da comunidade...</span></div>
+                </section>
+
+                <div class="group-library-footer-note"><i class="fa-solid fa-circle-info"></i> Adicione amigos para conversar por mensagem direta e compartilhar experiências.</div>
             </section>
         </div>
 

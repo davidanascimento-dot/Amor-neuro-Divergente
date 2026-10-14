@@ -85,6 +85,12 @@
                     <button class="btn-hero-primary" id="openEditBtn">
                         <i class="fa-solid fa-pen"></i> Editar Perfil
                     </button>
+                    <button class="btn-hero-primary" id="profileFriendBtn" style="display:none;">
+                        <i class="fa-solid fa-user-plus"></i> Adicionar amigo
+                    </button>
+                    <a class="btn-hero-secondary" id="profileChatBtn" style="display:none;" title="Conversar">
+                        <i class="fa-regular fa-comment-dots"></i> Conversar
+                    </a>
                 </div>
             </div>
         </div>
@@ -153,12 +159,12 @@
                     <h3 class="stats-card-title">Sobre</h3>
                     <div class="stats-row">
                         <div class="stats-item">
-                            <strong id="statFollowing">0</strong>
-                            <span>Seguindo</span>
+                            <strong id="statFriends">0</strong>
+                            <span>Amigos</span>
                         </div>
-                        <div class="stats-item">
-                            <strong id="statFollowers">0</strong>
-                            <span>Seguidores</span>
+                        <div class="stats-item" id="statRequestsWrapper">
+                            <strong id="statRequests">0</strong>
+                            <span id="statRequestsLabel">Solicitações</span>
                         </div>
                     </div>
                     <div class="stats-contrib">
@@ -169,7 +175,7 @@
                 </div>
 
                 <section class="profile-stats-card suggested-profiles-card" id="suggestedProfilesCard" aria-labelledby="suggestedProfilesTitle" aria-busy="false" hidden>
-                    <h3 class="stats-card-title" id="suggestedProfilesTitle">Quem seguir</h3>
+                    <h3 class="stats-card-title" id="suggestedProfilesTitle">Sugestões de amizade</h3>
                     <ul class="suggested-profiles-list" id="suggestedProfilesList" aria-live="polite"></ul>
 
                     <button type="button" class="stats-link suggested-profiles-more" id="suggestedProfilesMore"

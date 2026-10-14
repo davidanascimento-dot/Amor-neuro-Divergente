@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         groupQuery: '',
         myGroupFilter: 'all',
         myGroupQuery: '',
+        members: [],
+        memberFilter: 'all',
+        memberQuery: '',
+        activeMyGroupsView: 'groups',
         visibleGroups: 12,
         editingGroupId: null,
         deletingGroupId: null,
@@ -3595,6 +3599,346 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (pageUrl.searchParams.get('criar') === '1') openCreateModal();
     }
 
+    // =============================================
+    // ÁREA DE MEMBROS E AMIZADES EM MEUS GRUPOS
+    // =============================================
+    async function loadCommunityMembers() {
+        const grid = $('membersGrid');
+        if (!state.user?.id) {
+            state.members = [];
+            renderCommunityMembers();
+            return;
+        }
+
+        try {
+            const { data: profiles, error: profErr } = await supabase
+                .from('profiles')
+                .select('id, username, full_name, avatar_url, banner_url, bio, pronouns, location, is_verified, created_at, posts_count')
+                .order('created_at', { ascending: false });
+
+            if (profErr) throw profErr;
+
+            const { data: friendships, error: friendErr } = await supabase
+                .from('friendships')
+                .select('*')
+                .or(`requester_id.eq.${state.user.id},receiver_id.eq.${state.user.id}`);
+
+            if (friendErr) {
+                console.warn('⚠️ Aviso ao buscar amizades:', friendErr);
+            }
+
+            const friendMap = new Map();
+            (friendships || []).forEach(f => {
+                const otherId = f.requester_id === state.user.id ? f.receiver_id : f.requester_id;
+                friendMap.set(otherId, f);
+            });
+
+            state.members = (profiles || [])
+                .filter(p => p && p.id !== state.user.id)
+                .map(p => {
+                    const f = friendMap.get(p.id);
+                    return {
+                        id: p.id,
+                        username: p.username || 'Membro',
+                        full_name: p.full_name || '',
+                        avatar_url: p.avatar_url || null,
+                        banner_url: p.banner_url || null,
+                        bio: p.bio || '',
+                        pronouns: p.pronouns || '',
+                        location: p.location || '',
+                        is_verified: Boolean(p.is_verified),
+                        created_at: p.created_at,
+                        posts_count: Number(p.posts_count) || 0,
+                        friendship_id: f?.id || null,
+                        friendship_status: f?.status || null,
+                        is_requester: f ? f.requester_id === state.user.id : false
+                    };
+                });
+
+            renderCommunityMembers();
+        } catch (error) {
+            console.error('❌ Erro ao carregar membros da comunidade:', error);
+            if (grid) {
+                grid.innerHTML = '<div class="groups-empty"><i class="fa-solid fa-triangle-exclamation" style="font-size:30px;color:var(--cv-gold);"></i><strong>Não foi possível carregar as contas</strong><span>Tente recarregar a página.</span></div>';
+            }
+        }
+    }
+
+    function memberMatchesQuery(member, query) {
+        if (!query) return true;
+        return `${member.username || ''} ${member.full_name || ''} ${member.bio || ''} ${member.location || ''}`.toLowerCase().includes(query);
+    }
+
+    function renderCommunityMembers() {
+        const grid = $('membersGrid');
+        const count = $('membersCount');
+        const incomingBadge = $('incomingBadge');
+
+        if (!grid) return;
+
+        if (!state.user?.id) {
+            if (count) count.textContent = '0';
+            grid.innerHTML = '<div class="groups-empty my-groups-login"><i class="fa-solid fa-lock"></i><strong>Entre para conectar com amigos</strong><span>Faça login para ver as pessoas da comunidade e enviar pedidos de amizade.</span><a class="cv-secondary" href="/login/login.html">Entrar na conta</a></div>';
+            return;
+        }
+
+        const incomingCount = state.members.filter(m => m.friendship_status === 'pending' && !m.is_requester).length;
+        if (incomingBadge) {
+            incomingBadge.textContent = incomingCount;
+            incomingBadge.hidden = incomingCount === 0;
+        }
+
+        let filtered = state.members;
+        const query = (state.memberQuery || '').trim().toLowerCase();
+        if (query) {
+            filtered = filtered.filter(m => memberMatchesQuery(m, query));
+        }
+
+        if (state.memberFilter === 'friends') {
+            filtered = filtered.filter(m => m.friendship_status === 'accepted');
+        } else if (state.memberFilter === 'incoming') {
+            filtered = filtered.filter(m => m.friendship_status === 'pending' && !m.is_requester);
+        } else if (state.memberFilter === 'outgoing') {
+            filtered = filtered.filter(m => m.friendship_status === 'pending' && m.is_requester);
+        } else if (state.memberFilter === 'suggestions') {
+            filtered = filtered.filter(m => !m.friendship_status || m.friendship_status === 'rejected');
+        }
+
+        if (count) count.textContent = filtered.length;
+
+        if (!filtered.length) {
+            let msgTitle = 'Nenhuma pessoa encontrada';
+            let msgDesc = 'Tente outro termo na busca ou mude os filtros acima.';
+            if (state.memberFilter === 'friends') {
+                msgTitle = 'Você ainda não tem amigos adicionados';
+                msgDesc = 'Conecte-se com pessoas da comunidade enviando pedidos de amizade.';
+            } else if (state.memberFilter === 'incoming') {
+                msgTitle = 'Nenhuma solicitação pendente';
+                msgDesc = 'Quando alguém adicionar você, o pedido aparecerá aqui.';
+            } else if (state.memberFilter === 'outgoing') {
+                msgTitle = 'Nenhuma solicitação enviada';
+                msgDesc = 'Você não tem solicitações de amizade aguardando resposta.';
+            }
+
+            grid.innerHTML = `<div class="groups-empty"><i class="fa-solid fa-user-group" style="font-size:30px;color:var(--cv-gold);"></i><strong>${msgTitle}</strong><span>${msgDesc}</span></div>`;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(member => renderMemberCard(member)).join('');
+    }
+
+    function renderMemberCard(member) {
+        const name = member.full_name || member.username || 'Membro';
+        const username = member.username || 'usuario';
+        const avatar = safeMediaUrl(member.avatar_url);
+        const banner = safeMediaUrl(member.banner_url);
+        const status = member.friendship_status;
+        const isReq = member.is_requester;
+        const fId = member.friendship_id;
+
+        let badgeLabel = 'Membro';
+        let badgeClass = 'is-public';
+        let badgeIcon = 'fa-user';
+
+        if (status === 'accepted') {
+            badgeLabel = 'Amigos';
+            badgeClass = 'is-friend';
+            badgeIcon = 'fa-check';
+        } else if (status === 'pending' && !isReq) {
+            badgeLabel = 'Te pediu amizade';
+            badgeClass = 'is-incoming';
+            badgeIcon = 'fa-inbox';
+        } else if (status === 'pending' && isReq) {
+            badgeLabel = 'Solicitado';
+            badgeClass = 'is-pending';
+            badgeIcon = 'fa-clock';
+        } else if (member.is_verified) {
+            badgeLabel = 'Verificado';
+            badgeClass = 'is-public';
+            badgeIcon = 'fa-circle-check';
+        }
+
+        let mainAction = '';
+        if (status === 'accepted') {
+            mainAction = `<button class="explore-card-action-main is-friend" type="button" data-friend-action="unfriend" data-user-id="${escapeHtml(member.id)}" data-friendship-id="${escapeHtml(fId || '')}" title="Clique para desfazer amizade"><i class="fa-solid fa-user-check"></i> Amigos</button>`;
+        } else if (status === 'pending' && !isReq) {
+            mainAction = `<button class="explore-card-action-main is-accept" type="button" data-friend-action="accept" data-friendship-id="${escapeHtml(fId || '')}" data-user-id="${escapeHtml(member.id)}"><i class="fa-solid fa-check"></i> Aceitar</button><button class="explore-card-action-icon is-reject" type="button" data-friend-action="reject" data-friendship-id="${escapeHtml(fId || '')}" data-user-id="${escapeHtml(member.id)}" title="Recusar solicitação"><i class="fa-solid fa-xmark"></i></button>`;
+        } else if (status === 'pending' && isReq) {
+            mainAction = `<button class="explore-card-action-main is-pending" type="button" data-friend-action="cancel" data-friendship-id="${escapeHtml(fId || '')}" data-user-id="${escapeHtml(member.id)}" title="Clique para cancelar solicitação"><i class="fa-regular fa-clock"></i> Solicitado</button>`;
+        } else {
+            mainAction = `<button class="explore-card-action-main is-join" type="button" data-friend-action="add" data-user-id="${escapeHtml(member.id)}"><i class="fa-solid fa-user-plus"></i> Adicionar amigo</button>`;
+        }
+
+        const chatAction = `<a class="explore-card-action-icon" href="/comunidade/conversas.html?friend=${encodeURIComponent(member.id)}&name=${encodeURIComponent(username)}" aria-label="Conversar com ${escapeHtml(name)}" title="Conversar"><i class="fa-regular fa-comments"></i></a>`;
+        const profileAction = `<a class="explore-card-action-icon" href="/comunidade/perfil.html?id=${encodeURIComponent(member.id)}" aria-label="Abrir perfil de ${escapeHtml(name)}" title="Ver perfil"><i class="fa-regular fa-id-card"></i></a>`;
+
+        const bannerMarkup = banner
+            ? `<img src="${escapeHtml(banner)}" alt="Banner de ${escapeHtml(name)}" loading="lazy">`
+            : '<div class="member-card-banner-fallback"></div>';
+
+        const bioText = member.bio ? escapeHtml(member.bio) : 'Membro da comunidade Amor NeuroDivergente.';
+        const metaText = member.location ? escapeHtml(member.location) : (member.posts_count > 0 ? `${member.posts_count} publicações` : 'Conta cadastrada');
+
+        return `<article class="explore-card my-group-card member-card" data-member-id="${escapeHtml(member.id)}">
+            <div class="explore-card-banner">
+                ${bannerMarkup}
+                <span class="explore-card-avatar">${avatar ? `<img src="${escapeHtml(avatar)}" alt="${escapeHtml(name)}">` : escapeHtml(initial(name))}</span>
+                <span class="explore-card-privacy ${badgeClass}"><i class="fa-solid ${badgeIcon}"></i> ${badgeLabel}</span>
+            </div>
+            <div class="explore-card-body">
+                <div class="explore-card-title-row">
+                    <h3><a href="/comunidade/perfil.html?id=${encodeURIComponent(member.id)}">${escapeHtml(name)}</a></h3>
+                    <span class="explore-card-joiners">@${escapeHtml(username)}</span>
+                </div>
+                <p class="explore-card-description">${bioText}</p>
+                <div class="explore-card-meta">
+                    <span class="explore-card-members"><i class="fa-regular fa-user"></i> ${metaText}</span>
+                    ${member.pronouns ? `<span class="explore-card-category">${escapeHtml(member.pronouns)}</span>` : ''}
+                </div>
+                <div class="explore-card-actions">${mainAction}${chatAction}${profileAction}</div>
+            </div>
+        </article>`;
+    }
+
+    async function sendFriendRequest(userId) {
+        if (!state.user?.id) {
+            showToast('Faça login para adicionar amigos.', 'warning');
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase.rpc('send_friend_request', { p_receiver_id: userId });
+            if (error || data?.success === false) {
+                const { data: newRow, error: insertErr } = await supabase
+                    .from('friendships')
+                    .insert({
+                        requester_id: state.user.id,
+                        receiver_id: userId,
+                        status: 'pending'
+                    })
+                    .select()
+                    .maybeSingle();
+
+                if (insertErr) throw insertErr;
+
+                const member = state.members.find(m => m.id === userId);
+                if (member) {
+                    member.friendship_status = 'pending';
+                    member.is_requester = true;
+                    member.friendship_id = newRow?.id || member.friendship_id;
+                }
+            } else {
+                const member = state.members.find(m => m.id === userId);
+                if (member) {
+                    member.friendship_status = 'pending';
+                    member.is_requester = true;
+                    member.friendship_id = data?.friendship_id || member.friendship_id;
+                }
+            }
+
+            renderCommunityMembers();
+            showToast('Solicitação de amizade enviada!', 'success');
+        } catch (err) {
+            console.error('Erro ao enviar solicitação de amizade:', err);
+            showToast(err.message || 'Não foi possível enviar a solicitação.', 'error');
+        }
+    }
+
+    async function respondFriendRequest(friendshipId, action, targetUserId) {
+        if (!state.user?.id) return;
+        try {
+            const pAction = action === 'accept' ? 'accepted' : 'rejected';
+            const { data, error } = await supabase.rpc('respond_friend_request', {
+                p_friendship_id: friendshipId,
+                p_action: pAction
+            });
+
+            if (error || data?.success === false) {
+                if (action === 'accept') {
+                    let query = supabase.from('friendships').update({ status: 'accepted' });
+                    if (friendshipId) query = query.eq('id', friendshipId);
+                    else query = query.eq('requester_id', targetUserId).eq('receiver_id', state.user.id);
+                    const { error: updErr } = await query;
+                    if (updErr) throw updErr;
+                } else {
+                    let query = supabase.from('friendships').delete();
+                    if (friendshipId) query = query.eq('id', friendshipId);
+                    else query = query.eq('requester_id', targetUserId).eq('receiver_id', state.user.id);
+                    const { error: delErr } = await query;
+                    if (delErr) throw delErr;
+                }
+            }
+
+            const member = state.members.find(m => m.id === targetUserId);
+            if (member) {
+                if (action === 'accept') {
+                    member.friendship_status = 'accepted';
+                    showToast(`Você e @${member.username} agora são amigos!`, 'success');
+                } else {
+                    member.friendship_status = null;
+                    member.friendship_id = null;
+                    showToast('Solicitação recusada.', 'info');
+                }
+            }
+
+            renderCommunityMembers();
+        } catch (err) {
+            console.error('Erro ao responder solicitação de amizade:', err);
+            showToast(err.message || 'Não foi possível processar a solicitação.', 'error');
+        }
+    }
+
+    async function cancelOrUnfriend(friendshipId, targetUserId) {
+        if (!state.user?.id) return;
+        try {
+            let query = supabase.from('friendships').delete();
+            if (friendshipId) {
+                query = query.eq('id', friendshipId);
+            } else {
+                query = query.or(`and(requester_id.eq.${state.user.id},receiver_id.eq.${targetUserId}),and(requester_id.eq.${targetUserId},receiver_id.eq.${state.user.id})`);
+            }
+
+            const { error } = await query;
+            if (error) throw error;
+
+            const member = state.members.find(m => m.id === targetUserId);
+            if (member) {
+                const eraAmigo = member.friendship_status === 'accepted';
+                member.friendship_status = null;
+                member.friendship_id = null;
+                member.is_requester = false;
+                showToast(eraAmigo ? `Amizade desfeita com @${member.username}.` : 'Solicitação cancelada.', 'info');
+            }
+
+            renderCommunityMembers();
+        } catch (err) {
+            console.error('Erro ao cancelar solicitação/desfazer amizade:', err);
+            showToast(err.message || 'Não foi possível completar a ação.', 'error');
+        }
+    }
+
+    function switchMyGroupsView(view) {
+        state.activeMyGroupsView = view;
+        const isMembers = view === 'members';
+
+        const myGroupsSec = $('myGroupsSection');
+        const membersSec = $('membersSection');
+        if (myGroupsSec) myGroupsSec.hidden = isMembers;
+        if (membersSec) membersSec.hidden = !isMembers;
+
+        $('railLinkMyGroups')?.classList.toggle('active', !isMembers);
+        $('railLinkMembers')?.classList.toggle('active', isMembers);
+
+        $('mobileTabGroups')?.classList.toggle('active', !isMembers);
+        $('mobileTabMembers')?.classList.toggle('active', isMembers);
+        $('mobileTabGroupsFromMembers')?.classList.toggle('active', !isMembers);
+        $('mobileTabMembersFromMembers')?.classList.toggle('active', isMembers);
+
+        if (isMembers && (!state.members || state.members.length === 0)) {
+            loadCommunityMembers();
+        }
+    }
+
     function setupMyGroups() {
         $('myGroupsCreateButton')?.addEventListener('click', () => openCreateModal());
         $('closeExploreCreateModal')?.addEventListener('click', closeCreateModal);
@@ -3603,6 +3947,70 @@ document.addEventListener('DOMContentLoaded', async () => {
             state.myGroupQuery = event.target.value || '';
             renderMyGroups();
         });
+
+        // Alternância entre Meus grupos e Pessoas & Amigos
+        $('railLinkMyGroups')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.hash = 'meus-grupos';
+            switchMyGroupsView('groups');
+        });
+        $('railLinkMembers')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.hash = 'membros';
+            switchMyGroupsView('members');
+        });
+        $('mobileTabGroups')?.addEventListener('click', () => {
+            window.location.hash = 'meus-grupos';
+            switchMyGroupsView('groups');
+        });
+        $('mobileTabMembers')?.addEventListener('click', () => {
+            window.location.hash = 'membros';
+            switchMyGroupsView('members');
+        });
+        $('mobileTabGroupsFromMembers')?.addEventListener('click', () => {
+            window.location.hash = 'meus-grupos';
+            switchMyGroupsView('groups');
+        });
+        $('mobileTabMembersFromMembers')?.addEventListener('click', () => {
+            window.location.hash = 'membros';
+            switchMyGroupsView('members');
+        });
+
+        $('membersSearch')?.addEventListener('input', event => {
+            state.memberQuery = event.target.value || '';
+            renderCommunityMembers();
+        });
+
+        document.querySelectorAll('[data-member-filter]').forEach(button => {
+            button.addEventListener('click', () => {
+                state.memberFilter = button.dataset.memberFilter || 'all';
+                document.querySelectorAll('[data-member-filter]').forEach(item => item.classList.toggle('active', item === button));
+                renderCommunityMembers();
+            });
+        });
+
+        $('membersGrid')?.addEventListener('click', event => {
+            const btn = event.target.closest('[data-friend-action]');
+            if (!btn) return;
+            event.stopPropagation();
+            const action = btn.dataset.friendAction;
+            const userId = btn.dataset.userId;
+            const friendshipId = btn.dataset.friendshipId;
+
+            if (action === 'add') {
+                sendFriendRequest(userId);
+            } else if (action === 'accept') {
+                respondFriendRequest(friendshipId, 'accept', userId);
+            } else if (action === 'reject') {
+                respondFriendRequest(friendshipId, 'reject', userId);
+            } else if (action === 'cancel' || action === 'unfriend') {
+                if (action === 'unfriend') {
+                    if (!confirm('Deseja realmente desfazer esta amizade?')) return;
+                }
+                cancelOrUnfriend(friendshipId, userId);
+            }
+        });
+
         ['avatar', 'banner'].forEach(kind => {
             const suffix = kind === 'avatar' ? 'Avatar' : 'Banner';
             $(`newCommunity${suffix}File`)?.addEventListener('change', event => previewGroupFile(kind, event.target.files?.[0]));
@@ -3645,7 +4053,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!card || event.target.closest('a,button')) return;
             window.location.href = internalGroupUrl(card.dataset.groupId);
         });
+
+        // Conferir hash inicial
+        const hash = window.location.hash.toLowerCase();
+        if (hash === '#membros' || hash === '#amigos' || hash === '#pessoas') {
+            switchMyGroupsView('members');
+        } else {
+            switchMyGroupsView('groups');
+        }
+
+        window.addEventListener('hashchange', () => {
+            const curHash = window.location.hash.toLowerCase();
+            if (curHash === '#membros' || curHash === '#amigos' || curHash === '#pessoas') {
+                switchMyGroupsView('members');
+            } else {
+                switchMyGroupsView('groups');
+            }
+        });
+
         renderMyGroups();
+        loadCommunityMembers();
+
         const editId = pageUrl.searchParams.get('editar');
         if (editId) {
             window.setTimeout(async () => {
