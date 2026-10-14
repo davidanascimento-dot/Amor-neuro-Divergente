@@ -68,11 +68,20 @@
         'lia-corpo': '/img/lia/lia-corpo.png',
 
         // ---- NeuroComunidade -------------------------------------------
-        // Sem arte própria por enquanto: o banner da comunidade saiu da
-        // home e o bloco definitivo (comunidade + AcolherIA no mesmo
-        // banner) ainda vai ser montado. Quando ele entrar, o caminho da
-        // arte entra aqui e a <section> usa data-img-fundo, como a da
-        // AcolherIA — texto por cima da arte, sem foto ao lado.
+        // Fundo do banner de boas-vindas da comunidade
+        // (/comunidade/comunidade.html). Panorâmica: o grupo de pessoas
+        // fica no centro-direita e o lado esquerdo é céu, que é onde o
+        // texto do banner se apoia.
+        //
+        // Entra pelo mesmo caminho dos banners da landing: data-img-fundo,
+        // não <img>. O conteúdo é sempre HTML e CSS por cima da foto.
+        'boas-vindas-comunidade': '/img/ilustracoes/img-comunidade-fundo.jpg',
+
+        // O banner antigo da comunidade saiu da home e o bloco definitivo
+        // (comunidade + AcolherIA no mesmo banner) ainda vai ser montado.
+        // Quando ele entrar, o caminho da arte entra aqui e a <section>
+        // usa data-img-fundo, como a da AcolherIA — texto por cima da
+        // arte, sem foto ao lado.
 
         // ---- Landing page: uma faixa por área --------------------------
         // A arte entra como FUNDO do bloco (data-img-fundo), com o texto

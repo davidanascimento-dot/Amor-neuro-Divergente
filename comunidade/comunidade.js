@@ -3736,6 +3736,149 @@ window.showCommunityRules = function() {
     });
 };
 
+// 4.1 BANNER DE BOAS-VINDAS
+// -------------------------------------------------------------------------
+// O banner é HTML e CSS puros: a foto entra por data-img-fundo, aplicada
+// pelo /imagens.js, e o texto é conteúdo de verdade — selecionável,
+// indexável e legível por leitor de tela.
+//
+// Aqui ficam só os três comportamentos:
+//
+//   1. "Conhecer a comunidade" abre a apresentação das quatro áreas.
+//      Cada item da apresentação aciona a própria aba da subnav, que
+//      já sabe trocar de tela (Fórum, Eventos) ou navegar (Grupos,
+//      Conversa). Nenhum destino novo, nenhuma página nova.
+//   2. "Ver regras" chama o modal que já existia. Não há um segundo
+//      sistema de regras: o mesmo showCommunityRules() de sempre.
+//   3. Dispensar esconde o banner e guarda a escolha no navegador.
+//
+// A persistência é localStorage com try/catch, o mesmo caminho já usado
+// em conversas.js ('acolheria:rail') e chat-Ia.js. Não entra no
+// Supabase, não cria tabela e não sabe nada de quem está autenticado:
+// trocar de conta ou deslogar não afeta o banner.
+//
+// Se o navegador bloquear o armazenamento, o banner volta a aparecer
+// na próxima visita. É o comportamento seguro: nenhum erro na tela.
+var CHAVE_BANNER_BOAS_VINDAS = 'comunidade:boas-vindas';
+
+function lerPreferenciaBanner() {
+    try {
+        return localStorage.getItem(CHAVE_BANNER_BOAS_VINDAS);
+    } catch (e) {
+        return null;   // modo privado: sem memória, mostra sempre
+    }
+}
+
+function guardarPreferenciaBanner(valor) {
+    try {
+        if (valor) {
+            localStorage.setItem(CHAVE_BANNER_BOAS_VINDAS, valor);
+        } else {
+            localStorage.removeItem(CHAVE_BANNER_BOAS_VINDAS);
+        }
+    } catch (e) { /* sem localStorage: a escolha vale só nesta visita */ }
+}
+
+function initWelcomeBanner() {
+    var banner = document.getElementById('welcomeBanner');
+    if (!banner) return;
+
+    var btnConhecer = document.getElementById('welcomeKnowBtn');
+    var btnRegras = document.getElementById('welcomeRulesBtn');
+    var btnDispensar = document.getElementById('welcomeDismissBtn');
+    var areas = document.getElementById('welcomeAreas');
+
+    // ---- Apresentação das áreas: abre e fecha ----
+    function setAreasAberto(aberto) {
+        if (!areas || !btnConhecer) return;
+        areas.hidden = !aberto;
+        btnConhecer.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+    }
+
+    if (btnConhecer && areas) {
+        btnConhecer.addEventListener('click', function () {
+            setAreasAberto(areas.hidden);
+        });
+    }
+
+    // Escolher uma área fecha a apresentação e aciona a subnav real.
+    // Delegação: os itens já estão no HTML, não são criados aqui.
+    if (areas) {
+        areas.addEventListener('click', function (e) {
+            var item = e.target.closest ? e.target.closest('.welcome-area') : null;
+            if (!item) return;
+
+            setAreasAberto(false);
+
+            var alvo = document.querySelector('.subnav-tab[data-tab="' + item.dataset.welcomeArea + '"]');
+            if (!alvo) return;
+
+            alvo.click();
+
+            // Grupos e Conversa são links reais: o clique sai da página.
+            // Nas abas que ficam aqui, o foco vai para a tela nova, senão
+            // o foco continua num item que acabou de sumir com o banner.
+            var destino = document.getElementById('screen-' + item.dataset.welcomeArea);
+            if (destino) {
+                var titulo = destino.querySelector('.screen-header h2');
+                if (titulo) {
+                    titulo.setAttribute('tabindex', '-1');
+                    titulo.focus({ preventScroll: true });
+                }
+            }
+        });
+    }
+
+    // ---- Ver regras: o modal que já existia ----
+    if (btnRegras) {
+        btnRegras.addEventListener('click', function () {
+            if (typeof window.showCommunityRules === 'function') {
+                window.showCommunityRules();
+            }
+        });
+    }
+
+    // ---- Dispensar e trazer de volta ----
+    var btnVoltar = document.getElementById('rulesBannerWelcomeBtn');
+
+    function esconderBanner() {
+        banner.hidden = true;
+        setAreasAberto(false);
+        if (btnVoltar) btnVoltar.hidden = false;
+    }
+
+    window.mostrarBannerBoasVindas = function () {
+        guardarPreferenciaBanner(null);   // limpa: na próxima volta a ver
+        banner.hidden = false;
+        setAreasAberto(false);
+        if (btnVoltar) btnVoltar.hidden = true;
+        var titulo = document.getElementById('welcomeBannerTitle');
+        if (titulo) {
+            titulo.setAttribute('tabindex', '-1');
+            titulo.focus({ preventScroll: true });
+        }
+        // Sobe até o banner só se ele não estiver à vista: quem está
+        // lendo o feed não deve ter a rolagem puxada para o topo.
+        var topo = banner.getBoundingClientRect().top;
+        if (topo < 0 || topo > window.innerHeight) {
+            banner.scrollIntoView({ block: 'nearest' });
+        }
+    };
+
+    if (btnDispensar) {
+        btnDispensar.addEventListener('click', function () {
+            guardarPreferenciaBanner('dispensado');
+            esconderBanner();
+        });
+    }
+
+    if (lerPreferenciaBanner() === 'dispensado') {
+        esconderBanner();
+    } else if (btnVoltar) {
+        btnVoltar.hidden = true;
+    }
+}
+
 // 5. BANNER DE REGRAS
 function addRulesBanner() {
     var screen = document.getElementById('screen-forum');
@@ -3746,14 +3889,43 @@ function addRulesBanner() {
     banner.id = 'rulesBanner';
    banner.style.cssText = 'padding:12px 16px;margin-bottom:12px;background:var(--cx-bg-soft,#faf9f6);border-radius:6px;border:1px solid var(--cx-border,#e8e3dd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;';
     
+    // Os botões ficam num grupo para o `justify-content: space-between`
+    // continuar separando a mensagem dos botões, como era antes.
+    var acoes = document.createElement('div');
+    acoes.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
+    
+    var btnRegras = document.createElement('button');
+    btnRegras.type = 'button';
+    btnRegras.innerHTML = '<i class="fa-regular fa-eye"></i> Ver regras';
+    btnRegras.style.cssText = 'padding:6px 18px;border:1px solid var(--border-color,#e2e8f0);border-radius:20px;background:var(--bg-card,#fff);color:var(--text-primary,#1e293b);font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s;';
+    btnRegras.onmouseover = function () { this.style.borderColor = '#7c3aed'; };
+    btnRegras.onmouseout = function () { this.style.borderColor = 'var(--border-color,#e2e8f0)'; };
+    btnRegras.addEventListener('click', function () { window.showCommunityRules(); });
+    acoes.appendChild(btnRegras);
+
+    // O banner de boas-vindas pode ser dispensado. Este botão é o caminho
+    // de volta — e a prova de que dispensar é reversível, sem precisar
+    // guardar nada no banco nem ligado à autenticação.
+    var btnVoltar = document.createElement('button');
+    btnVoltar.type = 'button';
+    btnVoltar.className = 'rules-banner-btn-boas-vindas';
+    btnVoltar.id = 'rulesBannerWelcomeBtn';
+    btnVoltar.innerHTML = '<i class="fa-regular fa-hand"></i> Boas-vindas';
+    btnVoltar.hidden = true;
+    btnVoltar.addEventListener('click', function () {
+        if (typeof window.mostrarBannerBoasVindas === 'function') {
+            window.mostrarBannerBoasVindas();
+        }
+    });
+    acoes.appendChild(btnVoltar);
+    
     banner.innerHTML = 
         '<div style="display:flex;align-items:center;gap:10px;">' +
        '<i class="fa-solid fa-shield-halved" style="font-size:20px;color:var(--cx-gold,#b8935a);"></i>'+
         '<div><span style="font-weight:600;color:var(--text-primary,#1e293b);">Regras da Comunidade</span>' +
         '<p style="font-size:12px;color:var(--text-secondary,#64748b);margin:0;">Ajude a manter um ambiente acolhedor</p></div>' +
-        '</div>' +
-        '<button onclick="window.showCommunityRules()" style="padding:6px 18px;border:1px solid var(--border-color,#e2e8f0);border-radius:20px;background:var(--bg-card,#fff);color:var(--text-primary,#1e293b);font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#7c3aed\'" onmouseout="this.style.borderColor=\'var(--border-color,#e2e8f0)\'">' +
-        '<i class="fa-regular fa-eye"></i> Ver regras</button>';
+        '</div>';
+    banner.appendChild(acoes);
     
     var quickPost = screen.querySelector('.quick-post');
     if (quickPost) {
@@ -4502,6 +4674,9 @@ window.openFriendChat = async function(conversationId, friendUsername, friendId)
         addCategorySelectorToModal();
         addHelpRequestLabel();
         addRulesBanner();
+        // Depois de addRulesBanner: o banner de boas-vindas conversa com o
+        // botão "Boas-vindas" que mora dentro da faixa de regras.
+        initWelcomeBanner();
         addGroupSearch();
         addNotificationButton();
         
@@ -4533,7 +4708,7 @@ window.openFriendChat = async function(conversationId, friendUsername, friendId)
         }
         
         console.log('✅ Funcionalidades adicionadas com sucesso!');
-        console.log('📦 Categorias, Regras, Filtro de Grupos, Notificações, Reações');
+        console.log('📦 Categorias, Banner de boas-vindas, Regras, Filtro de Grupos, Notificações, Reações');
     }
 
 

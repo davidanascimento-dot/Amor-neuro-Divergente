@@ -82,6 +82,102 @@
                 </button>
             </div>
 
+            <!-- ============================================
+                 BANNER DE BOAS-VINDAS
+                 Fica dentro da tela do Fórum, entre o cabeçalho da
+                 tela e a caixa de publicação: some sozinho ao trocar
+                 para Grupos/Eventos/Conversa e não empurra o chat.
+
+                 A foto entra por data-img-fundo (aplicado por
+                 /imagens.js) porque é plano de fundo do bloco, não
+                 <img>. Sem JS, sobra o gradiente roxo do CSS.
+                 ============================================ -->
+            <section class="welcome-banner"
+                     id="welcomeBanner"
+                     data-img-fundo="boas-vindas-comunidade"
+                     aria-labelledby="welcomeBannerTitle">
+                <div class="welcome-banner-content">
+                    <p class="welcome-banner-tag">Comunidade</p>
+
+                    <h2 class="welcome-banner-title" id="welcomeBannerTitle">
+                        Seja bem-vindo(a) à comunidade!
+                    </h2>
+
+                    <p class="welcome-banner-text">
+                        Um espaço para compartilhar experiências, encontrar pessoas
+                        com interesses em comum e participar no seu tempo, do seu jeito.
+                    </p>
+
+                    <div class="welcome-banner-actions">
+                        <button type="button"
+                                class="welcome-btn welcome-btn-primary"
+                                id="welcomeKnowBtn"
+                                aria-expanded="false"
+                                aria-controls="welcomeAreas">
+                            <i class="fa-regular fa-compass"></i>
+                            <span>Conhecer a comunidade</span>
+                        </button>
+
+                        <button type="button" class="welcome-btn welcome-btn-ghost" id="welcomeRulesBtn">
+                            <i class="fa-regular fa-shield-halved"></i>
+                            <span>Ver regras</span>
+                        </button>
+                    </div>
+
+                    <p class="welcome-banner-note">
+                        <i class="fa-solid fa-heart"></i>
+                        Respeito, acolhimento e inclusão sempre.
+                    </p>
+
+                    <!-- Apresentação das quatro áreas. Fica escondida até
+                         "Conhecer a comunidade" abrir. Cada item aciona a
+                         própria aba da subnav, que já sabe trocar de tela
+                         ou navegar. -->
+                    <div class="welcome-areas" id="welcomeAreas" hidden>
+                        <p class="welcome-areas-lead">Quatro lugares para estar por aqui:</p>
+                        <ul class="welcome-areas-list">
+                            <li>
+                                <button type="button" class="welcome-area" data-welcome-area="forum">
+                                    <i class="fa-regular fa-message"></i>
+                                    <span><strong>Fórum</strong> — conversas e publicações de toda a comunidade.</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="welcome-area" data-welcome-area="grupos">
+                                    <i class="fa-solid fa-users"></i>
+                                    <span><strong>Grupos</strong> — um cantinho seu, por assunto ou por interesse.</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="welcome-area" data-welcome-area="eventos">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span><strong>Eventos</strong> — encontros e atividades com hora marcada.</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="welcome-area" data-welcome-area="conversa">
+                                    <i class="fa-regular fa-comment-dots"></i>
+                                    <span><strong>Conversa</strong> — mensagens diretas com quem você já conhece.</span>
+                                </button>
+                            </li>
+                        </ul>
+                        <p class="welcome-areas-hint">
+                            Participe no seu tempo. Nenhuma notificação é obrigatória.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dispensar. some com o banner, não com o "Ver regras"
+                     da faixa de regras, que continua logo abaixo. -->
+                <button type="button"
+                        class="welcome-dismiss"
+                        id="welcomeDismissBtn"
+                        aria-label="Dispensar o banner de boas-vindas"
+                        title="Dispensar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </section>
+
             <!-- Caixa de postagem rápida -->
             <div class="quick-post">
                 <img src="/img/foto-padrão.jpg" alt="Seu avatar" class="quick-post-avatar" id="quickPostAvatar">
