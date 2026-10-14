@@ -12,25 +12,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="comunidade.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-tokens.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-nav.css">
     <link rel="stylesheet" href="post.css">
     <script src="/comunidade/theme.js"></script>
   <link rel="stylesheet" href="/movimento-reduzido.css">
   <script src="/imagens.js"></script>
 </head>
-<body class="post-detail-body">
+<body class="community-app post-detail-body" data-img-fundo="fundo-comunidade">
 
     <header class="header-glass" id="headerGlass">
-        <a href="/inicio.html" class="logo" aria-label="Amor NeuroDivergente — Página inicial">
-            <img src="/img/logo-LHN9gCw1.png" alt="" class="logo-img">
+        <a href="/inicio.html" class="logo">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
             <span class="logo-text">Amor NeuroDivergente</span>
         </a>
 
-        <a href="/comunidade/comunidade.html#screen-forum" class="btn-voltar-site" id="backToCommunityBtn">
+        <a href="/comunidade/comunidade.html" class="btn-voltar-site" title="Voltar para o fórum" aria-label="Voltar para o fórum">
             <i class="fa-solid fa-arrow-left"></i>
-            <span>Voltar à comunidade</span>
+            <span>Voltar</span>
         </a>
 
-        <a href="/login/login.html" class="header-profile-btn" id="headerProfileLink" aria-label="Abrir meu perfil">
+        <a class="header-profile-btn" id="headerProfileBtn" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
             <img src="/img/foto-padrão.jpg" alt="Meu perfil" class="header-avatar" id="headerAvatar">
         </a>
 
@@ -38,6 +40,23 @@
             <i class="fa-regular fa-moon"></i>
         </button>
     </header>
+
+    <nav class="community-subnav" id="communitySubnav" aria-label="Seções da comunidade">
+        <div class="community-subnav-inner">
+            <a class="subnav-tab active" data-tab="forum" href="/comunidade/comunidade.html#screen-forum"><i class="fa-regular fa-message"></i><span>Fórum</span></a>
+
+            <a class="subnav-tab" data-tab="grupos" href="/comunidade/explorar-grupos.html">
+                <i class="fa-solid fa-users"></i><span>Grupos</span>
+            </a>
+
+            <a class="subnav-tab" data-tab="eventos" href="/comunidade/comunidade.html#screen-eventos"><i class="fa-regular fa-calendar"></i><span>Eventos</span></a>
+
+            <a class="subnav-tab" data-tab="conversa" href="/comunidade/conversas.html">
+                <i class="fa-regular fa-comment-dots"></i><span>Conversa</span>
+                <span class="subnav-dot">●</span>
+            </a>
+        </div>
+    </nav>
 
     <main class="post-detail-main" id="mainContent">
         <nav class="post-breadcrumb" aria-label="Localização da publicação">
@@ -173,7 +192,8 @@
     <script src="/js/supabase-config.js"></script>
     <script src="/js/supabase.js"></script>
     <script src="/auth-global.js"></script>
-    <script src="post.js"></script>
+    <script src="/comunidade/comunidade-nav.js"></script>
+<script src="post.js"></script>
 <script src="/pular-conteudo.js"></script>
 <script src="/userway.js"></script>
 <script src="/vlibras.js"></script>

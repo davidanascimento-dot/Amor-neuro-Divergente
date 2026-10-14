@@ -68,6 +68,15 @@
         'lia-corpo': '/img/lia/lia-corpo.png',
 
         // ---- NeuroComunidade -------------------------------------------
+        // Fundo de PAGINA de toda a area /comunidade: forum, grupos,
+        // conversas, perfil e publicacao. E a moldura clara com as
+        // formas organicas e as estrelinhas nos cantos; o centro e
+        // quase branco, entao o texto sobre os cartoes continua legivel.
+        //
+        // Entra pelo mesmo caminho dos banners da landing: data-img-fundo,
+        // e nao <img>. Sem JS, a camada de reserva do CSS cobre.
+        'fundo-comunidade': '/img/ilustracoes/imagem-fundo-comunidade.png',
+
         // Fundo do banner de boas-vindas da comunidade
         // (/comunidade/comunidade.html). Panorâmica: o grupo de pessoas
         // fica no centro-direita e o lado esquerdo é céu, que é onde o

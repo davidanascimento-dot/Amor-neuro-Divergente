@@ -1,0 +1,418 @@
+/* ==========================================================================
+   6.1 BANNER DE BOAS-VINDAS
+   --------------------------------------------------------------------------
+   Fica dentro de #screen-forum, entre o cabeçalho da tela e a caixa de
+   publicação. Por isso some sozinho ao trocar para Grupos, Eventos ou
+   Conversa, e o layout de altura fixa do chat não é empurrado.
+
+   TRANSPARENTE, SOBRE O FUNDO DA COMUNIDADE
+
+   A arte de fundo da página (imagem-fundo-comunidade.png) já ocupa as
+   quatro áreas. Quando o banner era escuro por cima disso, ele virava
+   uma mancha roxa no meio de uma página clara — duas linguagens
+   visuais no mesmo lugar.
+
+   Agora o banner não é mais uma "faixa": é uma área de leitura dentro
+   da própria página. Ele deixa a arte passar e só acrescenta um verde
+   muito suave, do mesmo tom de --cm-surface-green que os outros
+   elementos da Comunidade usam. O que segura o texto é o verde atrás
+   dele, não uma moldura.
+
+   CONSEQUÊNCIA: o texto passou de branco para escuro
+
+   A versão anterior era foto + véu roxo escuro, com texto branco por
+   cima. Num fundo claro isso daria contraste 1.6:1 — impossível de
+   ler. Todos os textos, botões e o painel de áreas mudaram para
+   --cm-text (13.6:1) e --cm-text-soft (4.8:1).
+
+   DE BORDO A BORDO
+
+   O .community-main é um contêiner de 900px centralizado. O banner
+   estoura para a largura toda da janela com o par left/right 50% +
+   margin -50vw. O corpo já tem `overflow-x: hidden` (seção 2), então a
+   barra de rolagem vertical não vira largura a mais.
+
+   Em troca, o texto reencontra a coluna do resto da página: o padding
+   lateral usa a mesma conta do .community-main — 24px de respiro, mais
+   metade da sobra dos 900px.
+
+   SEM BORDAS
+
+   Nada de border, border-radius nem box-shadow. Sem foto e sem véu
+   escuro, não há nada que emoldure.
+   ========================================================================== */
+.welcome-banner {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-bottom: 22px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    /* min-height, nunca height: com texto maior (fonte ampliada nas
+       configurações de acessibilidade) o bloco cresce em vez de cortar
+       a descrição. */
+    min-height: 196px;
+    padding: 28px max(24px, calc((100vw - 900px) / 2 + 24px));
+}
+
+/* O verde de baixo. Duas camadas translúcidas: uma base quase
+   invisível, que só tira a ligação direta com a arte da página, e um
+   gradiente suave que pesa mais à esquerda, onde fica o texto. */
+.welcome-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(96deg,
+            rgba(220, 234, 223, 0.92) 0%,
+            rgba(224, 237, 226, 0.80) 38%,
+            rgba(238, 243, 236, 0.46) 72%,
+            rgba(244, 246, 240, 0.30) 100%),
+        linear-gradient(180deg,
+            rgba(220, 234, 223, 0.34) 0%,
+            rgba(220, 234, 223, 0.08) 45%,
+            rgba(220, 234, 223, 0.30) 100%);
+}
+
+.welcome-banner-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    /* O texto para antes do grupo de formas da arte. */
+    max-width: 470px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    color: var(--cm-text);
+}
+
+/* Identificação. A mesma tag verde da identidade do cabeçalho, em tom
+   um pouco mais fechado para não competir com o título. */
+.welcome-banner-tag {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 14px;
+    border: 1px solid var(--cm-green);
+    border-radius: 999px;
+    background: var(--cm-green);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.welcome-banner-title {
+    margin: 0;
+    color: var(--cm-text);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.45rem, 2.9vw, 1.95rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+}
+
+.welcome-banner-text {
+    margin: 0;
+    max-width: 450px;
+    color: var(--cm-text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.96rem;
+    line-height: 1.55;
+}
+
+.welcome-banner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+/* Botões sólidos agora. Translúcidos sobre um fundo quase branco
+   viram fantasmas: o botão principal não se distingue do fundo, e o
+   secundário some por completo. Aqui a hierarquia é por cor, não por
+   transparência. */
+.welcome-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
+}
+
+.welcome-btn i {
+    font-size: 0.88rem;
+}
+
+.welcome-btn-primary {
+    background: var(--cm-purple);
+    border: 1px solid var(--cm-purple);
+    color: #ffffff;
+}
+
+.welcome-btn-primary:hover {
+    background: var(--cm-purple-hover);
+    border-color: var(--cm-purple-hover);
+}
+
+.welcome-btn-ghost {
+    background: transparent;
+    border: 1px solid var(--cm-border-input);
+    color: var(--cm-text-soft);
+}
+
+.welcome-btn-ghost:hover {
+    background: var(--cm-surface-green);
+    border-color: var(--cm-green);
+    color: var(--cm-green);
+}
+
+.welcome-btn:active {
+    transform: translateY(1px);
+}
+
+/* Foco visível nos dois. O anel roxo funciona tanto sobre o verde do
+   banner quanto sobre o branco da área de conteúdo. */
+.welcome-btn:focus-visible,
+.welcome-area:focus-visible,
+.welcome-dismiss:focus-visible {
+    outline: 3px solid var(--cm-purple);
+    outline-offset: 2px;
+}
+
+.welcome-banner-note {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cm-text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    opacity: 0.85;
+}
+
+.welcome-banner-note i {
+    color: var(--cm-pink);
+    font-size: 0.78rem;
+}
+
+/* ---- Apresentação das quatro áreas ------------------------------
+   Abre dentro do banner. Fecha sozinho quando alguém escolhe uma área. */
+.welcome-areas {
+    margin-top: 5px;
+    padding: 14px 16px;
+    width: 100%;
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    animation: fadeIn 0.2s ease;
+}
+
+.welcome-areas-lead {
+    margin: 0 0 10px;
+    color: var(--cm-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.welcome-areas-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.welcome-area {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 9px 11px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-surface-soft);
+    color: var(--cm-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.18s, border-color 0.18s;
+}
+
+.welcome-area:hover {
+    background: var(--cm-surface-green);
+    border-color: var(--cm-green);
+}
+
+.welcome-area i {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--cm-green);
+    font-size: 0.85rem;
+}
+
+.welcome-area strong {
+    font-weight: 700;
+}
+
+.welcome-areas-hint {
+    margin: 10px 0 0;
+    color: var(--cm-text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.74rem;
+    line-height: 1.45;
+}
+
+/* Dispensar. Pequeno e discreto, para não competir com o título. */
+.welcome-dismiss {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--cm-border);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--cm-muted);
+    font-size: 0.78rem;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.18s, background-color 0.18s, color 0.18s;
+}
+
+.welcome-dismiss:hover {
+    opacity: 1;
+    background: var(--cm-surface-green);
+    color: var(--cm-green);
+}
+
+.welcome-banner[hidden] {
+    display: none;
+}
+
+/* ---- Responsivo ------------------------------------------------
+   O título encolhe por clamp, sem height fixo. A lista de áreas cai
+   para uma coluna antes de ficar espremida. */
+@media (max-width: 900px) {
+    .welcome-banner {
+        padding: 30px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-banner {
+        padding: 26px 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .welcome-banner {
+        min-height: 0;
+        padding: 24px 14px;
+    }
+
+    /* Em tela estreita o texto ocupa a faixa toda, então o verde pesa
+       mais: sem ele, a arte da página apareceria atrás da letra. */
+    .welcome-banner::before {
+        background:
+            linear-gradient(180deg,
+                rgba(220, 234, 223, 0.94) 0%,
+                rgba(222, 236, 225, 0.90) 55%,
+                rgba(224, 238, 227, 0.94) 100%);
+    }
+
+    .welcome-banner-content {
+        max-width: 100%;
+    }
+
+    .welcome-banner-title {
+        font-size: 1.3rem;
+    }
+
+    .welcome-banner-text {
+        font-size: 0.9rem;
+    }
+
+    /* Os botões quebram de linha em vez de estourar a faixa. */
+    .welcome-banner-actions {
+        width: 100%;
+    }
+
+    .welcome-btn {
+        flex: 1 1 100%;
+        padding: 12px 18px;
+    }
+
+    .welcome-areas-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-banner {
+        padding: 22px 12px;
+    }
+
+    .welcome-dismiss {
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Botão que traz o banner de volta, dentro da faixa de regras. Só
+   aparece depois que o banner foi dispensado. */
+.rules-banner-btn-boas-vindas {
+    padding: 6px 18px;
+    border: 1px solid var(--cm-border-input);
+    border-radius: 20px;
+    background: var(--cm-surface);
+    color: var(--cm-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.rules-banner-btn-boas-vindas:hover {
+    border-color: var(--cm-green);
+    background: var(--cm-surface-green);
+    color: var(--cm-green);
+}
+
+.rules-banner-btn-boas-vindas:focus-visible {
+    outline: 2px solid var(--cm-purple);
+    outline-offset: 2px;
+}

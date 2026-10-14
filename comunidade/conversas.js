@@ -134,7 +134,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!avatar) return;
         avatar.src = avatarUrl(state.user?.user_metadata?.avatar_url);
         avatar.alt = state.user?.user_metadata?.username || 'Meu perfil';
-        const profileLink = $('headerProfileLink');
+        // A casca única da Comunidade usa #headerProfileBtn (o nome que
+          // veio de comunidade.html). Este arquivo nasceu quando a casca
+          // do conversas.css usava #headerProfileLink. Aceita os dois
+          // para o link do perfil não sumir em nenhuma página.
+          const profileLink = $('headerProfileBtn') || $('headerProfileLink');
         if (profileLink && state.user?.id) profileLink.href = `/comunidade/perfil.html?id=${encodeURIComponent(state.user.id)}`;
     }
 

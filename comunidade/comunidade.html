@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="comunidade.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-tokens.css">
     <link rel="stylesheet" href="/Explorar/Explorar.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-nav.css">
     <script src="/comunidade/theme.js"></script>
   <link rel="stylesheet" href="/movimento-reduzido.css">
   <script src="/imagens.js"></script>
 </head>
-<body>
+<body class="community-app" data-img-fundo="fundo-comunidade">
 
     <!-- ============================================
          HEADER SIMPLES — Só logo + Voltar
@@ -28,13 +30,13 @@
             <span class="logo-text">Amor NeuroDivergente</span>
         </a>
 
-        <a href="/inicio.html" class="btn-voltar-site">
+        <a href="/inicio.html" class="btn-voltar-site" title="Voltar ao site principal" aria-label="Voltar ao site principal">
             <i class="fa-solid fa-arrow-left"></i>
             <span>Voltar ao site</span>
         </a>
 
         <a class="header-profile-btn" id="headerProfileBtn" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
-            <img src="/img/foto-padrão.jpg" alt="Perfil" class="header-avatar" id="headerAvatar">
+            <img src="/img/foto-padrão.jpg" alt="Meu perfil" class="header-avatar" id="headerAvatar">
         </a>
 
         <button class="header-theme-toggle" type="button" data-a11y="darkMode" aria-pressed="false" aria-label="Ativar modo escuro" title="Ativar modo escuro">
@@ -46,23 +48,18 @@
          NAV SECUNDÁRIA — Fórum / Grupos / Eventos / Conversa
          Background atrás, passando logo abaixo do header
          ============================================ -->
-    <nav class="community-subnav" id="communitySubnav" role="tablist">
+    <nav class="community-subnav" id="communitySubnav" aria-label="Seções da comunidade">
         <div class="community-subnav-inner">
-            <button class="subnav-tab active" data-tab="forum" role="tab" aria-selected="true">
-                <i class="fa-regular fa-message"></i>
-                <span>Fórum</span>
-            </button>
-            <a class="subnav-tab" data-tab="grupos" href="/comunidade/explorar-grupos.html" role="tab" aria-selected="false">
-                <i class="fa-solid fa-users"></i>
-                <span>Grupos</span>
+            <button class="subnav-tab active" type="button" data-tab="forum" role="tab" aria-selected="true"><i class="fa-regular fa-message"></i><span>Fórum</span></button>
+
+            <a class="subnav-tab" data-tab="grupos" href="/comunidade/explorar-grupos.html">
+                <i class="fa-solid fa-users"></i><span>Grupos</span>
             </a>
-            <button class="subnav-tab" data-tab="eventos" role="tab" aria-selected="false">
-                <i class="fa-regular fa-calendar"></i>
-                <span>Eventos</span>
-            </button>
-            <a class="subnav-tab" data-tab="conversa" href="/comunidade/conversas.html" role="tab" aria-selected="false">
-                <i class="fa-regular fa-comment-dots"></i>
-                <span>Conversa</span>
+
+            <button class="subnav-tab" type="button" data-tab="eventos" role="tab" aria-selected="false"><i class="fa-regular fa-calendar"></i><span>Eventos</span></button>
+
+            <a class="subnav-tab" data-tab="conversa" href="/comunidade/conversas.html">
+                <i class="fa-regular fa-comment-dots"></i><span>Conversa</span>
                 <span class="subnav-dot">●</span>
             </a>
         </div>
@@ -602,6 +599,7 @@
 <script src="/js/supabase.js"></script>
 <script src="/auth-global.js"></script>
 <script src="/comunidade/honeypot.js"></script>
+<script src="/comunidade/comunidade-nav.js"></script>
 <script src="/comunidade/comunidade.js"></script>
 <script src="/Acolher-IA/seguranca.js"></script>
 <script src="/Acolher-IA/Acolher-IA.js"></script>

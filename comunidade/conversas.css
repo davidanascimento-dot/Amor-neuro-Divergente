@@ -33,9 +33,7 @@ body.channel-page,
 body.groups-page {
     min-height: 100vh;
     margin: 0;
-    background:
-        radial-gradient(circle at 85% 0%, rgba(183, 147, 90, .08), transparent 28rem),
-        var(--cv-page-bg);
+    background: transparent;
     color: var(--cv-text);
     font-family: Inter, "Atkinson Hyperlegible", sans-serif;
 }
@@ -57,7 +55,7 @@ a {
     text-decoration: none;
 }
 
-.conversas-header {
+.header-glass {
     position: sticky;
     top: 0;
     z-index: 30;
@@ -71,7 +69,7 @@ a {
     backdrop-filter: blur(18px);
 }
 
-.conversas-brand {
+.logo {
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -80,24 +78,24 @@ a {
     color: var(--cv-text);
 }
 
-.conversas-brand img {
+.logo img {
     width: 38px;
     height: 38px;
     object-fit: contain;
 }
 
-.conversas-brand span {
+.logo span {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.conversas-header-spacer {
+.header-spacer-removido {
     flex: 1;
 }
 
-.conversas-back,
-.conversas-header-action {
+.btn-voltar-site,
+.header-theme-toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -114,14 +112,14 @@ a {
     transition: border-color .18s, background .18s, transform .18s;
 }
 
-.conversas-back:hover,
-.conversas-header-action:hover {
+.btn-voltar-site:hover,
+.header-theme-toggle:hover {
     border-color: var(--cv-gold);
     background: #fffdf9;
     transform: translateY(-1px);
 }
 
-.conversas-header-profile {
+.header-profile-btn {
     width: 42px;
     height: 42px;
     display: grid;
@@ -133,7 +131,7 @@ a {
     box-shadow: 0 0 0 1px var(--cv-border);
 }
 
-.conversas-header-profile img {
+.header-profile-btn img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -242,7 +240,9 @@ body.conversas-page {
 }
 
 .conversas-page .conversation-rail {
-    background: transparent;
+    background: color-mix(in srgb, var(--cv-surface, #ffffff) 65%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-right: 1px solid var(--cv-border);
 }
 
@@ -2214,7 +2214,9 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     padding: 12px;
     border: 1px solid var(--cv-border);
     border-radius: 15px;
-    background: var(--cv-surface);
+    background: color-mix(in srgb, var(--cv-surface, #ffffff) 82%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 4px 15px rgba(34, 27, 49, .04);
 }
 
@@ -3665,7 +3667,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 }
 
 @media (max-width: 720px) {
-    .conversas-header {
+    .header-glass {
         min-height: 60px;
         gap: 9px;
         padding: 8px 14px;
@@ -3675,18 +3677,18 @@ body.a11y-dark-mode .chat-mobile-back:hover {
         top: 60px;
     }
 
-    .conversas-brand span,
-    .conversas-back span {
+    .logo span,
+    .btn-voltar-site span {
         display: none;
     }
 
-    .conversas-brand img {
+    .logo img {
         width: 34px;
         height: 34px;
     }
 
-    .conversas-back,
-    .conversas-header-action {
+    .btn-voltar-site,
+    .header-theme-toggle {
         min-width: 36px;
         min-height: 36px;
         padding: 0 10px;
@@ -4611,7 +4613,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
    BOTÃO DE TEMA
    ========================================================================== */
 
-.conversas-header-action.theme-toggle {
+.header-theme-toggle.theme-toggle {
     width: 38px;
     padding: 0;
     justify-content: center;
@@ -4650,7 +4652,7 @@ body.a11y-dark-mode {
 }
 
 /* Cabeçalho, segunda nav e botões do shell */
-body.a11y-dark-mode .conversas-header {
+body.a11y-dark-mode .header-glass {
     border-bottom-color: rgba(47, 47, 74, .95);
     background: rgba(26, 26, 46, .92);
 }
@@ -4660,12 +4662,12 @@ body.a11y-dark-mode .community-subnav {
     background: rgba(26, 26, 46, .92);
 }
 
-body.a11y-dark-mode .conversas-back:hover,
-body.a11y-dark-mode .conversas-header-action:hover {
+body.a11y-dark-mode .btn-voltar-site:hover,
+body.a11y-dark-mode .header-theme-toggle:hover {
     background: #26263d;
 }
 
-body.a11y-dark-mode .conversas-header-profile {
+body.a11y-dark-mode .header-profile-btn {
     border-color: #2f2f4a;
 }
 

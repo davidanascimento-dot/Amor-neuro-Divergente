@@ -1,0 +1,491 @@
+/* ==========================================================================
+   COMUNIDADE-NAV.CSS — o cabeçalho e a subnav, iguais em toda parte
+
+   ANTES, AQUI TINHAM DOIS NOMES
+
+   A área da Comunidade tinha duas cascas: `.header-glass`
+   (comunidade.html, perfil.html, post.html) e `.conversas-header`
+   (mais seis páginas). Mesma ideia, nomes diferentes, ordem dos
+   elementos diferente e o botão de voltar apontando para lugares
+   diferentes.
+
+   Hoje existe UM nome só, o de comunidade.html, em todas as nove
+   páginas. Este arquivo é o estilo comum delas. conversas.css foi
+   renomeado junto, então os dois lados falam a mesma língua.
+
+   A ordem dos itens dentro do cabeçalho é feita com `order`, não
+   mexendo no HTML — assim uma página nova nasce com a casca certa só
+   por usar as classes certas.
+
+   ========================================================================== */
+
+/* ==========================================================================
+   1. O CONTÊINER
+
+   sticky, e não fixed.
+
+   No.community.css o cabeçalho era `position: fixed`, o que tira ele do
+   fluxo: a subnav, que vem logo em seguida, ficava de y=0 a y=53 —
+   exatamente atrás do cabeçalho fixo. A lista das quatro áreas só
+   aparecia depois de rolar. Em conversas.css o cabeçalho já era sticky
+   e não tinha esse problema. Com sticky as duas famílias passam a
+   ocupar o mesmo espaço no fluxo.
+   ========================================================================== */
+.header-glass {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* flex-wrap + min-height: a barra nunca passa da altura de uma
+       linha. Sem isso, num texto muito ampliado, os itens iam para a
+       segunda linha e a subnav sticky ficava apoiada numa altura que
+       já não era a real. */
+    flex-wrap: wrap;
+    min-height: 60px;
+    /* COLISÃO DE NOME, de novo.
+
+       inicio.css também tem `.header-glass` — é o cabeçalho do SITE, e
+       lá ele tem `height: 75px` fixo (65px abaixo de 768px). Como o
+       nome é o mesmo, a barra da Comunidade herdava essa altura fixa:
+       75px em vez dos 60px pedidos, e 65px no celular.
+
+       `min-height` não vence `height`. É preciso dizer `auto` para a
+       altura voltar a ser o que o conteúdo pedir. */
+    height: auto;
+    padding: 6px 20px;
+    background: color-mix(in srgb, var(--cm-surface) 88%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--cm-border);
+    color: var(--cm-text);
+}
+
+/* Firefox antigo não tem color-mix: cai para a superfície opaca. */
+@supports not (background: color-mix(in srgb, #fff 50%, transparent)) {
+    .header-glass {
+        background: var(--cm-surface);
+    }
+}
+
+@media (max-width: 768px) {
+    .header-glass {
+        padding: 6px 14px;
+    }
+}
+
+/* ==========================================================================
+   2. A MARCA
+
+   Só o logo. O nome "Amor NeuroDivergente" saiu do cabeçalho da
+   Comunidade.
+
+   Motivo prático, além do gosto: o texto transbordava. A barra é
+   `display: flex` sem wrap efetivo, e o nome é longo e não encolhe.
+   Em larguras médias ele vazava da caixa e passava por cima dos
+   controles ao lado. Tirar o texto resolve a causa, não sintomas.
+
+   O nome NÃO some do ponto de vista do leitor de tela. Fica aqui como
+   texto só para acessibilidade, escondido visualmente pela técnica do
+   clip — assim o link da marca continua se anunciando como
+   "Amor NeuroDivergente" em vez de um ícone sem nome.
+   ========================================================================== */
+.header-glass .logo {
+    /* ESTE era o bug do cabeçalho.
+
+       inicio.css estiliza `.logo` como `position: absolute` — é o logo
+       do cabeçalho do SITE, que é posicionado por conta própria. Tem um
+       `position: static` de rescue, mas só dentro de
+       `@media (max-width: 768px)`.
+
+       As páginas da Comunidade usam a MESMA classe para a marca. Acima
+       de 768px, portanto, o <a class="logo"> entrava como item
+       posicionado: saía do fluxo flex e ia parar em cima dos controles
+       ao lado. Era o "AmorNeuroDivergente" desenhado por cima do
+       sininho e do botão de conversa. */
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    order: 1;
+    color: var(--cm-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.header-glass .logo-img {
+    height: 34px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* Some da tela, continua sendo lido. */
+.header-glass .logo-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ==========================================================================
+   3. A IDENTIDADE DA COMUNIDADE
+
+   Este é o pedaço que faltava. Antes as telas eram do site com uma
+   lista embaixo; agora elas se anunciam como um espaço da Comunidade.
+
+   Some antes do "voltar" para não disputar espaço com ele no celular.
+   ========================================================================== */
+.community-identity {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    order: 2;
+    margin-left: 4px;
+    padding: 4px 12px;
+    border: 1px solid var(--cm-border);
+    border-radius: 999px;
+    background: var(--cm-surface-green);
+    color: var(--cm-green);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.community-identity i {
+    font-size: 0.72rem;
+}
+
+@media (max-width: 768px) {
+    .community-identity {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   4. O VOLTAR
+
+   community.css deixa `margin-left: auto` aqui, de quando o cabeçalho
+   era outro. Com o perfil logado fora — que é o que o `.auth-hidden`
+   faz quando a pessoa não está autenticada — esse auto vira a ÚNICA
+   margem automática da linha e engole toda a folga: o botão de voltar
+   atravessava a barra e ia parar colado no canto direito, com um vão
+   enorme no meio.
+
+   Aqui ele fica no lugar, logo depois da identidade. Quem empurra o
+   grupo de ações para a direita é o botão de tema, que existe sempre.
+   ========================================================================== */
+.btn-voltar-site {
+    order: 3;
+    margin-left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--cm-border);
+    border-radius: 30px;
+    background: transparent;
+    color: var(--cm-text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.btn-voltar-site:hover {
+    border-color: var(--cm-green);
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+@media (max-width: 768px) {
+    .btn-voltar-site span {
+        display: none;
+    }
+
+    .btn-voltar-site {
+        padding: 8px 12px;
+    }
+}
+
+/* ==========================================================================
+   5. AS AÇÕES À DIREITA
+
+   Notificações, perfil e tema — sempre nesta ordem.
+   ========================================================================== */
+
+/* O botão de notificações é criado por comunidade.js e não tinha classe
+   nenhuma — só estilo inline. Sem `order` ele caía em 0 e aparecia
+   ANTES da logo. */
+#notificationsToggle,
+.community-notif {
+    order: 4;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--cm-border);
+    border-radius: 50%;
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    font-size: 15px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 0.18s, color 0.18s, border-color 0.18s;
+}
+
+#notificationsToggle:hover,
+.community-notif:hover {
+    border-color: var(--cm-green);
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+/* A contagem. Some pelo atributo `hidden` — o JS mexe em hidden, nunca
+   em display. */
+.community-notif-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 17px;
+    padding: 1px 4px;
+    border: 2px solid var(--cm-surface);
+    border-radius: 999px;
+    background: var(--cm-pink);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.community-notif-badge[hidden] {
+    display: none;
+}
+
+.header-profile-btn {
+    order: 5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    /* Sem margem automática aqui: quem empurra para a direita é o tema
+       (abaixo). Se os dois tivessem `auto`, a folga seria dividida ao
+       meio e o grupo de ações ficaria no centro em vez do canto. */
+    flex-shrink: 0;
+    border: 1px solid var(--cm-border);
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--cm-surface-soft);
+    transition: border-color 0.18s;
+}
+
+.header-profile-btn:hover {
+    border-color: var(--cm-green);
+}
+
+.header-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.header-theme-toggle {
+    order: 6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    /* O tema é quem joga o grupo de ações para o canto direito. Está
+       aqui, e não no perfil, porque o perfil desaparece quando a
+       pessoa não está autenticada (`.auth-hidden`) e o tema não. */
+    margin-left: auto;
+    border: 1px solid var(--cm-border);
+    border-radius: 50%;
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.header-theme-toggle:hover {
+    border-color: var(--cm-green);
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+/* ==========================================================================
+   6. A SUBNAV
+
+   Ordem das quatro áreas: Fórum, Grupos, Eventos, Conversa. A mesma em
+   todas as páginas, na mesma posição.
+
+   `top` usa --cm-header-h, a altura real do cabeçalho, medida por
+   comunidade-nav.js. Antes era um `--header-height` chutado que só
+   batia por acaso — e no celular o cabeçalho encolhe, então a subnav
+   ficava desalinhada.
+   ========================================================================== */
+.community-subnav {
+    position: sticky;
+    top: var(--cm-header-h, 60px);
+    z-index: 90;
+    background: color-mix(in srgb, var(--cm-surface) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--cm-border);
+    padding: 0 20px;
+}
+
+@supports not (background: color-mix(in srgb, #fff 50%, transparent)) {
+    .community-subnav {
+        background: var(--cm-surface);
+    }
+}
+
+.community-subnav-inner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.community-subnav-inner::-webkit-scrollbar {
+    display: none;
+}
+
+.subnav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cm-text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: color 0.18s, border-color 0.18s, background-color 0.18s;
+}
+
+.subnav-tab i {
+    font-size: 14px;
+}
+
+.subnav-tab:hover {
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+/* Ativo: sublinhado, não bloco cheio. Bloco pesado competia com os
+   cards da página e pesava mais que a lista de quatro destinos. */
+.subnav-tab.active,
+.subnav-tab[aria-current="page"] {
+    border-bottom-color: var(--cm-purple);
+    color: var(--cm-purple);
+    background: transparent;
+}
+
+.subnav-tab.active i,
+.subnav-tab[aria-current="page"] i {
+    color: var(--cm-purple);
+}
+
+.subnav-dot {
+    color: var(--cm-green);
+    font-size: 10px;
+}
+
+@media (max-width: 768px) {
+    .community-subnav {
+        padding: 0 14px;
+    }
+
+    .subnav-tab {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .subnav-tab span {
+        display: none;
+    }
+
+    .subnav-tab {
+        padding: 12px 16px;
+    }
+
+    .subnav-tab i {
+        font-size: 16px;
+    }
+}
+
+/* ==========================================================================
+   7. MODO ESCURO
+   ========================================================================== */
+body.a11y-dark-mode .header-glass {
+    background: color-mix(in srgb, var(--cm-surface) 90%, transparent);
+    border-bottom-color: var(--cm-border);
+}
+
+body.a11y-dark-mode .community-subnav {
+    background: color-mix(in srgb, var(--cm-surface) 94%, transparent);
+    border-bottom-color: var(--cm-border);
+}
+
+body.a11y-dark-mode .subnav-tab {
+    color: var(--cm-text-soft);
+}
+
+body.a11y-dark-mode .subnav-tab:hover {
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+body.a11y-dark-mode .subnav-tab.active,
+body.a11y-dark-mode .subnav-tab[aria-current="page"] {
+    border-bottom-color: var(--cm-purple);
+    color: var(--cm-purple);
+    background: transparent;
+}
+
+body.a11y-dark-mode .community-identity {
+    background: var(--cm-surface-green);
+    color: var(--cm-green);
+}

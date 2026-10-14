@@ -11,33 +11,50 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/inicio.css">
     <link rel="stylesheet" href="conversas.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-tokens.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-nav.css">
     <script src="theme.js"></script>
   <link rel="stylesheet" href="/movimento-reduzido.css">
   <script src="/imagens.js"></script>
 </head>
-<body class="groups-page" data-page="community">
-    <header class="conversas-header">
-        <a class="conversas-brand" href="/inicio.html">
-            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente">
-            <span>Amor NeuroDivergente</span>
+<body class="community-app groups-page" data-page="community" data-img-fundo="fundo-comunidade">
+    <header class="header-glass" id="headerGlass">
+        <a href="/inicio.html" class="logo">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+            <span class="logo-text">Amor NeuroDivergente</span>
         </a>
-        <span class="conversas-header-spacer"></span>
-        <button class="conversas-header-action theme-toggle" type="button" data-a11y="darkMode" aria-pressed="false" aria-label="Ativar modo escuro" title="Ativar modo escuro"><i class="fa-regular fa-moon"></i></button>
-        <a class="conversas-back" href="/comunidade/explorar-grupos.html"><i class="fa-solid fa-arrow-left"></i><span>Explorar comunidades</span></a>
-        <a class="conversas-header-profile" id="headerProfileLink" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
-            <img id="headerAvatar" src="/img/foto-padrão.jpg" alt="Meu perfil">
+
+        <a href="/comunidade/explorar-grupos.html" class="btn-voltar-site" title="Voltar para a lista de grupos" aria-label="Voltar para a lista de grupos">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar</span>
         </a>
+
+        <a class="header-profile-btn" id="headerProfileBtn" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img src="/img/foto-padrão.jpg" alt="Meu perfil" class="header-avatar" id="headerAvatar">
+        </a>
+
+        <button class="header-theme-toggle" type="button" data-a11y="darkMode" aria-pressed="false" aria-label="Ativar modo escuro" title="Ativar modo escuro">
+            <i class="fa-regular fa-moon"></i>
+        </button>
     </header>
 
     <!-- ============================================
          NAV SECUNDÁRIA — Fórum / Grupos / Eventos / Conversa
          ============================================ -->
-    <nav class="community-subnav" aria-label="Seções da comunidade">
+    <nav class="community-subnav" id="communitySubnav" aria-label="Seções da comunidade">
         <div class="community-subnav-inner">
-            <a class="subnav-tab" href="/comunidade/comunidade.html#screen-forum"><i class="fa-regular fa-message"></i><span>Fórum</span></a>
-            <a class="subnav-tab active" href="/comunidade/explorar-grupos.html" aria-current="page"><i class="fa-solid fa-users"></i><span>Grupos</span></a>
-            <a class="subnav-tab" href="/comunidade/comunidade.html#screen-eventos"><i class="fa-regular fa-calendar"></i><span>Eventos</span></a>
-            <a class="subnav-tab" href="/comunidade/conversas.html"><i class="fa-regular fa-comment-dots"></i><span>Conversa</span></a>
+            <a class="subnav-tab" data-tab="forum" href="/comunidade/comunidade.html#screen-forum"><i class="fa-regular fa-message"></i><span>Fórum</span></a>
+
+            <a class="subnav-tab active" data-tab="grupos" href="/comunidade/explorar-grupos.html" aria-current="page">
+                <i class="fa-solid fa-users"></i><span>Grupos</span>
+            </a>
+
+            <a class="subnav-tab" data-tab="eventos" href="/comunidade/comunidade.html#screen-eventos"><i class="fa-regular fa-calendar"></i><span>Eventos</span></a>
+
+            <a class="subnav-tab" data-tab="conversa" href="/comunidade/conversas.html">
+                <i class="fa-regular fa-comment-dots"></i><span>Conversa</span>
+                <span class="subnav-dot">●</span>
+            </a>
         </div>
     </nav>
 
@@ -91,7 +108,8 @@
     <script src="/js/supabase-config.js"></script>
     <script src="/js/supabase.js"></script>
     <script src="/auth-global.js"></script>
-    <script src="conversas.js"></script>
+    <script src="/comunidade/comunidade-nav.js"></script>
+<script src="conversas.js"></script>
 <script src="/pular-conteudo.js"></script>
 <script src="/userway.js"></script>
 <script src="/vlibras.js"></script>

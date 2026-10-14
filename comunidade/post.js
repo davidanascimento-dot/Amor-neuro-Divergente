@@ -60,7 +60,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         inlineReplySubmit: document.getElementById('inlineReplySubmitBtn'),
         inlineReplyCancel: document.getElementById('cancelInlineReplyBtn'),
         inlineReplyCharCount: document.getElementById('inlineReplyCharCount'),
-        headerProfileLink: document.getElementById('headerProfileLink'),
+        // A casca única da Comunidade usa #headerProfileBtn (o nome que veio de
+      // comunidade.html). Este arquivo nasceu quando a casca do
+      // conversas.css usava #headerProfileLink. Aceita os dois.
+      headerProfileLink: document.getElementById('headerProfileBtn') || document.getElementById('headerProfileLink'),
         headerAvatar: document.getElementById('headerAvatar')
     };
 

@@ -1,0 +1,398 @@
+/* ==========================================================================
+   COMUNIDADE-TOKENS.CSS — a identidade "Comunidade Viva"
+
+   POR QUE ESTE ARQUIVO EXISTE
+
+   A área da Comunidade tem três sistemas de cor independentes:
+
+     - comunidade.css  ->  namespace --cx-*   (55 variáveis)
+     - conversas.css   ->  namespace --cv-*   (26 variáveis)
+     - inicio.css      ->  --bg-body, --text-dark, --primary, --accent...
+       (que é quem pinta o <body> e o <html> de verdade)
+
+   Os dois primeiros já discordavam entre si no fundo (--cx-bg era
+   #faf9f6, --cv-page-bg era #f5f3ef).
+
+   Este arquivo NÃO redesenha nada: ele só redefine o VALOR das
+   variáveis antigas. Todo `var(--cx-bg)`, todo `var(--cv-page-bg)` e
+   todo `body { background: var(--bg-body) }` que já existe no código
+   passa a valer a cor nova sem uma linha ser reescrita.
+
+   community.css e conversas.css continuam donos do LAYOUT. Este arquivo
+   é dono só da COR. Apagar este arquivo devolve a identidade antiga.
+
+   ATENÇÃO: comunidade-nav.css depende de --cm-*. Sem este arquivo
+   carregado antes, as bordas, os fundos e as cores da navegação ficam
+   sem valor nenhum e a barra aparece "no seco".
+
+   ========================================================================== */
+
+/* ==========================================================================
+   1. A PALETA
+
+   O verde é a cor AMBIENTAL da Comunidade. O roxo e o rosa continuam
+   presentes como identidade e como ação principal — não somem, mudam
+   de função.
+
+   Três cores do briefing original NÃO passavam em contraste medido
+   contra #F4F6F0 (texto secundário 4.45:1, muted 3.32:1, rosa 4.43:1).
+   Foram escurecidas até passar. Cada linha traz a razão medida com o
+   cálculo de luminância relativa da WCAG 2.1 — não é estimativa.
+   ========================================================================== */
+:root {
+    /* --- Superfícies --- */
+    --cm-bg: #f4f6f0;              /* fundo geral da Comunidade */
+    --cm-surface: #ffffff;
+    --cm-surface-soft: #fbfcfa;
+    --cm-surface-green: #dceadf;    /* apoio verde, blocos de destaque */
+
+    /* --- Cores de ação --- */
+    --cm-purple: #7540a5;           /* ação principal (marca)   6.4:1 */
+    --cm-purple-hover: #633389;
+    --cm-purple-soft: #f0e8f7;
+    --cm-green: #436c51;            /* ação secundária          5.5:1 */
+    --cm-green-hover: #365842;
+    --cm-green-soft: #e7f0e9;
+    --cm-pink: #ad4276;             /* detalhe da marca         5.1:1 */
+    --cm-pink-soft: #f8e9f1;
+
+    /* --- Texto --- */
+    --cm-text: #25263a;             /* 13.6:1 */
+    --cm-text-soft: #647060;        /*  4.8:1 */
+    --cm-muted: #646f65;            /*  4.8:1 */
+    --cm-text-on-dark: #ffffff;
+
+    /* --- Bordas e foco ---
+       --cm-border é divisória: separação visual, não precisa de 3:1.
+       --cm-border-input é contorno de campo e botão: esse sim precisa
+       de 3:1 contra o branco da superfície (WCAG 1.4.11), porque é a
+       única coisa que diz onde o campo termina. */
+    --cm-border: #dfe4da;
+    --cm-border-soft: #ecefe8;
+    --cm-border-strong: #c6cfc2;
+    --cm-border-input: #7f8f7b;     /* 3.4:1 sobre #ffffff */
+    --cm-focus: #7540a5;
+
+    /* --- Formas --- */
+    --cm-radius: 16px;
+    --cm-radius-sm: 10px;
+    --cm-radius-btn: 30px;
+
+    /* --- Sombras: duas, discretas. Sombra como borda é ruído. --- */
+    --cm-shadow-sm: 0 1px 2px rgba(37, 38, 58, .05);
+    --cm-shadow: 0 2px 10px rgba(37, 38, 58, .06);
+    --cm-shadow-hover: 0 6px 22px rgba(37, 38, 58, .10);
+}
+
+/* ==========================================================================
+   2. MODO ESCURO
+
+   Não é a paleta clara invertida. O verde vira um verde profundo e
+   dessaturado; o roxo clareia o bastante para continuar sendo leitura
+   sobre fundo escuro.
+
+   O seletor casa com html E body porque theme.js põe a classe nos dois.
+   Se casasse só com o body, o html ficaria com os tokens claros e
+   `html { background: var(--cv-page-bg) }` continuaria pintando a
+   página inteira no fundo claro com o modo escuro ligado.
+   ========================================================================== */
+html.a11y-dark-mode,
+body.a11y-dark-mode {
+    --cm-bg: #12161a;
+    --cm-surface: #1a1f24;
+    --cm-surface-soft: #21272d;
+    --cm-surface-green: #1e2a22;
+
+    --cm-purple: #b183e8;
+    --cm-purple-hover: #c49ef0;
+    --cm-purple-soft: #2a2036;
+    --cm-green: #8fc4a4;
+    --cm-green-hover: #a6d5b7;
+    --cm-green-soft: #1c2a20;
+    --cm-pink: #e59ac0;
+    --cm-pink-soft: #2f1f28;
+
+    --cm-text: #eef1ee;
+    --cm-text-soft: #a8b3ab;
+    --cm-muted: #8b978e;
+
+    --cm-border: #2c343a;
+    --cm-border-soft: #242b30;
+    --cm-border-strong: #3d474e;
+    --cm-focus: #b183e8;
+
+    --cm-shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --cm-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+    --cm-shadow-hover: 0 6px 22px rgba(0, 0, 0, .45);
+}
+
+/* ==========================================================================
+   3. MAPEAMENTO PARA AS FOLHAS EXISTENTES
+
+   É aqui que a mudança acontece de verdade. Cada linha troca o valor de
+   uma variável que JÁ EXISTE nas três folhas.
+
+   NOTA SOBRE --cx-gold e --cv-gold
+
+   O dourado (#b8935a) era a cor de destaque do layout antigo. Na
+   identidade nova o papel de acento pertence ao verde, e o roxo e o
+   rosa ficam com as ações. Então o "gold" aponta para o verde.
+
+   É uma decisão de MATIZ, não de layout: ícones, sublinhados e estados
+   que já usam var(--cx-gold) continuam exatamente onde estavam.
+   ========================================================================== */
+:root {
+    /* --cx-* : comunidade.css */
+    --cx-bg: var(--cm-bg);
+    --cx-bg-soft: var(--cm-surface);
+    --cx-border: var(--cm-border);
+    --cx-border-soft: var(--cm-border-soft);
+    --cx-text: var(--cm-text);
+    --cx-text-soft: var(--cm-text-soft);
+    --cx-muted: var(--cm-muted);
+    --cx-muted-soft: var(--cm-border-strong);
+    --cx-gold: var(--cm-green);
+    --cx-gold-soft: var(--cm-green-soft);
+    --cx-gold-bg: var(--cm-surface-green);
+
+    /* --cv-* : conversas.css */
+    --cv-page-bg: var(--cm-bg);
+    --cv-surface: var(--cm-surface);
+    --cv-surface-soft: var(--cm-surface-soft);
+    --cv-border: var(--cm-border);
+    --cv-border-strong: var(--cm-border-strong);
+    --cv-text: var(--cm-text);
+    --cv-text-soft: var(--cm-text-soft);
+    --cv-muted: var(--cm-muted);
+    --cv-gold: var(--cm-green);
+    --cv-gold-soft: var(--cm-green-soft);
+    --cv-purple: var(--cm-purple);
+    --cv-purple-dark: var(--cm-purple-hover);
+    --cv-shadow: var(--cm-shadow);
+
+    /* Sem prefixo. O corpo da página é pintado por inicio.css com
+       --bg-body e --text-dark, NÃO com --bg-card — sem esta linha o
+       body continuava no lilás antigo e o modo escuro não virava. */
+    --bg-body: var(--cm-bg);
+    --bg-white: var(--cm-surface);
+    --text-dark: var(--cm-text);
+    --text-medium: var(--cm-text-soft);
+
+    --bg-primary: var(--cm-bg);
+    --bg-secondary: var(--cm-surface-soft);
+    --bg-card: var(--cm-surface);
+    --bg-hover: var(--cm-surface-green);
+    --border-color: var(--cm-border);
+    --text-primary: var(--cm-text);
+    --text-secondary: var(--cm-text-soft);
+    --text-muted: var(--cm-muted);
+
+    /* Rosa da marca. inicio.css chama de --accent. */
+    --accent: var(--cm-pink);
+    --accent-light: var(--cm-pink-soft);
+
+    --primary: var(--cm-purple);
+    --primary-dark: var(--cm-purple-hover);
+    --primary-light: #9160c0;
+
+    --shadow-card: var(--cm-shadow-sm);
+    --shadow-hover: var(--cm-shadow-hover);
+    --radius: var(--cm-radius);
+    --radius-btn: var(--cm-radius-btn);
+}
+
+/* No escuro, os mesmos mapeamentos. Repetidos porque o bloco acima é
+   :root e o modo escuro precisa vencer. */
+html.a11y-dark-mode,
+body.a11y-dark-mode {
+    --cx-bg: var(--cm-bg);
+    --cx-bg-soft: var(--cm-surface);
+    --cx-border: var(--cm-border);
+    --cx-border-soft: var(--cm-border-soft);
+    --cx-text: var(--cm-text);
+    --cx-text-soft: var(--cm-text-soft);
+    --cx-muted: var(--cm-muted);
+    --cx-muted-soft: var(--cm-border-strong);
+    --cx-gold: var(--cm-green);
+    --cx-gold-soft: var(--cm-green-soft);
+    --cx-gold-bg: var(--cm-surface-green);
+
+    --cv-page-bg: var(--cm-bg);
+    --cv-surface: var(--cm-surface);
+    --cv-surface-soft: var(--cm-surface-soft);
+    --cv-border: var(--cm-border);
+    --cv-border-strong: var(--cm-border-strong);
+    --cv-text: var(--cm-text);
+    --cv-text-soft: var(--cm-text-soft);
+    --cv-muted: var(--cm-muted);
+    --cv-gold: var(--cm-green);
+    --cv-gold-soft: var(--cm-green-soft);
+    --cv-purple: var(--cm-purple);
+    --cv-purple-dark: var(--cm-purple-hover);
+    --cv-shadow: var(--cm-shadow);
+
+    --bg-body: var(--cm-bg);
+    --bg-white: var(--cm-surface);
+    --text-dark: var(--cm-text);
+    --text-medium: var(--cm-text-soft);
+
+    --bg-primary: var(--cm-bg);
+    --bg-secondary: var(--cm-surface-soft);
+    --bg-card: var(--cm-surface);
+    --bg-hover: var(--cm-surface-green);
+    --border-color: var(--cm-border);
+    --text-primary: var(--cm-text);
+    --text-secondary: var(--cm-text-soft);
+    --text-muted: var(--cm-muted);
+
+    --accent: var(--cm-pink);
+    --accent-light: var(--cm-pink-soft);
+
+    --primary: var(--cm-purple);
+    --primary-dark: var(--cm-purple-hover);
+    --primary-light: #c49ef0;
+
+    --shadow-card: var(--cm-shadow-sm);
+    --shadow-hover: var(--cm-shadow-hover);
+}
+
+/* ==========================================================================
+   4. O FUNDO DA COMUNIDADE
+
+   Verde claro com manchas orgânicas suaves em CSS. Sem imagem de
+   fundo: a textura é feita com gradientes radiais, que pesam zero
+   bytes e não competem com as fotos das publicações.
+
+   Aplicado por body.community-app, a classe que a Etapa 2 põe no
+   <body>. Enquanto ela não existe, o fundo continua vindo de cada
+   folha — nada some.
+
+   POR QUE body.community-app E NÃO .community-app
+
+   conversas.css pinta o fundo com `body.groups-page`,
+   `body.conversas-page`, `body.chat-page` e `body.channel-page`, todas
+   com um radial-gradient dourado por cima de --cv-page-bg. Isso é
+   0,1,1. Um `.community-app` sozinho é 0,1,0 e perdia, mesmo entrando
+   depois no HTML. Escrevendo body.community-app os dois ficam em 0,1,1
+   e vale o que vier por último — que é este arquivo. Sem !important.
+   ========================================================================== */
+/* ==========================================================================
+   4. O FUNDO DA COMUNIDADE — MARCA REGISTRADA DO SITE
+
+   A imagem 'imagem-fundo-comunidade.png' define a identidade visual única
+   da Comunidade: tons verdes suaves, formas orgânicas acolhedoras e estrelas
+   nos cantos. O centro é claro, permitindo contraste total para textos.
+
+   Para garantir que ela apareça em TODAS as páginas (fórum, grupos,
+   conversas, chat, canais, perfil e posts) sem ser escondida por cores
+   sólidas, o body e os contêineres principais ficam transparentes, e a
+   arte é renderizada num pseudo-elemento fixo no fundo da tela.
+   ========================================================================== */
+html:has(body.community-app),
+html.community-app {
+    background-color: var(--cm-bg);
+}
+
+body.community-app {
+    background-color: transparent !important;
+    background-image: none !important;
+    position: relative;
+    isolation: isolate;
+}
+
+/* A arte de fundo entra num pseudo-elemento FIXO, e não como
+   background-attachment: fixed no próprio body.
+
+   Motivo: `background-attachment: fixed` não é respeitado no iOS/Safari
+   (a imagem gruda no topo e a rolagem a leva embora), e numa página
+   baixa ele estica a arte pela altura toda do documento. Com um
+   pseudo-elemento `position: fixed` a moldura fica presa à janela em
+   qualquer navegador.
+
+   z-index: -1 coloca a arte ACIMA do fundo do body/html (reserva)
+   e ABAIXO de todo o conteúdo. pointer-events: none impede clique fantasma. */
+body.community-app::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--cm-bg);
+    /* Fallback direto para o arquivo da marca caso imagens.js demore ou não rode */
+    background-image:
+        var(--img-fundo, url('/img/ilustracoes/imagem-fundo-comunidade.png')),
+        radial-gradient(58rem 34rem at 8% -6%, rgba(220, 234, 223, .75), transparent 62%),
+        radial-gradient(46rem 30rem at 104% 12%, rgba(240, 232, 247, .70), transparent 60%),
+        radial-gradient(40rem 26rem at 50% 108%, rgba(220, 234, 223, .55), transparent 64%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Garante transparência em todas as cascas de páginas da comunidade para a arte passar */
+body.community-app.groups-page,
+body.community-app.conversas-page,
+body.community-app.chat-page,
+body.community-app.channel-page,
+body.community-app.group-library-page,
+body.community-app.post-detail-body,
+body.community-app.profile-friend-page,
+body.community-app .page-main,
+body.community-app .groups-page-main,
+body.community-app .chat-page-main,
+body.community-app .channel-page-main,
+body.community-app .community-page-main,
+body.community-app .profile-page,
+body.community-app .post-detail-main,
+body.community-app .conversation-workspace,
+body.community-app .conversation-empty-content {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* No escuro a arte CLARA dá lugar à atmosfera verde profunda: uma moldura
+   quase branca deixaria a página clara no meio de um fundo escuro. */
+html.a11y-dark-mode body.community-app,
+body.a11y-dark-mode.community-app {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: var(--cm-text);
+}
+
+html.a11y-dark-mode body.community-app::before,
+body.a11y-dark-mode.community-app::before {
+    background-color: var(--cm-bg);
+    background-image:
+        radial-gradient(58rem 34rem at 8% -6%, rgba(30, 42, 34, .85), transparent 62%),
+        radial-gradient(46rem 30rem at 104% 12%, rgba(42, 32, 54, .70), transparent 60%),
+        radial-gradient(40rem 26rem at 50% 108%, rgba(30, 42, 34, .60), transparent 64%);
+}
+
+/* ==========================================================================
+   5. FOCO
+
+   Um anel só para a área toda, roxo e grosso. Antes cada folha fazia o
+   seu e a espessura mudava de página para página.
+   ========================================================================== */
+.community-app :focus-visible {
+    outline: 3px solid var(--cm-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   6. MOVIMENTO REDUZIDO
+
+   As transições são curtas e decorativas, então cortá-las não tira
+   informação de ninguém.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .community-app *,
+    .community-app *::before,
+    .community-app *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

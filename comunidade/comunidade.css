@@ -337,6 +337,49 @@ body {
    A URL chega em --img-fundo, aplicada por /imagens.js a partir do
    data-img-fundo. Sem JS, vale a camada 3.
    ========================================================================== */
+/* ==========================================================================
+   6.1 BANNER DE BOAS-VINDAS
+   --------------------------------------------------------------------------
+   Fica dentro de #screen-forum, entre o cabeçalho da tela e a caixa de
+   publicação. Por isso some sozinho ao trocar para Grupos, Eventos ou
+   Conversa, e o layout de altura fixa do chat não é empurrado.
+
+   TRANSPARENTE, SOBRE O FUNDO DA COMUNIDADE
+
+   A arte de fundo da página (imagem-fundo-comunidade.png) já ocupa as
+   quatro áreas. Quando o banner era escuro por cima disso, ele virava
+   uma mancha roxa no meio de uma página clara — duas linguagens
+   visuais no mesmo lugar.
+
+   Agora o banner não é mais uma "faixa": é uma área de leitura dentro
+   da própria página. Ele deixa a arte passar e só acrescenta um verde
+   muito suave, do mesmo tom de --cm-surface-green que os outros
+   elementos da Comunidade usam. O que segura o texto é o verde atrás
+   dele, não uma moldura.
+
+   CONSEQUÊNCIA: o texto passou de branco para escuro
+
+   A versão anterior era foto + véu roxo escuro, com texto branco por
+   cima. Num fundo claro isso daria contraste 1.6:1 — impossível de
+   ler. Todos os textos, botões e o painel de áreas mudaram para
+   --cm-text (13.6:1) e --cm-text-soft (4.8:1).
+
+   DE BORDO A BORDO
+
+   O .community-main é um contêiner de 900px centralizado. O banner
+   estoura para a largura toda da janela com o par left/right 50% +
+   margin -50vw. O corpo já tem `overflow-x: hidden` (seção 2), então a
+   barra de rolagem vertical não vira largura a mais.
+
+   Em troca, o texto reencontra a coluna do resto da página: o padding
+   lateral usa a mesma conta do .community-main — 24px de respiro, mais
+   metade da sobra dos 900px.
+
+   SEM BORDAS
+
+   Nada de border, border-radius nem box-shadow. Sem foto e sem véu
+   escuro, não há nada que emoldure.
+   ========================================================================== */
 .welcome-banner {
     position: relative;
     left: 50%;
@@ -345,83 +388,87 @@ body {
     margin-left: -50vw;
     margin-right: -50vw;
     margin-bottom: 22px;
+    /* isola os pseudo-elementos: sem isto, o z-index negativo da foto
+       a colocaria atrás do fundo da página em vez de dentro da faixa. */
     isolation: isolate;
     overflow: hidden;
     display: flex;
     align-items: center;
-    /* min-height, nunca height: a faixa pedida é de 240 a 300px, mas
-       com texto maior (fonte ampliada nas configurações de
-       acessibilidade) o bloco cresce em vez de cortar a descrição. */
-    min-height: 262px;
+    /* min-height, nunca height: com texto maior (fonte ampliada nas
+       configurações de acessibilidade) o bloco cresce em vez de cortar
+       a descrição. */
+    min-height: 196px;
     padding: 28px max(24px, calc((100vw - 900px) / 2 + 24px));
-    background:
-        linear-gradient(135deg, rgba(72, 44, 104, 0.94), rgba(48, 28, 74, 0.96)) center / cover no-repeat;
 }
 
-.welcome-banner::before,
+/* A FOTO, como textura.
+
+   `--img-fundo` aqui resolve para o slot "boas-vindas-comunidade" (a
+   panorâmica do grupo de pessoas) e NÃO para o fundo da página: o
+   /imagens.js escreve a variável no próprio elemento que tem o
+   data-img-fundo, e o valor da própria faixa vence a herança do body.
+
+   A opacidade baixa é o ponto: a foto aparece, dá profundidade e
+   reconhece a imagem que já existia, mas não vira o assunto. Quem lê
+   entra pelo título; a foto é plano de fundo, não retrato. */
+.welcome-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background: var(--img-fundo, url('/img/ilustracoes/img-comunidade-fundo.jpg')) center 38% / cover no-repeat;
+    opacity: 0.40;
+    filter: saturate(0.95);
+}
+
+/* O fundo suave e transparente por cima. Fecha suavemente à esquerda
+   para manter excelente contraste do texto e abre à direita para revelar
+   as pessoas de forma leve e acolhedora, sem foco excessivo na imagem. */
 .welcome-banner::after {
     content: '';
     position: absolute;
     inset: 0;
-    pointer-events: none;
-}
-
-.welcome-banner::before {
-    z-index: -2;
-    background: var(--img-fundo, none) center center / cover no-repeat;
-    filter: blur(2px);
-    transform: scale(1.04);
-    will-change: transform;
-}
-
-/* O véu. Fecha à esquerda (é onde a letra mora) e vai abrindo até a
-   direita, onde ficam as pessoas.
-
-   A medida é feita contra a foto, não no olho: o grupo ocupa de ~45% a
-   ~85% da largura, e a coluna de texto chega a ~52%. O véu só começa a
-   clarear de verdade depois dos 58%, então a letra nunca cai em cima
-   de um rosto — só em cima do céu e da encosta, que são as partes
-   escuras da imagem. A ponta direita escurece de novo de propósito: ali
-   moram os controles flutuantes de acessibilidade. */
-.welcome-banner::after {
     z-index: -1;
+    pointer-events: none;
     background:
         linear-gradient(96deg,
-            rgba(58, 34, 86, 0.90) 0%,
-            rgba(62, 38, 90, 0.86) 40%,
-            rgba(70, 43, 100, 0.62) 58%,
-            rgba(78, 49, 110, 0.34) 84%,
-            rgba(66, 40, 96, 0.46) 100%),
+            rgba(224, 237, 226, 0.88) 0%,
+            rgba(226, 238, 228, 0.76) 36%,
+            rgba(238, 243, 236, 0.50) 68%,
+            rgba(240, 245, 238, 0.34) 100%),
         linear-gradient(180deg,
-            rgba(56, 33, 84, 0.24) 0%,
-            rgba(56, 33, 84, 0.02) 42%,
-            rgba(56, 33, 84, 0.28) 100%);
+            rgba(220, 234, 223, 0.30) 0%,
+            rgba(220, 234, 223, 0.08) 45%,
+            rgba(220, 234, 223, 0.28) 100%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 }
 
 .welcome-banner-content {
     position: relative;
     z-index: 1;
     width: 100%;
-    /* O texto para antes do grupo de pessoas. Medido em 900px de
-       contêiner: o texto ocupa uns 440px e o resto fica limpo. */
-    max-width: 480px;
+    /* O texto para antes do grupo de formas da arte. */
+    max-width: 470px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    color: #ffffff;
+    gap: 7px;
+    color: var(--cm-text);
 }
 
-/* Identificação. Mesma ideia da tag da AcolherIA: uma só, discreta. */
+/* Identificação. A mesma tag verde da identidade do cabeçalho, em tom
+   um pouco mais fechado para não competir com o título. */
 .welcome-banner-tag {
     margin: 0;
     display: inline-flex;
     align-items: center;
     padding: 5px 14px;
-    border: 1px solid rgba(226, 208, 255, 0.4);
+    border: 1px solid var(--cm-green);
     border-radius: 999px;
-    background: rgba(226, 208, 255, 0.14);
-    color: #e6d9ff;
+    background: var(--cm-green);
+    color: #ffffff;
     font-family: 'Inter', sans-serif;
     font-size: 0.72rem;
     font-weight: 600;
@@ -431,7 +478,7 @@ body {
 
 .welcome-banner-title {
     margin: 0;
-    color: #ffffff;
+    color: var(--cm-text);
     font-family: 'Playfair Display', Georgia, serif;
     font-size: clamp(1.45rem, 2.9vw, 1.95rem);
     font-weight: 700;
@@ -440,26 +487,32 @@ body {
     text-wrap: balance;
 }
 
+/* A descrição não usa --cm-text-soft.
+
+   Medido: #647060 sobre o verde do véu dá 4.31:1, e texto normal
+   precisa de 4.5. #5d685c dá 4.83:1 no mesmo fundo. A diferença entre
+   os dois tons é pequena aos olhos e é a diferença entre passar e
+   falhar em AA. */
 .welcome-banner-text {
     margin: 0;
-    max-width: 460px;
-    color: #ffffff;
+    max-width: 450px;
+    color: #5d685c;
     font-family: 'Inter', sans-serif;
     font-size: 0.96rem;
     line-height: 1.55;
-    opacity: 0.9;
 }
 
 .welcome-banner-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 4px;
+    margin-top: 5px;
 }
 
-/* Os dois botões são translúcidos de propósito: um bloco opaco sobre a
-   fotografia vira um componente genérico de landing page e briga com
-   o resto da página, que é toda em cards claros e finos. */
+/* Botões sólidos agora. Translúcidos sobre um fundo quase branco
+   viram fantasmas: o botão principal não se distingue do fundo, e o
+   secundário some por completo. Aqui a hierarquia é por cor, não por
+   transparência. */
 .welcome-btn {
     display: inline-flex;
     align-items: center;
@@ -471,10 +524,9 @@ body {
     font-size: 0.9rem;
     font-weight: 600;
     line-height: 1.2;
-    color: #ffffff;
     cursor: pointer;
     text-decoration: none;
-    transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
+    transition: background-color 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
 }
 
 .welcome-btn i {
@@ -482,34 +534,42 @@ body {
 }
 
 .welcome-btn-primary {
-    background: rgba(124, 58, 237, 0.5);
-    border: 1px solid rgba(226, 208, 255, 0.5);
+    background: var(--cm-purple);
+    border: 1px solid var(--cm-purple);
+    color: #ffffff;
 }
 
 .welcome-btn-primary:hover {
-    background: rgba(139, 92, 246, 0.72);
+    background: var(--cm-purple-hover);
+    border-color: var(--cm-purple-hover);
 }
 
 .welcome-btn-ghost {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: transparent;
+    /* --cm-border-input dá 2.84:1 sobre o verde do banner, e um
+       contorno de botão precisa de 3:1 (WCAG 1.4.11) para dizer onde
+       ele termina. #6d7d69 dá 3.63:1 no mesmo fundo. */
+    border: 1px solid #6d7d69;
+    color: #5d685c;
 }
 
 .welcome-btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.16);
+    background: var(--cm-surface-green);
+    border-color: var(--cm-green);
+    color: var(--cm-green);
 }
 
 .welcome-btn:active {
     transform: translateY(1px);
 }
 
-/* Foco visível nos dois. O anel branco sobrevive tanto no véu roxo
-   quanto sobre a parte clara da fotografia. */
+/* Foco visível nos dois. O anel roxo funciona tanto sobre o verde do
+   banner quanto sobre o branco da área de conteúdo. */
 .welcome-btn:focus-visible,
 .welcome-area:focus-visible,
 .welcome-dismiss:focus-visible {
-    outline: 3px solid #ffffff;
-    outline-offset: 3px;
+    outline: 3px solid var(--cm-purple);
+    outline-offset: 2px;
 }
 
 .welcome-banner-note {
@@ -517,28 +577,26 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #ffffff;
+    color: #5d685c;
     font-family: 'Inter', sans-serif;
     font-size: 0.82rem;
     line-height: 1.5;
-    opacity: 0.76;
 }
 
 .welcome-banner-note i {
-    color: #eec4dc;
+    color: var(--cm-pink);
     font-size: 0.78rem;
 }
 
 /* ---- Apresentação das quatro áreas ------------------------------
-   Abre dentro do banner, por cima da foto. Fecha sozinho quando
-   alguém escolhe uma área. */
+   Abre dentro do banner. Fecha sozinho quando alguém escolhe uma área. */
 .welcome-areas {
-    margin-top: 4px;
+    margin-top: 5px;
     padding: 14px 16px;
     width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1px solid var(--cm-border);
     border-radius: 14px;
-    background: rgba(48, 28, 74, 0.66);
+    background: rgba(255, 255, 255, 0.86);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     animation: fadeIn 0.2s ease;
@@ -546,11 +604,10 @@ body {
 
 .welcome-areas-lead {
     margin: 0 0 10px;
-    color: #ffffff;
+    color: var(--cm-text);
     font-family: 'Inter', sans-serif;
     font-size: 0.82rem;
     font-weight: 600;
-    opacity: 0.85;
 }
 
 .welcome-areas-list {
@@ -568,10 +625,10 @@ body {
     align-items: flex-start;
     gap: 9px;
     padding: 9px 11px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--cm-border);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
+    background: var(--cm-surface-soft);
+    color: var(--cm-text);
     font-family: 'Inter', sans-serif;
     font-size: 0.8rem;
     line-height: 1.4;
@@ -581,14 +638,14 @@ body {
 }
 
 .welcome-area:hover {
-    background: rgba(255, 255, 255, 0.13);
-    border-color: rgba(226, 208, 255, 0.45);
+    background: var(--cm-surface-green);
+    border-color: var(--cm-green);
 }
 
 .welcome-area i {
     flex-shrink: 0;
     margin-top: 2px;
-    color: #e6d9ff;
+    color: var(--cm-green);
     font-size: 0.85rem;
 }
 
@@ -598,15 +655,13 @@ body {
 
 .welcome-areas-hint {
     margin: 10px 0 0;
-    color: #ffffff;
+    color: var(--cm-text-soft);
     font-family: 'Inter', sans-serif;
     font-size: 0.74rem;
     line-height: 1.45;
-    opacity: 0.6;
 }
 
-/* Dispensar. Fica no canto, pequeno e discreto, para não competir com
-   o título. some do fluxo quando o banner é escondido. */
+/* Dispensar. Pequeno e discreto, para não competir com o título. */
 .welcome-dismiss {
     position: absolute;
     top: 12px;
@@ -618,62 +673,60 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.26);
+    border: 1px solid var(--cm-border);
     border-radius: 50%;
-    background: rgba(48, 28, 74, 0.4);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--cm-muted);
     font-size: 0.78rem;
     cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s, background-color 0.2s;
+    opacity: 0.8;
+    transition: opacity 0.18s, background-color 0.18s, color 0.18s;
 }
 
 .welcome-dismiss:hover {
     opacity: 1;
-    background: rgba(48, 28, 74, 0.68);
+    background: var(--cm-surface-green);
+    color: var(--cm-green);
 }
 
-/* Estado escondido: some do fluxo, para o feed do fórum subir. A regra
-   fica no JS (atributo hidden); isto é só para quando o elemento é
-   encontrado por seletor de layout. */
 .welcome-banner[hidden] {
     display: none;
 }
 
 /* ---- Responsivo ------------------------------------------------
    O título encolhe por clamp, sem height fixo. A lista de áreas cai
-   para uma coluna antes de ficar espremida. Nenhuma altura travada:
-   em tela estreita a foto vira textura atrás de um véu quase opaco,
-   o que é o mesmo caminho que o banner da AcolherIA faz.
-
-   O padding lateral do banner acompanha o do .community-main em cada
-   faixa, para o texto continuar na mesma coluna do resto da página. */
+   para uma coluna antes de ficar espremida. */
 @media (max-width: 900px) {
     .welcome-banner {
-        padding: 32px 24px;
+        padding: 30px 24px;
     }
 }
 
 @media (max-width: 768px) {
     .welcome-banner {
-        padding: 28px 16px;
+        padding: 26px 16px;
     }
 }
 
 @media (max-width: 640px) {
     .welcome-banner {
         min-height: 0;
-        padding: 26px 14px;
+        padding: 24px 14px;
     }
 
-    /* Sem espaço lateral para o texto e a foto dividirem, a foto
-       recua: o véu fecha e a fotografia vira atmosfera. */
+    /* Em tela estreita o texto ocupa a faixa toda, então o verde pesa
+       mais e a foto recua — sem espaço para os dois, a letra ficaria
+       em cima das pessoas. */
+    .welcome-banner::before {
+        opacity: 0.20;
+    }
+
     .welcome-banner::after {
         background:
             linear-gradient(180deg,
-                rgba(56, 33, 84, 0.62) 0%,
-                rgba(58, 34, 86, 0.86) 45%,
-                rgba(56, 33, 84, 0.94) 100%);
+                rgba(222, 236, 225, 0.95) 0%,
+                rgba(224, 238, 227, 0.92) 55%,
+                rgba(226, 239, 229, 0.95) 100%);
     }
 
     .welcome-banner-content {
@@ -681,7 +734,7 @@ body {
     }
 
     .welcome-banner-title {
-        font-size: 1.32rem;
+        font-size: 1.3rem;
     }
 
     .welcome-banner-text {
@@ -705,10 +758,9 @@ body {
 
 @media (max-width: 480px) {
     .welcome-banner {
-        padding: 24px 12px;
+        padding: 22px 12px;
     }
 
-    /* some junto com o texto do cabeçalho, que também some na faixa. */
     .welcome-dismiss {
         top: 8px;
         right: 8px;
@@ -721,24 +773,25 @@ body {
    aparece depois que o banner foi dispensado. */
 .rules-banner-btn-boas-vindas {
     padding: 6px 18px;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--cm-border-input);
     border-radius: 20px;
-    background: var(--bg-card, #fff);
-    color: var(--text-primary, #1e293b);
+    background: var(--cm-surface);
+    color: var(--cm-text);
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
 }
 
 .rules-banner-btn-boas-vindas:hover {
-    border-color: #7c3aed;
-    color: #7c3aed;
+    border-color: var(--cm-green);
+    background: var(--cm-surface-green);
+    color: var(--cm-green);
 }
 
 .rules-banner-btn-boas-vindas:focus-visible {
-    outline: 2px solid #7c3aed;
+    outline: 2px solid var(--cm-purple);
     outline-offset: 2px;
 }
 
@@ -3709,40 +3762,86 @@ body.a11y-dark-mode .post-author-avatar-wrapper {
     border-color: var(--cx-bg-soft);
 }
 
-/* O banner de boas-vindas já é escuro nos dois modos — é uma faixa com
-   foto e véu roxo, não um card. Sem borda e sem sombra nos dois modos, a
-   diferença aqui é só o véu um pouco mais fechado, para a faixa não
-   brilhar contra o fundo quase preto. O texto continua branco: ele
-   sempre esteve sobre a foto. */
-body.a11y-dark-mode .welcome-banner {
-    background:
-        linear-gradient(135deg, rgba(52, 30, 80, 0.96), rgba(34, 20, 54, 0.97)) center / cover no-repeat;
+/* O banner de boas-vindas no escuro.
+
+   O banner virou uma área de leitura clara dentro da página. No escuro
+   ele precisa do caminho inverso: o véu verde CLARO sai de cena (deixava
+   fundo quase branco com texto quase branco em cima) e entra um verde
+   profundo, no mesmo tom de --cm-surface-green do modo escuro.
+
+   Antes estas regras apontavam para `.welcome-banner::after`, que não
+   existe mais: o véu hoje é o ::before. Por isso o banner aparecia com
+   véu claro e texto claro no escuro. */
+/* No escuro a foto continua presente, ainda mais apagada: sobre um
+   fundo quase preto ela só apareceria como ruído. O verde do véu é
+   que segura o contraste. */
+body.a11y-dark-mode .welcome-banner::before {
+    opacity: 0.20;
 }
 
 body.a11y-dark-mode .welcome-banner::after {
     background:
         linear-gradient(96deg,
-            rgba(48, 28, 74, 0.93) 0%,
-            rgba(54, 32, 82, 0.86) 32%,
-            rgba(62, 38, 92, 0.64) 56%,
-            rgba(66, 41, 96, 0.42) 82%,
-            rgba(54, 32, 82, 0.58) 100%),
+            rgba(30, 42, 34, 0.90) 0%,
+            rgba(31, 44, 35, 0.82) 38%,
+            rgba(26, 33, 38, 0.58) 72%,
+            rgba(18, 22, 26, 0.45) 100%),
         linear-gradient(180deg,
-            rgba(48, 28, 74, 0.30) 0%,
-            rgba(48, 28, 74, 0.06) 42%,
-            rgba(48, 28, 74, 0.34) 100%);
+            rgba(30, 42, 34, 0.32) 0%,
+            rgba(30, 42, 34, 0.10) 45%,
+            rgba(30, 42, 34, 0.28) 100%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* A descrição e a frase de apoio sobem para o tom do modo escuro. A
+   nota usa o mesmo valor do claro pelo mesmo motivo: o verde do véu é
+   a referência de contraste. */
+body.a11y-dark-mode .welcome-banner-text,
+body.a11y-dark-mode .welcome-banner-note {
+    color: var(--cm-text-soft);
+}
+
+body.a11y-dark-mode .welcome-banner-note i {
+    color: var(--cm-pink);
+}
+
+body.a11y-dark-mode .welcome-btn-ghost {
+    border-color: var(--cm-border-strong);
+    color: var(--cm-text-soft);
 }
 
 body.a11y-dark-mode .welcome-btn-primary {
-    background: rgba(109, 59, 209, 0.66);
+    background: var(--cm-purple);
+    border-color: var(--cm-purple);
+    color: #1a1024;
 }
 
 body.a11y-dark-mode .welcome-btn-primary:hover {
-    background: rgba(138, 99, 224, 0.84);
+    background: var(--cm-purple-hover);
+    border-color: var(--cm-purple-hover);
+}
+
+body.a11y-dark-mode .welcome-dismiss {
+    border-color: var(--cm-border-strong);
+    background: rgba(26, 31, 36, 0.8);
+    color: var(--cm-text-soft);
 }
 
 body.a11y-dark-mode .welcome-areas {
-    background: rgba(34, 20, 54, 0.72);
+    background: rgba(26, 31, 36, 0.9);
+    border-color: var(--cm-border);
+}
+
+body.a11y-dark-mode .welcome-area {
+    background: var(--cm-surface-soft);
+    border-color: var(--cm-border);
+    color: var(--cm-text);
+}
+
+body.a11y-dark-mode .welcome-area:hover {
+    background: var(--cm-surface-green);
+    border-color: var(--cm-green);
 }
 
 body.a11y-dark-mode .rules-banner-btn-boas-vindas {
