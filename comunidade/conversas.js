@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     //
     // O intervalo dobra a cada tique sem novelty, ate o teto. Conversa
     // parada custa uma consulta a cada 30s, nao 12 por minuto.
-    const INTERVALO_VARREDURA_MS = 5000;
-    const INTERVALO_VARREDURA_MAX_MS = 30000;
+    const INTERVALO_VARREDURA_MS = 2000;
+    const INTERVALO_VARREDURA_MAX_MS = 2000;
     const INTERVALO_VARREDURA_OCULTA_MS = 30000;
     const ESPERA_PROVA_REALTIME_MS = 8000;
 
