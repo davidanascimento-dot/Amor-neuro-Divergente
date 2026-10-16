@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     website: null,
                     is_admin: false,
                     is_verified: false,
+                    is_assistant: false,
                     frame: 'none',
                     followers_count: 0,
                     following_count: 0,
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     website: profile.website || null,
                     is_admin: profile.is_admin || false,
                     is_verified: profile.is_verified || false,
+                    is_assistant: profile.is_assistant || false,
                     frame: profile.frame || 'none',
                     followers_count: profile.followers_count || 0,
                     following_count: profile.following_count || 0,
@@ -197,8 +199,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Badges
         const verifiedEl = document.getElementById('verifiedBadge');
         const adminEl = document.getElementById('adminBadge');
-        if (verifiedEl) verifiedEl.style.display = p.is_verified ? 'inline-flex' : 'none';
+        const aiEl = document.getElementById('aiBadge');
+
+        // O selo "IA" substitui o check azul quando a conta é assistente:
+        // dois selos juntos diziam "verificada" e "sou uma IA", que são
+        // coisas diferentes. Quem tem o selo IA já está dizendo o que é.
+        if (verifiedEl) verifiedEl.style.display = (p.is_verified && !p.is_assistant) ? 'inline-flex' : 'none';
         if (adminEl) adminEl.style.display = p.is_admin ? 'inline-flex' : 'none';
+        if (aiEl) aiEl.style.display = p.is_assistant ? 'inline-flex' : 'none';
 
         // Bio
         const bioEl = document.getElementById('profileBio');

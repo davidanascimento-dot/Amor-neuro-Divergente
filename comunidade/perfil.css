@@ -157,6 +157,37 @@
     backdrop-filter: blur(6px);
 }
 
+/* Selo "IA" — marca a assistente virtual (a Lia).
+   Fica no mesmo lugar do verificado e do admin: depois do nome, na
+   mesma linha. Estrutura copiada dos dois vizinhos para que os três
+   selos compartilhem altura, raio e blur — um selo com formato
+   diferente chama mais atenção do que a informação que ele carrega. */
+.ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(123, 196, 154, 0.28);
+    color: #ffffff;
+    border: 1px solid #7bc49a;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(6px);
+    white-space: nowrap;
+}
+
+.ai-badge i {
+    font-size: 10px;
+}
+
+/* Sobre o banner do hero, o texto precisa de sombra: o fundo é a foto,
+   e sem isso o branco some em cima de um trecho claro. */
+.profile-hero-name-row .ai-badge {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
 /* Ações (botões) */
 .profile-hero-actions {
     display: flex;
