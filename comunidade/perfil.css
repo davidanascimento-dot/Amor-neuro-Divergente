@@ -76,7 +76,16 @@
     border-radius: 50%;
     border: 5px solid #ffffff;
     background: var(--pf-bg-soft);
-    overflow: hidden;
+    /* O overflow:hidden que ficava AQUI foi movido para os filhos.
+       Ele recortava o ::before das molduras, que é posicionado em
+       inset:-5px — ou seja, 5px para fora desta caixa. As quatro
+       molduras antigas (dourada, roxa, neon, arco-íris) aparecem
+       cortadas pela própria borda por causa disso, e a moldura de
+       gato perdia as orelhas inteiras.
+
+       Aqui não precisa de overflow: quem precisa de recorte circular
+       é a imagem e o placeholder, e cada um resolve isso com o próprio
+       border-radius, sem cortar mais nada dentro do wrapper. */
     flex-shrink: 0;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
@@ -86,6 +95,7 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 50%;
 }
 
 .profile-avatar-placeholder {
@@ -96,6 +106,7 @@
     justify-content: center;
     color: #cfc9c1;
     font-size: 48px;
+    border-radius: 50%;
 }
 
 /* Info: nome + handle */
@@ -1580,6 +1591,52 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
 @keyframes rainbowSpin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   MOLDURA DE TESTE — "Gatinho", por IMAGEM
+   --------------------------------------------------------------------------
+   Diferenca em relacao as outras quatro: em vez de gradiente desenhado em
+   CSS, esta usa um arquivo. E o que permite orelha e bigode, que nao tem
+   como fazer com borda e mascara.
+
+   As outras quatro seguem com gradiente e NAO foram mexidas.
+
+   O arquivo PRECISA ser PNG ou SVG. Um JPG nao serve, por mais bem desenhado
+   que esteja: JPG nao tem canal alfa, entao o miolo do desenho vira um bloco
+   opaco que cobre a foto do avatar. O arquivo em img/ilustracoes/ e JPG,
+   entao nao pode ser usado direto — ferramentas/converter-gatinho.py le ele,
+   tira o branco de fundo e grava o PNG em img/molduras/.
+
+   Verificar o resultado sem abrir a imagem: PNG com fundo transparente
+   tambem e desenhado em branco por quem abre. O que separa os dois e o
+   canal alfa — ferramentas/conferir-transparencia.py le o numero.
+   ========================================================================== */
+
+.profile-hero-avatar[data-frame="gatinho-teste"]::before {
+    /* 138px e o tamanho do ::before (128 do avatar + 5px de cada lado).
+       A imagem e 443x474: nao e quadrada, porque a orelha sobe. Mandar
+       cover distorca a arte; contain preserva. O 108% faz o anel passar
+       por cima da borda do avatar, que e como moldura costuma funcionar. */
+    background: url('/img/molduras/moldura-gatinho-teste.png') center / 108% contain no-repeat;
+    border: none;
+    -webkit-mask: none;
+    mask: none;
+}
+
+/* Quando nao ha moldura nenhuma, o ::before fica vazio — antes ele herdava
+   a mascara do bloco acima, que nao fazia nada, mas o reset deixa o
+   comportamento igual para todas. */
+.profile-hero-avatar[data-frame="none"]::before,
+.profile-hero-avatar:not([data-frame])::before {
+    background: none;
+    border: none;
+}
+
+/* Preview no seletor do modal */
+.frame-preview.frame-gatinho-teste {
+    background: url('/img/molduras/moldura-gatinho-teste.png') center / 112% contain no-repeat;
+    background-color: #f3ecf5;
 }
 
 /* Picker no modal */
