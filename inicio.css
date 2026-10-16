@@ -394,6 +394,13 @@ ul, ol { list-style: none; }
     color: #0ea5e9;
 }
 
+@media(max-width:768px){
+.logo-text {
+    display: none;
+
+}
+}
+
 /* =========================================
    BREADCRUMB — azul (padrão Explorar)
    ========================================= */
@@ -833,6 +840,7 @@ body.a11y-reduce-motion .logo-text {
             display: flex;
             align-items: center;
             gap: 20px;
+    
         }
 
          .btn-text {
@@ -4163,3 +4171,6 @@ body.a11y-dark-mode .acolheria-boas-vindas-lia {
     .acolheria-boas-vindas-lia { width: 132px; height: 132px; }
     .lia-avatar-cabecalho { width: 26px; height: 26px; }
 }
+
+
+
