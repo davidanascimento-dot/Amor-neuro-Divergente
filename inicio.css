@@ -582,7 +582,12 @@ body.a11y-reduce-motion .logo-text {
         transform: none;
         left: auto;
     }
-    .header-links { 
+    /* Esconde os LINKS, nao o container. Este .header-links e onde o
+       busca.js monta a lupa (ele so procura .nav-actions, que existe
+       apenas no inicio). Esconder o container inteiro apagava a busca no
+       celular em 21 paginas — e nao escondia nada util: em 18 das 19 o
+       container esta vazio, sem um unico link dentro. */
+    .header-links a { 
         display: none; 
     }
 }
@@ -2106,7 +2111,10 @@ body.text-decreased { font-size: 0.9rem; }
 @media (max-width: 768px) {    
     .sidebar-toggle-btn { top: 12px; left: 12px; width: 40px; height: 40px; font-size: 16px; }
     .header-glass { padding: 0 16px 0 64px; height: 65px; }
-    .header-links { display: none; }
+    /* Segunda copia da mesma regra — ver o comentario na linha 585.
+     * Dois blocos de 768px no mesmo arquivo e o que faz o comportamento
+     * do cabecalho mudar sem que ninguem perceba qual dos dois venceu. */
+    .header-links a { display: none; }
     .hero-redesign { padding: 100px 20px 60px; }
     .hero-center h1 { font-size: 36px; }
     .hero-center p { font-size: 16px; }

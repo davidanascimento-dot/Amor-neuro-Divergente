@@ -1022,7 +1022,7 @@ input:checked + .slider-round:before {
         height: 65px;
     }
     
-    .header-links {
+    .header-links a {
         display: none;
     }
     
@@ -1865,7 +1865,9 @@ body.a11y-dark-mode .profile-reading-card { background: #131a2c; border-color: #
 
 @media (max-width: 768px) {
     .header { height: 65px; padding: 0 16px 0 64px; }
-    .header-links { display: none; }
+    /* Mesmo caso do inicio.css: o container e onde a lupa nasce, entao
+       esconde-se so o link, nunca o container. */
+    .header-links a { display: none; }
     .main-content { padding-top: 65px; }
     .settings-wrapper { padding: 20px 16px 40px; }
     .page-header { padding: 20px 16px 16px; }
