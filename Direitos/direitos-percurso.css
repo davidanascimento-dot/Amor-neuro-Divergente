@@ -2354,3 +2354,247 @@
         padding-left: 0;
     }
 }
+
+/* ---------- A ficha da lei ---------- */
+
+.laws-grid .law-sheet {
+    margin-top: 14px;
+    border-top: 1px solid var(--dp-borda);
+    padding-top: 12px;
+}
+
+.law-sheet__resumo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    /* WCAG 2.2 SC 2.5.8 pede 24x24 px de alvo. */
+    min-height: 44px;
+    padding: 6px 4px;
+    border-radius: 6px;
+    color: var(--dp-roxo);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.3;
+    list-style: none;
+}
+
+.law-sheet__resumo::-webkit-details-marker { display: none; }
+.law-sheet__resumo:hover { text-decoration: underline; }
+.law-sheet__resumo:focus-visible {
+    outline: 3px solid var(--dp-roxo);
+    outline-offset: 2px;
+}
+.law-sheet__resumo-texto { flex: 1; }
+.law-sheet__seta { font-size: 0.72rem; transition: transform 0.2s ease; }
+.law-sheet[open] .law-sheet__seta { transform: rotate(180deg); }
+
+.law-sheet__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.law-sheet__artigo {
+    display: grid;
+    /* coluna 1: a referencia; coluna 2: o titulo em linguagem simples. */
+    grid-template-columns: minmax(84px, auto) 1fr;
+    gap: 10px;
+    align-items: baseline;
+}
+
+.law-sheet__ref {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--dp-roxo);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 2px 4px;
+    margin: -2px -4px;
+    border-radius: 4px;
+}
+.law-sheet__ref:hover { border-bottom-color: currentColor; }
+.law-sheet__titulo { font-size: 0.84rem; color: var(--dp-tinta); line-height: 1.45; }
+
+/* O aviso dentro do link precisa ficar fora da ordem de leitura. */
+.law-sheet__sr {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- O corpo do artigo ---------- */
+
+/* O artigo virou bloco de texto. O grid de duas colunas continua, para o
+   numero e o titulo ficarem na mesma linha; as tres partes atravessam a
+   largura toda, porque ler com o olho preso na coluna da esquerda e pior
+   do que ler em linha cheia. */
+.law-sheet__artigo > .law-sheet__parte {
+    grid-column: 1 / -1;
+    margin: 2px 0 0;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--dp-suave);
+}
+.law-sheet__parte:last-child { margin-bottom: 0; }
+
+/* A marca separa as tres camadas. Sem o rotulo, os tres viram um paragrafo
+   so e o leitor nao sabe qual dos tres pode estar errado. */
+.law-sheet__marca {
+    display: inline-block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1px 6px;
+    margin-right: 6px;
+    border-radius: 4px;
+    vertical-align: 0.08em;
+    white-space: nowrap;
+    background: var(--dp-roxo-claro);
+    color: var(--dp-roxo);
+}
+.law-sheet__parte--pratica .law-sheet__marca { background: #e0f2fe; color: #0369a1; }
+.law-sheet__parte--limite .law-sheet__marca { background: #f1f5f9; color: #475569; }
+.law-sheet__parte--lei { color: var(--dp-tinta); }
+
+/* ---------- Os grupos ---------- */
+
+.law-sheet__grupo {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--dp-borda);
+}
+.law-sheet__grupo-titulo {
+    margin: 0 0 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--dp-suave);
+}
+.law-sheet__lista:not(.law-sheet__lista--artigos):not(.law-sheet__lista--orgaos) li {
+    font-size: 0.82rem;
+    color: var(--dp-suave);
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+}
+.law-sheet__lista:not(.law-sheet__lista--artigos):not(.law-sheet__lista--orgaos) li::before {
+    content: "\2014";
+    position: absolute;
+    left: 0;
+    color: var(--dp-suave);
+}
+
+/* ---------- Os orgaos ---------- */
+
+.law-sheet__orgao {
+    display: grid;
+    gap: 3px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--dp-papel);
+    border: 1px solid var(--dp-borda);
+}
+.law-sheet__orgao-nome { font-size: 0.84rem; font-weight: 700; color: var(--dp-tinta); line-height: 1.35; }
+.law-sheet__orgao-quando { font-size: 0.74rem; font-weight: 600; color: var(--dp-roxo); line-height: 1.4; }
+.law-sheet__orgao-escopo { font-size: 0.8rem; color: var(--dp-suave); line-height: 1.5; }
+.law-sheet__orgao-custo { font-size: 0.74rem; font-weight: 600; color: var(--dp-cat); }
+
+/* ---------- A nota de conferencia ---------- */
+
+.law-sheet__conferencia {
+    margin: 14px 0 0;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--dp-suave);
+    display: flex;
+    gap: 7px;
+    align-items: flex-start;
+}
+.law-sheet__conferencia i { margin-top: 0.18em; color: #15803d; }
+
+/* ---------- O aviso das leis ainda nao conferidas ---------- */
+
+.law-sheet--vazio {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--dp-roxo-claro);
+}
+.law-sheet__aviso {
+    margin: 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--dp-tinta);
+}
+.law-sheet__aviso i { margin-top: 0.22em; color: var(--dp-roxo); flex-shrink: 0; }
+
+/* ---------- Tela estreita ---------- */
+
+@media (max-width: 640px) {
+    .law-sheet__artigo { grid-template-columns: 1fr; gap: 2px; }
+    /* A marca e um texto: numa linha de 375px ela come a frase se nao
+       quebrar junto. */
+    .law-sheet__marca {
+        display: block;
+        width: fit-content;
+        margin-right: 0;
+        margin-bottom: 3px;
+    }
+}
+
+/* ---------- Movimento reduzido ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .law-sheet__seta { transition: none; }
+}
+/* ---------- o aviso do formulario ---------- */
+
+/* O aviso do envio precisa se ver nas duas situacoes: o erro e a palavra que
+   a pessoa mais precisa ler, porque o texto dela continua na caixa. */
+.case-status {
+    margin: 10px 0 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    background: var(--dp-roxo-claro);
+    color: var(--dp-tinta);
+    border: 1px solid var(--dp-borda);
+}
+
+.case-status[hidden] { display: none; }
+
+/* O JS marca data-erro / data-ok no aviso, e a cor vem daqui. */
+.case-status[data-erro="true"] {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.case-status[data-ok="true"] {
+    background: #d1fae5;
+    border-color: #a7f3d0;
+    color: #14532d;
+}
+
+.case-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+

@@ -1,0 +1,237 @@
+/* ============================================================================
+   FEEDBACK-PAGINA.CSS — a pergunta numa gaveta lateral
+   ============================================================================
+   Nao fica no fim da pagina. Um botao discreto no canto abre uma gaveta que
+   entra pela direita, com o site escurecido atras. O conteudo principal nao e
+   coberto: quem esta lendo nao perde o texto de vista enquanto responde.
+
+   Os tokens sao declarados em .fb-gaveta, nao em .fb. A pagina da comunidade
+   tem design system proprio e redefine --primary-light como um roxo medio; se
+   este bloco herdasse esse valor, o contraste do titulo cairia para 1.96:1.
+   Declarando --fb-* aqui dentro, o widget nao herda nada de fora.
+   ============================================================================ */
+
+/* ---------- o botao que abre ---------- */
+
+.fb-abrir {
+    position: fixed;
+    /* fica a esquerda do .floating-hub, que ocupa a ponta direita */
+    right: 96px;
+    bottom: 20px;
+    z-index: 88;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 4px;
+    border: 2px solid  #5e21b6;
+    color: #21345a;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+
+}
+
+.fb-abrir:hover { background: #f3ecfd; }
+.fb-abrir:focus-visible { outline: 3px solid var(--primary, #7c3aed); outline-offset: 3px; }
+.fb-abrir[hidden] { display: none; }
+
+/* ---------- a raiz ---------- */
+
+.fb-raiz { position: fixed; inset: 0; z-index: 9000; }
+.fb-raiz[hidden] { display: none; }
+
+body.fb-travado { overflow: hidden; }
+
+.fb-fundo {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 16, 46, 0.5);
+    animation: fb-aparecer 0.2s ease;
+}
+
+@keyframes fb-aparecer { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- a gaveta ---------- */
+
+.fb-gaveta {
+    --fb-fundo: #ffffff;
+    --fb-tinta: #3b3450;
+    --fb-titulo: #5b21b6;
+    --fb-borda: #e6dff0;
+    --fb-alerta: #991b1b;
+    --fb-ok: #14532d;
+
+    position: absolute;
+    /* caixa pequena no canto: a altura e a do conteudo, nao a da tela */
+    top: auto;
+    /* 56px do .floating-hub + 16px da margem dele + 16px de folga. Sem este
+       deslocamento a caixa cobre os botoes de acessibilidade do site. */
+    right: 96px;
+    bottom: 20px;
+    max-height: calc(100vh - 40px);
+    width: min(340px, calc(100vw - 40px));
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    background: var(--fb-fundo);
+    color: var(--fb-tinta);
+    border: 2px solid var(--fb-borda);
+    border-radius: 4px;
+    box-shadow: 0 18px 46px rgba(26, 16, 46, 0.22);
+    animation: fb-entrar 0.24s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes fb-entrar {
+    from { transform: translateY(12px) scale(0.98); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ---------- o topo ---------- */
+
+.fb-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--fb-borda);
+}
+
+.fb-titulo {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--fb-titulo);
+}
+
+.fb-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--fb-tinta);
+    font-size: 1rem;
+    cursor: pointer;
+}
+.fb-x:hover { background: #f3ecfd; }
+.fb-x:focus-visible { outline: 3px solid var(--fb-titulo); outline-offset: 2px; }
+
+/* ---------- o texto ---------- */
+
+.fb-nota {
+    margin: 12px 0 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--fb-tinta);
+}
+
+/* ---------- a pergunta ---------- */
+
+.fb-pergunta { margin-top: 26px; }
+.fb-pergunta[hidden] { display: none; }
+
+.fb-pergunta-txt {
+    margin: 0 0 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.fb-botoes { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.fb-btn {
+    min-width: 104px;
+    min-height: 44px;
+    padding: 10px 22px;
+    border: 1px solid var(--fb-titulo);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--fb-titulo);
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fb-btn:hover { background: var(--fb-titulo); color: #ffffff; }
+.fb-btn:focus-visible { outline: 3px solid var(--fb-titulo); outline-offset: 3px; }
+
+/* ---------- a caixa que abre no Sim ---------- */
+
+.fb-caixa { margin-top: 22px; }
+.fb-caixa[hidden] { display: none; }
+
+.fb-rotulo {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.fb-campo {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--fb-borda);
+    border-radius: 10px;
+    background: #ffffff;
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.fb-campo:focus-visible { outline: 3px solid var(--fb-titulo); outline-offset: 1px; }
+
+.fb-acoes { margin-top: 12px; }
+
+.fb-enviar {
+    min-height: 44px;
+    padding: 10px 24px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--fb-titulo);
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fb-enviar:hover { background: var(--primary-dark, #6d28d9); }
+.fb-enviar:focus-visible { outline: 3px solid var(--fb-titulo); outline-offset: 3px; }
+.fb-enviar:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ---------- o aviso ---------- */
+
+.fb-estado { margin: 16px 0 0; font-size: 0.85rem; line-height: 1.5; }
+.fb-estado[hidden] { display: none; }
+.fb-estado[data-erro] { color: var(--fb-alerta); font-weight: 600; }
+.fb-estado[data-ok] { color: var(--fb-ok); font-weight: 600; }
+
+/* ---------- tela estreita: quase tela inteira ---------- */
+
+@media (max-width: 560px) {
+    /* tela pequena: a caixa fica no meio, com margem */
+    .fb-gaveta {
+        right: 12px; left: 12px;
+        bottom: 12px;
+        width: auto;
+        padding: 18px;
+    }
+    .fb-abrir { right: 12px; left: 12px; justify-content: center; }
+}
+
+/* ---------- movimento reduzido ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .fb-gaveta, .fb-fundo { animation: none; }
+}

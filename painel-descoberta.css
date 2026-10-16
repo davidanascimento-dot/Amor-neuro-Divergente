@@ -1,0 +1,266 @@
+/* ============================================================================
+   PAINEL DE DESCOBERTA — cartao compacto no canto
+   ============================================================================
+   Um cartao pequeno no canto inferior direito. A pagina inteira continua
+   visivel: nao abre modal, nao escurece o fundo e nao ocupa metade da tela.
+
+   As cores sao as do site — `--primary`, `--primary-light` e a borda da
+   inicio.css — em vez de valores fixos. E o que faz o cartao combinar com o
+   resto: se o roxo da marca mudar um dia, ele muda junto, sem que ninguem
+   precise lembrar deste arquivo.
+
+   O canto inferior direito ja tem o `.floating-hub` (56 x 356, z-index 100) e
+   o botao do Userway. Por isso o cartao fica a ESQUERDA deles: os controles de
+   acessibilidade precisam continuar alcancaveis enquanto ele esta na tela.
+   ============================================================================ */
+
+.pd-canto {
+    position: fixed;
+    /* 56px do hub + 16px da margem dele + 16px de folga */
+    right: 88px;
+    bottom: 20px;
+    z-index: 90;
+    width: 372px;
+    max-width: calc(100vw - 130px);
+}
+
+/* ---------- o cartao ---------- */
+
+.pd-cartao {
+    position: relative;
+    /* fundo do site, nao branco puro: o cartao nao corta a pagina */
+    background: #ffffff;
+    border: 2px solid var(--dp-borda, #e8e3dd);
+    border-radius: 5px;
+    /* sombra difusa, no mesmospirit do cartao de destaque da home */
+    box-shadow: 0 12px 32px rgba(26, 16, 46, 0.10);
+    padding:0px 16px 16px 16px;
+    animation: pd-surgir 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes pd-surgir {
+    from { transform: translateY(10px) scale(0.98); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ---------- o rotulo ---------- */
+
+.pd-rotulo {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--primary-dark, #6d28d9);
+    padding: 4px 11px;
+    margin-top: 12px;
+    border-radius: 999px;
+    background: var(--primary-light, #ede9fe);
+}
+
+/* ---------- o item ---------- */
+
+.pd-item {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 14px;
+    align-items: start;
+    margin-top: 10px;
+    margin-right: 30px;
+}
+
+.pd-thumb {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 14px;
+    background: var(--primary-light, #ede9fe);
+}
+
+/* Registro sem imagem: bloco com a marca. Nunca um icone que pareca ser
+   conteudo que nao existe. */
+.pd-thumb--vazia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: var(--primary, #7c3aed);
+    background: linear-gradient(135deg, var(--primary-light, #ede9fe), #fde9f4);
+}
+
+.pd-info {
+    min-width: 0;
+}
+
+.pd-titulo {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    /* o roxo do titulo e a cor de link do site */
+    color: var(--primary, #7c3aed);
+}
+
+/* ---------- o resumo ---------- */
+
+/* O resumo diz o que a pessoa vai ler antes de clicar. Sem ele, o cartao
+   obriga a decidir pelo titulo, que as vezes e uma pergunta. Tres linhas:
+   o suficiente para decidir, sem que o cartao domine a pagina. */
+.pd-resumo {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 6px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #5c5652;
+}
+
+.pd-tipo {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b6478;
+}
+
+/* ---------- o link ---------- */
+
+.pd-vermais {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-top: 10px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--primary, #7c3aed);
+    text-decoration: none;
+}
+
+.pd-vermais i { transition: transform 0.18s ease; }
+.pd-vermais:hover { text-decoration: underline; }
+.pd-vermais:hover i { transform: translateX(3px); }
+
+.pd-vermais:focus-visible {
+    outline: 3px solid var(--primary, #7c3aed);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+/* ---------- os controles ---------- */
+
+/* Sem linha de borda: no desenho de referencia os botoes sao circulos lisos.
+   O contorno some e o que separa o botao do fundo. */
+.pd-controles {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px solid #f1edf7;
+}
+
+.pd-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 40px cabe na mao e passa no SC 2.5.8, que pede 24px */
+    width: 40px;
+    height: 40px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: #f6f4fa;
+    color: #4a4458;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease;
+}
+
+.pd-btn:hover {
+    background: var(--primary-light, #ede9fe);
+    color: var(--primary-dark, #6d28d9);
+}
+
+.pd-btn:focus-visible {
+    outline: 3px solid var(--primary, #7c3aed);
+    outline-offset: 2px;
+}
+
+.pd-btn--proximo {
+    width: 48px;
+    height: 48px;
+    font-size: 1rem;
+    background: var(--primary, #7c3aed);
+    color: #ffffff;
+}
+
+.pd-btn--proximo:hover {
+    background: var(--primary-dark, #6d28d9);
+    color: #ffffff;
+}
+
+.pd-contagem {
+    margin-left: auto;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #6b6478;
+}
+
+/* ---------- dispensar ---------- */
+
+.pd-fechar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #6b6478;
+    font-size: 0.92rem;
+    cursor: pointer;
+}
+
+.pd-fechar:hover { background: #f3ecfd; color: #1a1a2e; }
+
+.pd-fechar:focus-visible {
+    outline: 3px solid var(--primary, #7c3aed);
+    outline-offset: 2px;
+}
+
+/* ---------- tela estreita ---------- */
+
+@media (max-width: 900px) {
+    .pd-canto {
+        right: 84px;
+        width: 330px;
+    }
+}
+
+@media (max-width: 640px) {
+    .pd-canto {
+        /* nessa largura o hub vai para a borda e o cartao usa a margem toda */
+        right: 12px;
+        left: 12px;
+        bottom: 12px;
+        width: auto;
+        max-width: none;
+    }
+    .pd-item { grid-template-columns: 100px 1fr; gap: 12px; }
+    .pd-thumb { width: 100px; height: 100px; }
+}
+
+/* ---------- movimento reduzido ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .pd-cartao { animation: none; }
+    .pd-vermais i { transition: none; }
+    .pd-btn { transition: none; }
+}

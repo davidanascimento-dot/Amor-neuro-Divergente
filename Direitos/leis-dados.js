@@ -727,15 +727,113 @@
             nomePopular: 'BPC - Benefício de Prestação Continuada',
             status: 'em-preparacao',
             conferidoEm: '2026-10-10',
+            verificacao: 'CONFERIDO em três fontes oficiais: (1) texto compilado da Lei 8.742/1993 no Planalto, art. 20 lido na redacao vigente; (2) pagina do MDS sobre o BPC, em gov.br/mds; (3) pagina do serviço no portal gov.br e Cartilha INSS de novembro/2024. Os critérios do BPC mudaram varias vezes: a renda por cabeça esta na redacao da Lei 14.176/2021 (igual ou inferior a um quarto do salario mínimo), o cálculo da renda no parágrafo 3o-A da Lei 15.077/2024, o acumulo no parágrafo 4o na redacao da Lei 14.601/2023, e a não computação de estágio/aprendizagem e paragrafas de barragem no parágrafo 9o da Lei 14.809/2024. Os REQUISITOS DOCUMENTAIS não vem da lei: vem do Decreto 6.214/2007, do Decreto 8.805/2016 e da Portaria Conjunta MDS/INSS nº 34 de 9 de outubro de 2025, conferidos nas paginas oficiais do MDS e do INSS. Atenção: a Instrução Normativa Conjunta SAGICAD/SNBA nº 1/2026 desativou em 13/05/2026 o Formulario de Impossibilidade de Incluisao no CadÚnico, com prazo ate 31/12/2026 para quem estava nele.',
             url: 'http://www.planalto.gov.br/ccivil_03/leis/l8742.htm',
 
             resumo: 'Garante um salário mínimo mensal à pessoa com deficiência de baixa renda.',
 
             artigoDestaque: null,
-            artigos: [],
+            artigos: [
+                {
+                    ref: 'Art. 20, caput',
+                    titulo: 'O que o BPC e',
+                    simples: 'O benefício de prestacao continuada e a garantia de um salario mínimo mensal a pessoa com deficiência e ao idoso com 65 anos ou mais, que comprove não ter meios de prover a propria manutencao nem de te-la provida pela família. A redacao e da Lei 12.435/2011. O número mudou: antes o texto falava em 70 anos, hoje sao 65.',
+                    exemplo: 'Pessoa com deficiência e pessoa com 66 anos, nas mesmas condições econômicas, tem as duas o mesmo direito ao benefício. A idade so conta para a pessoa idosa.',
+                    limite: 'A lei diz o valor e a idade. Não diz como se prova a renda nem em quanto tempo o pagamento sai. Isso vem do regulamento (Decreto 6.214/2007) e da Portaria Conjunta MDS/INSS nº 34/2025.'
+                },
+                {
+                    ref: 'Art. 20, parágrafo 1o',
+                    titulo: 'Quem entra na conta como família',
+                    simples: 'Para o cálculo, família e o requerente, o cônjuge ou companheiro, os pais (ou a madrasta e o padrasto, na ausência de um deles), os irmãos solteiros, os filhos e enteados solteiros e os menores tutelados, desde que vivam todos sob o mesmo teto.',
+                    exemplo: 'Filho adulto casado que mora em outro endereço não entra. Irmão que mora com a pessoa, mesmo solteiro, entra.',
+                    limite: 'O critério da lei e o mesmo teto, não o parentesco nem o grau de necessidade de cada um. Redacao da Lei 12.435/2011.'
+                },
+                {
+                    ref: 'Art. 20, § 2sº e 10',
+                    titulo: 'O que conta como impedimento de longo prazo',
+                    simples: 'Para o BPC, pessoa com deficiência e aquela com impedimento de longo prazo de natureza física, mental, intelectual ou sensorial, que, em interacao com uma ou mais barreiras, pode obstruir a participacao plena e efetiva na sociedade em igualdade de condições. Redacao da Lei 13.146/2015. O parágrafo 10 completa: impedimento de longo prazo e o que produz efeitos por no mínimo dois anos.',
+                    exemplo: 'Uma pessoa com TDAH, com necessidade de acompanhamento continuo e impacto em varias áreas, pode se enquadrar se o impedimento persistir por dois anos ou mais. O diagnóstico, sozinho, não e o critério.',
+                    limite: 'Não generalize elegibilidade. A lei define a categoria; quem decide se o caso se enquadra e o INSS, em avaliação médica e social. Ter uma neurodivergencia não da direito automático ao BPC.'
+                },
+                {
+                    ref: 'Art. 20, parágrafo 3o',
+                    titulo: 'O teto de renda: ate um quarto do salario mínimo por pessoa',
+                    simples: 'A pessoa com deficiência ou idosa tem direito ao benefício se a renda familiar mensal por cabeça for igual ou inferior a um quarto do salario mínimo. Redacao da Lei 14.176/2021. O valor e a forma de comparação ja mudaram mais de uma vez.',
+                    exemplo: 'Renda familiar de três salarios mínimos com quatro pessoas sob o mesmo teto da três quartos por cabeça: acima do teto. A renda, sozinha, ja afasta do benefício.',
+                    limite: 'Este e o teto do parágrafo 3o. O cálculo da renda tem regra propria, no parágrafo 3o-A. A lei veda deduções não previstas em lei: se o INSS descontou algo, peca o por que.'
+                },
+                {
+                    ref: 'Art. 20, parágrafo 3o-A',
+                    titulo: 'Como a renda e calculada',
+                    simples: 'O cálculo soma os rendimentos mensais das pessoas que vivem sob o mesmo teto, ressalvadas as hipoteses do parágrafo 14, na forma estabelecida em ato do Poder Executivo, e sao vedadas deduções não previstas em lei. Este parágrafo e da Lei 15.077/2024.',
+                    exemplo: 'Duas pessoas do mesmo teto, uma com salario e outra com aposentadoria, tem as duas rendas somadas no cálculo. A regra do que entra e do que sai não esta na lei.',
+                    limite: 'Aqui esta o ponto que mais gera dúvida: o detalhe do cálculo não esta na lei, e sim em ato do Executivo. Quem precisa saber o que foi somado ou descontado deve pedir o demonstrativo ao INSS, e não a lei.'
+                },
+                {
+                    ref: 'Art. 20, parágrafo 4o',
+                    titulo: 'O que pode ser acumulado com o BPC',
+                    simples: 'O BPC não pode ser acumulado com outro benefício da seguridade social ou de outro regime, exceto assistencia médica e pensao especial de natureza indenizatoria. A redacao atual e da Lei 14.601/2023, que passou a preservar as transferencias de renda: o benefício do parágrafo único do art. 6o e o inciso VI do caput do art. 203 da Constituicao, além do art. 1o da Lei 10.835/2004.',
+                    exemplo: 'Quem recebe BPC pode receber transferencia de renda federal. O que não pode e somar o BPC com um benefício previdenciario, como uma aposentadoria.',
+                    limite: 'A lei diz o que não pode acumular, mas não diz o que fazer quando ja existe outro benefício em aberto. Nesse caso a situação e individual e a orientacao e do INSS.'
+                },
+                {
+                    ref: 'Art. 20, parágrafo 6o',
+                    titulo: 'A avaliação e do INSS, médica e social',
+                    simples: 'A concessão do benefício fica sujeita a avaliação da deficiência e do grau de impedimento do parágrafo 2o, composta por avaliação médica e avaliação social, realizadas por médicos peritos e por assistentes sociais do INSS. A redacao e da Lei 12.470/2011.',
+                    exemplo: 'Aprovado no CadÚnico, o requerimento so segue depois dessa avaliação. A avaliação social e o que olha a situação real de vida, e não apenas o laudo.',
+                    limite: 'O parágrafo 2o-A (Lei 15.077/2024) diz que a concessão, administrativa ou judicial, fica sujeita a avaliação nos termos de regulamento. Os critérios da avaliação não estão na lei.'
+                },
+                {
+                    ref: 'Art. 20, parágrafo 9o',
+                    titulo: 'O que não entra na conta da renda',
+                    simples: 'Não sao computados para o cálculo da renda familiar por cabeça os valores recebidos a titulo de auxiliar financeiro temporario ou de indenizacao por danos sofridos em decorrência de rompimento e colapso de barragens, nem os rendimentos de estágio supervisionado e de aprendizagem. Redacao da Lei 14.809/2024.',
+                    exemplo: 'Alguem que esta estagiando tem a renda do estágio preservada para a conta do BPC. Quem recebeu indenizacao por dano de enchente também.',
+                    limite: 'A regra vale para o cálculo do BPC. Ela não significa que outros programas passem a considerar essa renda: cada um tem a sua regra.'
+                },
+                {
+                    ref: 'Art. 20, § 5sº, 7o e 8o',
+                    titulo: 'Alojamento, municipio sem serviço e a declaração de renda',
+                    simples: 'Três regras do mesmo artigo: o acolhimento em instituição de longa permanência não prejudica o direito ao benefício (parágrafo 5o, Lei 12.435/2011); não havendo serviço no municipio de residencia, fica assegurado o encaminhamento ao municipio mais proximo que tenha estrutura (parágrafo 7o, Lei 9.720/1998); e a renda familiar mensal e declarada pelo requerente ou seu representante legal (parágrafo 8o, Lei 9.720/1998).',
+                    exemplo: 'Pessoa institucionalizada não perde o BPC por isso. Quem mora onde não ha serviço credenciado e encaminhado ao municipio vizinho. E a renda declarada pode ser confrontada depois.',
+                    limite: 'O encaminhamento ao municipio mais proximo esta sujeito a regulamento. E a declaração de renda e confrontada com outras bases de dados da administracao pública.'
+                }
+            ],
             garante: [],
             documentos: [],
+            situacoes: [],
             passos: [],
+            orgaos: [
+                {
+                    nome: 'INSS - Central 135, Meu INSS ou Agência da Previdencia',
+                    quando: 'Para fazer o requerimento, após o cadastro no CadÚnico estar atualizado.',
+                    escopo: 'O requerimento e gratuito e pode ser feito pelo proprio interessado ou pelo representante legal, pelo telefone 135, pelo site ou aplicativo Meu INSS, ou nas Agências da Previdencia Social. Segundo a documentação oficial, basta apresentar documento de identificacao com foto, e cópias simples servem; o INSS pode pedir os originais a qualquer tempo. Se a pessoa não tiver documentos, pode entrar no pedido desde que a informacao seja confirmável pelo INSS.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'CRAS - Cadastro Único',
+                    quando: 'Antes do requerimento. E o cadastro que o INSS usa para analisar o caso.',
+                    escopo: 'O cadastro e feito presencialmente no CRAS ou na Secretaria de Assistencia Social do municipio, levando o CPF de todos os que moram na mesma casa. E no CRAS que a equipe orienta sobre o BPC. Os dados da composição familiar vem do CadÚnico, e por isso a inscricao e a atualizacao sao necessarias.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'INSS - avaliação médica e social',
+                    quando: 'Depois do requerimento, antes da concessão.',
+                    escopo: 'A concessão depende de avaliação da deficiência e do grau de impedimento, feita por médicos peritos e assistentes sociais do INSS. Os critérios da avaliação não estão na lei: vem de regulamento.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'Conselho de Recursos da Previdencia Social',
+                    quando: 'Quando o benefício e bloqueado, suspenso ou cessado por cadastro desatualizado.',
+                    escopo: 'Durante os 30 dias da cessação, o interessado pode apresentar recurso por qualquer canal do INSS.',
+                    custo: 'Gratuito'
+                }
+            ],
+            limites: [
+                'Ter uma neurodivergencia não da direito automático ao BPC. O que a lei exige e impedimento de longo prazo, de dois anos ou mais, que em interacao com barreiras possa obstruir a participacao plena. Quem avalia e o INSS, e a decisão e individual.',
+                'Os REQUISITOS DOCUMENTAIS não estão na lei. A lei diz que a renda e declarada e que a avaliação e do INSS. Os documentos vem do Decreto 6.214/2007, do Decreto 8.805/2016 e da Portaria Conjunta MDS/INSS nº 34 de 9 de outubro de 2025. Confira sempre na pagina oficial antes de reunir papel.',
+                'O BPC não e aposentadoria: não da 13o salario, não deixa pensao por morte e não depende de ter contribuído para o INSS. A Lei 14.601/2023 passou a permitir o acumulo com transferencias de renda, o que antes era vedado.',
+                'O CadÚnico precisa estar atualizado a cada 24 meses. Se desatualizar, o INSS notifica, e ha prazo para regularizar: 45 dias em municipios de ate 50 mil habitantes, 90 dias acima disso. A Instrução Normativa Conjunta SAGICAD/SNBA nº 1/2026 desativou em 13 de maio de 2026 o Formulario de Impossibilidade de Incluisao no CadÚnico: quem estava nele tem ate 31 de dezembro de 2026 para se cadastrar, sob pena de suspensão ou cessação.'
+            ],
         },
             // ------------------------------------------------------------------
         /* ------------------------------------------------------------------
@@ -750,23 +848,113 @@
             tipo: 'lei',
             numero: '8.213',
             ano: 1991,
-            data: '1991-07-23',
+            data: '1991-07-24',
             nomeOficial: 'Lei nº 8.213, de 23 de julho de 1991',
             nomePopular: 'Lei de Cotas para PCD',
             status: 'em-preparacao',
             conferidoEm: '2026-10-10',
+            verificacao: 'CONFERIDO no texto compilado da Lei 8.213/1991 do Planalto, art. 93 lido na redacao vigente (caput e paragrafos 1 a 4), e nas paginas oficiais do Ministério do Trabalho e Emprego sobre a inclusão da pessoa com deficiência. Conferido também que NAO existe art. 93-A na lei consolidada: o texto que circulara sobre recolhimento ao FAT veio de proposicao no Congresso, não de lei sancionada. Correcao aqui: o registro dizia 23 de julho de 1991 e a lei e de 24 de julho. NAO CONFERIDO nesta revisão: a ADPF 932 (STF), que teria afetado empresas com menos de 50 empregados, não foi verificada em fonte oficial e por isso não aparece nos artigos. O texto do parágrafo 3 sobre o aprendiz com deficiência e do parágrafo 1 sobre a substituição na dispensa sao da Lei 13.146/2015.',
             url: 'http://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm',
 
             resumo: 'Reserva vagas para pessoas com deficiência em empresas com mais de 100 funcionários.',
 
             artigoDestaque: null,
-            artigos: [],
+            artigos: [
+                {
+                    ref: 'Art. 93, caput',
+                    titulo: 'Quantas vagas a empresa precisa preencher',
+                    simples: 'A empresa com 100 (cem) ou mais empregados e obrigada a preencher de 2% a 5% dos seus cargos com beneficiários reabilitados ou pessoas portadoras de deficiência, habilitadas, nesta proporcao: ate 200 empregados, 2%; de 201 a 500, 3%; de 501 a 1.000, 4%; de 1.001 em diante, 5%. O inciso V foi incluido pela Lei 13.146/2015 e vetado.',
+                    exemplo: 'Uma empresa com 300 empregados precisa de 3% de vagas preenchidas por pessoa com deficiência habilitada ou por beneficiário reabilitado da Previdência Social. Sao aproximadamente 9 pessoas.',
+                    limite: 'A lei diz o percentual e o tamanho mínimo da empresa. Não diz como a empresa deve selecionar os candidatos, nem garante que uma pessoa em particular seja contratada: a cota e obrigação da empresa, não vaga reservada a voce.'
+                },
+                {
+                    ref: 'Art. 93, § 3º',
+                    titulo: 'Aprendiz com deficiência não conta para a cota',
+                    simples: 'Para a reserva de cargos sera considerada somente a contratação direta de pessoa com deficiência, excluído o aprendiz com deficiência. Este parágrafo foi incluido pela Lei 13.146/2015.',
+                    exemplo: 'Uma empresa que contrata um aprendiz com deficiência para cumprir a cota esta agindo ao contrario da regra: o aprendiz fica de fora da conta.',
+                    limite: 'Esta regra vale para a cota do art. 93. O aprendiz tem outras protecoes no mercado de trabalho, que vem da CLT e não deste artigo.'
+                },
+                {
+                    ref: 'Art. 93, § 1º',
+                    titulo: 'A dispensa sem justa causa só depois de contratar substituto',
+                    simples: 'A dispensa de pessoa com deficiência ou de beneficiário reabilitado da Previdencia Social ao final de contrato por prazo determinado de mais de 90 dias, e a dispensa imotivada em contrato por prazo indeterminado, somente poderao ocorrer após a contratação de outro trabalhador com deficiência ou beneficiário reabilitado. Redacao da Lei 13.146/2015.',
+                    exemplo: 'Voce foi contratado sob a cota e foi demitido sem justa causa. A empresa so podia faze-lo depois de contratar outra pessoa com deficiência habilitada. Se não contratou, a dispensa e questionavel.',
+                    limite: 'Esta protecao não e estabilidade. Ela não impede a demissão: obriga a empresa a repor a vaga antes. E não vale quando o contrato tinha prazo determinado de 90 dias ou menos.'
+                },
+                {
+                    ref: 'Art. 93, § 2º',
+                    titulo: 'Quem fiscaliza a cota é o Ministério do Trabalho',
+                    simples: 'Ao Ministério do Trabalho e Emprego incumbe estabelecer a sistematica de fiscalização, gerar dados e estatísticas sobre o total de empregados e as vagas preenchidas por pessoas com deficiência e por beneficiários reabilitados da Previdencia Social, e fornecer esses dados, quando solicitados, aos sindicatos, as entidades representativas dos empregados ou aos cidadãos interessados. Redacao da Lei 13.146/2015.',
+                    exemplo: 'Voce pode solicitar ao Ministério do Trabalho os dados de preenchimento das vagas de uma empresa específica. O parágrafo assegura esse acesso, também aos cidadãos.',
+                    limite: 'O parágrafo diz que os dados devem ser fornecidos. Não diz em quanto tempo, nem se a empresa e obrigada a justificar caso não tenha alcançado o percentual.'
+                },
+                {
+                    ref: 'Art. 93, § 4º',
+                    titulo: 'O inciso que permitiria outra forma de cumprimento foi vetado',
+                    simples: 'O parágrafo quarto do art. 93 foi incluido pela Lei 13.146/2015 e vetado. O mesmo ocorreu com o inciso V do caput, que havia sido incluido pela mesma lei.',
+                    exemplo: 'Duas alteracoes da Lei Brasileira de Inclusão da Pessoa com Deficiência neste artigo não chegaram a existir. Quem se basear nelas esta usando um texto que nunca vigiu.',
+                    limite: 'A veto significa que o regime e o do caput: percentual sobre o quadro total, sem compensação e sem alternativa. Confirme sempre o texto vigente, porque parte do material de circulação ainda traz o que foi vetado.'
+                },
+                {
+                    ref: 'Não esta na lei: jurisprudencia do TST',
+                    titulo: 'A empresa não e punida se ofereceu as vagas',
+                    simples: 'Este ponto não esta no art. 93. Vem da jurisprudencia do Tribunal Superior do Trabalho, que vem entendendo que a autuação e a multa sao indevidas quando a empresa comprova que ofereceu as vagas e não conseguiu preencher por desinteresse de candidatos. A propria Corte chegou a dizer que o art. 93 não específica as condições de cumprimento da cota.',
+                    exemplo: 'Uma empresa publicou anúncios, fez processos seletivos e não apareceu candidato habilitado. Com essa prova, o TST tem anulado o auto de infracao.',
+                    limite: 'Isto e jurisprudencia, não texto de lei. Depende do caso concreto e pode ser revertido. Serve como orientacao de como a fiscalização e discutida, não como garantia do resultado.'
+                },
+                {
+                    ref: 'Não esta na lei: base de cálculo',
+                    titulo: 'A conta e sobre o quadro total de empregados',
+                    simples: 'Também não esta no art. 93. A jurisprudencia consolidada do TST e do STF e no sentido de que o percentual incide sobre o número total de empregados, independentemente da atividade da empresa, sem que cargos ou funções possam ser excluídos da conta. Convencao coletiva não pode reduzir essa base.',
+                    exemplo: 'Uma empresa de limpeza não pode calcular a cota so sobre os empregados administrativos. A base e o total.',
+                    limite: 'Como e jurisprudencia e não lei, não ha no art. 93 uma frase que diga isso. Quem quiser o fundamento completo deve ler as decisões, não este cartão.'
+                },
+                {
+                    ref: 'Não esta na lei: quem conta para a cota',
+                    titulo: 'Habilitada ou reabilitada: sao dois grupos',
+                    simples: 'O caput da lei cita dois grupos: beneficiaries reabilitados da Previdencia Social e pessoas portadoras de deficiência, habilitadas. Sao situações diferentes, e o proprio art. 93 não as define.',
+                    exemplo: 'Uma pessoa com diagnóstico de TDAH e laudo obrigatório não conta automaticamente. O que define o enquadramento e a certificação feita pelo órgão competente, e não o diagnóstico.',
+                    limite: 'A lei não define o que e estar habilitada nem o que e ser beneficiário reabilitado. Isso vem de regulamento e de atos do órgão certificador. Não se pode afirmar que uma pessoa neurodivergente, pelo so diagnóstico, se enquadra em qualquer um dos dois grupos. Quem se enquadra precisa da certificação feita pelo órgão competente, e não do diagnóstico.'
+                }
+            ],
             situacoes: [],
             garante: [],
             documentos: [],
             passos: [],
-            orgaos: [],
-            limites: []
+            orgaos: [
+                {
+                    nome: 'Ministério do Trabalho e Emprego — Fiscalização do Trabalho',
+                    quando: 'Quando a empresa não cumpre o percentual ou ha suspeita de fraude.',
+                    escopo: 'E o órgão que o art. 93, parágrafo 2, designa para a sistematica de fiscalização. A autuação cabe a Fiscalização do Trabalho, e não ao Ministério Público. A multa administrativa vem de la.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'Ministério do Trabalho e Emprego — dados e estatísticas',
+                    quando: 'A qualquer momento, para conferir o quadro real de uma empresa.',
+                    escopo: 'O parágrafo 2 do art. 93 assegura que os dados sobre o total de empregados e as vagas preenchidas sejam fornecidos aos sindicatos, as entidades representativas dos empregados ou aos cidadãos interessados, quando solicitados.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'Ministério Público do Trabalho',
+                    quando: 'Quando a omissao se repete ou ha interesse coletivo.',
+                    escopo: 'Pode entrar com ação civil pública contra a empresa que descumpre a cota, com base na regra da Lei de Cotas. E via diferente da autuação administrativa: uma não exclui a outra.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'Tribunal Regional do Trabalho ou Tribunal Superior do Trabalho',
+                    quando: 'Ha contrato de trabalho e a demissão de quem estava na cota e questionavel.',
+                    escopo: 'Cabe a ação sobre a demissão. A jurisprudencia do TST e o caminho mais curto para discutir a demissão sem justa causa de trabalhador contratado sob a cota, porque a prova de que a empresa não reporou a vaga e objetiva.',
+                    custo: 'Grátis no primeiro grau; custas no recurso'
+                }
+            ],
+            limites: [
+                'A cota e obrigação da EMPRESA, não direito individual a uma vaga. Se a empresa esta abaixo do percentual, o caminho correto e a denúncia ao Ministério do Trabalho ou ao Ministério Público do Trabalho, não a reclamacao por uma vaga que ninguem abriu.',
+                'Ter uma neurodivergencia não da direito automático a entrar na cota. O art. 93 fala em pessoa com deficiência habilitada e em beneficiário reabilitado da Previdencia Social. As duas condições sao definidas fora desta lei. A avaliação e individual.',
+                'Se voce foi contratado sob a cota, a protecao mais concreta e o parágrafo 1: a dispensa imotivada so pode acontecer depois que a empresa contratar outra pessoa na mesma condição. Isso não e estabilidade, mas e um limite objetivo a demissão sem justa causa.',
+                'Não foi possivel confirmar, nesta revisão, em fonte oficial, a ADPF 932 do STF, que teria restringido a obrigação das empresas com menos de 50 empregados. Esse ponto fica pendente de verificacao.',
+                'A obrigação comeca em 100 empregados, com 2 por cento. Sao 2 por cento ate 200 empregados, 3 por cento de 201 a 500, 4 por cento de 501 a 1.000 e 5 por cento a partir de 1.001. Com menos de 100 empregados a lei não obriga a nenhuma cota. As empresas públicas tem regime proprio, que não foi tratado aqui.',
+                'A fiscalização e do Ministério do Trabalho e Emprego. O Ministério Público do Trabalho pode agir contra a empresa por ação civil pública. A reclamacao trabalhista, quando ha uma relação de emprego ja estabelecida, e outra via, com regras proprias.'
+            ],
         },
 
         /* ------------------------------------------------------------------
@@ -880,23 +1068,138 @@
             tipo: 'lei',
             numero: '10.216',
             ano: 2001,
-            data: '2001-08-15',
-            nomeOficial: 'Lei nº 10.216, de 15 de agosto de 2001',
+            data: '2001-04-06',
+            nomeOficial: 'Lei nº 10.216, de 6 de abril de 2001',
             nomePopular: 'Direito à Saúde Mental',
             status: 'em-preparacao',
             conferidoEm: '2026-10-10',
+            verificacao: 'CONFERIDO no texto oficial do Planalto, artigo por artigo, e na Base Legislação da Presidência da Republica, que registra que não consta revogacao expressa: a lei esta VIGENTE. Corrigido aqui um erro de data: o registro dizia 15 de agosto de 2001 e a lei e de 6 de abril. O texto oficial não traz marca de revogacao. Ha projetos no Congresso para altera-la (PL 2.646/2024, PL 5.244/2025), que ainda não sao lei.',
             url: 'http://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10216.htm',
 
             resumo: 'Redireciona o modelo assistencial em saúde mental, priorizando o tratamento em comunidade.',
 
             artigoDestaque: null,
-            artigos: [],
+            artigos: [
+                {
+                    ref: 'Art. 1º',
+                    titulo: 'Nenhuma discriminação no atendimento',
+                    simples: 'Ninguém pode ser tratado diferente em serviço de saúde mental por causa de raça, cor, sexo, orientação sexual, religião, opção política, nacionalidade, idade, situação familiar, recursos econômicos, nem pelo grau ou tempo de evolução do transtorno. A lei coloca o grau e o tempo de evolução na lista, e isso importa: tratar alguém de forma mais restritiva só porque o quadro é mais grave é discriminação pela lista da própria lei.',
+                    exemplo: 'Duas pessoas com o mesmo diagnóstico, uma internada em quarto comum e outra isolada, só porque a segunda tem um quadro mais intenso. A diferença está no critério que a lei proíbe.',
+                    limite: 'A lei proíbe a discriminação. Ela não define como a internação tem de ser feita: isso fica no art. 4º e nos regulamentos.'
+                },
+                {
+                    ref: 'Art. 2º, caput',
+                    titulo: 'A ciência dos direitos é obrigatória no atendimento',
+                    simples: 'Em qualquer atendimento de saúde mental, de qualquer natureza, a pessoa e seus familiares ou responsáveis são formalmente cientificados dos direitos do parágrafo único. A lei não diz que é bom informar: diz que serão formalmente cientificados.',
+                    exemplo: 'Um termo de internação que não lista os nove direitos não cumpre o caput. Guardar o termo é a forma prática de comprovar que a ciência não aconteceu.',
+                    limite: 'A lei exige a ciência, mas não define o formato. Um papel qualquer não é o mesmo que uma ciência que a pessoa consiga entender.'
+                },
+                {
+                    ref: 'Art. 2º, parágrafo único',
+                    titulo: 'Os nove direitos que você deve ser informada de',
+                    simples: 'Em qualquer atendimento de saúde mental, você e sua família devem ser informados destes nove direitos: I) acesso ao melhor tratamento do sistema de saúde, consentâneo às suas necessidades; II) ser tratado com humanidade e respeito, no interesse exclusivo de beneficiar sua saúde, buscando a recuperação pela inserção na família, no trabalho e na comunidade; III) proteção contra abuso e exploração; IV) sigilo das informações prestadas; V) presença médica, a qualquer tempo, para esclarecer a necessidade ou não de internação involuntária; VI) livre acesso aos meios de comunicação disponíveis; VII) receber o máximo de informações sobre a doença e o tratamento; VIII) ser tratado em ambiente terapêutico pelos meios menos invasivos possíveis; IX) ser tratado, preferencialmente, em serviços comunitários de saúde mental.',
+                    exemplo: 'Se você foi admitido e ninguém disse que podia pedir um médico que explicasse a internação, os incisos V e VII são a norma. O inciso IX é o que impede a internação como primeira opção: tratamento em comunidade vem antes.',
+                    limite: 'São nove direitos, mas a lei não diz onde ficam escritos nem quem tem a obrigação de entregar esse papel. Quem não recebeu não perdeu o direito, mas precisa de outra forma de provar.'
+                },
+                {
+                    ref: 'Art. 3º',
+                    titulo: 'A política de saúde mental é responsabilidade do Estado',
+                    simples: 'É responsabilidade do Estado desenvolver a política de saúde mental e a assistência, com participação da sociedade e da família. O atendimento é prestado em estabelecimento de saúde mental, que a lei define de forma ampla: qualquer instituição ou unidade que ofereça assistência.',
+                    exemplo: 'Se um município diz que não é obrigado a ter um CAPS porque isso não está na lei municipal, este artigo mostra que a responsabilidade é do Estado.',
+                    limite: 'A lei estabelece o dever do Estado. Ela não obriga o município a abrir um serviço específico, nem diz quantos precisam existir.'
+                },
+                {
+                    ref: 'Art. 4º',
+                    titulo: 'Internação só quando o atendimento fora do hospital não basta',
+                    simples: 'A internação, em qualquer modalidade, só deve ser indicada quando os meios extra-hospitalares se mostrarem insuficientes. A ordem da lei é: tratamento fora do hospital primeiro. A internação é o passo seguinte, não o primeiro.',
+                    exemplo: 'Alguém que entra em crise e é levado direto para internação, sem tentativa de atendimento ambulatorial, contraria esta ordem. A pergunta a fazer é: o que foi tentado antes?',
+                    limite: 'A lei não define o que se considera insuficiente. A decisão é técnica, e quem decide pode ser questionado.'
+                },
+                {
+                    ref: 'Art. 4º, parágrafo 1º',
+                    titulo: 'O objetivo do tratamento é a reinserção',
+                    simples: 'O tratamento tem como finalidade permanente a reinserção social da pessoa em seu meio. Reinserir não é só dar alta: é a pessoa voltando a viver na família, no trabalho e na comunidade.',
+                    exemplo: 'Um plano de alta que ignora onde a pessoa vai morar e com quem vai conviver não trata do que este parágrafo manda. A alta é um processo, não um evento.',
+                    limite: 'É uma diretriz de finalidade. A lei não estabelece prazo nem metas de reinserção para o serviço.'
+                },
+                {
+                    ref: 'Art. 4º, parágrafo 3º',
+                    titulo: 'É vedada a internação em instituição com características asilares',
+                    simples: 'É proibido internar uma pessoa em instituição que tenha características asilares: aquela que não oferece os serviços do parágrafo 2º (médicos, de assistência social, psicológicos, ocupacionais, de lazer) e não assegura os direitos do art. 2º. A internação em lugar assim é vedada por lei.',
+                    exemplo: 'Uma instituição que interna, mantém a pessoa reclusa e não oferece terapia ocupacional nem assistência social está vedada por este parágrafo. Se a internação foi nesse tipo de lugar, este é o artigo mais forte que existe.',
+                    limite: 'A lei proíbe, mas o texto não é o fim do caminho: é uma norma para ação, com Defensoria Pública ou Ministério Público.'
+                },
+                {
+                    ref: 'Art. 6º',
+                    titulo: 'Internação psiquiátrica exige laudo circunstanciado',
+                    simples: 'A internação psiquiátrica só pode ser realizada mediante laudo médico circunstanciado que caracterize os motivos. Não basta um pedido verbal: é preciso um documento médico que explique a razão.',
+                    exemplo: 'Uma internação sem laudo escrito contraria este artigo. Peça uma via do laudo com a data.',
+                    limite: 'A lei diz que é preciso de laudo, mas não diz quantos, nem define os critérios médicos que caracterizam os motivos.'
+                },
+                {
+                    ref: 'Art. 6º, parágrafo único',
+                    titulo: 'As três modalidades de internação',
+                    simples: 'A lei distingue três modalidades: I) voluntária, com consentimento da pessoa; II) involuntária, sem consentimento e a pedido de terceiro; III) compulsória, determinada pela Justiça. A ordem importa: a compulsória é decisão de juiz, e não de médico nem de família.',
+                    exemplo: 'Uma família que pede internação contra a vontade da pessoa está pedindo internação involuntária, que tem prazo e comunicação obrigatória. A compulsória é outra coisa, e só o juiz pode determinar.',
+                    limite: 'A lei não diz quanto tempo dura cada modalidade. Só a involuntária tem prazo de comunicação definido, no art. 8º.'
+                },
+                {
+                    ref: 'Art. 8º, parágrafo 1º',
+                    titulo: '72 horas para comunicar a internação involuntária ao Ministério Público',
+                    simples: 'A internação involuntária precisa ser comunicada ao Ministério Público Estadual pelo responsável técnico do estabelecimento, no prazo de 72 horas. O mesmo vale na alta. Além disso, a internação só pode ser autorizada por médico registrado no CRM do estado.',
+                    exemplo: 'Se a internação foi involuntária e ninguém comunicou o Ministério Público em 72 horas, este parágrafo é a norma. Você pode perguntar ao hospital: foi comunicado ao Ministério Público? Quando? Quem comunicou?',
+                    limite: 'A lei dá o prazo, mas não diz o que acontece se ele for descumprido. E a comunicação é feita ao Ministério Público: a pessoa tem direito de saber que ela aconteceu.'
+                },
+                {
+                    ref: 'Art. 8º, parágrafo 2º',
+                    titulo: 'Como termina a internação involuntária',
+                    simples: 'A internação involuntária termina por solicitação escrita do familiar ou responsável legal, ou quando o especialista responsável pelo tratamento estabelecer. Ou seja: encerra quando a família pede por escrito, ou quando o médico responsável decide.',
+                    exemplo: 'Pedir a alta por escrito, registrando data e horário, é a forma de exercer este parágrafo. Guarde o protocolo.',
+                    limite: 'A lei não limita quantas vezes uma pessoa pode ser internada involuntariamente, nem por quanto tempo dura cada uma.'
+                },
+                {
+                    ref: 'Art. 10',
+                    titulo: '24 horas para comunicar fuga, acidente ou morte',
+                    simples: 'Fuga, transferência, acidente, intercorrência clínica grave e falecimento precisam ser comunicados pela direção do estabelecimento à família ou ao representante legal e à autoridade sanitária responsável, no prazo máximo de 24 horas.',
+                    exemplo: 'Se houve acidente dentro da instituição e ninguém foi avisado em 24 horas, este artigo é a norma. Vale tanto para acidente quanto para fuga.',
+                    limite: 'A lei trata da comunicação. Ela não diz o que a instituição tem de fazer depois do acidente.'
+                }
+            ],
             situacoes: [],
             garante: [],
             documentos: [],
             passos: [],
-            orgaos: [],
-            limites: []
+            orgaos: [
+                {
+                    nome: 'CAPS — Centro de Atenção Psicossocial (SUS)',
+                    quando: 'Sempre que o atendimento puder ser feito fora do hospital.',
+                    escopo: 'É o serviço comunitário que a lei prioriza: atende, acolhe e acompanha sem internar. O inciso IX do art. 2º sustenta a preferência por ele.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'Ministério Público Estadual',
+                    quando: 'Quando a internação foi involuntária e não houve comunicação em 72 horas, ou quando a internação ocorreu em instituição asilar.',
+                    escopo: 'É o órgão que a lei obriga a comunicar. O art. 8º, parágrafo 1º, e o art. 4º, parágrafo 3º, dão a norma para pedir a apuração.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'Defensoria Pública',
+                    quando: 'Quando a pessoa não tem condições de arcar com advogado.',
+                    escopo: 'Apoio jurídico gratuito para questionar internação, pedir laudo e exercer os direitos do art. 2º.',
+                    custo: 'Gratuito'
+                },
+                {
+                    nome: 'Conselho de Direitos da Pessoa com Deficiência',
+                    quando: 'Quando a falha for de política, e não de um caso individual.',
+                    escopo: 'O art. 12 da lei manda a criação de comissão nacional para acompanhar a implementação dela. Os conselhos são o canal para cobrar isso.',
+                    custo: 'Gratuito'
+                }
+            ],
+            limites: [
+                'A lei usa a expressão pessoa portadora de transtorno mental. A linguagem oficial atual usa pessoa em sofrimento mental, e os projetos no Congresso que tentam alterar esta lei seguem essa linha. A palavra é da lei: cite a lei sem usar a expressão como rótulo de pessoa.',
+                'Esta lei trata de saúde mental. Ela não cobre TEA, TDAH, dislexia, ansiedade ou qualquer outra neurodivergência: essas situações são tratadas pela LBI, quando há impacto funcional confirmado.',
+                'A lei estabelece direitos e proibições. Ela não diz quem paga, em quanto tempo o serviço deve existir, nem quantos serviços comunitários o município precisa ter. Para isso o caminho é o Ministério Público, a Defensoria Pública e o Conselho de Direitos.'
+            ],
         },
 
         /* ------------------------------------------------------------------

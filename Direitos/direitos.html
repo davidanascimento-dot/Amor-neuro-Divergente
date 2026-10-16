@@ -553,6 +553,12 @@
                                 <i class="fa-solid fa-file-pdf"></i> Enviar e receber análise gratuita
                             </button>
                         </form>
+        
+                <!-- Onde o formulario diz o que aconteceu.
+                     Sem este paragrafo, quem so ouve nao fica sabendo se gravou,
+                     se falhou, ou se nada aconteceu. O aviso antigo era so um
+                     toast visual, que o leitor de tela nao anuncia. -->
+                <p class="case-status" id="caseStatus" role="status" aria-live="polite" hidden></p>
 
                         <p class="case-disclaimer">
                             <i class="fa-solid fa-shield-halved"></i> Seus dados estão seguros. Não compartilhamos com terceiros.
@@ -743,7 +749,10 @@
          visivel para quem editar depois. -->
     <script src="leis-dados.js"></script>
     <script src="orientador.js"></script>
-    <script src="direitos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="/js/supabase-config.js"></script>
+        <script src="/js/supabase.js"></script>
+        <script src="direitos.js"></script>
     <script src="/Acolher-IA/seguranca.js"></script>
     <script src="/Acolher-IA/Acolher-IA.js"></script>
 

@@ -427,6 +427,134 @@ document.addEventListener('DOMContentLoaded', () => {
  // ============================================
 // 8. MAPEAMENTO DE IMAGENS POR CATEGORIA
 // ============================================
+    /* -----------------------------------------------------------------
+       FICHA DA LEI - o que o card nao mostrava
+       -----------------------------------------------------------------
+       `leis-dados.js` ja traz, por registro: os artigos com o titulo em
+       linguagem simples, os limites do que a lei NAO resolve, os orgaos e
+       a nota de conferencia. O card mostrava titulo, resumo e o link do
+       Planalto. Esta funcao le o que ja existe e monta o painel. Nao cria
+       dado novo.
+       ----------------------------------------------------------------- */
+    function painelDaLei(registro) {
+        if (!registro) return '';
+        const artigos = registro.artigos || [];
+        const limites = registro.limites || [];
+
+        // Sem artigos, o card precisa dizer que ainda nao foi conferido.
+        // Silencio aqui seria a pessoa achar que a lei nao tem artigo
+        // nenhum, o que e diferente de "ainda nao escrevi".
+        if (!artigos.length) {
+            return `<div class="law-sheet law-sheet--vazio">
+                <p class="law-sheet__aviso">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    Artigos ainda não conferidos na fonte oficial. Nada aqui e
+                    orientaáão jurídica; use o link do texto oficial acima para
+                    conferir por conta própria.
+                </p>
+            </div>`;
+        }
+
+        /* Os tres campos de cada artigo tem papeis diferentes, e a ficha precisa
+         * deixar isso visivel em vez de despejar tudo num bloco so:
+         *
+         *   simples  -> o que a lei determina.
+         *   exemplo  -> a situacao em que isso aparece na vida real.
+         *   limite   -> o que a lei NAO determina: depende de regulamento,
+         *                de avaliacao individual, ou e so orientacao.
+         *
+         * Sem essa separacao, "renda per capita de 1/4 do salario minimo"
+         * soa como criterio fechado, e nao e: e o teto que a lei mede, sobre
+         * um calculo que o regulamento detalha. */
+        const listaArtigos = artigos.map(function (a) {
+            const pratica = a.exemplo
+                ? `<p class="law-sheet__parte law-sheet__parte--pratica">
+                       <span class="law-sheet__marca">Na prática</span>
+                       <span>${escapeHtml(a.exemplo)}</span>
+                   </p>`
+                : '';
+            const naoDiz = a.limite
+                ? `<p class="law-sheet__parte law-sheet__parte--limite">
+                       <span class="law-sheet__marca">O que a lei não diz</span>
+                       <span>${escapeHtml(a.limite)}</span>
+                   </p>`
+                : '';
+            return `<li class="law-sheet__artigo">
+                <a class="law-sheet__ref" href="${escapeHtml(registro.url || '')}"
+                   target="_blank" rel="noopener">
+                    ${escapeHtml(a.ref)}
+                    <span class="law-sheet__sr">
+                        <span class="law-sheet__sr-dentro">(abre o texto oficial no Planalto)</span>
+                    </span>
+                </a>
+                <span class="law-sheet__titulo">${escapeHtml(a.titulo)}</span>
+                <p class="law-sheet__parte law-sheet__parte--lei">
+                    <span class="law-sheet__marca">O que a lei determina</span>
+                    <span>${escapeHtml(a.simples || '')}</span>
+                </p>
+                ${pratica}
+                ${naoDiz}
+            </li>`;
+        }).join('');
+
+        const listaLimites = limites.length
+            ? `<div class="law-sheet__grupo">
+                  <h4 class="law-sheet__grupo-titulo">O que esta lei não resolve</h4>
+                  <ul class="law-sheet__lista">
+                    ${limites.map(function (t) {
+                        return `<li>${escapeHtml(t)}</li>`;
+                    }).join('')}
+                  </ul>
+                </div>`
+            : '';
+
+        /* Os orgaos: quem aplica, quando, o que faz e quanto custa.
+         *
+         * O campo `orgaos` ja existia em `leis-dados.js` para as leis
+         * conferidas e nao era renderizado. Sem ele a ficha diz o que a lei
+         * determina mas nao diz a quem se dirigir. */
+        const listaOrgaos = (registro.orgaos || []).length
+            ? `<div class="law-sheet__grupo">
+                  <h4 class="law-sheet__grupo-titulo">Quem aplica e onde pedir</h4>
+                  <ul class="law-sheet__lista law-sheet__lista--orgaos">
+                    ${registro.orgaos.map(function (o) {
+                        return `<li class="law-sheet__orgao">
+                            <span class="law-sheet__orgao-nome">${escapeHtml(o.nome)}</span>
+                            <span class="law-sheet__orgao-quando">${escapeHtml(o.quando || '')}</span>
+                            <span class="law-sheet__orgao-escopo">${escapeHtml(o.escopo || '')}</span>
+                            ${o.custo ? `<span class="law-sheet__orgao-custo">Custo: ${escapeHtml(o.custo)}</span>` : ''}
+                        </li>`;
+                    }).join('')}
+                  </ul>
+                </div>`
+            : '';
+
+        /* A nota da lei, e nao uma data solta.
+         *
+         * As 12 registram `conferidoEm`, mas varias nao tem artigo nenhum:
+         * para elas a data nao quer dizer nada. Quem nao tem nota nao recebe
+         * data. */
+        const conferencia = registro.verificacao
+            ? `<p class="law-sheet__conferencia">
+                  <i class="fa-solid fa-check-double" aria-hidden="true"></i>
+                  <span>${escapeHtml(registro.verificacao)}</span>
+               </p>`
+            : '';
+
+        return `<details class="law-sheet">
+            <summary class="law-sheet__resumo">
+                <span class="law-sheet__resumo-texto">Ver os ${artigos.length} artigos desta lei em linguagem simples</span>
+                <i class="fa-solid fa-chevron-down law-sheet__seta" aria-hidden="true"></i>
+            </summary>
+            <div class="law-sheet__corpo">
+                <ul class="law-sheet__lista law-sheet__lista--artigos">${listaArtigos}</ul>
+                ${listaLimites}
+                ${listaOrgaos}
+                ${conferencia}
+            </div>
+        </details>`;
+    }
+
 function getLawImage(law, index) {
     // Fallback por categoria
     const categoryImages = {
@@ -521,6 +649,7 @@ function renderLaws() {
                             Ver o texto no Planalto <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                         </a>
                     </div>
+                    ${painelDaLei(law.registro)}
                 </div>
             </article>
         `;
@@ -560,23 +689,88 @@ function renderLaws() {
     // ============================================
     // 11. FORMULÁRIO DE CASO
     // ============================================
-    const caseForm = document.getElementById('caseForm');
-    if (caseForm) {
-        caseForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const nome = caseForm.querySelector('input[type="text"]')?.value || '';
-            const email = caseForm.querySelector('input[type="email"]')?.value || '';
-            const descricao = caseForm.querySelector('textarea')?.value || '';
+const caseForm = document.getElementById('caseForm');
+if (caseForm) {
+    /* O aviso de "Sua equipe vai analisar em breve" so vale se a mensagem
+     * chegar em algum lugar. Antes deste bloco o formulario validava, mostrava
+     * a confirmacao, limpava os campos e NAO ENVIAVA NADA: o relato inteiro era
+     * descartado no navegador. Para quem escreve sobre discriminacao ou sobre
+     * internacao, isso e pior do que um formulario quebrado: e um formulario
+     * que prometeu quem escutar.
+     *
+     * O destino e a tabela public.casos, criada em sql/25_casos.sql. Ela
+     * aceita INSERT da chave anonima e NAO tem politica de SELECT: ninguem le
+     * pela API publica. Quem le, le pelo painel, com sessao de admin.
+     *
+     * O que nao e guardado: id de usuario, IP, user-agent, sessao. O relato em
+     * texto livre e dado sensivel e a pessoa decide se escreve. */
+    const caseStatus = document.getElementById('caseStatus');
+    const caseSubmit = caseForm.querySelector('.case-submit-btn');
 
-            if (!nome || !email || !descricao) {
-                showToast('Preencha todos os campos para enviar seu caso.', 'error');
-                return;
-            }
-
-            showToast('Caso enviado! Nossa equipe vai analisar em breve. 💜', 'success');
-            caseForm.reset();
-        });
+    /* O aviso existe duas vezes: no paragrafo, para quem le, e no toast, para
+     * quem nao olha. O `data-erro` e o `data-ok` sao o que da a cor — sem
+     * eles o aviso de erro, que e o que importa, ficaria igual ao de
+     * sucesso. */
+    function dizerCase(texto, tipo) {
+        if (caseStatus) {
+            caseStatus.textContent = texto;
+            caseStatus.hidden = !texto;
+            caseStatus.removeAttribute('data-erro');
+            caseStatus.removeAttribute('data-ok');
+            if (tipo === 'error') caseStatus.setAttribute('data-erro', 'true');
+            if (tipo === 'success') caseStatus.setAttribute('data-ok', 'true');
+        }
+        if (tipo) showToast(texto, tipo);
     }
+
+    caseForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nome = caseForm.querySelector('input[type="text"]')?.value.trim() || '';
+        const email = caseForm.querySelector('input[type="email"]')?.value.trim() || '';
+        const descricao = caseForm.querySelector('textarea')?.value.trim() || '';
+
+        if (!nome || !email || !descricao) {
+            dizerCase('Preencha os tres campos para enviar.', 'error');
+            return;
+        }
+
+        const cliente = window.supabaseClient;
+        if (!cliente) {
+            // Sem configuracao do Supabase nao ha onde guardar. Dizer que
+            // gravou seria repetir o que ja acontecia aqui.
+            dizerCase('Nao conseguimos registrar agora. Tente de novo em instantes, ou use a pagina de contato.', 'error');
+            return;
+        }
+
+        if (caseSubmit) { caseSubmit.disabled = true; }
+        dizerCase('Enviando...', null);
+
+        try {
+            const { error } = await cliente
+                .from('casos')
+                .insert({
+                    nome: nome,
+                    email: email,
+                    descricao: descricao,
+                    origem: 'Direitos'
+                });
+
+            if (error) throw error;
+
+            caseForm.reset();
+            dizerCase('Mensagem registrada. O que voce escreveu ficou guardado.', null);
+            showToast('Mensagem registrada.', 'success');
+        } catch (err) {
+            console.error('[Direitos] envio do caso falhou:', err);
+            // O texto continua na tela de proposito: a pessoa nao digita de novo
+            // um relato sobre o que aconteceu com ela.
+            dizerCase('Nao foi possivel registrar agora. Seu texto continua aqui, nao perdeu nada. Tente de novo.', 'error');
+        } finally {
+            if (caseSubmit) { caseSubmit.disabled = false; }
+        }
+    });
+}
 
     // ============================================
     // 12. INICIALIZAÇÃO
