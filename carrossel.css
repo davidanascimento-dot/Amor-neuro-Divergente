@@ -91,11 +91,11 @@
   flex-direction: column;
   background: var(--explore-card, #fff);
   border: 1px solid var(--explore-border, #e8e3dd);
-  border-radius: 12px;
+  border-radius: 5px;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+
 }
 
 /* Cartao de comunidade sem pagina de destino ainda. Mantem o desenho
@@ -104,19 +104,12 @@
     cursor: default;
 }
 
-.ct-card--sem-destino:hover {
-    transform: none;
-}
+
 
 .ct-card--sem-destino .ct-card__link {
     opacity: 0.5;
 }
 
-.ct-card:hover {
-  border-color: #ddd6fe;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.08);
-}
 
 /* Imagem */
 .ct-card__media {
@@ -132,7 +125,7 @@
   display: block;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.ct-card:hover .ct-card__media img { transform: scale(1.04); }
+
 
 /* Badge sobre a imagem */
 .ct-card__badge {
@@ -140,13 +133,14 @@
   top: 12px;
   left: 12px;
   padding: 4px 10px;
-  border-radius: 30px;
-  color: #fff;
+  border-radius: 5px;
+  color: #000000;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: #9ab1ca96;
+ border: 1px solid #bdbddb;
 }
 
 /* Corpo */
@@ -170,7 +164,7 @@
   overflow: hidden;
   transition: color 0.2s ease;
 }
-.ct-card:hover .ct-card__title { color: var(--explore-accent, #7c3aed); }
+
 
 .ct-card__desc {
   font-size: 13px;

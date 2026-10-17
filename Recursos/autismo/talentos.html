@@ -942,6 +942,28 @@
             .footer { padding: 48px 20px 24px; }
             .footer-main { grid-template-columns: repeat(2, 1fr); gap: 32px; }
         }
+        /* Hub flutuante - Mobile (copiado do inicio.css, linhas 2157-2181) */
+        .floating-hub {
+            bottom: 16px;
+            right: 16px;
+        }
+        .floating-hub-toggle {
+            width: 56px;
+            height: 56px;
+            font-size: 24px;
+        }
+        .floating-hub-toggle .floating-hub-label {
+            display: none;
+        }
+        .floating-hub-menu {
+            bottom: 72px;
+            width: min(340px, calc(100vw - 24px));
+            right: 0;
+        }
+        .floating-hub-menu-inner {
+            padding: 12px 14px 16px;
+        }
+    
         @media (max-width: 480px) {
             .article-hero { min-height: 360px; }
             .article-hero__title { font-size: 1.5rem; }
@@ -951,6 +973,13 @@
             .article-share__btn { width: 36px; height: 36px; font-size: 14px; }
             .footer-main { grid-template-columns: 1fr; }
         }
+        /* Hub flutuante - Mobile (copiado do inicio.css, linhas 2213-2217) */
+        .floating-hub-menu {
+            width: calc(100vw - 24px);
+            right: 0;
+            bottom: 68px;
+        }
+    
   
             /* ---------- A composicao desta pagina.
                Cada artigo tem a sua. O que muda nao e a paleta — e a
@@ -1264,6 +1293,30 @@
     
 
 <script src="/js/supabase-config.js"></script>
+<!-- HUB FLUTUANTE -->
+    <div class="floating-hub" id="floatingHub">
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de ajuda" title="Ajuda">
+            <i class="fa-regular fa-circle-question"></i>
+            <span class="floating-hub-label">Ajuda</span>
+        </button>
+        <div class="floating-hub-menu" id="floatingHubMenu" hidden>
+            <div class="floating-hub-menu-inner">
+                <div class="floating-hub-group">
+                    <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
+                    <div class="floating-hub-actions">
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action hub-action-ia" title="Conversar com a Lia" data-ia-abrir><i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span></a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade"><i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span></a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes"><i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span></a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail"><i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span></a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-overlay" id="floatingOverlay" hidden></div>
+
 <script>
 /* =============================================
    0. CONFIGURAÇÃO SUPABASE

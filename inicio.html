@@ -323,7 +323,7 @@
           <div class="ct-card__media">
             <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&h=600&fit=crop"
                  alt="Leitura prática" loading="lazy">
-            <span class="ct-card__badge" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
+            <span class="ct-card__badge" >
               Destaque
             </span>
           </div>
@@ -346,7 +346,7 @@
           <div class="ct-card__media">
             <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=600&fit=crop"
                  alt="Comunidade segura" loading="lazy">
-            <span class="ct-card__badge" style="background:linear-gradient(135deg,#db2777,#ec4899);">
+            <span class="ct-card__badge">
               Seguro
             </span>
           </div>
@@ -367,9 +367,17 @@
         <!-- Card 3 -->
         <a href="/Recursos/recursos.html" class="ct-card">
           <div class="ct-card__media">
-            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop"
-                 alt="Conteúdos sobre TDAH e Autismo" loading="lazy">
-            <span class="ct-card__badge" style="background:linear-gradient(135deg,#10b981,#34d399);">
+            <!-- Imagem local, e nao do Unsplash: os outros cards deste
+                 bloco usam Unsplash, mas este nao tem equivalente util la
+                 e o arquivo ja estava no projeto sem uso. Servir de um CDN
+                 externo e perder a imagem a cada queda do fornecedor, num
+                 card que e a porta de entrada dos recursos. 1280x853 e
+                 paisagem, que e o que o .ct-card__media espera
+                 (aspect-ratio 16/10 com object-fit cover). -->
+            <img src="/img/inclusao-plano-educional-individualizado.webp"
+                 alt="Uma pessoa auxiliar ensina uma criança a escrever em sala de aula"
+                 loading="lazy" width="1280" height="853">
+            <span class="ct-card__badge">
               Novo
             </span>
           </div>
@@ -392,7 +400,7 @@
           <div class="ct-card__media">
             <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=600&fit=crop"
                  alt="Leis e benefícios" loading="lazy">
-            <span class="ct-card__badge" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">
+            <span class="ct-card__badge" >
               Direitos
             </span>
           </div>
@@ -415,7 +423,7 @@
           <div class="ct-card__media">
             <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop"
                  alt="Eventos e grupos de apoio" loading="lazy">
-            <span class="ct-card__badge" style="background:linear-gradient(135deg,#8b5cf6,#c084fc);">
+            <span class="ct-card__badge">
               Ao Vivo
             </span>
           </div>
@@ -438,7 +446,7 @@
           <div class="ct-card__media">
             <img src="/img/blog-post-1-DvwhQAY4 - Copia.jpg"
                  alt="Ferramentas que transformam" loading="lazy">
-            <span class="ct-card__badge" style="background:linear-gradient(135deg,#f43f5e,#fb7185);">
+            <span class="ct-card__badge" >
               Desafio
             </span>
           </div>
