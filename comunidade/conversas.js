@@ -3357,7 +3357,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        let groups = state.groups.filter(group => group.is_member || group.is_owner || group.is_admin);
+        // Só quem participa ou criou. `is_admin` saiu de propósito: essa é a
+        // coluna do PRÓPRIO grupo ("este grupo tem administrador"), não
+        // "o usuário atual administra este grupo". Como quase todo grupo tem
+        // um, o teste passava para todos e o contador mostrava o total de
+        // grupos existentes em vez dos seus.
+        let groups = state.groups.filter(group => group.is_member || group.is_owner);
         const myQuery = state.myGroupQuery.trim().toLowerCase();
         if (myQuery) groups = groups.filter(group => groupMatchesQuery(group, myQuery));
         if (state.myGroupFilter === 'created') groups = groups.filter(group => group.is_owner);
