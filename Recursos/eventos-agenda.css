@@ -125,7 +125,7 @@
     height: 11px;
     flex: 0 0 auto;
     background: var(--ag-tempo);
-    border-radius: 2px;
+    border-radius: 5px;
     transform: rotate(45deg);
 }
 
@@ -322,7 +322,7 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     padding: 3px 10px;
-    border-radius: 20px;
+    border-radius: 5px;
 }
 
 .event-info h3 {
@@ -372,7 +372,7 @@
     font-size: 0.8125rem;
     font-weight: 700;
     letter-spacing: 0.02em;
-    border-radius: 26px;
+    border-radius: 5px;
     background: var(--ag-roxo);
     color: #ffffff;
     border: 1px solid var(--ag-roxo);
@@ -442,7 +442,7 @@
     width: 132px;
     height: 96px;
     max-height: 96px;
-    border-radius: 12px;
+    border-radius: 5px;
     overflow: hidden;
     background: #f3f4f6;
 }

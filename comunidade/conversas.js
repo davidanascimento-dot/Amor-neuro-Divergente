@@ -325,7 +325,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 image_url: channel.image_url || group.banner_url || group.image_url,
                 banner_url: channel.banner_url || group.banner_url,
                 avatar_url: channel.avatar_url || group.avatar_url,
-                members: channel.members ?? group.members
+                // Precisa ser || e nao ??.
+                //
+                // A RPC get_user_chat_channels devolve members: 0 nos canais
+                // de grupo, porque ela nao le groups.members. Com ?? um 0
+                // conta como valor valido — null e undefined contam, 0 nao —
+                // entao o zero ganhava e a contagem certa do grupo era
+                // descartada.
+                //
+                // Sintoma: o MESMO grupo aparecia com "2 Membros" nos cards
+                // da vitrine e "0 membros" na lista de conversas. O banco
+                // estava certo o tempo todo; o zero vinha da RPC.
+                members: channel.members || group.members
             } : { ...channel, type: 'group' };
         });
         return state.channels;

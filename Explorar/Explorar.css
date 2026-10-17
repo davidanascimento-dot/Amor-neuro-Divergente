@@ -87,7 +87,7 @@
     align-items: center;
     gap: 8px;
     padding: 6px 18px;
-    border-radius: 30px;
+    border-radius: 5px;
     background: rgba(124, 58, 237, 0.25);
     border: 1px solid rgba(167, 139, 250, 0.4);
     color: #e9d5ff;
@@ -160,7 +160,7 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    border-radius: 30px;
+    border-radius: 5px;
     border: 1.5px solid #e8e3dd;
     background: #ffffff;
     color: #5c5652;
@@ -243,7 +243,7 @@
     flex-direction: column;
     background: #ffffff;
     border: 1px solid #e8e3dd;
-    border-radius: 8px;
+    border-radius: 5px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
@@ -352,7 +352,7 @@
 .hl-card {
     flex: 0 0 calc((100% - 40px) / 3);
     scroll-snap-align: start;
-    border-radius:  10px;
+    border-radius: 5px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
@@ -456,7 +456,7 @@
     min-width: 32px;
     height: 32px;
     padding: 0 10px;
-    border-radius: 8px;
+    border-radius: 5px;
     border: none;
     background: transparent;
     color: var(--explore-muted);
@@ -492,7 +492,7 @@
     align-items: center;
     gap: 8px;
     padding: 6px 16px;
-    border-radius: 30px;
+    border-radius: 5px;
     background: var(--explore-accent-light);
     color: var(--explore-accent);
     font-size: 12px;
@@ -680,7 +680,7 @@
     width: 56px;
     height: 56px;
     color: var(--explore-accent);
-    border-radius: 18px;
+    border-radius: 5px;
     font-size: 24px;
     margin-bottom: 20px;
     transition: all 0.3s ease;
@@ -710,7 +710,7 @@
     padding: 14px 28px;
     background-color: rgb(82, 62, 36);
     color: #ffffff;
-    border-radius: 12px;
+    border-radius: 5px;
     font-size: 15px;
     font-weight: 600;
     text-decoration: none;
@@ -775,7 +775,7 @@
 .section-head__title-group .section-icon {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: 5px;
     font-size: 16px;
     margin: 0;
     background: var(--explore-accent-light);
@@ -838,7 +838,7 @@
 .section-head__title-group .section-icon {
     width: 30px;
     height: 30px;
-    border-radius: 9px;
+    border-radius: 5px;
     font-size: 13px;
     margin: 0;
     background: var(--explore-accent-light);
@@ -872,7 +872,7 @@
     background: var(--explore-card);
     border: 1px solid var(--explore-border);
     padding: 0px;
-    border-radius: 0px;
+    border-radius: 5px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
@@ -888,7 +888,7 @@
     width: 100%;
     aspect-ratio: 20 / 10;
     overflow: hidden;
-    border-radius: 0px;
+    border-radius: 5px;
     background: #f3f4f6;
 }
 .featured-card__media.explore-section-image img {
@@ -1033,7 +1033,7 @@
     height: 56px;
     background: var(--explore-accent-light);
     color: var(--explore-accent);
-    border-radius: 18px;
+    border-radius: 5px;
     font-size: 24px;
     margin-bottom: 16px;
 }
@@ -1067,7 +1067,7 @@
     width: 100%;
     padding: 12px 16px 12px 44px;
     border: 2px solid var(--explore-border);
-    border-radius: 14px;
+    border-radius: 5px;
     font-size: 14px;
     color: var(--explore-text);
     background: var(--explore-card);
@@ -1084,7 +1084,7 @@
 .faq-item {
     background: var(--explore-card);
     border: 1px solid var(--explore-border);
-    border-radius: 16px;
+    border-radius: 5px;
     overflow: hidden;
     transition: all 0.25s ease;
 }
@@ -1170,7 +1170,7 @@
     aspect-ratio: 16 / 10;
     object-fit: cover;
     display: block;
-    border-radius: 2px;
+    border-radius: 5px;
 
 }
 
@@ -1233,7 +1233,7 @@ color: #053161;
 .contact-section .explore-btn {
     padding: 12px 24px;
     font-size: 14px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 /* =========================================
@@ -1588,7 +1588,7 @@ body.a11y-reduce-motion .section-head__link {
     .explore-section { padding: 36px 16px; gap: 20px; }
     .explore-section-text h2 { font-size: 20px; }
     .explore-section-text p { font-size: 15px; }
-    .contact-section { margin: 0 16px 48px; padding: 32px 16px; border-radius: 20px; }
+    .contact-section { margin: 0 16px 48px; padding: 32px 16px; border-radius: 5px; }
     .faq-section { padding: 48px 16px; }
     .faq-search { max-width: 100%; }
     .footer-main { grid-template-columns: 1fr; }
@@ -1599,7 +1599,7 @@ body.a11y-reduce-motion .section-head__link {
     .latest-feature__body { padding: 18px 18px 22px; }
     .latest-feature__title { font-size: 1.1rem; }
     .latest-item { flex-direction: row; align-items: flex-start; gap: 12px; }
-    .latest-item__thumb { flex: 0 0 60px; width: 60px; height: 60px; border-radius: 10px; }
+    .latest-item__thumb { flex: 0 0 60px; width: 60px; height: 60px; border-radius: 5px; }
 }
 
 
@@ -1774,7 +1774,7 @@ body.a11y-reduce-motion .section-head__link {
     color: var(--explore-text);
     background: var(--explore-card);
     border: 1.5px solid var(--explore-border);
-    border-radius: 12px;
+    border-radius: 5px;
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     -webkit-appearance: none;
@@ -1854,7 +1854,7 @@ body.a11y-reduce-motion .section-head__link {
 .contact-info {
     background: var(--explore-bg);
     border: 1px solid var(--explore-border);
-    border-radius: 16px;
+    border-radius: 5px;
     padding: 22px 20px;
     position: sticky;
     top: 24px;
@@ -1895,7 +1895,7 @@ body.a11y-reduce-motion .section-head__link {
     justify-content: center;
     background: var(--explore-accent-light);
     color: var(--explore-accent);
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 14px;
 }
 
@@ -1942,7 +1942,7 @@ body.a11y-reduce-motion .section-head__link {
     justify-content: center;
     width: 32px;
     height: 32px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--explore-accent-light);
     color: var(--explore-accent);
     font-size: 14px;
@@ -1972,7 +1972,7 @@ body.a11y-reduce-motion .section-head__link {
     color: #ffffff;
     background: var(--explore-accent);
     border: none;
-    border-radius: 12px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
     margin-top: 6px;
@@ -2037,7 +2037,7 @@ body.a11y-reduce-motion .section-head__link {
 .side-card {
     background: var(--explore-card);
     border: 1px solid var(--explore-border);
-    border-radius: 18px;
+    border-radius: 5px;
     padding: 24px 22px;
     box-shadow: var(--explore-shadow);
     transition: border-color 0.25s ease, transform 0.25s ease;
@@ -2063,7 +2063,7 @@ body.a11y-reduce-motion .section-head__link {
     justify-content: center;
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--explore-accent-light);
     color: var(--explore-accent);
     font-size: 15px;
@@ -2151,7 +2151,7 @@ body.a11y-reduce-motion .section-head__link {
     justify-content: center;
     width: 26px;
     height: 26px;
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--explore-accent-light);
     color: var(--explore-accent);
     font-size: 12px;
@@ -2284,24 +2284,24 @@ body.a11y-reduce-motion .primary-btn:hover:not(:disabled) {
 
 @media (max-width: 768px) {
     .section { padding: 40px 16px 80px; }
-    .form-card { padding: 32px 24px; border-radius: 20px; }
+    .form-card { padding: 32px 24px; border-radius: 5px; }
     .form-row { grid-template-columns: 1fr; gap: 18px; }
     .sidebar-container { grid-template-columns: 1fr; }
     .side-card:last-child { grid-column: auto; }
     .primary-btn { padding: 14px 24px; font-size: 14.5px; }
-    .side-card { padding: 20px 18px; border-radius: 16px; }
+    .side-card { padding: 20px 18px; border-radius: 5px; }
 }
 
 @media (max-width: 480px) {
     .section { padding: 32px 12px 64px; }
-    .form-card { padding: 24px 18px; border-radius: 16px; }
+    .form-card { padding: 24px 18px; border-radius: 5px; }
     #support-form { gap: 18px; }
     .form-group input,
     .form-group select,
     .form-group textarea {
         padding: 12px 14px;
         font-size: 14px;
-        border-radius: 10px;
+        border-radius: 5px;
     }
     .form-group textarea { min-height: 130px; }
     .side-card-header { gap: 10px; margin-bottom: 12px; padding-bottom: 12px; }
@@ -2393,7 +2393,7 @@ body.a11y-reduce-motion .primary-btn:hover:not(:disabled) {
     color: var(--explore-text);
     background: #ffffff;
     border: 1px solid var(--explore-border);
-    border-radius: 14px 14px 4px 14px;
+    border-radius: 5px 14px 4px 14px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
@@ -2458,7 +2458,7 @@ body.a11y-dark-mode .espera-fala {
     padding: 18px 30px;
     background: #faf9fe;
     border: 2px dashed var(--explore-accent, #7c3aed);
-    border-radius: 14px;
+    border-radius: 5px;
     margin-bottom: 20px;
 }
 
@@ -2488,7 +2488,7 @@ body.a11y-dark-mode .espera-fala {
     cursor: pointer;
     font-size: 14px;
     padding: 6px;
-    border-radius: 6px;
+    border-radius: 5px;
     transition: background 0.2s;
 }
 .protocolo-copiar:hover { background: rgba(124,58,237,0.1); }
@@ -2500,7 +2500,7 @@ body.a11y-dark-mode .espera-fala {
     padding: 8px 16px;
     background: #f0fdf4;
     border: 1px solid #bbf7d0;
-    border-radius: 30px;
+    border-radius: 5px;
     font-size: 13px;
     font-weight: 600;
     color: #16a34a;
@@ -2581,7 +2581,7 @@ body.a11y-dark-mode .espera-fala {
 }
 
 .chat-mensagens::-webkit-scrollbar { width: 6px; }
-.chat-mensagens::-webkit-scrollbar-thumb { background: #d4cde0; border-radius: 10px; }
+.chat-mensagens::-webkit-scrollbar-thumb { background: #d4cde0; border-radius: 5px; }
 
 .chat-msg {
     display: flex;
@@ -2601,7 +2601,7 @@ body.a11y-dark-mode .espera-fala {
 
 .chat-msg-balao {
     padding: 11px 16px;
-    border-radius: 16px;
+    border-radius: 5px;
     font-size: 14px;
     line-height: 1.5;
     word-break: break-word;
@@ -2633,7 +2633,7 @@ body.a11y-dark-mode .espera-fala {
     max-height: 120px;
     padding: 12px 14px;
     border: 1.5px solid var(--explore-border, #e8e3dd);
-    border-radius: 12px;
+    border-radius: 5px;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     color: var(--explore-text, #1a1a2e);
@@ -2651,7 +2651,7 @@ body.a11y-dark-mode .espera-fala {
     flex-shrink: 0;
     width: 46px;
     height: 46px;
-    border-radius: 12px;
+    border-radius: 5px;
     background: var(--explore-accent, #7c3aed);
     color: #ffffff;
     border: none;

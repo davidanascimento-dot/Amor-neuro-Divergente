@@ -57,21 +57,21 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .navbar-inner {
     max-width: 1100px; margin: 0 auto;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 6px 16px; border-radius: 14px;
+    padding: 6px 16px; border-radius: 5px;
     background: rgba(255,255,255,0.85); backdrop-filter: blur(16px);
     box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
 }
 .navbar-left { display: flex; align-items: center; }
 .navbar-back {
     display: flex; align-items: center; gap: 6px;
-    padding: 7px 14px; border-radius: 20px;
+    padding: 7px 14px; border-radius: 5px;
     font-size: 13px; font-weight: 500; color: var(--text-muted);
     background: var(--bg-warm); transition: all var(--transition-fast);
 }
 .navbar-back:hover { background: var(--primary-light); color: var(--primary); }
 .navbar-center { display: flex; align-items: center; }
 .navbar-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: var(--primary-dark); }
-.navbar-logo { width: 26px; height: 26px; border-radius: 6px; object-fit: contain; }
+.navbar-logo { width: 26px; height: 26px; border-radius: 5px; object-fit: contain; }
 .navbar-right { display: flex; align-items: center; gap: 10px; }
 .navbar-a11y { position: relative; }
 .a11y-icon-btn {
@@ -84,7 +84,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .a11y-dropdown {
     position: absolute; top: calc(100% + 8px); right: 0;
     background: #fff; border: 1px solid var(--border-color);
-    border-radius: 14px; padding: 8px; min-width: 240px;
+    border-radius: 5px; padding: 8px; min-width: 240px;
     box-shadow: var(--shadow-lg); z-index: 250;
     display: flex; flex-direction: column; gap: 2px;
 }
@@ -98,7 +98,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .a11y-option:hover, .a11y-reset:hover { background: var(--bg-warm); }
 .a11y-option i, .a11y-reset i { width: 18px; text-align: center; color: var(--primary); }
-.a11y-status { margin-left: auto; font-size: 10px; color: #6b6368; background: #f0ebe5; padding: 2px 8px; border-radius: 10px; }
+.a11y-status { margin-left: auto; font-size: 10px; color: #6b6368; background: #f0ebe5; padding: 2px 8px; border-radius: 5px; }
 .a11y-reset { color: #c98d4e; border-top: 1px solid var(--border-color); margin-top: 4px; padding-top: 12px; }
 
 /* Cabeçalho */
@@ -106,7 +106,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .page-icon {
     display: inline-flex; align-items: center; justify-content: center;
     width: 56px; height: 56px; background: var(--primary-light);
-    color: var(--primary); border-radius: 16px; font-size: 24px; margin-bottom: 16px;
+    color: var(--primary); border-radius: 5px; font-size: 24px; margin-bottom: 16px;
 }
 .page-hero h1 { font-size: 32px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
 .page-hero p { font-size: 15px; color: var(--text-medium); line-height: 1.6; }
@@ -172,7 +172,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .event-tags { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 .event-tag {
     font-size: 11px; font-weight: 600; padding: 3px 10px;
-    border-radius: 20px; display: flex; align-items: center; gap: 4px;
+    border-radius: 5px; display: flex; align-items: center; gap: 4px;
 }
 .tag-online { background: #e0f2f1; color: #00695c; }
 .tag-presencial { background: #fff3e0; color: #e65100; }
@@ -191,7 +191,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .event-btn {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 9px 18px; background: var(--primary); color: #fff;
-    border-radius: 24px; font-size: 13px; font-weight: 600;
+    border-radius: 5px; font-size: 13px; font-weight: 600;
     transition: all var(--transition-fast);
     box-shadow: 0 4px 15px rgba(139,92,246,0.2);
 }
@@ -209,7 +209,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .category-icon {
     display: flex; align-items: center; justify-content: center;
     width: 48px; height: 48px; background: var(--primary-light);
-    color: var(--primary); border-radius: 14px; font-size: 20px;
+    color: var(--primary); border-radius: 5px; font-size: 20px;
     margin: 0 auto 14px;
 }
 .category-card h3 { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; }

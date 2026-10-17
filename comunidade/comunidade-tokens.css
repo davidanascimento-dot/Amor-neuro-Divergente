@@ -377,7 +377,7 @@ body.a11y-dark-mode.community-app::before {
 .community-app :focus-visible {
     outline: 3px solid var(--cm-focus);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 /* ==========================================================================

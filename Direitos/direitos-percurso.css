@@ -1,3 +1,10 @@
+/* Tokens de botão: a forma passa a ser decidida em um lugar só.
+   Mesmo raio, mesmo padding, mesma fonte em todas as seções. */
+:root {
+    --btn-raio: 5px;
+    --btn-padding: 10px 20px;
+    --btn-fonte: 14px;
+}
 /* =========================================
    DIREITOS — SISTEMA DE PERCURSO
    Arquivo: Direitos/direitos-percurso.css
@@ -161,7 +168,7 @@
     color: var(--dp-suave);
     background: transparent;
     border: 0;
-    border-radius: 8px;
+    border-radius: 5px;
     text-decoration: none;
     white-space: nowrap;
     transition: color 0.18s ease, background-color 0.18s ease;
@@ -531,7 +538,7 @@
 .dp-percurso__item:focus-visible {
     outline: 2px solid var(--dp-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 /* =========================================
@@ -715,7 +722,7 @@
     top: 26px;
     width: 3px;
     height: 20px;
-    border-radius: 2px;
+    border-radius: 5px;
     background: var(--dp-cat);
 }
 
@@ -794,7 +801,7 @@
 .dp-areas__grade .category-tile:focus-visible {
     outline: 2px solid var(--dp-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 /* Os termos de cobertura de cada area. Texto novo no HTML, tirado
@@ -1135,7 +1142,7 @@
 .laws-grid.dp-leis__lista .law-editorial-card__link:focus-visible {
     outline: 2px solid var(--dp-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 /* O foco de toda a lei. `focus-within` porque o unico link e o
@@ -1144,7 +1151,7 @@
 .laws-grid.dp-leis__lista .law-editorial-card:focus-within {
     outline: 2px solid var(--dp-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 /* O estado vazio: mesma moldura do percurso, nao um bloco solto. */
@@ -1358,7 +1365,7 @@
     font-size: 15px;
     background: var(--dp-roxo-claro);
     color: var(--dp-roxo);
-    border-radius: 9px;
+    border-radius: 5px;
     margin-bottom: 12px;
 }
 
@@ -1411,7 +1418,7 @@
     background: transparent;
     color: var(--dp-roxo);
     border: 1px solid var(--dp-borda);
-    border-radius: 8px;
+    border-radius: 5px;
 }
 
 .dp-ajuda .resource-item strong {
@@ -1460,7 +1467,7 @@
 .dp-ajuda .resource-item:focus-visible {
     outline: 2px solid var(--dp-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 .dp-ajuda .resources-download-btn {
@@ -1475,7 +1482,7 @@
     color: #ffffff;
     background: var(--dp-roxo);
     border: 0;
-    border-radius: 10px;
+    border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.2s ease, gap 0.2s ease;
 }
@@ -1647,7 +1654,7 @@
 .dp-ajuda .case-form textarea:focus-visible {
     outline: 2px solid var(--dp-roxo);
     outline-offset: 4px;
-    border-radius: 2px;
+    border-radius: 5px;
 }
 
 .dp-ajuda .case-submit-btn {
@@ -1664,7 +1671,7 @@
     color: #ffffff;
     background: var(--dp-roxo);
     border: 0;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s ease, gap 0.2s ease;
 }
@@ -1885,7 +1892,7 @@
 .dp-faq .faq-item button:focus-visible {
     outline: 2px solid var(--dp-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 .dp-faq .faq-answer {
@@ -2084,7 +2091,7 @@
     font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: -0.005em;
-    border-radius: 10px;
+    border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.2s ease, color 0.2s ease, gap 0.2s ease;
 }
@@ -2371,7 +2378,7 @@
     /* WCAG 2.2 SC 2.5.8 pede 24x24 px de alvo. */
     min-height: 44px;
     padding: 6px 4px;
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--dp-roxo);
     font-size: 0.82rem;
     font-weight: 600;
@@ -2417,7 +2424,7 @@
     min-height: 24px;
     padding: 2px 4px;
     margin: -2px -4px;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 .law-sheet__ref:hover { border-bottom-color: currentColor; }
 .law-sheet__titulo { font-size: 0.84rem; color: var(--dp-tinta); line-height: 1.45; }
@@ -2458,7 +2465,7 @@
     letter-spacing: 0.05em;
     padding: 1px 6px;
     margin-right: 6px;
-    border-radius: 4px;
+    border-radius: 5px;
     vertical-align: 0.08em;
     white-space: nowrap;
     background: var(--dp-roxo-claro);
@@ -2503,7 +2510,7 @@
     display: grid;
     gap: 3px;
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--dp-papel);
     border: 1px solid var(--dp-borda);
 }
@@ -2530,7 +2537,7 @@
 .law-sheet--vazio {
     margin-top: 12px;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--dp-roxo-claro);
 }
 .law-sheet__aviso {
@@ -2570,7 +2577,7 @@
 .case-status {
     margin: 10px 0 0;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 0.84rem;
     line-height: 1.5;
     background: var(--dp-roxo-claro);

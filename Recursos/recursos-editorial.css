@@ -367,7 +367,7 @@
 .re-indice__item:focus-visible {
     outline: 2px solid var(--re-roxo);
     outline-offset: 3px;
-    border-radius: 2px;
+    border-radius: 5px;
 }
 
 /* =========================================
@@ -524,7 +524,7 @@
 .re-estante__destaque .externo-card__media {
     width: 100%;
     aspect-ratio: 4 / 3;
-    border-radius: 14px;
+    border-radius: 5px;
     overflow: hidden;
     background: #f3f4f6;
     margin-bottom: 20px;
@@ -553,7 +553,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 5px 12px;
-    border-radius: 20px;
+    border-radius: 5px;
     background: rgba(255, 255, 255, 0.94);
     color: var(--re-tinta);
 }
@@ -628,7 +628,7 @@
 .re-estante__destaque:focus-visible {
     outline: 2px solid var(--re-roxo);
     outline-offset: 4px;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 /* O badge precisa de um ancestral com `position: relative`, senao
@@ -669,7 +669,7 @@
 .re-estante__linha .externo-card__media {
     width: 148px;
     aspect-ratio: 3 / 2;
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
     background: #f3f4f6;
 }
@@ -694,7 +694,7 @@
     font-size: 9px;
     font-weight: 700;
     padding: 3px 8px;
-    border-radius: 14px;
+    border-radius: 5px;
     background: rgba(255, 255, 255, 0.94);
     color: var(--re-tinta);
 }
@@ -756,7 +756,7 @@
 .re-estante__linha:focus-visible {
     outline: 2px solid var(--re-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 /* =========================================
@@ -810,7 +810,7 @@
 .re-coluna__principal .equipe-featured__media {
     width: 100%;
     aspect-ratio: 21 / 10;
-    border-radius: 14px;
+    border-radius: 5px;
     overflow: hidden;
     background: #f3f4f6;
     margin-bottom: 22px;
@@ -873,7 +873,7 @@
 .re-coluna__principal:focus-visible {
     outline: 2px solid var(--re-roxo);
     outline-offset: 4px;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 /* ---------- Os 3 topicos, na coluna estreita, como lista de atalhos. */
@@ -975,7 +975,7 @@
 .re-coluna__apoio .topic-card:focus-visible {
     outline: 2px solid var(--re-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 /* =========================================
@@ -1118,7 +1118,7 @@
 .re-indice-temas__grid .categoria-card:focus-visible {
     outline: 2px solid var(--re-roxo);
     outline-offset: 3px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 /* =========================================
@@ -1188,7 +1188,7 @@
 #em-breve .breve-card__icon {
     width: 30px;
     height: 30px;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 14px;
     color: var(--re-roxo);
     background: #ede9fe;

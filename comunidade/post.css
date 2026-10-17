@@ -50,7 +50,7 @@
     text-align: center;
     background: #ffffff;
     border: 1px solid var(--cx-border);
-    border-radius: 20px;
+    border-radius: 5px;
     box-shadow: var(--shadow-card);
     color: var(--cx-muted);
 }
@@ -115,7 +115,7 @@
 .conversation-card {
     background: #ffffff;
     border: 1px solid var(--cx-border);
-    border-radius: 20px;
+    border-radius: 5px;
     box-shadow: var(--shadow-card);
     overflow: hidden;
 }
@@ -250,7 +250,7 @@
     place-items: center;
     overflow: hidden;
     border: 1px solid var(--cx-border);
-    border-radius: 16px;
+    border-radius: 5px;
     background: #11131c;
 }
 
@@ -269,7 +269,7 @@
     align-items: center;
     gap: 9px;
     border: 1px solid var(--cx-border);
-    border-radius: 12px;
+    border-radius: 5px;
     color: var(--cx-text-soft);
     background: var(--cx-bg);
     font-size: 13px;
@@ -403,7 +403,7 @@
     max-height: 220px;
     padding: 12px 14px;
     border: 1px solid var(--cx-border);
-    border-radius: 14px;
+    border-radius: 5px;
     background: var(--cx-bg);
     color: var(--cx-text);
     font: 14px/1.5 'Inter', sans-serif;
@@ -458,7 +458,7 @@
     margin: 16px 22px 0;
     padding: 11px 14px;
     border: 1px solid #ead7ad;
-    border-radius: 12px;
+    border-radius: 5px;
     background: #fffaf0;
     color: #72592f;
     font-size: 13px;
@@ -488,7 +488,7 @@
 .comment-sort-label select {
     padding: 7px 28px 7px 9px;
     border: 1px solid transparent;
-    border-radius: 9px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cx-gold);
     font: 700 12px 'Inter', sans-serif;
@@ -698,7 +698,7 @@
     margin: 0 0 14px 49px;
     padding: 12px;
     border: 1px solid var(--cx-gold-soft);
-    border-radius: 14px;
+    border-radius: 5px;
     background: var(--cx-gold-bg);
 }
 
@@ -749,7 +749,7 @@
     margin: 100px 24px 0;
     padding: 20px;
     border: 1px solid var(--cx-border);
-    border-radius: 16px;
+    border-radius: 5px;
     background: #ffffff;
     color: var(--cx-text);
     text-align: center;

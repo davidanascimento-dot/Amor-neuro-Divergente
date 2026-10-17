@@ -148,7 +148,7 @@
     color: #ffffff;
     border: 1px solid var(--pf-verified);
     padding: 2px 10px;
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 11px;
     font-weight: 700;
     backdrop-filter: blur(6px);
@@ -162,7 +162,7 @@
     color: #ffffff;
     border: 1px solid var(--pf-gold);
     padding: 2px 10px;
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 11px;
     font-weight: 700;
     backdrop-filter: blur(6px);
@@ -181,7 +181,7 @@
     color: #ffffff;
     border: 1px solid #7bc49a;
     padding: 2px 10px;
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.03em;
@@ -216,7 +216,7 @@
     background: #ffffff;
     color: var(--pf-text);
     border: none;
-    border-radius: 24px;
+    border-radius: 5px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -263,7 +263,7 @@
 .btn-hero-chat {
     height: 42px;
     padding: 0 18px;
-    border-radius: 24px;
+    border-radius: 5px;
     white-space: nowrap;
     font-size: 14px;
     font-weight: 700;
@@ -398,7 +398,7 @@
 .profile-about-card {
     background: #ffffff;
     border: 1px solid var(--pf-border);
-    border-radius: 16px;
+    border-radius: 5px;
     padding: 20px;
 }
 
@@ -441,7 +441,7 @@
     gap: 4px;
     background: #ffffff;
     border: 1px solid var(--pf-border);
-    border-radius: 12px;
+    border-radius: 5px;
     padding: 6px;
     overflow-x: auto;
     scrollbar-width: none;
@@ -456,7 +456,7 @@
     padding: 10px 16px;
     background: transparent;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     color: var(--pf-muted);
     font-size: 14px;
     font-weight: 600;
@@ -492,7 +492,7 @@
 .user-post {
     background: #ffffff;
     border: 1px solid var(--pf-border);
-    border-radius: 16px;
+    border-radius: 5px;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -565,7 +565,7 @@
 
 .user-post-image {
     width: 100%;
-    border-radius: 12px;
+    border-radius: 5px;
     overflow: hidden;
     border: 1px solid var(--pf-border);
     margin-top: 4px;
@@ -603,7 +603,7 @@
     text-decoration: none;
     transition: color 0.2s;
     padding: 4px 10px;
-    border-radius: 20px;
+    border-radius: 5px;
 }
 
 .user-post-actions button:hover,
@@ -616,7 +616,7 @@
 .empty-state {
     background: #ffffff;
     border: 1px solid var(--pf-border);
-    border-radius: 16px;
+    border-radius: 5px;
     text-align: center;
     padding: 60px 20px;
     color: var(--pf-muted);
@@ -646,7 +646,7 @@
 .profile-stats-card {
     background: #ffffff;
     border: 1px solid var(--pf-border);
-    border-radius: 16px;
+    border-radius: 5px;
     padding: 20px;
 }
 
@@ -879,7 +879,7 @@ button.suggested-profiles-more:hover {
 button.suggested-profiles-more:focus-visible {
     outline: 2px solid var(--pf-verified);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 .suggested-profiles-caret {
@@ -909,7 +909,7 @@ button.suggested-profiles-more[aria-expanded="true"] .suggested-profiles-caret {
     padding: 0 10px;
     height: 34px;
     border: 1px solid var(--pf-border);
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--pf-bg-soft);
     color: #6f6862;
 }
@@ -946,7 +946,7 @@ button.suggested-profiles-more[aria-expanded="true"] .suggested-profiles-caret {
 .suggested-profiles-note,
 .suggested-profiles-empty {
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--pf-bg-soft);
     text-align: center;
 }
@@ -1114,7 +1114,7 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
 .edit-modal {
     background: #ffffff;
     border: 1px solid var(--pf-border);
-    border-radius: 16px;
+    border-radius: 5px;
     width: 100%;
     max-width: 520px;
     max-height: 90vh;
@@ -1184,7 +1184,7 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
     width: 100%;
     background: var(--pf-bg-soft);
     border: 1px solid var(--pf-border);
-    border-radius: 8px;
+    border-radius: 5px;
     padding: 10px 14px;
     color: var(--pf-text);
     font-size: 14px;
@@ -1214,7 +1214,7 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
     height: 120px;
     background: var(--pf-bg-soft);
     border: 1px dashed var(--pf-border);
-    border-radius: 8px;
+    border-radius: 5px;
     overflow: hidden;
     cursor: pointer;
     display: flex;
@@ -1277,7 +1277,7 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
     background: transparent;
     border: 1px solid var(--pf-border);
     color: var(--pf-text);
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -1293,7 +1293,7 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
     background: var(--pf-text);
     border: none;
     color: #ffffff;
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -1453,7 +1453,7 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
 .highlight-card-thumb {
     width: 72px;
     height: 72px;
-    border-radius: 8px;
+    border-radius: 5px;
     overflow: hidden;
     flex-shrink: 0;
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);

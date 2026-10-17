@@ -124,7 +124,7 @@ body {
     padding: 8px 18px;
     background: transparent;
     border: 1px solid var(--cx-border);
-    border-radius: 20px;
+    border-radius: 5px;
     color: var(--cx-text-soft);
     font-size: 13px;
     font-weight: 600;
@@ -193,7 +193,7 @@ body {
     padding: 8px 18px;
     background: transparent;
     border: none;
-    border-radius: 20px;
+    border-radius: 5px;
     color: var(--cx-muted);
     font-size: 14px;
     font-weight: 600;
@@ -595,7 +595,7 @@ body {
     padding: 14px 16px;
     width: 100%;
     border: 1px solid var(--cm-border);
-    border-radius: 14px;
+    border-radius: 5px;
     background: rgba(255, 255, 255, 0.86);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -626,7 +626,7 @@ body {
     gap: 9px;
     padding: 9px 11px;
     border: 1px solid var(--cm-border);
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--cm-surface-soft);
     color: var(--cm-text);
     font-family: 'Inter', sans-serif;
@@ -774,7 +774,7 @@ body {
 .rules-banner-btn-boas-vindas {
     padding: 6px 18px;
     border: 1px solid var(--cm-border-input);
-    border-radius: 20px;
+    border-radius: 5px;
     background: var(--cm-surface);
     color: var(--cm-text);
     font-family: 'Inter', sans-serif;
@@ -871,7 +871,7 @@ body {
     padding: 14px 16px;
     background: var(--cx-bg-soft);
     border: 1px solid var(--cx-border);
-    border-radius: 12px;
+    border-radius: 5px;
     margin-bottom: 20px;
 }
 
@@ -905,7 +905,7 @@ body {
     background: var(--cx-text);
     color: #ffffff;
     border: none;
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -927,7 +927,7 @@ body {
     gap: 0;
     background: var(--cx-bg-soft);
     border: 1px solid var(--cx-border);
-    border-radius: 12px;
+    border-radius: 5px;
     overflow: hidden;
 }
 
@@ -990,7 +990,7 @@ body {
 
 .post-menu-dropdown {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 5px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     min-width: 200px;
     padding: 6px 0;
@@ -1153,7 +1153,7 @@ body {
 /* Imagem / Vídeo */
 .post-image-container {
     width: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
     border: 1px solid var(--cx-border);
     background: var(--cx-bg);
@@ -1174,7 +1174,7 @@ body {
 
 .post-video-container {
     position: relative;
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
     background: #0a1128;
     border: 1px solid var(--cx-border);
@@ -1241,7 +1241,7 @@ body {
     gap: 6px;
     cursor: pointer;
     padding: 6px 14px;
-    border-radius: 20px;
+    border-radius: 5px;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     transition: all 0.15s;
@@ -1280,7 +1280,7 @@ body {
     border: 1px solid var(--cx-text);
     color: var(--cx-text);
     padding: 6px 20px;
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
@@ -1345,7 +1345,7 @@ body {
     flex: 1;
     padding: 8px 12px;
     border: 1px solid var(--cx-border);
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 13px;
     font-family: 'Inter', sans-serif;
     background: var(--cx-bg);
@@ -1362,7 +1362,7 @@ body {
     color: #ffffff;
     border: none;
     padding: 6px 16px;
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -1388,7 +1388,7 @@ body {
 .reaction-btn {
     background: var(--cx-bg) !important;
     border: 1px solid var(--cx-border) !important;
-    border-radius: 20px !important;
+    border-radius: 5px !important;
     padding: 4px 10px !important;
     font-size: 12px !important;
     color: var(--cx-muted) !important;
@@ -1418,7 +1418,7 @@ body {
 .group-card {
     background: var(--cx-bg-soft);
     border: 1px solid var(--cx-border);
-    border-radius: 12px;
+    border-radius: 5px;
     overflow: hidden;
     transition: border-color 0.15s;
     display: flex;
@@ -1487,7 +1487,7 @@ body {
     font-size: 10px;
     font-weight: 700;
     padding: 2px 8px;
-    border-radius: 20px;
+    border-radius: 5px;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
@@ -1542,7 +1542,7 @@ body {
 .group-card-actions button {
     flex: 1;
     padding: 8px 14px;
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
@@ -1603,7 +1603,7 @@ body {
     justify-content: center;
     gap: 4px;
     padding: 6px 8px;
-    border-radius: 6px;
+    border-radius: 5px;
     border: 1px solid var(--cx-border);
     background: transparent;
     color: var(--cx-muted);
@@ -1633,7 +1633,7 @@ body {
 .event-card {
     background: var(--cx-bg-soft);
     border: 1px solid var(--cx-border);
-    border-radius: 12px;
+    border-radius: 5px;
     padding: 16px 18px;
     display: flex;
     gap: 14px;
@@ -1648,7 +1648,7 @@ body {
 .event-date {
     width: 52px;
     height: 52px;
-    border-radius: 6px;
+    border-radius: 5px;
     background: var(--cx-gold-bg);
     border: 1px solid var(--cx-border-soft);
     display: flex;
@@ -1715,7 +1715,7 @@ body {
     color: var(--cx-text);
     border: 1px solid var(--cx-border);
     padding: 6px 14px;
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -1759,7 +1759,7 @@ body {
     color: var(--cx-gold);
     border: 1px solid var(--cx-gold-soft);
     padding: 6px 14px;
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -1798,7 +1798,7 @@ body {
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 12px;
     font-weight: 600;
     font-family: 'Inter', sans-serif;
@@ -1819,7 +1819,7 @@ body {
     height: 70vh;
     background: var(--cx-bg-soft);
     border: 1px solid var(--cx-border);
-    border-radius: 12px;
+    border-radius: 5px;
     overflow: hidden;
     min-height: 500px;
 }
@@ -1857,7 +1857,7 @@ body {
     font-size: 18px;
     cursor: pointer;
     padding: 4px 8px;
-    border-radius: 8px;
+    border-radius: 5px;
     transition: all 0.15s;
 }
 
@@ -1877,7 +1877,7 @@ body {
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     transition: all 0.15s;
     color: var(--cx-muted);
@@ -2004,7 +2004,7 @@ body {
 .msg-content {
     background: var(--cx-bg-soft);
     padding: 8px 14px;
-    border-radius: 12px;
+    border-radius: 5px;
     box-shadow: var(--shadow-card);
 }
 
@@ -2135,7 +2135,7 @@ body {
 
 .modal-container {
     background: var(--cx-bg-soft);
-    border-radius: 16px;
+    border-radius: 5px;
     max-width: 520px;
     width: 100%;
     max-height: 90vh;
@@ -2177,7 +2177,7 @@ body {
     color: var(--cx-muted);
     cursor: pointer;
     padding: 4px 8px;
-    border-radius: 8px;
+    border-radius: 5px;
     transition: all 0.15s;
 }
 
@@ -2214,7 +2214,7 @@ body {
     width: 100%;
     padding: 10px 14px;
     border: 2px solid var(--cx-border);
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 14px;
     font-family: 'Inter', sans-serif;
     background: var(--cx-bg);
@@ -2261,7 +2261,7 @@ body {
     background: var(--cx-bg-soft);
     width: 100%;
     max-width: 600px;
-    border-radius: 20px;
+    border-radius: 5px;
     overflow: hidden;
     box-shadow: 0 24px 48px rgba(0,0,0,0.15);
     animation: modalIn 0.25s ease;
@@ -2355,7 +2355,7 @@ body {
     background: none;
     border: 1px solid var(--cx-border);
     padding: 4px 14px;
-    border-radius: 20px;
+    border-radius: 5px;
     font-size: 12px;
     font-weight: 500;
     color: var(--cx-muted);
@@ -2413,7 +2413,7 @@ body {
     color: #fff;
     border: none;
     padding: 8px 28px;
-    border-radius: 30px;
+    border-radius: 5px;
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
@@ -2451,7 +2451,7 @@ body {
     color: #fff;
     border: none;
     padding: 12px 18px;
-    border-radius: 50px;
+    border-radius: 5px;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
@@ -2473,7 +2473,7 @@ body {
     bottom: 64px;
     right: 0;
     background: var(--cx-bg-soft);
-    border-radius: 14px;
+    border-radius: 5px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     border: 1px solid var(--cx-border);
     padding: 14px;
@@ -2512,7 +2512,7 @@ body {
     align-items: center;
     gap: 4px;
     padding: 5px 10px;
-    border-radius: 20px;
+    border-radius: 5px;
     border: 1px solid var(--cx-border);
     background: var(--cx-bg);
     color: var(--cx-muted);
@@ -2575,12 +2575,12 @@ body {
 
 ::-webkit-scrollbar-track {
     background: var(--cx-bg);
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--cx-muted-soft);
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -2597,7 +2597,7 @@ body {
     transform: translateX(-50%) translateY(100px);
     color: #fff;
     padding: 12px 28px;
-    border-radius: 30px;
+    border-radius: 5px;
     font-size: 14px;
     font-weight: 500;
     z-index: 9999;
@@ -2629,7 +2629,7 @@ body {
     gap: 8px;
     background: var(--cx-bg);
     border: 1px solid var(--cx-border);
-    border-radius: 20px;
+    border-radius: 5px;
     padding: 6px 12px;
     transition: border-color 0.15s;
 }
@@ -2665,7 +2665,7 @@ body {
     gap: 10px;
     padding: 8px 12px;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 5px;
     transition: background 0.15s;
 }
 
@@ -2715,7 +2715,7 @@ body {
 
 .btn-add-friend {
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: 5px;
     border: none;
     font-size: 11px;
     font-weight: 600;
@@ -2769,7 +2769,7 @@ body {
     font-size: 10px;
     font-weight: 700;
     padding: 1px 6px;
-    border-radius: 10px;
+    border-radius: 5px;
     min-width: 18px;
     text-align: center;
 }
@@ -2779,7 +2779,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 8px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--cx-bg);
     margin-bottom: 4px;
     border: 1px solid var(--cx-border);
@@ -2813,7 +2813,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 6px 8px;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background 0.15s;
 }
@@ -2904,7 +2904,7 @@ body {
     gap: 8px;
     background: var(--cx-bg);
     border: 1px solid var(--cx-border);
-    border-radius: 12px;
+    border-radius: 5px;
     padding: 8px 14px;
     margin-bottom: 12px;
 }
@@ -2934,7 +2934,7 @@ body {
     align-items: center;
     gap: 10px;
     padding: 10px 8px;
-    border-radius: 10px;
+    border-radius: 5px;
     transition: background 0.15s;
 }
 
@@ -2944,7 +2944,7 @@ body {
 
 .btn-add-to-group {
     padding: 5px 14px;
-    border-radius: 20px;
+    border-radius: 5px;
     border: none;
     font-size: 12px;
     font-weight: 600;
@@ -2969,7 +2969,7 @@ body {
     align-items: center;
     gap: 10px;
     padding: 10px 8px;
-    border-radius: 10px;
+    border-radius: 5px;
     transition: background 0.15s;
     cursor: pointer;
 }
@@ -2981,7 +2981,7 @@ body {
 .group-for-friend-icon {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: 5px;
     background: var(--cx-bg);
     display: flex;
     align-items: center;
@@ -3011,7 +3011,7 @@ body {
 .invite-code-display {
     background: var(--cx-bg);
     border: 2px dashed var(--cx-border);
-    border-radius: 16px;
+    border-radius: 5px;
     padding: 24px;
     margin: 16px 0;
 }
@@ -3073,7 +3073,7 @@ body {
     letter-spacing: 10px;
     padding: 12px 16px;
     border: 2px solid var(--cx-border);
-    border-radius: 16px;
+    border-radius: 5px;
     background: var(--cx-bg);
     color: var(--cx-gold);
     outline: none;
@@ -3322,7 +3322,7 @@ body {
    ========================================================================== */
 .custom-video-player {
     position: relative;
-    border-radius: 12px;
+    border-radius: 5px;
     overflow: hidden;
     background: #000;
     line-height: 0;
@@ -3405,7 +3405,7 @@ body {
 .cvp-progress {
     height: 4px;
     background: rgba(255, 255, 255, 0.25);
-    border-radius: 4px;
+    border-radius: 5px;
     position: relative;
     cursor: pointer;
     margin-bottom: 12px;
@@ -3422,7 +3422,7 @@ body {
     left: 0;
     height: 100%;
     background: rgba(255, 255, 255, 0.4);
-    border-radius: 4px;
+    border-radius: 5px;
     width: 0;
 }
 
@@ -3432,7 +3432,7 @@ body {
     left: 0;
     height: 100%;
     background: #fff;
-    border-radius: 4px;
+    border-radius: 5px;
     width: 0;
     pointer-events: none;
 }

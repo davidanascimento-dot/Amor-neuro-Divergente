@@ -278,7 +278,7 @@ body.conversas-page {
     place-items: center;
     padding: 0;
     border: 0;
-    border-radius: 13px;
+    border-radius: 5px;
     background: var(--cv-surface-soft);
     color: var(--cv-text-soft);
     font-size: 15px;
@@ -297,7 +297,7 @@ body.conversas-page {
     position: relative;
     max-width: 320px;
     min-width: 140px;
-    border-radius: 14px;
+    border-radius: 5px;
     overflow: hidden;
     background: var(--cv-surface-soft);
     border: 1px solid var(--cv-border);
@@ -431,7 +431,7 @@ body.conversas-page {
     min-width: 210px;
     max-width: 100%;
     padding: 8px 11px;
-    border-radius: 14px;
+    border-radius: 5px;
     background: var(--cv-surface-soft);
     border: 1px solid var(--cv-border);
 }
@@ -506,7 +506,7 @@ body.conversas-page {
     min-width: 34px;
     padding: 3px 5px;
     border: 1px solid var(--cv-border);
-    border-radius: 8px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-muted);
     font-size: 10px;
@@ -580,7 +580,7 @@ body.conversas-page {
     place-items: center;
     padding: 0;
     border: 1px solid var(--cv-border);
-    border-radius: 10px;
+    border-radius: 5px;
     background: #fff;
     color: var(--cv-text-soft);
     font-size: 12px;
@@ -705,7 +705,7 @@ body.a11y-dark-mode .chat-audio-time {
     margin-top: 4px;
     padding: 0;
     border: 0;
-    border-radius: 7px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-muted);
     font-size: 10px;
@@ -771,7 +771,7 @@ body.a11y-dark-mode .chat-audio-time {
     min-height: 42px;
     padding: 0 20px;
     border: 0;
-    border-radius: 12px;
+    border-radius: 5px;
     background: #e11d48;
     color: #fff;
     font-size: 14px;
@@ -869,7 +869,7 @@ body.a11y-dark-mode .chat-message-row.is-deleted {
     overscroll-behavior: contain;
     padding: 6px;
     border: 1px solid var(--cv-border);
-    border-radius: 14px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: 0 14px 38px rgba(24, 18, 46, .18);
     animation: chatMenuIn .16s ease-out;
@@ -891,7 +891,7 @@ body.a11y-dark-mode .chat-message-row.is-deleted {
     gap: 11px;
     padding: 9px 10px;
     border: 0;
-    border-radius: 9px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-text);
     font-size: 13.5px;
@@ -1089,7 +1089,7 @@ body.a11y-dark-mode .chat-menu-count {
     place-items: center;
     padding: 0;
     border: 0;
-    border-radius: 10px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-muted);
     font-size: 13px;
@@ -1139,7 +1139,7 @@ body.a11y-dark-mode .rail-toggle-button:hover {
     place-items: center;
     padding: 0;
     border: 1px solid var(--cv-border);
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--cv-surface);
     color: var(--cv-muted);
     font-size: 13px;
@@ -1320,7 +1320,7 @@ body.a11y-dark-mode .rail-toggle-button:hover {
     grid-template-columns: 290px minmax(0, 1fr) 230px;
     overflow: hidden;
     border: 1px solid var(--cv-border);
-    border-radius: 20px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: var(--cv-shadow);
 }
@@ -1374,7 +1374,7 @@ body.a11y-dark-mode .rail-toggle-button:hover {
     gap: 5px;
     margin: 0 12px 12px;
     padding: 4px;
-    border-radius: 12px;
+    border-radius: 5px;
     background: #f0ede8;
 }
 
@@ -1382,7 +1382,7 @@ body.a11y-dark-mode .rail-toggle-button:hover {
     flex: 1;
     min-height: 32px;
     border: 0;
-    border-radius: 9px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-muted);
     font-size: 11px;
@@ -1403,7 +1403,7 @@ body.a11y-dark-mode .rail-toggle-button:hover {
     margin: 0 12px 12px;
     padding: 9px 11px;
     border: 1px solid var(--cv-border);
-    border-radius: 12px;
+    border-radius: 5px;
     background: var(--cv-surface);
     color: var(--cv-gold);
 }
@@ -1438,7 +1438,7 @@ body.a11y-dark-mode .rail-toggle-button:hover {
     min-height: 58px;
     padding: 8px 9px;
     border: 0;
-    border-radius: 12px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-text);
     text-align: left;
@@ -1597,7 +1597,7 @@ body.a11y-dark-mode .conversation-item.is-active {
 .aside-card {
     padding: 14px;
     border: 1px solid var(--cv-border);
-    border-radius: 14px;
+    border-radius: 5px;
     background: var(--cv-surface);
 }
 
@@ -1782,7 +1782,7 @@ body.chat-page {
     place-items: center;
     padding: 0;
     border: 0;
-    border-radius: 10px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-text);
     font-size: 15px;
@@ -1869,7 +1869,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 
 .chat-bubble {
     padding: 10px 14px;
-    border-radius: 16px 16px 16px 5px;
+    border-radius: 5px 16px 16px 5px;
     background: #f0ede8;
     color: var(--cv-text);
     font-size: 14px;
@@ -1879,7 +1879,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 }
 
 .mine .chat-bubble {
-    border-radius: 16px 16px 5px 16px;
+    border-radius: 5px 16px 5px 16px;
     background: var(--cv-text);
     color: #fff;
 }
@@ -1902,7 +1902,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     resize: vertical;
     padding: 12px 14px;
     border: 1px solid var(--cv-border);
-    border-radius: 14px;
+    border-radius: 5px;
     outline: 0;
     background: var(--cv-surface-soft);
     color: var(--cv-text);
@@ -1921,7 +1921,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     display: grid;
     place-items: center;
     border: 0;
-    border-radius: 13px;
+    border-radius: 5px;
     background: var(--cv-purple);
     color: #fff;
     cursor: pointer;
@@ -1980,7 +1980,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 .channel-hero {
     overflow: hidden;
     border: 1px solid var(--cv-border);
-    border-radius: 20px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: var(--cv-shadow);
 }
@@ -2063,7 +2063,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 .channel-side-card {
     padding: 22px;
     border: 1px solid var(--cv-border);
-    border-radius: 16px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: 0 4px 15px rgba(34, 27, 49, .04);
 }
@@ -2121,7 +2121,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     align-items: center;
     gap: 9px;
     padding: 8px;
-    border-radius: 10px;
+    border-radius: 5px;
     transition: background .18s;
 }
 
@@ -2213,7 +2213,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     margin: 23px 0 29px;
     padding: 12px;
     border: 1px solid var(--cv-border);
-    border-radius: 15px;
+    border-radius: 5px;
     background: color-mix(in srgb, var(--cv-surface, #ffffff) 82%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -2228,7 +2228,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     gap: 9px;
     padding: 9px 12px;
     border: 1px solid var(--cv-border);
-    border-radius: 11px;
+    border-radius: 5px;
     background: var(--cv-surface-soft);
     color: var(--cv-gold);
 }
@@ -2316,7 +2316,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     flex-direction: column;
     overflow: hidden;
     border: 1px solid #303040;
-    border-radius: 16px;
+    border-radius: 5px;
     background: #19191b;
     color: #f4f4f5;
     box-shadow: 0 7px 20px rgba(0, 0, 0, .12);
@@ -2478,7 +2478,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     gap: 5px;
     padding: 0 12px;
     border: 1px solid #414149;
-    border-radius: 9px;
+    border-radius: 5px;
     background: #29292f;
     color: #dedee2;
     font-size: 11px;
@@ -2536,7 +2536,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     gap: 5px;
     padding: 0 10px;
     border: 1px dashed #414149;
-    border-radius: 9px;
+    border-radius: 5px;
     color: #bdbdc5;
     font-size: 10px;
     font-weight: 700;
@@ -2611,7 +2611,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     margin-top: 24px;
     padding: 22px;
     border: 1px solid var(--cv-border);
-    border-radius: 20px;
+    border-radius: 5px;
     background: linear-gradient(135deg, #fffdf9, #f8f3ff);
     box-shadow: 0 8px 24px rgba(76, 35, 155, .07);
 }
@@ -2645,7 +2645,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     justify-content: center;
     padding: 10px 14px;
     border: 1px solid #ded0f6;
-    border-radius: 14px;
+    border-radius: 5px;
     background: #f0e8ff;
     color: var(--cv-purple-dark);
 }
@@ -2707,7 +2707,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 .my-groups-login {
     min-height: 190px;
     border: 1px dashed var(--cv-border-strong);
-    border-radius: 14px;
+    border-radius: 5px;
     background: rgba(255, 255, 255, .58);
 }
 
@@ -2767,7 +2767,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     margin-top: 26px;
     padding: 15px 17px;
     border: 1px solid #ded0f6;
-    border-radius: 15px;
+    border-radius: 5px;
     background: #f8f3ff;
 }
 
@@ -2777,7 +2777,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     display: grid;
     place-items: center;
     flex: 0 0 38px;
-    border-radius: 12px;
+    border-radius: 5px;
     background: #e9ddff;
     color: var(--cv-purple);
 }
@@ -2811,7 +2811,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     min-height: 38px;
     padding: 0 11px;
     border: 1px solid var(--cv-border);
-    border-radius: 10px;
+    border-radius: 5px;
     outline: 0;
     background: #fff;
     color: var(--cv-text);
@@ -2858,7 +2858,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     margin: 4px 0 19px;
     padding: 12px;
     border: 1px solid var(--cv-border);
-    border-radius: 12px;
+    border-radius: 5px;
     background: var(--cv-surface-soft);
     cursor: pointer;
 }
@@ -2877,7 +2877,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     flex: 0 0 21px;
     margin-top: 1px;
     border: 2px solid var(--cv-border-strong);
-    border-radius: 6px;
+    border-radius: 5px;
     color: transparent;
     transition: background .18s, border-color .18s, color .18s;
 }
@@ -2960,7 +2960,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     place-items: center;
     overflow: hidden;
     border: 1px dashed var(--cv-border-strong);
-    border-radius: 11px;
+    border-radius: 5px;
     background: var(--cv-surface-soft);
     color: var(--cv-muted);
     text-align: center;
@@ -3017,7 +3017,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     margin-top: 6px;
     padding: 0 9px;
     border: 1px solid var(--cv-border);
-    border-radius: 8px;
+    border-radius: 5px;
     outline: 0;
     background: var(--cv-surface-soft);
     color: var(--cv-text);
@@ -3069,7 +3069,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     max-width: 480px;
     padding: 32px;
     border: 1px solid var(--cv-border);
-    border-radius: 18px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: var(--cv-shadow);
     text-align: center;
@@ -3119,7 +3119,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     width: min(470px, 100%);
     overflow: hidden;
     border: 1px solid var(--cv-border);
-    border-radius: 18px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: 0 24px 70px rgba(0, 0, 0, .24);
 }
@@ -3172,7 +3172,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     width: 100%;
     padding: 10px 11px;
     border: 1px solid var(--cv-border);
-    border-radius: 10px;
+    border-radius: 5px;
     outline: 0;
     background: var(--cv-surface-soft);
     color: var(--cv-text);
@@ -3245,7 +3245,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 .community-group-hero {
     overflow: hidden;
     border: 1px solid var(--cv-border);
-    border-radius: 20px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: var(--cv-shadow);
 }
@@ -3332,7 +3332,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     min-width: 0;
     padding: 17px;
     border: 1px solid var(--cv-border);
-    border-radius: 15px;
+    border-radius: 5px;
     background: var(--cv-surface);
     box-shadow: 0 4px 15px rgba(34, 27, 49, .04);
 }
@@ -3396,7 +3396,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 .community-feed-card {
     padding: 14px;
     border: 1px solid var(--cv-border);
-    border-radius: 13px;
+    border-radius: 5px;
     background: var(--cv-surface-soft);
 }
 
@@ -3463,7 +3463,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     max-height: 360px;
     overflow: hidden;
     margin: 0 0 11px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: #eee;
 }
 
@@ -3541,7 +3541,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     }
 
     .community-group-hero {
-        border-radius: 15px;
+        border-radius: 5px;
     }
 
     .community-group-hero-bar {
@@ -3618,7 +3618,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 @media (max-width: 720px) {
     .my-groups-panel {
         padding: 16px;
-        border-radius: 15px;
+        border-radius: 5px;
     }
 
     .my-groups-header {
@@ -3720,7 +3720,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     .conversation-workspace {
         min-height: calc(100dvh - 185px);
         display: block;
-        border-radius: 15px;
+        border-radius: 5px;
     }
 
     .conversation-rail {
@@ -3764,7 +3764,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     }
 
     .channel-hero {
-        border-radius: 15px;
+        border-radius: 5px;
     }
 
     .channel-hero-bar {
@@ -3953,7 +3953,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     display: inline-block;
     padding: 3px 12px;
     border: 1px dashed var(--cv-purple);
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--cv-surface-soft);
     font-family: 'Atkinson Hyperlegible', Consolas, monospace;
     font-size: 18px;
@@ -4057,7 +4057,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     padding: 20px 22px 22px;
     border: 1px solid #f0cdc8;
     border-left: 4px solid #b3261e;
-    border-radius: 16px;
+    border-radius: 5px;
     background: #fff7f5;
     scroll-margin-top: 140px;
 }
@@ -4136,7 +4136,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     min-height: 42px;
     padding: 0 12px;
     border: 1px solid #e7c6c1;
-    border-radius: 10px;
+    border-radius: 5px;
     outline: 0;
     background: #fff;
     color: var(--cv-text);
@@ -4163,7 +4163,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 .groups-page .explore-card,
 .groups-page .my-groups-grid .explore-card {
     border: 1px solid var(--cv-border);
-    border-radius: 16px;
+    border-radius: 5px;
     background: var(--cv-surface);
     color: var(--cv-text);
     box-shadow: 0 6px 18px rgba(34, 27, 49, .06);
@@ -4177,7 +4177,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
 
 .groups-page .explore-card-banner {
     height: 88px;
-    border-radius: 15px 15px 0 0;
+    border-radius: 5px 15px 0 0;
     background: linear-gradient(135deg, #242444, #6d3bd1 62%, #d86bb4);
 }
 
@@ -4304,7 +4304,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     gap: 10px;
     padding: 0 11px;
     border: 0;
-    border-radius: 8px;
+    border-radius: 5px;
     background: transparent;
     color: #3a3a42;
     font-size: 13px;
@@ -4371,7 +4371,7 @@ body.a11y-dark-mode .chat-mobile-back:hover {
     margin-bottom: 13px;
     padding: 11px 13px;
     border: 1px solid var(--cv-border);
-    border-radius: 12px;
+    border-radius: 5px;
     background: transparent;
     color: var(--cv-muted);
 }
@@ -4978,7 +4978,7 @@ body.a11y-dark-mode .conversation-tab.active {
     height: 40px;
     padding: 0 14px;
     border: 1px solid #3a3a44;
-    border-radius: 10px;
+    border-radius: 5px;
     background: #202026;
     color: #d5d5dc;
     font-size: 13px;

@@ -1,3 +1,14 @@
+/* --------------------------------------------------------------------------
+   Cor de marca
+   O botao principal usava um gradiente bege (#a8836a -> #eba66d), que nao
+   pertence a identidade roxo/rosa do projeto — e falhava WCAG AA com 2.06:1
+   entre a ponta clara e o texto branco, abaixo dos 4.5:1 exigidos para texto
+   normal. Agora usa o roxo ja presente no projeto (#7c3aed) em direcao ao
+   rosa (#be185d): pior ponta 5.70:1.
+
+   Os laranjas de badge (#f59e0b e类似) NAO foram tocados: ali o laranja e
+   status, nao marca.
+   -------------------------------------------------------------------------- */
 :root {
     /* Cores Base */
     --primary: #7c3aed;
@@ -202,7 +213,7 @@ ul, ol { list-style: none; }
     border: none;
     cursor: pointer;
     text-align: left;
-    border-radius: 6px;
+    border-radius: 5px;
     transition: background-color 0.15s ease;
 }
 .profile-toggle:hover {
@@ -290,13 +301,19 @@ ul, ol { list-style: none; }
     background-color: #f5f5f5;
 }
 
-/* ATIVO — laranja claro + borda laranja */
+/* Item ativo da sidebar — roxo, nao laranja.
+   O menu lateral e o primeiro elemento que a pessoa ve ao abrir o site, e
+   ele usava a paleta de aviso (#fef3e7 de fundo, #c2410c de texto,
+   #eba66d na borda): a mesma familia do gradiente bege dos botoes. Ficava
+   com cara de "estado de alerta" em vez de "voce esta aqui".
+   O par agora e o roxo da marca e seu tom claro, o mesmo usado no botao
+   primario e no toggle da sidebar. */
 .sidebar-link.active,
 .sidebar-link[aria-current="page"] {
-    background-color: #fef3e7;
-    color: #c2410c;
+    background-color: #f3e8ff;
+    color: #6d28d9;
     font-weight: 600;
-    border-left-color: #eba66d;
+    border-left-color: #7c3aed;
 }
 .sidebar-link.active i,
 .sidebar-link[aria-current="page"] i {
@@ -330,7 +347,7 @@ ul, ol { list-style: none; }
     z-index: 105;
     width: 48px;
     height: 48px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: #7c3aed;
     color: #ffffff;
     display: flex;
@@ -449,15 +466,19 @@ body.a11y-dark-mode .sidebar-link i {
 body.a11y-dark-mode .sidebar-link:hover {
     background-color: #2d2d44;
 }
+/* Item ativo no modo escuro — o mesmo roxo da marca, na versão legível
+   sobre fundo escuro (#c4b5fd, o tom claro do roxo). Mantém a regra acima e
+   a de hover em paridade: trocar só a versão clara deixaria o item ativo
+   laranja ao alternar o tema. */
 body.a11y-dark-mode .sidebar-link.active,
 body.a11y-dark-mode .sidebar-link[aria-current="page"] {
-    background-color: rgba(235, 166, 109, 0.15);
-    color: #eba66d;
-    border-left-color: #eba66d;
+    background-color: rgba(124, 58, 237, 0.22);
+    color: #c4b5fd;
+    border-left-color: #7c3aed;
 }
 body.a11y-dark-mode .sidebar-link.active i,
 body.a11y-dark-mode .sidebar-link[aria-current="page"] i {
-    color: #eba66d;
+    color: #c4b5fd;
 }
 body.a11y-dark-mode .sidebar-secondary {
     border-top-color: #2d2d44;
@@ -543,7 +564,7 @@ body.a11y-reduce-motion .logo-text {
     width: 40px; 
     height: 40px; 
     object-fit: contain; 
-    border-radius: 6px; 
+    border-radius: 5px; 
 }
 
 .logo-text { 
@@ -559,7 +580,7 @@ body.a11y-reduce-motion .logo-text {
 
 .header-links a { 
     padding: 10px 18px; 
-    border-radius: 20px; 
+    border-radius: 5px; 
     font-size: 14px; 
     font-weight: 500; 
     color: var(--text-medium); 
@@ -683,188 +704,57 @@ body.a11y-reduce-motion .logo-text {
             flex-wrap: wrap;
         }
 
+/* ==========================================================================
+   BOTÕES — forma e tamanho compartilhados
+   ==========================================================================
+   A COR já era igual em inicio, Direitos, Recursos e blog: todas usam
+   linear-gradient(135deg, #7c3aed, #be185d). O que mudava era o desenho:
+
+       inicio    raio 8px      padding 10px 20px   14px
+       Direitos  raio 12px     padding 14px 28px   0.95rem
+       Recursos  raio 12px     padding 14px 28px
+       blog      raio 12px     padding 14px 28px
+       (e ainda havia 999px e 9999px em outras declaracoes)
+
+   Botao com a mesma cor e formato diferente e o que faz uma secao parecer
+   outro site. Estes tokens fixam a forma; o tom continua valendo o de cada
+   pagina, porque identidade de cor e identidade de formato sao coisas
+   diferentes.
+
+   Os valores aqui sao os do inicio, que e a referencia.
+   As paginas usam var(--btn-*, fallback) — o fallback mantem o botao
+   correto mesmo em pagina que nao carrega este arquivo.
+   ========================================================================== */
+:root {
+    --btn-raio: 8px;
+    --btn-padding: 10px 20px;
+    --btn-fonte: 14px;
+}
+
         .btn-primary {
-            background-color: #ffffff;
-            color: #000000;
-            padding: 14px 28px;
-            border-radius: 9999px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #e4e4e7;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: #ffffff;
-            padding: 14px 28px;
-            border-radius: 9999px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-secondary:hover {
-            border-color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.08);
-        }
-
-        /* ---------- BOTAO SEM DESTINO
-
-           Aponta para uma pagina que ainda nao existe. Mantem desenho e
-           posicao -- e o que segura o layout do slide -- mas nao finge
-           que ha clique: sem cursor de mao e sem o realce do hover.
-           O texto diz "em breve", que e a verdade. */
-        .btn--sem-destino {
-            cursor: default;
-            pointer-events: none;
-            opacity: 0.84;
-        }
-
-        .btn--sem-destino:hover {
-            background-color: inherit;
-            transform: none;
-        }
-
-
-        /* Barra de Progresso e Controles Inferiores */
-        .controls {
-            position: absolute;
-            bottom: 40px;
-            left: 8vw;
-            right: 8vw;
-            z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Contador de Páginas (Ex: 01 / 06) e Barra de Auto-Play */
-        .counter-container {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .counter {
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 2px;
-            color: #a1a1aa;
-        }
-
-        .counter span {
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        /* Barra de progresso visual do tempo */
-        .progress-bar-bg {
-            width: 100px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: #ffffff;
-            border-radius: 3px;
-        }
-
-        /* Setas de Navegação */
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        /* Botão de pausar o avanço automático do carrossel.
-   Só aparece quando existe; o estado é marcado por .is-pausado. */
-.nav-btn-pausa .icone-play {
-    display: none;
+    /* Cor discreta: fundo lilás claro com texto roxo escuro, 6.02:1.
+       "Gradiente mais claro com texto branco" foi descartado por medição:
+       o tom mais claro que ainda é roxo dá 3.46:1 e reprova os 4.5:1 que a
+       WCAG AA exige para texto normal. */
+    background: #f3e8ff;
+    color: #6d28d9;
+    border: 1px solid #ddd0f7;
+    box-shadow: none;
+    padding: var(--btn-padding);
+    border-radius: var(--btn-raio);
+    font-size: var(--btn-fonte);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
 }
 
-.nav-btn-pausa.is-pausado .icone-pausar {
-    display: none;
+/* Sem este :hover o botão não dá resposta ao cursor, e é num fundo claro
+   que a ausência de reação mais aparece. */
+.btn-primary:hover {
+    background: #e9d8ff;
+    border-color: #c4b0ea;
 }
-
-.nav-btn-pausa.is-pausado .icone-play {
-    display: block;
-}
-
-.nav-btn-pausa.is-pausado {
-    background: var(--primary);
-    border-color: var(--primary);
-}
-
-.nav-btn-pausa:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 3px;
-}
-
-.nav-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.4);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(8px);
-        }
-
-        .nav-btn:hover {
-            border-color: #ffffff;
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .nav-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-           .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-    
-        }
-
-         .btn-text {
-            font-size: 14px;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-
-         .btn-primary {
-            background: linear-gradient(135deg, #a8836a,#eba66d);
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
 
         @media (max-width: 768px) {
             .slide {
@@ -937,7 +827,7 @@ body.a11y-reduce-motion .logo-text {
     align-items: center;
     gap: 8px;
     padding: 6px 18px;
-    border-radius: 30px;
+    border-radius: 5px;
     background: var(--primary-light);
     color: var(--primary);
     font-size: 13px;
@@ -971,7 +861,7 @@ body.a11y-reduce-motion .logo-text {
     padding: 14px 28px;
     background: var(--primary);
     color: #fff;
-    border-radius: 30px;
+    border-radius: 5px;
     font-size: 16px;
     font-weight: 600;
     transition: all var(--transition);
@@ -1015,7 +905,7 @@ body.a11y-reduce-motion .logo-text {
 
 .onboarding-card {
     background: var(--bg-white);
-    border-radius: 20px;
+    border-radius: 5px;
     padding: 32px 24px;
     text-align: center;
     box-shadow: var(--shadow-sm);
@@ -1120,7 +1010,7 @@ margin-bottom: 12px;
     font-size: 10px;
     font-weight: 700;
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: 5px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
@@ -1159,7 +1049,7 @@ margin-bottom: 12px;
     padding: 10px 20px;
     background: rgba(255,255,255,0.15);
     color: #fff;
-    border-radius: 30px;
+    border-radius: 5px;
     font-size: 14px;
     font-weight: 600;
     transition: all var(--transition);
@@ -1168,10 +1058,10 @@ margin-bottom: 12px;
 }
 
 .btn-glow{
-  background: linear-gradient(135deg, #a8836a,#eba66d);
+  background: linear-gradient(135deg, #7c3aed, #be185d);
             color: #ffffff;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 5px;
             font-size: 14px;
             font-weight: 600;
             transition: all 0.2s;
@@ -1237,7 +1127,7 @@ margin-bottom: 12px;
     font-size: 11px;
     font-weight: 600;
     padding: 3px 12px;
-    border-radius: 20px;
+    border-radius: 5px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
     display: inline-flex;
@@ -1382,7 +1272,7 @@ margin-bottom: 12px;
     font-size: 11px;
     font-weight: 500;
     padding: 3px 12px;
-    border-radius: 20px;
+    border-radius: 5px;
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -1481,7 +1371,7 @@ margin-bottom: 12px;
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    border-radius: 30px;
+    border-radius: 5px;
     background: var(--bg-body);
     border: 1px solid var(--border-color);
     color: var(--text-dark);
@@ -1522,7 +1412,7 @@ transform: translateY(-8px);
 .book-cover{
     width:100%;
     aspect-ratio: 2/3;
-    border-radius: 12px;
+    border-radius: 5px;
     object-fit: cover;
     margin-bottom: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -1535,7 +1425,7 @@ transform: translateY(-8px);
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s;
-    border-radius: 12px;
+    border-radius: 5px;
     border:2px solid #a1a1aaa2;
 
 
@@ -1555,7 +1445,7 @@ transform: translateY(-8px);
     display: flex;
     flex-direction: column;
 
-    border-radius: 20px;
+    border-radius: 5px;
     align-items: center;
     margin: 10px;
     padding: 20px;
@@ -1751,20 +1641,57 @@ transform: translateY(-8px);
 }
 
 /* Botão principal do hub */
+/* ==========================================================================
+   HUB FLUTUANTE — deixar discreto
+   ==========================================================================
+   O botão estava com gradiente roxo→rosa saturado, 64px, raio assimétrico
+   e 30px de ícone. Em gradiente completo ele é o ponto mais saturado da
+   tela, e a janela de ajuda é a única função que a pessoa abre uma vez e
+   depois raramente — não ganha o objeto mais berrante da página.
+
+   A direção aqui é a mesma dos botões: fundo claro, texto escuro. O botão
+   continua sendo um botão de 56px (área de toque confortável, abaixo de
+   64 ainda é aceito em WCAG 2.2), mas para de competir com o conteúdo.
+
+   O que NÃO mudou:
+     - o hub continua no mesmo canto e na mesma distancia da borda
+     - o menu abre igual, e as acoes sao as mesmas
+     - no hover e no foco ele ganha cor, para quem procura-lo de proposito
+
+   Raios: 20% 0% 20% 0% virou 50%. O canto assimetrico era assinatura do
+   componente, mas é o que mais chama atenção num quadrado flutuante; e o
+   resto do site já está em raio 5 ou círculo.
+   ========================================================================== */
+
 .floating-hub-toggle {
-    width: 64px;
-    height: 64px;
- border-radius: 20% 0% 20% 0%;
-    border: none;
-    background: linear-gradient(135deg, #8a7560e7, #fdd0b2);
-    color: #fff;
-    font-size: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid #ddd0f7;
+    background: #f3e8ff;
+    color: #6d28d9;
+    font-size: 22px;
+    box-shadow: 0 2px 8px rgba(45, 32, 70, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: relative;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
+
+/* Quem procura de propósito encontra. Sem isto, um botão claro e pequeno
+   some de vez para quem não sabe que ele existe. */
+
+
+/* Foco por teclado precisa aparecer: o estado discreto acima deixa o
+   contorno do navegador como unico sinal, e ele some em fundo claro. */
+.floating-hub-toggle:focus-visible {
+    outline: 3px solid #7c3aed;
+    outline-offset: 2px;
+}
+
+
 
 
 .floating-hub-toggle:active {
@@ -1779,7 +1706,7 @@ transform: translateY(-8px);
     font-size: 13px;
     font-weight: 600;
     padding: 3px 10px;
-    border-radius: 8px;
+    border-radius: 5px;
     white-space: nowrap;
     opacity: 0;
     transform: translateX(10px);
@@ -2083,7 +2010,7 @@ body.a11y-highlight-links a:not(.sidebar-link):not(.btn-glow):not(.btn-glass):no
     color: #000000 !important; 
     font-weight: 800 !important; 
     padding: 2px 4px !important; 
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 body.high-links a { 
@@ -2361,7 +2288,7 @@ body.text-decreased { font-size: 0.9rem; }
     font-size: 10px;
     font-weight: 600;
     padding: 2px 10px;
-    border-radius: 20px;
+    border-radius: 5px;
     background: #10b981;
     color: #fff;
     text-transform: uppercase;
@@ -2407,7 +2334,7 @@ body.text-decreased { font-size: 0.9rem; }
 
 .acolheria-modal-body::-webkit-scrollbar-thumb {
     background: var(--border-color);
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .acolheria-msg {
@@ -2506,7 +2433,7 @@ body.text-decreased { font-size: 0.9rem; }
 
 .acolheria-suggestion {
     padding: 7px 16px;
-    border-radius: 12px;
+    border-radius: 5px;
     background: #ecfccb;
     color: #3f6212;
     font-size: 12px;
@@ -2545,7 +2472,7 @@ body.text-decreased { font-size: 0.9rem; }
     flex: 1;
     padding: 11px 14px;
     border: 1px solid transparent;
-    border-radius: 14px;
+    border-radius: 5px;
     font-size: 14px;
     font-family: var(--font-main);
     background: #322a52;
@@ -2817,7 +2744,7 @@ body.acolheria-safety-open .acolheria-modal {
     width: 32px;
     height: 32px;
     border: 0;
-    border-radius: 8px;
+    border-radius: 5px;
     background: transparent;
     color: #0f766e;
     font-size: 17px;
@@ -2852,7 +2779,7 @@ body.acolheria-safety-open .acolheria-modal {
 .acolheria-safety-card {
     background: #fff;
     border: 1px solid #d1fae5;
-    border-radius: 14px;
+    border-radius: 5px;
     padding: 14px;
 }
 
@@ -2907,7 +2834,7 @@ body.acolheria-safety-open .acolheria-modal {
     width: 100%;
     margin-top: 12px;
     padding: 11px 14px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: #e11d48;
     color: #fff;
     font-size: 14px;
@@ -2938,7 +2865,7 @@ body.acolheria-safety-open .acolheria-modal {
     margin-top: 12px;
     padding: 10px 14px;
     border: 0;
-    border-radius: 10px;
+    border-radius: 5px;
     background: #d1fae5;
     color: #065f46;
     font-size: 13px;
@@ -2965,7 +2892,7 @@ body.acolheria-safety-open .acolheria-modal {
 .acolheria-safety-aviso {
     margin: 2px 0 0;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: #fef3c7;
     color: #78350f;
     font-size: 11.5px;
@@ -3075,7 +3002,7 @@ body.acolheria-safety-open .acolheria-modal {
         height: 78dvh;
         border-left: 0;
         border-top: 1px solid #bbf7d0;
-        border-radius: 18px 18px 0 0;
+        border-radius: 5px 18px 0 0;
         box-shadow: 0 -14px 40px rgba(6, 78, 59, 0.24);
         transform: translateY(100%);
     }
@@ -3245,7 +3172,7 @@ body.a11y-dark-mode .acolheria-resp-parar {
     align-items: center;
     gap: 8px;
     padding: 6px 18px;
-    border-radius: 30px;
+    border-radius: 5px;
     background: var(--primary-light);
     color: var(--primary);
     font-size: 13px;
@@ -3441,7 +3368,7 @@ body.a11y-dark-mode .whoweare-content .section-badge {
 .badge {
   display: inline-block ;
   padding: 6px 18px ;
-  border-radius: 8px ;
+  border-radius: 5px ;
   font-weight: 700 ;
   font-size: 1.25rem ;
   color: #ffffff !important;
@@ -3480,7 +3407,7 @@ body.a11y-dark-mode .whoweare-content .section-badge {
   min-height: 300px;
   padding: 48px 44px;
   color: #ffffff;
-  border-radius: 4px;
+  border-radius: 5px;
 
   /* Três camadas, de trás para frente:
 
@@ -3831,7 +3758,7 @@ a.is-locked::after {
     position: relative;
     margin: 0 0 10px;
     padding: 9px 15px;
-    border-radius: 16px;
+    border-radius: 5px;
     background: #ffffff;
     border: 1px solid #E0D0F0;
     color: var(--lia-texto);

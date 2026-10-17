@@ -21,6 +21,17 @@
 <body>
 
     <!-- =============================================
+    SIDEBAR TOGGLE
+    Esta página carrega inicio.js e o inicio.css, e os dois já têm o
+    código e o estilo do botão — mas a etiqueta em si nunca foi escrita no
+    HTML. Resultado: no celular a sidebar ficava fora da tela e não havia
+    como abrir. É a mesma marcação do início, sem script novo.
+    ============================================= -->
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir menu lateral" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- =============================================
     SIDEBAR — NOVO PADRÃO
     ============================================= -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">

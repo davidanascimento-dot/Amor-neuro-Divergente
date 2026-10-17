@@ -34,7 +34,7 @@
     padding: clamp(26px, 4vw, 48px) 20px;
     max-width: 1120px;
     border: 2px dashed #c4b5fd;
-    border-radius: 18px;
+    border-radius: 5px;
     background: #faf7ff;
     text-align: center;
 }

@@ -318,7 +318,7 @@ body.a11y-dark-mode .cia-btn-icone-cont { color: #2E1065; }
     display: flex;
     gap: 10px;
     padding: 12px 13px;
-    border-radius: 12px;
+    border-radius: 5px;
     background: var(--cia-roxo-claro);
     border: 1px solid var(--cia-borda-forte);
     color: var(--cia-texto-medio);
@@ -351,7 +351,7 @@ body.a11y-dark-mode .cia-btn-icone-cont { color: #2E1065; }
     gap: 10px;
     width: 100%;
     padding: 12px 13px;
-    border-radius: 12px;
+    border-radius: 5px;
     background: var(--cia-fundo);
     border: 1px solid var(--cia-borda);
     color: var(--cia-texto-medio);
@@ -431,7 +431,7 @@ body.a11y-dark-mode .cia-btn-icone-cont { color: #2E1065; }
     justify-content: center;
     gap: 9px;
     padding: 11px 16px;
-    border-radius: 10px;
+    border-radius: 5px;
     font: inherit;
     font-size: 0.85rem;
     font-weight: 600;
@@ -720,7 +720,7 @@ body.a11y-dark-mode .cia-sug:hover { color: #2E1065; }
     min-height: 46px;
     max-height: 190px;
     padding: 12px 16px;
-    border-radius: 22px;
+    border-radius: 5px;
     background: var(--cia-fundo);
     border: 1px solid var(--cia-borda-forte);
     color: var(--cia-texto);
@@ -853,7 +853,7 @@ body.a11y-dark-mode .cia-sug:hover { color: #2E1065; }
     position: relative;
     margin: 0 0 10px;
     padding: 11px 18px;
-    border-radius: 18px;
+    border-radius: 5px;
     background: #FFFFFF;
     border: 1px solid #DCC7EC;
     color: #261A35;

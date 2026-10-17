@@ -1,3 +1,19 @@
+/* --------------------------------------------------------------------------
+   Cor de marca
+   O botao principal usava um gradiente bege (#a8836a -> #eba66d), que nao
+   pertence a identidade roxo/rosa do projeto — e falhava WCAG AA com 2.06:1
+   entre a ponta clara e o texto branco, abaixo dos 4.5:1 exigidos para texto
+   normal. Agora usa o roxo ja presente no projeto (#7c3aed) em direcao ao
+   rosa (#be185d): pior ponta 5.70:1.
+
+   Os laranjas de badge (#f59e0b e类似) NAO foram tocados: ali o laranja e
+   status, nao marca.
+   -------------------------------------------------------------------------- */
+/* Botões: raio, padding e fonte vêm de --btn-* (definidos em
+   inicio.css, com o valor do inicio). Sem isso esta seção usava raio 12px
+   e padding 14px 28px enquanto o início usava 8px e 10px 20px: mesma cor,
+   formato diferente. O fallback mantém o valor certo caso esta página não
+   carregue o inicio.css. */
 
 :root {
     --bg-warm: #f5f0eb;
@@ -10,7 +26,7 @@
     --transition-fast: 0.15s ease;
 
     /* Botão unificado */
-    --btn-gradient: linear-gradient(135deg, #a8836a, #eba66d);
+    --btn-gradient: linear-gradient(135deg, #7c3aed, #be185d);
     --btn-shadow: 0 4px 14px rgba(168, 131, 106, 0.25);
     --btn-shadow-hover: 0 8px 22px rgba(168, 131, 106, 0.35);
 
@@ -86,7 +102,7 @@
     align-items: center;
     gap: 8px;
     padding: 6px 18px;
-    border-radius: 30px;
+    border-radius: 5px;
     background: rgba(124, 58, 237, 0.25);
     border: 1px solid rgba(167, 139, 250, 0.4);
     color: #e9d5ff;
@@ -155,7 +171,7 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    border-radius: 30px;
+    border-radius: 5px;
     border: 1.5px solid #e8e3dd;
     background: #ffffff;
     color: #5c5652;
@@ -399,7 +415,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     top: 14px;
     right: 14px;
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: 5px;
     background: var(--azul-editorial);
     color: #ffffff;
     font-size: 10px;
@@ -574,7 +590,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     flex-direction: column;
     background: #ffffff;
     border: 1px solid #e8e3dd;
-    border-radius: 8px;
+    border-radius: 5px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
@@ -648,7 +664,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     display: inline-block;
     align-self: flex-start;
     padding: 5px 14px;
-    border-radius: 30px;
+    border-radius: 5px;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -780,10 +796,10 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 28px;
+    padding: var(--btn-padding, 10px 20px);
     background: var(--btn-gradient);
     color: #ffffff;
-    border-radius: 12px;
+    border-radius: var(--btn-raio, 8px);
     font-size: 15px;
     font-weight: 600;
     text-decoration: none;
@@ -808,7 +824,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
 .breve-card {
     background: #ffffff;
     border: 2px dashed var(--border-light);
-    border-radius: 16px;
+    border-radius: 5px;
     padding: 28px 20px;
     text-align: center;
     transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -825,7 +841,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     height: 48px;
     background: var(--bg-warm);
     color: var(--text-muted);
-    border-radius: 14px;
+    border-radius: 5px;
     font-size: 20px;
     margin-bottom: 14px;
 }
@@ -846,7 +862,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     font-size: 11px;
     font-weight: 600;
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: 5px;
     background: #fef3c7;
     color: #b45309;
 }
@@ -862,7 +878,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     margin: 0 auto;
     background: linear-gradient(135deg, #faf8ff 0%, #fff5f8 100%);
     border: 1px solid #f0e8ff;
-    border-radius: 24px;
+    border-radius: 5px;
     padding: 48px 40px;
     text-align: center;
     position: relative;
@@ -885,7 +901,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     justify-content: center;
     width: 56px;
     height: 56px;
-    border-radius: 18px;
+    border-radius: 5px;
     background: linear-gradient(135deg, #7c3aed, #db2777);
     color: #ffffff;
     font-size: 24px;
@@ -923,7 +939,7 @@ body.a11y-reduce-motion .recursos-nav__chip i {
     flex: 1;
     padding: 14px 18px;
     border: 2px solid var(--border-light);
-    border-radius: 12px;
+    border-radius: var(--btn-raio, 8px);
     font-size: 15px;
     font-family: inherit;
     background: #ffffff;

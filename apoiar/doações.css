@@ -100,11 +100,11 @@ ul, ol { list-style: none; }
 
 .header-glass.scrolled { background: rgba(255,255,255,0.9); box-shadow: var(--shadow-md); }
 .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.15rem; color: var(--text-dark); }
-.logo-img { width: 36px; height: 36px; object-fit: contain; border-radius: 6px; }
+.logo-img { width: 36px; height: 36px; object-fit: contain; border-radius: 5px; }
 .logo-text { color: var(--primary-dark); }
 .header-links { display: flex; gap: 24px; }
 .header-links a { 
-    padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 500; 
+    padding: 8px 18px; border-radius: 5px; font-size: 14px; font-weight: 500; 
     color: var(--text-medium); transition: all 0.15s; 
 }
 .header-links a:hover { background: rgba(124,58,237,0.08); color: var(--primary); }
@@ -143,7 +143,7 @@ ul, ol { list-style: none; }
     background: rgba(255,255,255,0.2);
     backdrop-filter: blur(8px);
     padding: 8px 20px;
-    border-radius: 30px;
+    border-radius: 5px;
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 20px;
@@ -240,7 +240,7 @@ ul, ol { list-style: none; }
     width: 44px;
     height: 44px;
     background: var(--primary);
-    border-radius: 12px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -713,7 +713,7 @@ body.a11y-highlight-links a:not(.sidebar-link):not(.btn-glow):not(.btn-glass):no
     color: #000000 !important; 
     font-weight: 800 !important; 
     padding: 2px 4px !important; 
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
 /* Tamanho do Texto */

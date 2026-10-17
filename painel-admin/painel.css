@@ -33,7 +33,7 @@ button:focus-visible,
 [role="button"]:focus-visible {
     outline: 3px solid #f59e0b;
     outline-offset: 3px;
-    border-radius: 8px;
+    border-radius: 5px;
 }
 
 /* --- SIDEBAR DE FERRAMENTAS (DEV TOOLS) --- */
@@ -66,7 +66,7 @@ button:focus-visible,
 .quick-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
 .action-card {
     background-color: var(--bg-white); border: 1px solid var(--border-color);
-    border-radius: 12px; padding: 12px; text-align: center; cursor: pointer;
+    border-radius: 5px; padding: 12px; text-align: center; cursor: pointer;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-dark); transition: all 0.2s;
 }
@@ -75,7 +75,7 @@ button:focus-visible,
 
 .btn-sac-panel {
     width: 100%; background-color: var(--primary); color: var(--text-light); border: none;
-    border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 600;
+    border-radius: 5px; padding: 12px; font-size: 13px; font-weight: 600;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     cursor: pointer; margin-bottom: 15px; text-decoration: none;
 }
@@ -88,7 +88,7 @@ button:focus-visible,
 
 .btn-manage-outline {
     background-color: var(--bg-white); border: 1px solid var(--border-color);
-    border-radius: 12px; padding: 14px 8px; text-align: center; cursor: pointer;
+    border-radius: 5px; padding: 14px 8px; text-align: center; cursor: pointer;
     display: flex; flex-direction: column; align-items: center; gap: 8px;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none; color: var(--text-dark);
@@ -113,7 +113,7 @@ button:focus-visible,
 
 .btn-store-panel {
     width: 100%; background-color: var(--bg-white); border: 1px solid var(--border-color);
-    border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 600;
+    border-radius: 5px; padding: 12px; font-size: 13px; font-weight: 600;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     cursor: pointer; margin-bottom: 25px; transition: all 0.2s ease;
     color: var(--text-dark); text-decoration: none;
@@ -165,7 +165,7 @@ button:focus-visible,
 .assistant-header-hero { text-align: center; margin-bottom: 35px; }
 .assistant-header-hero h1 { font-size: 32px; font-weight: 700; color: #1a1523; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 12px; }
 .assistant-header-hero p { color: var(--text-muted); font-size: 15px; }
-.input-box-wrapper { width: 100%; background-color: var(--bg-white); border: 1px solid #dcd8e6; border-radius: 20px; padding: 16px 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(139, 61, 255, 0.03); display: flex; flex-direction: column; gap: 15px; }
+.input-box-wrapper { width: 100%; background-color: var(--bg-white); border: 1px solid #dcd8e6; border-radius: 5px; padding: 16px 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(139, 61, 255, 0.03); display: flex; flex-direction: column; gap: 15px; }
 .input-box-wrapper textarea { width: 100%; border: none; resize: none; outline: none; font-size: 15px; color: var(--text-dark); background: transparent; min-height: 50px; }
 .input-box-wrapper textarea::placeholder { color: var(--text-muted); }
 .input-box-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f1eff5; padding-top: 12px; }
@@ -173,7 +173,7 @@ button:focus-visible,
 .send-message-btn { background-color: #f1eff5; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--primary); transition: all 0.2s; }
 .send-message-btn:hover { background-color: var(--primary-light); }
 .suggestions-chips-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 750px; }
-.suggestion-chip { background-color: var(--bg-white); border: 1px solid var(--border-color); padding: 10px 18px; border-radius: 20px; font-size: 13.5px; color: #4a4557; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.suggestion-chip { background-color: var(--bg-white); border: 1px solid var(--border-color); padding: 10px 18px; border-radius: 5px; font-size: 13.5px; color: #4a4557; cursor: pointer; transition: all 0.2s; font-weight: 500; }
 .suggestion-chip:hover { border-color: var(--primary); background-color: var(--accent-purple-light); }
 
 /* --- FOOTER --- */
@@ -235,7 +235,7 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
     position: fixed; top: 50%; right: 0;
     transform: translateY(-50%) translateX(10px);
     width: 48px; height: 56px; background: var(--primary-purple); color: #ffffff;
-    border-radius: 12px 0 0 12px; display: flex; align-items: center; justify-content: center;
+    border-radius: 5px 0 0 12px; display: flex; align-items: center; justify-content: center;
     font-size: 22px; box-shadow: -2px 4px 12px rgba(139, 92, 246, 0.4);
     cursor: pointer; z-index: 2000; border: none; padding-right: 6px;
     transition: transform 0.2s ease, background-color 0.2s ease;
@@ -247,7 +247,7 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
     position: fixed; top: 50%; right: 60px;
     transform: translateY(-50%) scale(0.95);
     background-color: #ffffff; border: 1px solid #e2e8f0;
-    border-radius: 16px; padding: 0; width: 340px;
+    border-radius: 5px; padding: 0; width: 340px;
     box-shadow: -10px 10px 40px rgba(0,0,0,0.15);
     z-index: 2001; opacity: 0; visibility: hidden;
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
@@ -259,7 +259,7 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
 .close-accessibility { background: none; border: none; color: #64748b; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; font-size: 16px; }
 .close-accessibility:hover { background: rgba(0, 0, 0, 0.05); color: #1e293b; }
 .accessibility-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 20px; }
-.access-btn { background: #fdfbfe; border: 1px solid #e6e4ea; border-radius: 12px; padding: 14px 8px; color: #1c1a22; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 12px; font-weight: 600; }
+.access-btn { background: #fdfbfe; border: 1px solid #e6e4ea; border-radius: 5px; padding: 14px 8px; color: #1c1a22; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 12px; font-weight: 600; }
 .access-btn:hover { border-color: #8b5cf6; background-color: #f3ebff; }
 .access-btn i { font-size: 18px; color: #8b5cf6; }
 .access-btn span { font-size: 12px; font-weight: 600; text-align: center; line-height: 1.2; }
@@ -274,7 +274,7 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
     .btn-manage-outline { padding: 12px 6px; }
     .btn-manage-outline .btn-icon { font-size: 20px; }
     .btn-manage-outline .btn-label { font-size: 10px; }
-    .accessibility-menu { top: auto; bottom: 0; right: 0; left: 0; transform: translateY(100%); width: 100%; border-radius: 16px 16px 0 0; }
+    .accessibility-menu { top: auto; bottom: 0; right: 0; left: 0; transform: translateY(100%); width: 100%; border-radius: 5px 16px 0 0; }
     .accessibility-menu.active { transform: translateY(0); }
     .accessibility-btn { top: auto; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; transform: none; padding-right: 0; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
     .accessibility-btn:hover { transform: scale(1.05); }
@@ -339,7 +339,7 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
     cursor: pointer;
     font-size: 16px;
     padding: 8px 12px;
-    border-radius: 10px;
+    border-radius: 5px;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
@@ -356,7 +356,7 @@ body.a11y-dyslexia * { font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif 
     display: flex; align-items: center; gap: 8px; text-decoration: none;
 }
 .brand-logo-img {
-    width: 32px; height: 32px; object-fit: contain; border-radius: 6px; flex-shrink: 0;
+    width: 32px; height: 32px; object-fit: contain; border-radius: 5px; flex-shrink: 0;
 }
 .brand-text {
     font-size: 18px; font-weight: 700; color: var(--primary); white-space: nowrap;

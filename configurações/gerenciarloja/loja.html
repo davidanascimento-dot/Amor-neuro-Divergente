@@ -140,7 +140,7 @@
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold text-gray-800" id="modalTitle">Novo Produto</h3>
-                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600" aria-label="Fechar">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -228,7 +228,7 @@
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">Detalhes do Produto</h3>
-                    <button id="closeViewModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <button id="closeViewModalBtn" class="text-gray-400 hover:text-gray-600" aria-label="Fechar">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -610,7 +610,7 @@
                 <div class="flex flex-col items-center text-center">
                     <img src="${product.image || 'https://via.placeholder.com/150?text=Produto'}"
                          class="w-32 h-32 rounded-lg object-cover mb-4"
-                         onerror="this.src='https://via.placeholder.com/150?text=Sem+Imagem'">
+                         onerror="this.src='https://via.placeholder.com/150?text=Sem+Imagem'" alt="">
                     <h4 class="font-semibold text-gray-800 mb-2">${escapeHtml(product.title)}</h4>
                     ${product.description ? `<p class="text-sm text-gray-600 mb-3">${escapeHtml(product.description)}</p>` : ''}
                     <div class="flex items-center gap-2 mb-3">
