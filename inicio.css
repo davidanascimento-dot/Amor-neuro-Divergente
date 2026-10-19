@@ -61,6 +61,11 @@
     --font-main: 'Inter', -apple-system, sans-serif;
     --font-dyslexia: 'Atkinson Hyperlegible', 'Trebuchet MS', sans-serif;
     --font-a11y: 'Atkinson Hyperlegible', sans-serif;
+
+    /* Tokens adicionais usados por componentes da Home */
+    --surface: #ffffff;
+    --accent-primary: #db2777;
+    --img-fundo: none;
 }
 
 /* Dark Mode via cascata limpa */
@@ -76,6 +81,7 @@ body.a11y-dark-mode {
     --primary-light: rgba(124,58,237,0.2);
     --border-glass: rgba(255, 255, 255, 0.08);
     --bg-glass: rgba(19, 26, 44, 0.65);
+    --surface: #1a1a2e;
 }
 
 /* Modo Claro (via classe) */
@@ -155,6 +161,40 @@ img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; }
 ul, ol { list-style: none; }
+
+/* Espaçamento consistente entre seções e evita títulos escondidos
+   atrás do cabeçalho fixo (75px) ao navegar por âncora. */
+section {
+    margin-bottom: 48px;
+    scroll-margin-top: 85px;
+}
+section:last-child {
+    margin-bottom: 0;
+}
+
+/* Header e hero ocupam tela cheia; não recebem margem inferior */
+.carousel-wrapper {
+    margin-bottom: 0;
+}
+
+/* Acolheria banner e footer não recebem margem inferior padrão */
+.acolheria-banner-section {
+    margin-bottom: 0;
+}
+footer {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Container padrão — usado nas seções da Home para limitar a largura
+   de leitura e centralizar o conteúdo. Todas as seções que usam
+   <div class="container"> dependem desta regra. */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+}
 
 /* Foco de acessibilidade aprimorado */
 :focus-visible { 
@@ -411,11 +451,11 @@ ul, ol { list-style: none; }
     color: #0ea5e9;
 }
 
-@media(max-width:768px){
-.logo-text {
-    display: none;
-
-}
+/* Logo em telas pequenas: o texto some para dar espaço ao ícone */
+@media (max-width: 768px) {
+    .logo-text {
+        display: none;
+    }
 }
 
 /* =========================================
@@ -532,7 +572,7 @@ body.a11y-reduce-motion .logo-text {
 /* =========================================
    MAIN CONTENT
    ========================================= */
-.main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; padding-top: 80px; }
 
 /* =========================================
    HEADER GLASS - SEM BLUR
@@ -542,7 +582,7 @@ body.a11y-reduce-motion .logo-text {
     display: flex; align-items: center; 
     padding: 0 40px 0 90px;
       background: rgba(255,255,255,0.9); 
-    border-bottom: 1px solid #ee7b018a;
+    border-bottom: 1px solid rgba(238, 123, 1, 0.54);
     z-index: 40;
 }
 
@@ -592,27 +632,6 @@ body.a11y-reduce-motion .logo-text {
     color: var(--primary); 
 }
 
-/* Ajuste mobile */
-@media (max-width: 768px) {    
-    .header-glass { 
-        padding: 0 16px 0 64px; 
-        height: 65px;
-    }
-    .logo {
-        position: static;
-        transform: none;
-        left: auto;
-    }
-    /* Esconde os LINKS, nao o container. Este .header-links e onde o
-       busca.js monta a lupa (ele so procura .nav-actions, que existe
-       apenas no inicio). Esconder o container inteiro apagava a busca no
-       celular em 21 paginas — e nao escondia nada util: em 18 das 19 o
-       container esta vazio, sem um unico link dentro. */
-    .header-links a { 
-        display: none; 
-    }
-}
-
 /* Container do Carrossel */
         .carousel-wrapper {
             position: relative;
@@ -624,7 +643,7 @@ body.a11y-reduce-motion .logo-text {
 
         .carousel-track {
             display: flex;
-            width: 600vw; /* 6 slides = 600vw */
+            width: 400vw; /* 4 slides = 400vw */
             height: 100%;
             transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -634,8 +653,8 @@ body.a11y-reduce-motion .logo-text {
             width: 100vw;
             height: 100%;
             display: flex;
-            align-items: center;
-            padding: 0 8vw;
+            align-items: flex-start;
+            padding: 40px 8vw 0 8vw;
             position: relative;
             background-size: cover;
             background-position: center;
@@ -654,9 +673,7 @@ body.a11y-reduce-motion .logo-text {
         .slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&h=800&fit=crop'); } /* Boas-vindas */
         .slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1920&q=80'); } /* Blog */
         .slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&w=1920&q=80'); } /* Artigos */
-        .slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1920&q=80'); } /* Ferramentas */
-        .slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80'); } /* Eventos */
-        .slide:nth-child(6) { background-image: url('https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=1920&q=80'); } /* Direitos */
+        .slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1920&q=80'); } /* Direitos */
 
         /* Conteúdo do Slide */
         .slide-content {
@@ -756,9 +773,49 @@ body.a11y-reduce-motion .logo-text {
     border-color: #c4b0ea;
 }
 
+/* Botão secundário — usado em slides do carrossel principal */
+.btn-secondary {
+    background: var(--bg-white);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+    padding: var(--btn-padding);
+    border-radius: var(--btn-raio);
+    font-size: var(--btn-fonte);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+}
+.btn-secondary:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+}
+
+/* Botão texto (link estético) — usado no cabeçalho ("Entrar") */
+.btn-text {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+.btn-text:hover {
+    background: rgba(124, 58, 237, 0.06);
+    color: var(--primary-dark);
+}
+
+/* Wrapper dos links de autenticação no cabeçalho */
+.nav-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
         @media (max-width: 768px) {
             .slide {
-                padding: 0 6vw;
+                padding: 40px 6vw 0 6vw;
             }
             .slide-title {
                 font-size: 2.5rem;
@@ -1389,7 +1446,7 @@ margin-bottom: 12px;
 }
 
 /* Destaques */
-.realeases{
+.releases {
 padding: 0 0 100px 0;
     background: var(--text-dark);
 }
@@ -4109,3 +4166,109 @@ body.a11y-dark-mode .acolheria-boas-vindas-lia {
 
 
 
+/* ==========================================================================
+   CENTRAL DE DESCOBERTA (Home)
+   ========================================================================== */
+.discovery-section {
+    padding: 56px 0 40px;
+    background: var(--bg-body);
+}
+.discovery-greeting {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.discovery-title {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    margin: 0 0 12px;
+    color: var(--text-dark);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+.discovery-sub {
+    color: var(--text-medium);
+    margin: 0 0 32px;
+    max-width: 60ch;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+.discovery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+    justify-items: center;
+}
+@media (max-width: 1024px) {
+    .discovery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .discovery-grid { grid-template-columns: 1fr; }
+}
+.discovery-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.discovery-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+.discovery-card:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+.discovery-icon {
+    font-size: 1.5rem;
+    color: var(--primary);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light);
+    border-radius: var(--radius-sm);
+}
+.discovery-card-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    line-height: 1.3;
+}
+.discovery-card-desc {
+    font-size: 0.9rem;
+    color: var(--text-medium);
+    line-height: 1.5;
+}
+.discovery-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 32px;
+}
+.discovery-chips .chip {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+.discovery-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.discovery-cta .btn-glow {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+}

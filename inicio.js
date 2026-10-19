@@ -11,7 +11,7 @@ const track = document.getElementById('track');
 
     if (track && prevBtn && nextBtn && currentSpan && progressBar && carouselWrapper) {
 
-        const totalSlides = 6;
+        const totalSlides = 4;
         let currentIndex = 0;
         const slideDuration = 3000; // Tempo de troca automática: 3 segundos
         let autoPlayTimer = null;
@@ -85,8 +85,10 @@ const track = document.getElementById('track');
         nextBtn.addEventListener('click', nextSlide);
         prevBtn.addEventListener('click', prevSlide);
 
-        // Suporte a teclas de seta do teclado
+        // Suporte a teclas de seta do teclado (apenas fora de campos de texto)
         document.addEventListener('keydown', (e) => {
+            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+            if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
             if (e.key === 'ArrowRight') nextSlide();
             if (e.key === 'ArrowLeft') prevSlide();
         });
@@ -173,6 +175,30 @@ document.addEventListener('DOMContentLoaded', () => {
     syncProfile();
     window.addEventListener('storage', (e) => {
         if (e.key === 'userAvatar' || e.key === 'userName' || e.key === 'userEmail') syncProfile();
+    });
+
+    // Saudação da Central de Descoberta (reaproveita auth-global quando disponível)
+    function atualizarSaudacaoDescoberta() {
+        const el = document.getElementById('discoveryGreeting');
+        if (!el) return;
+        let logado = false;
+        let nome = '';
+        try {
+            if (typeof window.isLoggedIn === 'function') logado = window.isLoggedIn();
+            else logado = localStorage.getItem('userLoggedIn') === 'true';
+        } catch (e) { logado = false; }
+        if (logado) {
+            nome = (localStorage.getItem('userName') || '').trim();
+        }
+        if (logado && nome) {
+            el.textContent = 'Olá, ' + nome + '.';
+        } else {
+            el.textContent = 'Bem-vindo(a) à plataforma.';
+        }
+    }
+    atualizarSaudacaoDescoberta();
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'userLoggedIn' || e.key === 'userName') atualizarSaudacaoDescoberta();
     });
 
     // =============================================
@@ -775,6 +801,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // SUPORTE A TECLADO (Acessibilidade)
         // =============================================
         document.addEventListener('keydown', (e) => {
+            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+            if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
             if (e.key === 'ArrowLeft') {
                 prevSlide();
                 resetAutoplayTimer();

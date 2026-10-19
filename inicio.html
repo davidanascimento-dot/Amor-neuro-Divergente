@@ -151,7 +151,7 @@
                 <div class="slide">
                     <div class="slide-content">
                         <span class="category-tag">Comunidade</span>
-                        <h1 class="slide-title">Bem-vindo à comunidade</h1>
+                        <h2 class="slide-title">Bem-vindo à comunidade</h2>
                         <p class="slide-description">Um espaço acolhedor e feito para você. Explore nossas publicações, ferramentas, eventos e direitos sem precisar se explicar.</p>
                         <div class="button-group">
                             <a href="comunidade/comunidade.html" class="btn-primary"> Entre na Comunidade </a>
@@ -164,7 +164,7 @@
                 <div class="slide">
                     <div class="slide-content">
                         <span class="category-tag">Blog</span>
-                        <h1 class="slide-title">Reflexões e histórias da comunidade</h1>
+                        <h2 class="slide-title">Reflexões e histórias da comunidade</h2>
                         <p class="slide-description">Acompanhe relatos, novidades e textos informativos pensados para você ler no seu próprio tempo.</p>
                         <div class="button-group">
                             <a href="/blog/blog.html" class="btn-primary">Acessar o Blog</a>
@@ -177,7 +177,7 @@
                 <div class="slide">
                     <div class="slide-content">
                         <span class="category-tag">Artigos</span>
-                        <h1 class="slide-title">Conteúdo claro sobre TDAH e Autismo</h1>
+                        <h2 class="slide-title">Conteúdo claro sobre TDAH e Autismo</h2>
                         <p class="slide-description">Informações embasadas e diretas sobre regulação emocional, autoadvocacia e rotina.</p>
                         <div class="button-group">
                             <a href="/Recursos/recursos.html" class="btn-primary">Ler Artigos</a>
@@ -189,34 +189,8 @@
                 <!-- SLIDE 4 -->
                 <div class="slide">
                     <div class="slide-content">
-                        <span class="category-tag">Ferramentas</span>
-                        <h1 class="slide-title">Recursos para o seu dia a dia</h1>
-                        <p class="slide-description">Guias de organização, rotinas visuais e soluções práticas criadas para simplificar suas tarefas.</p>
-                        <div class="button-group">
-                            <span class="btn-primary btn--sem-destino" aria-disabled="true">Ferramentas em breve</span>
-                            <span class="btn-secondary btn--sem-destino" aria-disabled="true">Guias em breve</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SLIDE 5 -->
-                <div class="slide">
-                    <div class="slide-content">
-                        <span class="category-tag">Eventos</span>
-                        <h1 class="slide-title">Encontros acolhedores e seguros</h1>
-                        <p class="slide-description">Participe de conversas e encontros onde você pode ser você mesmo sem precisar se explicar.</p>
-                        <div class="button-group">
-                            <a href="/Recursos/eventos.html" class="btn-primary">Ver Agenda</a>
-                            <a href="/Recursos/eventos.html" class="btn-secondary">Saber mais</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SLIDE 6 -->
-                <div class="slide">
-                    <div class="slide-content">
                         <span class="category-tag">Direitos</span>
-                        <h1 class="slide-title">Leis e benefícios traduzidos</h1>
+                        <h2 class="slide-title">Leis e benefícios traduzidos</h2>
                         <p class="slide-description">Entenda seus direitos legais, laudos, prioridades e acessibilidade de maneira simples e objetiva.</p>
                         <div class="button-group">
                             <a href="/Direitos/direitos.html" class="btn-primary">Entender Direitos</a>
@@ -230,7 +204,7 @@
             <div class="controls">
                 <div class="counter-container">
                     <div class="counter">
-                        <span id="current">01</span> / 06
+                        <span id="current">01</span> / 04
                     </div>
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fill" id="progressBar"></div>
@@ -259,39 +233,61 @@
             </div>
         </div>
 
-        <!-- =============================================
-             MISSÃO
-             ============================================= -->
-        <section class="mission-section">
-            <div class="mission-container">
-                <!-- =============================================
-                     FOTO FORMA — teste
-                     A foto mantem a mesma URL, o mesmo `alt` e o mesmo
-                     `loading`. Muda so a moldura: a forma organica e a
-                     folha cinza deslocada vem de `.foto-forma`, e os tres
-                     losangos amarelos sao tres <span> decorativos — sem
-                     imagem nova, sem fonte de icone.
-                     Os `aria-hidden` importam: um leitor de tela anunciaria
-                     "estrela" tres vezes, e nao ha nada a anunciar. -->
-                <div class="mission-image foto-forma">
-                    <img class="foto-forma__foto" src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=500&fit=crop" alt="Pessoas conversando em ambiente acolhedor" loading="lazy">
-                    <span class="foto-forma__losango foto-forma__losango--a" aria-hidden="true"></span>
-                    <span class="foto-forma__losango foto-forma__losango--b" aria-hidden="true"></span>
-                    <span class="foto-forma__losango foto-forma__losango--c" aria-hidden="true"></span>
+        <section class="discovery-section" id="central-descoberta" aria-labelledby="discoveryTitle">
+            <div class="container">
+                <p class="discovery-greeting" id="discoveryGreeting">Bem-vindo(a) à plataforma.</p>
+                <h2 class="discovery-title" id="discoveryTitle">O que você procura hoje?</h2>
+                <p class="discovery-sub">Encontre rapidamente a área que melhor atende ao que você precisa agora.</p>
+
+                <div class="discovery-grid">
+                    <a class="discovery-card" href="/comunidade/comunidade.html">
+                        <span class="discovery-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+                        <span class="discovery-card-title">Comunidade</span>
+                        <span class="discovery-card-desc">Participe, compartilhe e interaja com outras pessoas.</span>
+                    </a>
+                    <a class="discovery-card" href="/Direitos/direitos.html">
+                        <span class="discovery-icon" aria-hidden="true"><i class="fa-solid fa-scale-balanced"></i></span>
+                        <span class="discovery-card-title">Direitos</span>
+                        <span class="discovery-card-desc">Informações sobre direitos, garantias e caminhos de orientação.</span>
+                    </a>
+                    <a class="discovery-card" href="/Recursos/recursos.html">
+                        <span class="discovery-icon" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
+                        <span class="discovery-card-title">Artigos e recursos</span>
+                        <span class="discovery-card-desc">Conteúdos informativos sobre TDAH, autismo e saúde.</span>
+                    </a>
+                    <a class="discovery-card" href="/Explorar/Explorar.html">
+                        <span class="discovery-icon" aria-hidden="true"><i class="fa-solid fa-compass"></i></span>
+                        <span class="discovery-card-title">Explorar</span>
+                        <span class="discovery-card-desc">Conheça outras áreas e recursos da plataforma.</span>
+                    </a>
+                    <a class="discovery-card" href="/blog/blog.html">
+                        <span class="discovery-icon" aria-hidden="true"><i class="fa-regular fa-newspaper"></i></span>
+                        <span class="discovery-card-title">Blog</span>
+                        <span class="discovery-card-desc">Acesse os conteúdos e relatos existentes.</span>
+                    </a>
                 </div>
-                <div class="mission-content">
-                    <span class="section-badge"><i class="fa-solid fa-heart"></i> Nossa Missão</span>
-                    <h2>NINGUÉM PRECISA SE SENTIR SOZINHO.</h2>
-                    <p>Pessoas neurodivergentes têm duas a três vezes mais chances de enfrentar desafios de saúde mental. Mas o problema não é a neurodivergência — são a falta de informação, o capacitismo e o isolamento que a sociedade impõe.</p>
-                    <p>Criamos este espaço para que, juntos, possamos construir uma rede de apoio acessível, traduzir o conhecimento acadêmico em informações úteis e celebrar a diversidade neurológica como o que ela é: uma parte natural da experiência humana.</p>
+
+                <div class="discovery-chips" aria-label="Temas de direitos">
+                    <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-graduation-cap"></i> Educação</a>
+                    <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-heart-pulse"></i> Saúde</a>
+                    <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-hand-holding-dollar"></i> Benefícios e profissão</a>
+                    <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-universal-access"></i> Acessibilidade</a>
+                </div>
+
+                <div class="discovery-cta">
+                    <a href="/Explorar/Explorar.html" class="btn-glow">Explorar a plataforma <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
         </section>
 
+        <!-- =============================================
+             MISSÃO
+             ============================================= -->
+        <!-- (seção institucional movida para mais abaixo) -->
 <!-- =============================================
      DESTAQUE + FEED — Carrossel editorial discreto
      ============================================= -->
-<section class="ct-section" id="destaques">
+<section class="ct-section" id="destaques-editoriais">
   <div class="ct-container">
 
     <!-- Header -->
@@ -333,7 +329,7 @@
               Aprenda a lidar com procrastinação, organizar a rotina e reduzir a ansiedade.
             </p>
             <div class="ct-card__meta">
-              <span><i class="fa-regular fa-clock"></i> há 3 dias</span>
+              <span><i class="fa-regular fa-clock"></i> Destaque editorial</span>
               <span class="ct-card__link">
                 Explorar <i class="fa-solid fa-arrow-right"></i>
               </span>
@@ -356,7 +352,7 @@
               Compartilhe experiências em um espaço seguro e sem julgamentos.
             </p>
             <div class="ct-card__meta">
-              <span><i class="fa-regular fa-clock"></i> há 2 dias</span>
+              <span><i class="fa-regular fa-clock"></i> Destaque editorial</span>
               <span class="ct-card__link">
                 Participar <i class="fa-solid fa-arrow-right"></i>
               </span>
@@ -387,7 +383,7 @@
               Conteúdos claros sobre TDAH, autismo adulto, autoestima e regulação emocional.
             </p>
             <div class="ct-card__meta">
-              <span><i class="fa-regular fa-clock"></i> há 1 dia</span>
+              <span><i class="fa-regular fa-clock"></i> Destaque editorial</span>
               <span class="ct-card__link">
                 Explorar <i class="fa-solid fa-arrow-right"></i>
               </span>
@@ -410,7 +406,7 @@
               Informação prática sobre leis e benefícios. Sem juridiquês — a gente traduz.
             </p>
             <div class="ct-card__meta">
-              <span><i class="fa-regular fa-clock"></i> há 4 dias</span>
+              <span><i class="fa-regular fa-clock"></i> Destaque editorial</span>
               <span class="ct-card__link">
                 Consultar <i class="fa-solid fa-arrow-right"></i>
               </span>
@@ -433,7 +429,7 @@
               Aulas, rodas de acolhimento e grupos de partilha com especialistas.
             </p>
             <div class="ct-card__meta">
-              <span><i class="fa-regular fa-clock"></i> há 5 dias</span>
+              <span><i class="fa-regular fa-clock"></i> Destaque editorial</span>
               <span class="ct-card__link">
                 Ver agenda <i class="fa-solid fa-arrow-right"></i>
               </span>
@@ -442,12 +438,12 @@
         </a>
 
         <!-- Card 6 -->
-        <span class="ct-card ct-card--sem-destino" aria-disabled="true">
+        <a href="/Explorar/Explorar.html" class="ct-card">
           <div class="ct-card__media">
             <img src="/img/blog-post-1-DvwhQAY4 - Copia.jpg"
                  alt="Ferramentas que transformam" loading="lazy">
             <span class="ct-card__badge" >
-              Desafio
+              Explorar
             </span>
           </div>
           <div class="ct-card__body">
@@ -456,13 +452,13 @@
               Pequenos passos mensais para transformar sua vida de forma leve.
             </p>
             <div class="ct-card__meta">
-              <span><i class="fa-regular fa-clock"></i> há 1 semana</span>
+              <span><i class="fa-regular fa-clock"></i> Destaque editorial</span>
               <span class="ct-card__link">
                 Começar <i class="fa-solid fa-arrow-right"></i>
               </span>
             </div>
           </div>
-        </span>
+        </a>
 
       </div>
 
@@ -512,85 +508,7 @@
         </figure>
 
 
-<section class="explore-highlights" id="destaques">
-            <div class="container">
-                <header class="explore-highlights__head">
-                    <h2>Publicações em Destaque</h2>
-                </header>
-
-                <div class="explore-highlights__carousel" id="highlightsCarousel">
-                    <button class="hl-arrow hl-arrow--prev" aria-label="Anterior">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-
-                    <div class="hl-track" id="hlTrack">
-                        <!-- Card 1 -->
-                        <a href="/blog/post-masking.html" class="hl-card">
-                            <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop"
-                                    alt="Pessoa em ambiente calmo" loading="lazy">
-                                <div class="hl-card__overlay"></div>
-                                <h3 class="hl-card__title">O dia em que você para de sobreviver e começa a viver</h3>
-                            </div>
-                        </a>
-
-                        <!-- Card 2 -->
-                        <a href="/Recursos/autismo/Tdah.html" class="hl-card">
-                            <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=600&fit=crop"
-                                    alt="Pessoa concentrada em uma mesa de trabalho" loading="lazy">
-                                <div class="hl-card__overlay"></div>
-                                <h3 class="hl-card__title">TDAH: entendendo a atenção, a impulsividade e a rotina</h3>
-                            </div>
-                        </a>
-
-                        <!-- Card 3 -->
-                        <a href="/Recursos/autismo/dislexia.html" class="hl-card">
-                            <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop"
-                                    alt="Pessoa lendo um livro" loading="lazy">
-                                <div class="hl-card__overlay"></div>
-                                <h3 class="hl-card__title">Dislexia: quando ler e escrever exigem outros caminhos</h3>
-                            </div>
-                        </a>
-
-                        <!-- Card 4 -->
-                        <a href="/Recursos/autismo/altas-abilidades.html" class="hl-card">
-                            <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&h=600&fit=crop"
-                                    alt="Ambiente de aprendizagem com livros e cadernos" loading="lazy">
-                                <div class="hl-card__overlay"></div>
-                                <h3 class="hl-card__title">Altas habilidades: quando os caminhos de aprendizagem são diferentes</h3>
-                            </div>
-                        </a>
-
-                        <!-- Card 5 -->
-                        <a href="/Recursos/autismo/saúde.html" class="hl-card">
-                            <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&h=600&fit=crop"
-                                    alt="Pessoa em um ambiente calmo e arejado" loading="lazy">
-                                <div class="hl-card__overlay"></div>
-                                <h3 class="hl-card__title">Saúde mental: cuidar de como estamos também importa</h3>
-                            </div>
-                        </a>
-
-                        <!-- Card 6 -->
-                        <a href="/Recursos/autismo/autismo.html" class="hl-card">
-                            <div class="hl-card__media">
-                                <img src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&h=600&fit=crop"
-                                    alt="Grupo diverso de pessoas em um círculo de apoio" loading="lazy">
-                                <div class="hl-card__overlay"></div>
-                                <h3 class="hl-card__title">Compreendendo o Espectro Autista: muito além dos estereótipos</h3>
-                            </div>
-                        </a>
-                    </div>
-
-                    <button class="hl-arrow hl-arrow--next" aria-label="Próximo">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
+<!-- (seção de destaques de exploração consolidada no carrossel editorial acima) -->
 
         <!-- =============================================
              🆕 ÚLTIMAS PUBLICAÇÕES — 1 grande + 3 pequenos
@@ -614,7 +532,7 @@
                                 <span class="latest-avatar">L</span>
                                 <div class="latest-meta-text">
                                     <strong>Luti Christóforo</strong>
-                                    <span>há 1 dia · 4 min de leitura</span>
+                                    <span>Destaque editorial · 4 min de leitura</span>
                                 </div>
                             </div>
                             <h3 class="latest-feature__title">
@@ -628,7 +546,7 @@
                         <a href="/blog/blog.html" class="latest-item">
                             <div class="latest-item__text">
                                 <h4>Como tornar a comunicação mais inclusiva para profissionais neurodivergentes.</h4>
-                                <span class="latest-item__date">há 3 dias</span>
+                                <span class="latest-item__date">Destaque editorial</span>
                             </div>
                             <div class="latest-item__thumb">
                                 <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop"
@@ -640,7 +558,7 @@
                         <a href="/blog/blog.html" class="latest-item">
                             <div class="latest-item__text">
                                 <h4>Neurodivergência na infância e adolescência</h4>
-                                <span class="latest-item__date">há 3 dias</span>
+                                <span class="latest-item__date">Destaque editorial</span>
                             </div>
                             <div class="latest-item__thumb">
                                 <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=200&h=200&fit=crop"
@@ -652,7 +570,7 @@
                         <a href="/blog/blog.html" class="latest-item">
                             <div class="latest-item__text">
                                 <h4>Autismo e Saúde Mental</h4>
-                                <span class="latest-item__date">há 3 dias</span>
+                                <span class="latest-item__date">Destaque editorial</span>
                             </div>
                             <div class="latest-item__thumb">
                                 <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=200&h=200&fit=crop"
@@ -718,7 +636,7 @@
                             </div>
                             <h3>Neurodivergência e Ansiedade: Como o cérebro atípico processa o medo</h3>
                             <p>Uma explicação clara sobre por que a ansiedade é tão comum em pessoas neurodivergentes.</p>
-                            <span class="blog-link blog-link--sem-destino" aria-disabled="true">Em breve <i class="fa-regular fa-clock"></i></span>
+                            <a href="/blog/blog.html" class="blog-link">Ler no blog <i class="fa-solid fa-chevron-right"></i></a>
                         </div>
                     </article>
                 </div>
@@ -733,121 +651,12 @@
         <!-- =============================================
              DIREITOS
              ============================================= -->
-        <section class="deco-hospedeiro rights-quick-section">
-        <!-- elemento decorativo: nuvem. Nao recebe foco, nao e clicavel, nao entra na ordem de leitura. -->
-        <span class="deco deco--nuvem deco--dir deco--topo deco--s2"
-              style="--tam: 118px; --rot: -7deg" aria-hidden="true"></span>
-            <div class="container">
-                <div class="rights-box">
-                    <div class="rights-info">
-                        <span class="section-badge"><i class="fa-solid fa-scale-balanced"></i> Seus Direitos</span>
-                        <h2>Saber seus direitos não precisa ser complicado</h2>
-                        <p>Apontamos a lei que protege cada área e abrimos direto o texto oficial no Planalto. Você confere a fonte.</p>
-                        
-                        <div class="rights-chips">
-                            <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-graduation-cap"></i> Educação</a>
-                            <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-heart-pulse"></i> Saúde</a>
-                            <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-hand-holding-dollar"></i> Benefícios e profissão</a>
-                            <a href="/Direitos/direitos.html#categorias" class="chip"><i class="fa-solid fa-universal-access"></i> Acessibilidade</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- =============================================
-             RELEASES
-             ============================================= -->
-        <section class="releases" id="destaques-livros">
-            <div class="container">
-                <div class="releases-grid">
-                    <div class="book-card">
-                        <div class="book-cover">
-                            <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop" alt="Biblioteca Digital - Livros e conhecimento" />
-                        </div>
-                        <a href="blog/blog.html" class="book-title">Blog</a>
-                        <span class="book-category">Acesse conteúdos exclusivos</span>
-                    </div>
-
-                    <div class="book-card">
-                        <div class="book-cover">
-                            <img src="https://images.unsplash.com/photo-1520333789090-1afc82db536a?w=600&h=400&fit=crop" alt="Chats e Fóruns - Conexão e comunidade" />
-                        </div>
-                        <a href="Direitos/direitos.html" class="book-title">Direitos</a>
-                        <span class="book-category">Conecte-se com a comunidade</span>
-                    </div>
-
-                    <div class="book-card">
-                        <div class="book-cover">
-                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop" alt="Desafios - Metas e transformação pessoal" />
-                        </div>
-                        <a href="comunidade/comunidade.html" class="book-title">Comunidade</a>
-                        <span class="book-category">Fórum, grupos e conversas</span>
-                    </div>
-
-                    <div class="book-card">
-                        <div class="book-cover">
-                            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66" alt="Seus Direitos - Leis e benefícios" />
-                        </div>
-                        <a href="Recursos/recursos.html" class="book-title">Artigos</a>
-                        <span class="book-category">Autismo, TDAH, dislexia e saúde</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- (acesso a direitos consolidado na Central de Descoberta) -->
 
         <!-- =============================================
              QUEM SOMOS
              ============================================= -->
-        <section class="whoweare-section">
-            <div class="whoweare-container">
-                <div class="whoweare-content">
-                    <span class="section-badge"><i class="fa-regular fa-users"></i> Quem Somos</span>
-                    <h2>Um espaço feito por pessoas neurodivergentes para pessoas neurodivergentes.</h2>
-                    <p>O <strong>Amor NeuroDivergente</strong> nasceu da necessidade de um lugar onde a informação sobre neurodiversidade fosse acessível, as ferramentas de organização fossem visuais e a comunidade fosse acolhedora.</p>
-                    <p>Somos um ecossistema digital que une <strong>conhecimento, ferramentas práticas e conexão humana</strong> — tudo pensado para respeitar o ritmo, as necessidades sensoriais e a autonomia de cada pessoa.</p>
-                    <p>Nosso compromisso é com a <strong>tradução de direitos</strong>, a <strong>desconstrução do capacitismo</strong> e a <strong>celebração da diversidade neurológica</strong> como uma parte natural e valiosa da experiência humana.</p>
-                    <!--
-                         Aqui havia "+2.000 / +50 / +30", escritos à mão no
-                         HTML. Número que não dá para conferir passa impressão
-                         de exagero — e esta homepage não tem acesso ao banco,
-                         então não existe como contar de verdade sem mudar a
-                         arquitetura da página.
-
-                         Em vez de trocar por um número menor e igualmente
-                         inventado, o bloco virou o que o site de fato oferece.
-                    -->
-                    <div class="whoweare-stats" id="whoweareStats">
-                        <div class="stat-item">
-                            <span class="stat-number"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i></span>
-                            <span class="stat-label">direitos traduzidos<br>e explicados</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
-                            <span class="stat-label">artigos por tema<br>e por formato</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
-                            <span class="stat-label">comunidade com<br>fórum e grupos</span>
-                        </div>
-                    </div>
-                    <p class="whoweare-stats-nota">
-                        Todo o conteúdo é aberto: você pode ler sem criar conta.
-                    </p>
-        
-                </div>
-                <div class="whoweare-image">
-                    <!-- Foto de banco de imagens. O alt antigo dizia
-                         "Equipe Amor NeuroDivergente", o que faz uma
-                         imagem genérica parecer o time real do projeto.
-                         Descrito pelo que realmente é. -->
-                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=500&fit=crop"
-                         alt="Pessoas conversando em grupo, representando a comunidade do site"
-                         loading="lazy">
-                </div>
-            </div>
-        </section>
-
+        <!-- Seção institucional combinada com a Missão acima. -->
         <!-- =============================================
              BANNER DA COMUNIDADE — temporariamente fora
 
@@ -866,6 +675,38 @@
              O banner definitivo vai juntar os dois assuntos num só
              bloco, só com os textos por cima da arte.
              ============================================= -->
+
+        <section class="mission-section">
+            <div class="mission-container">
+                <div class="mission-image foto-forma">
+                    <img class="foto-forma__foto" src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=600&h=500&fit=crop" alt="Pessoas conversando em ambiente acolhedor" loading="lazy">
+                    <span class="foto-forma__losango foto-forma__losango--a" aria-hidden="true"></span>
+                    <span class="foto-forma__losango foto-forma__losango--b" aria-hidden="true"></span>
+                    <span class="foto-forma__losango foto-forma__losango--c" aria-hidden="true"></span>
+                </div>
+                <div class="mission-content">
+                    <span class="section-badge"><i class="fa-solid fa-heart"></i> Nossa Missão</span>
+                    <h2>NINGUÉM PRECISA SE SENTIR SOZINHO.</h2>
+                    <p>Pessoas neurodivergentes têm duas a três vezes mais chances de enfrentar desafios de saúde mental. Mas o problema não é a neurodivergência — são a falta de informação, o capacitismo e o isolamento que a sociedade impõe.</p>
+                    <p>Criamos este espaço para que, juntos, possamos construir uma rede de apoio acessível, traduzir o conhecimento acadêmico em informações úteis e celebrar a diversidade neurológica como o que ela é: uma parte natural da experiência humana.</p>
+                    <div class="whoweare-stats" id="whoweareStats">
+                        <div class="stat-item">
+                            <span class="stat-number"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i></span>
+                            <span class="stat-label">direitos traduzidos<br>e explicados</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
+                            <span class="stat-label">artigos por tema<br>e por formato</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
+                            <span class="stat-label">comunidade com<br>fórum e grupos</span>
+                        </div>
+                    </div>
+                    <p class="whoweare-stats-nota">Todo o conteúdo é aberto: você pode ler sem criar conta.</p>
+                </div>
+            </div>
+        </section>
 
         <!-- =============================================
              BANNER DA ACOLHERIA — Lia
