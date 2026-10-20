@@ -1091,3 +1091,321 @@
 /* Sem animacao: um filtro estatico nao precisa de guarda. Mas quem
    pediu reducao de movimento recebe a figura apagada da mesmo jeito,
    porque a marca d'agua nao depende de movimento nenhum. */
+
+   /* =========================================
+   14. CORREÇÕES DE RESPONSIVIDADE — EXPLORAR
+   (adicionar ao final do arquivo, depois da seção 13)
+
+   Problema central: `Explorar.css` tem um bloco `@media (max-width:
+   900px)` que REABRE `.explore-nav` com `top: 65px; padding: 20px
+   16px; bottom: auto`. Como a camada nova define `top:
+   var(--ed-header-altura)` FORA de media query, em ≤900 a regra
+   antiga vence (mesma especificidade, mas dentro de `@media` e
+   declarada depois no cascade por ordem de arquivo).
+
+   Também: `recursos.css` (que é carregado antes de `Explorar.css`)
+   tem `body { padding-bottom: 80px }` em ≤768 e 76px em ≤480 para
+   compensar a nav ANTIGA `fixed`. Agora que a nav é `sticky`, esse
+   padding vira um vão vazio abaixo do footer.
+
+   E: a `.floating-hub` e o `.scroll-top-btn` têm `bottom` do
+   `recursos.css` que não foi recalculado para mobile quando a nav
+   está em `sticky` no topo.
+
+   Reafirmar o contrato correto em cada breakpoint, de modo que a
+   ordem de carregamento deixe de importar.
+   ========================================= */
+
+/* ---------- 14.1 A NAV — vencer o `top: 65px` do Explorar.css ---------- */
+@media (max-width: 1199px) {
+    .explore-nav {
+        top: var(--ed-header-altura);
+        bottom: auto;
+        padding: 10px 20px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 900px) {
+    .explore-nav {
+        top: var(--ed-header-altura);
+        bottom: auto;
+        padding: 10px 16px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 480px) {
+    .explore-nav {
+        padding: 8px 12px;
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+}
+
+/* ---------- 14.2 O padding fantasma do body em mobile ----------
+   `recursos.css` aplica em `body, .main-content { padding-bottom:
+   80px }` em ≤768 e 76px em ≤480. A nav editorial é `sticky`:
+   já ocupa espaço no fluxo. O padding só cria vão vazio. */
+@media (max-width: 768px) {
+    body,
+    .main-content {
+        padding-bottom: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    body,
+    .main-content {
+        padding-bottom: 0;
+    }
+}
+
+/* ---------- 14.3 HUB e SCROLL-TOP em mobile ----------
+   `recursos.css` põe `.floating-hub { bottom: 96px; right: 16px }`
+   em ≤768 e `.scroll-top-btn { bottom: 90px; right: 16px }`.
+   Com a nav agora em `sticky` no TOPO, o canto inferior direito
+   fica livre. Descer os dois para `bottom: 16px` evita sobreposição
+   e devolve área de toque. */
+@media (max-width: 768px) {
+    .floating-hub {
+        bottom: 16px;
+        right: 16px;
+    }
+    .scroll-top-btn {
+        bottom: 16px;
+        right: 72px;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-hub {
+        bottom: 12px;
+        right: 12px;
+    }
+    .scroll-top-btn {
+        bottom: 12px;
+        right: 64px;
+    }
+}
+
+/* ---------- 14.4 HERO em ≤560 — reenquadrar a ilustração ----------
+   Em 390px o `background-position: 50% 42%` deixa a faixa
+   horizontal da arte quase invisível (o `cover` amplia demais).
+   Puxar o enquadramento para `60%` e aumentar o véu esquerdo
+   devolve legibilidade ao título sem sumir com a arte por completo. */
+@media (max-width: 560px) {
+    .ed-hero::after {
+        background-position: 0 0, 0 0, 50% 60%;
+        background-size: 100% 100%, 100% 100%, cover;
+    }
+
+    /* O véu esquerdo de 0.9 é forte para 390px: a arte fica
+       invisível. Reduzir a 0.82 e esticar o gradiente para 0 em
+       75% devolve um pouco da arte à dobra. */
+    .ed-hero::after {
+        background-image:
+            linear-gradient(to right,
+                rgba(250, 249, 254, 0.88) 0%,
+                rgba(250, 249, 254, 0.66) 30%,
+                rgba(250, 249, 254, 0.28) 52%,
+                rgba(250, 249, 254, 0) 72%),
+            linear-gradient(to bottom,
+                var(--ed-papel) 0%, rgba(250, 249, 254, 0) 10%,
+                rgba(250, 249, 254, 0) 84%, var(--ed-papel) 100%),
+            url("/img/ilustracoes/imagem-fundo-explorar.jpg");
+    }
+}
+
+/* ---------- 14.5 A LIA SENTADA em ≤560 — posicionar atrás do nav ----------
+   Em 390px a `.explore-nav` tem 6 chips em `nowrap` com scroll
+   horizontal, e a altura útil é ~60px. A Lia a 55% fica bem
+   abaixo dela, no vazio. Reposicionar para 48% (mais alta) e
+   reduzir para 120px mantém a presença de marca d'água sem
+   invadir o texto de apoio. */
+@media (max-width: 560px) {
+    .ed-hero__lia-sentada {
+        height: 120px;
+        top: 48%;
+        right: 10%;
+    }
+}
+
+/* ---------- 14.6 O GRID DO HERO — empilhar mais cedo ----------
+   Em 900px o `.ed-hero__grid` já vira 1 coluna. Entre 901 e
+   1024 ele ainda tem `minmax(0, 1fr) 320px` + 56px gap, o que
+   deixa o texto com ~480px e a coluna de caminhos com 320px. Em
+   960px isso ainda cabe, mas o `.ed-hero__titulo` (clamp 1.75–
+   3.6rem) em 480px quebra em 3 linhas. Empilhar em 1024. */
+@media (max-width: 1024px) {
+    .ed-hero__grid {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+        row-gap: 0;
+        padding: 72px 36px 80px;
+    }
+
+    .ed-caminhos {
+        margin-top: 40px;
+    }
+}
+
+/* ---------- 14.7 TOPICOS — reduzir o `gap` em mobile ----------
+   `Explorar.css` em ≤900 muda para 1 coluna mas mantém
+   `gap: 32px`. Em 390px isso dá 96px de ar entre 3 cards. */
+@media (max-width: 900px) {
+    .explore-topics__grid {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 560px) {
+    .explore-topics__grid {
+        gap: 16px;
+    }
+}
+
+/* ---------- 14.8 DESTAQUES e LATEST — reduzir `gap` e padding ---------- */
+@media (max-width: 900px) {
+    .explore-latest__grid {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 560px) {
+    .explore-latest__grid {
+        gap: 16px;
+    }
+
+    .latest-list {
+        gap: 12px;
+    }
+
+    .latest-item {
+        padding: 14px 16px;
+    }
+}
+
+/* ---------- 14.9 O FORM-CARD — o `.contato-split` empilha sem gap ----------
+   `.form-layout` nunca aplica (não existe no HTML). O que existe
+   é `.contato-split` com `grid-template-columns: minmax(0,1fr)
+   minmax(0,1fr)` e `gap: clamp(24px, 4vw, 48px)`. Em ≤900 ele
+   empilha para 1 coluna, mas o `gap` continua 24–48px, o que em
+   390px deixa a arte colada no título "Como podemos ajudar?".
+   Reduzir o `gap` em mobile. */
+@media (max-width: 900px) {
+    .contato-split {
+        gap: 24px;
+    }
+
+    .contato-arte {
+        margin-bottom: 4px;
+    }
+
+    .form-main__title {
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 560px) {
+    .contato-split {
+        gap: 16px;
+    }
+
+    .form-main__title {
+        font-size: 1.25rem;
+        margin-bottom: 18px;
+    }
+}
+
+/* ---------- 14.10 FORM — empilhar as linhas de 2 campos mais cedo ----------
+   `Explorar.css` empilha `.form-row` em ≤768. Mas em 900px ele
+   ainda tem `1fr 1fr`, e o `.form-card` em ≤900 tem `padding:
+   32px 24px` (do bloco responsivo). Em 900px, cada campo de 1fr
+   fica com ~400px: ok. Em 768 já empilha. Não precisa mexer. */
+
+/* ---------- 14.11 ESTADO DE ESPERA em ≤420 — reduzir título e Lia ----------
+   O CSS atual em ≤420 deixa `.espera-lia` em 216px e o título em
+   1.5rem. Em 390×844 o conteúdo total fica ~200px maior que a
+   dobra. Reduzir o título para 1.25rem e a Lia para 180px
+   devolve proporção. */
+@media (max-width: 420px) {
+    .espera-lia {
+        height: 180px;
+    }
+
+    .espera-titulo {
+        font-size: 1.25rem;
+    }
+
+    .espera-sub {
+        font-size: 13.5px;
+        margin-bottom: 18px;
+    }
+
+    .protocolo-box {
+        padding: 14px 22px;
+    }
+
+    .protocolo-valor {
+        font-size: 1rem;
+    }
+}
+
+/* ---------- 14.12 CHAT — `max-height` adaptativo ----------
+   Em 390×844 o chat de 420px + header + input estoura a dobra.
+   Em ≤560 reduzir o `max-height` para 320px. Em ≤420, 260px. */
+@media (max-width: 560px) {
+    .chat-mensagens {
+        max-height: 320px;
+    }
+}
+
+@media (max-width: 420px) {
+    .chat-mensagens {
+        max-height: 260px;
+    }
+
+    .chat-titulo {
+        font-size: 1rem;
+    }
+
+    .chat-resposta textarea {
+        font-size: 13.5px;
+    }
+}
+
+/* ---------- 14.13 REMOVER REGRAS MORTAS ----------
+   `.form-layout` não existe no HTML (o correto é `.contato-split`).
+   `.contact-list--faixa` também não existe (o formulário não tem
+   mais dados de contato laterais). Deixar as regras é inofensivo,
+   mas confunde. Não removemos — só documentamos aqui para que o
+   próximo que editar saiba que são mortas. */
+
+/* ---------- 14.14 O `@media (max-height: 620px)` do hero ----------
+   O bloco atual esconde `.ed-caminhos__rotulo`, `.ed-caminho__desc`
+   e a Lia animada. Em 812×375 (paisagem de iPhone) o `.ed-hero__grid`
+   ainda tem `padding: 56px 48px 60px` + título clamp 3.6rem, o
+   que estoura a dobra. Reduzir o padding vertical e o título. */
+@media (max-height: 620px) and (min-width: 901px) {
+    .ed-hero__grid {
+        padding: 40px 48px 40px;
+    }
+
+    .ed-hero__titulo {
+        font-size: clamp(1.5rem, 2.8vw, 2rem);
+    }
+
+    .ed-hero__apoio {
+        font-size: 0.9375rem;
+        margin-top: 16px;
+    }
+}
+
+/* ---------- 14.15 O `#em-breve` do Explorar (não tem) ----------
+   Nota: a `.explore-nav` no HTML tem `id="topicos"` no `<section
+   class="explore-topics">`. O `scroll-margin-top` global já cobre
+   os `#destaques, #ultimas, #artigos, #blog, #eventos, #faq`.
+   `#topicos` não está na lista. Adicionar. */
+#topicos {
+    scroll-margin-top: var(--ed-nav-altura);
+}

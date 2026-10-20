@@ -91,7 +91,14 @@
 
    A correcao e a mesma do Explorar: `sticky` em vez de `fixed`.
    Sem posicao fixa a barra ocupa o espaco dela no fluxo, o que
-   significa que o conteudo nunca fica por baixo. */
+   significa que o conteudo nunca fica por baixo.
+
+   NOTA DE RESPONSIVIDADE: `recursos.css` reabre `.recursos-nav`
+   em ≤900px com `top: 65px; padding: 20px 16px` e um `bottom:
+   auto` isolado, e em ≤480px com outro `padding`. Como esta folha
+   carrega depois, a reafirmacao do contrato sticky esta replicada
+   em cada breakpoint (secao 6) para nao depender da ordem de
+   carregamento em builds futuros. */
 
 .recursos-nav {
     position: sticky;
@@ -225,8 +232,8 @@
 /* ---------- `─── ✦`: a marca da editorial.
 
    O losango verde e de Eventos; a estrela amarela e de Explorar. Aqui
-   a marca e uma estrela em POSICAO DIFERENTE (depois da linha, e
-   nao antes) e em tom neutro. Mesmo elemento, outra leitura. */
+   a marca e uma estrela em POSICAO DIFERENTE (depois da linha, e nao
+   antes) e em tom neutro. Mesmo elemento, outra leitura. */
 /* `aria-hidden="true"` esta no HTML. O `pointer-events: none` vem
    aqui: a marca e um elemento decorativo e nao deve capturar o
    clique de quem esta selecionando o titulo logo abaixo. */
@@ -495,7 +502,13 @@
     color: var(--re-roxo);
 }
 
-/* ---------- O DESTAQUE: cartao 1, coluna 1, linhas 1-3. */
+/* ---------- O DESTAQUE: cartao 1, coluna 1, linhas 1-2.
+
+   `grid-row: 1 / span 2` e nao `span 3`. Medido: com `span 3` e
+   so 2 `.re-estante__linha` no HTML, o grid cria uma TERCEIRA linha
+   implicita vazia — o destaque esticava 3 linhas e a coluna da
+   direita terminava na segunda, deixando um buraco visivel embaixo
+   do segundo artigo. */
 
 /* O chrome de card SAI. Sem isto o destaque continuava sendo uma
    caixa branca com borda e raio de 12px — a ".estante" era so
@@ -514,7 +527,8 @@
 
 .re-estante__destaque {
     grid-column: 1;
-    grid-row: 1 / span 3;
+    grid-row: 1 / span 2;
+    align-self: stretch;
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -824,11 +838,21 @@
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* O `align-self` e obrigatorio. Medido: o botao "Ler artigo" ficou
-   com 515px de largura — o `.equipe-featured__body` e um container
-   flex com `align-items: stretch`, entao o `inline-flex` do botao era
-   esticado pela linha. Numa coluna editorial o botao tem o tamanho do
-   proprio texto. */
+/* O `align-self` so funciona se o pai for flex. Em `recursos.css`
+   o `.equipe-featured__body` NAO e flex — o flex esta no
+   `.equipe-featured` (o `<article>`), nao no body. Medido: o
+   botao "Ler artigo" ficava com largura natural mas o
+   `margin-top: auto` do link nao aplicava e o gap de 14px do
+   `recursos.css` sumia. Forcar o body a flex resolve os dois e
+   deixa o botao alinhado a esquerda. */
+.re-coluna__principal .equipe-featured__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0;
+}
+
 .re-coluna__principal .recursos-btn {
     align-self: flex-start;
 }
@@ -914,6 +938,10 @@
     padding: 20px 0;
     text-decoration: none;
     transition: padding-left 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.re-coluna__apoio .topic-card:last-child {
+    border-bottom: 0;
 }
 
 /* A imagem do `topic-card` e a unica foto que sobra na pagina que
@@ -1245,97 +1273,364 @@
     white-space: nowrap;
 }
 
-#em-breve .breve-card__badge {
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--re-suave);
-    white-space: nowrap;
-}
-
 /* =========================================
    6. RESPONSIVO
+   =========================================
+
+   IMPORTANTE — o legado de `recursos.css`.
+
+   `recursos.css` reabre `.recursos-nav` em ≤900px com
+   `top: 65px; padding: 20px 16px` e um `bottom: auto` isolado, e em
+   ≤480px com outro `padding`. Ele tambem aplica
+   `body, .main-content { padding-bottom: 80px }` em ≤768 e 76px em
+   ≤480, para compensar a nav ANTIGA `fixed: bottom: 0`. Como a nav
+   agora e `sticky` (ocupa espaco no fluxo), esse padding so cria um
+   vao vazio no rodape.
+
+   Cada breakpoint abaixo reafirma o contrato sticky e zera o
+   padding fantasma, de modo que a ordem de carregamento deixe de
+   importar.
    ========================================= */
 
+/* ---------- 6.1 Tablet alto ---------- */
 @media (max-width: 1199px) {
-    .re-estante__grid { gap: 0 44px; }
-    .re-coluna__container { column-gap: 48px; grid-template-columns: minmax(0, 1fr) 300px; }
+    .recursos-nav {
+        top: var(--re-header-altura);
+        bottom: auto;
+        padding: 12px 20px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .re-estante__grid {
+        gap: 0 40px;
+    }
+
+    .re-coluna__container {
+        column-gap: 48px;
+        grid-template-columns: minmax(0, 1fr) 300px;
+    }
 }
 
+/* ---------- 6.2 Tablet — empilha estante e coluna ----------
+
+   Entre 901 e 1024 a estante de 2 colunas (1fr + 1fr + 40px gap)
+   deixa a coluna da direita com ~330px em 901px de tela, e as
+   linhas (148px de mídia + 22px gap) ficam com ~160px de texto:
+   o título de 1.0625rem quebra em 3 linhas.
+
+   A coluna editorial sofre o mesmo: 1fr + 300px + 48px gap deixa
+   a coluna principal com ~500px em 901, e o `<h3>` clamp(1.5rem,
+   2.6vw, 2rem) com excerpt de 1.0625rem começa a quebrar em 3
+   linhas. Empilha os dois em 1024. */
+@media (max-width: 1024px) {
+    .re-estante__grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
+
+    .re-estante__destaque {
+        grid-column: 1;
+        grid-row: auto;
+        padding-right: 0;
+        margin-bottom: 8px;
+    }
+
+    .re-estante__linha {
+        grid-column: 1;
+    }
+
+    .re-coluna__container {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 40px;
+    }
+
+    .re-coluna__apoio {
+        grid-column: 1;
+    }
+
+    .re-coluna__apoio .topic-card:last-child {
+        border-bottom: 0;
+    }
+}
+
+/* ---------- 6.3 Tablet baixo ---------- */
 @media (max-width: 900px) {
-    .re-hero { padding: 60px 32px 52px; }
-    .re-indice__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
-    .re-estante__linha { grid-template-columns: 124px minmax(0, 1fr); column-gap: 18px; }
-    .re-estante__linha .externo-card__media { width: 124px; }
+    .recursos-nav {
+        top: var(--re-header-altura);
+        bottom: auto;
+        padding: 10px 16px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
 
-    /* A coluna do destaque abre: o destaque vira bloco e os dois
-       artigos viram linhas abaixo, dentro da coluna larga. */
-    .re-estante__grid { grid-template-columns: minmax(0, 1fr); }
-    .re-estante__destaque { grid-column: 1; grid-row: auto; padding-right: 0; }
-    .re-estante__linha { grid-column: 1; }
+    .recursos-nav__container {
+        justify-content: flex-start;
+        padding: 2px 0;
+    }
 
-    .re-coluna__container { grid-template-columns: minmax(0, 1fr); row-gap: 44px; }
-    .re-indice-temas__grid { column-gap: 40px; }
+    .recursos-nav__chip {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .re-hero {
+        padding: 60px 32px 52px;
+    }
+
+    .re-indice__grade {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 28px;
+    }
+
+    .re-estante__linha {
+        grid-template-columns: 124px minmax(0, 1fr);
+        column-gap: 18px;
+    }
+
+    .re-estante__linha .externo-card__media {
+        width: 124px;
+    }
+
+    .re-indice-temas__grid {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+    }
 
     #artigos-externos.re-estante,
     #artigos-equipe.re-coluna,
     #categorias.re-indice-temas,
-    #em-breve.re-corredor { padding-left: 32px; padding-right: 32px; }
+    #em-breve.re-corredor {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
 }
 
+/* ---------- 6.4 Zera o padding fantasma da nav antiga ----------
+
+   `recursos.css` aplica `padding-bottom: 80px` em ≤768 e 76px em
+   ≤480 em `body, .main-content`. A nav editorial e `sticky` e ja
+   ocupa o espaco dela no fluxo: o padding vira um vao vazio de
+   80px abaixo do footer. */
+@media (max-width: 768px) {
+    body,
+    .main-content {
+        padding-bottom: 0;
+    }
+}
+
+/* ---------- 6.5 Telefone ---------- */
 @media (max-width: 560px) {
-    .re-hero { padding: 44px 22px 44px; }
-    .re-hero__marca { margin-bottom: 22px; }
-    .re-hero__linha { width: 38px; }
+    .re-hero {
+        padding: 44px 22px 44px;
+    }
 
-    /* O indice vira uma coluna so — 4 itens em 2 colunas em 390px
-       deixaria cada item com menos de 160px, e o nome do tema nao
+    .re-hero__marca {
+        margin-bottom: 22px;
+    }
+
+    .re-hero__linha {
+        width: 38px;
+    }
+
+    /* O índice vira uma coluna — 4 itens em 2 colunas em 390px
+       deixaria cada item com menos de 160px, e o nome do tema não
        caberia. */
-    .re-indice__grade { grid-template-columns: minmax(0, 1fr); gap: 0; }
-    .re-indice { margin-top: 40px; }
+    .re-indice {
+        margin-top: 40px;
+        padding-top: 20px;
+    }
 
-    /* A estante vira sequencia: destaque, depois linha, depois
-       linha. A ordem do DOM ja e essa (o destaque e o primeiro
-       cartao), entao nenhuma reordenacao e necessaria. */
+    .re-indice__grade {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
+
+    .re-indice__rotulo {
+        font-size: 10px;
+        margin-bottom: 12px;
+    }
+
+    .re-indice__item {
+        padding: 10px 0;
+    }
+
+    /* A estante vira sequência: destaque, depois linha, depois
+       linha. A ordem do DOM já é essa (o destaque é o primeiro
+       cartão), então nenhuma reordenação é necessária. */
     .re-estante__linha {
         grid-template-columns: 104px minmax(0, 1fr);
         column-gap: 16px;
         padding: 18px 0;
     }
-    .re-estante__linha .externo-card__media { width: 104px; }
-    .re-estante__destaque .externo-card__media { aspect-ratio: 16 / 10; }
 
-    .re-indice-temas__grid { grid-template-columns: minmax(0, 1fr); }
+    .re-estante__linha .externo-card__media {
+        width: 104px;
+    }
 
-    /* Em 390px o titulo e o link nao cabem na mesma linha: "Altas
-       Habilidades e Superdotacao" sozinho ja toma ~250px. O link
-       desce para a linha de baixo, alinhado com o titulo. */
+    .re-estante__destaque .externo-card__media {
+        aspect-ratio: 16 / 10;
+    }
+
+    /* Em 390px o título e o link não cabem na mesma linha: "Altas
+       Habilidades e Superdotação" sozinho já toma ~250px. O link
+       desce para a linha de baixo, alinhado com o título. */
     .re-indice-temas__grid .categoria-card {
         grid-template-columns: minmax(0, 1fr);
         row-gap: 4px;
     }
+
     .re-indice-temas__grid .externo-card__link {
         grid-column: 1;
         grid-row: 3;
         justify-self: start;
     }
+
     .re-indice-temas__grid p {
         grid-row: 2;
         margin-top: 6px;
     }
 
+    /* O corredor em mobile — 3 colunas em 390px deixam ~180px para
+       título + descrição, e "Síndrome de Tourette" quebra em 3
+       linhas. O badge "Em breve" é redundante dentro de uma seção
+       chamada "Novos temas chegando" e ocupa a coluna 3; aqui ele
+       desce para baixo do texto, alinhado à esquerda, em vez de
+       competir por largura. */
+    #em-breve .breve-card {
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: 14px;
+        row-gap: 2px;
+        padding: 16px 0;
+    }
+
+    #em-breve .breve-card__icon {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    #em-breve .breve-card h4 {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    #em-breve .breve-card p {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    #em-breve .breve-card__badge {
+        grid-column: 2;
+        grid-row: 3;
+        justify-self: start;
+        margin-top: 4px;
+    }
+
+    .re-coluna__principal .equipe-featured__media {
+        aspect-ratio: 16 / 10;
+    }
+
     #artigos-externos.re-estante,
     #artigos-equipe.re-coluna,
     #categorias.re-indice-temas,
-    #em-breve.re-corredor { padding-left: 22px; padding-right: 22px; }
+    #em-breve.re-corredor {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
 
-    .re-coluna__principal .equipe-featured__media { aspect-ratio: 16 / 10; }
+    /* A newsletter com input + botão lado a lado em 390px fica
+       apertada; empilha e garante que o botão ocupe a largura
+       toda. */
+    .recursos-newsletter__form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .recursos-newsletter__form input,
+    .recursos-newsletter__form button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .recursos-newsletter__form button {
+        justify-content: center;
+    }
+
+    /* Os placeholders de banner têm altura fixa em
+       `espacos-banner.css`; em 390px um bloco de 400px fica
+       desproporcional. */
+    .espaco-banner--grande,
+    .espaco-banner--largo {
+        min-height: 180px;
+        height: auto;
+    }
+}
+
+/* ---------- 6.6 Telefone estreito — zera padding fantasma ---------- */
+@media (max-width: 480px) {
+    .recursos-nav {
+        padding: 8px 12px;
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+
+    .recursos-nav__chip {
+        padding: 7px 14px;
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    body,
+    .main-content {
+        padding-bottom: 0;
+    }
+
+    /* A linha da estante com mídia de 104px e gap de 16px deixa
+       ~200px para o texto em 390px: o título de 1.0625rem quebra
+       em 2–3 linhas e o "Ler no original" fica órfão. Reduz a
+       mídia para 88px e o título para 1rem. */
+    .re-estante__linha {
+        grid-template-columns: 88px minmax(0, 1fr);
+        column-gap: 14px;
+        padding: 16px 0;
+    }
+
+    .re-estante__linha .externo-card__media {
+        width: 88px;
+    }
+
+    .re-estante__linha h3 {
+        font-size: 1rem;
+    }
+
+    .re-estante__linha p {
+        font-size: 0.8125rem;
+    }
+}
+
+/* ---------- 6.7 Paisagem curta ----------
+
+   Em 812x375 (paisagem de iPhone) o hero de 92 + 88 de padding
+   empurra o índice quase inteiro para fora da dobra. Reduz o
+   padding vertical sem mexer no horizontal. */
+@media (max-height: 700px) and (min-width: 561px) {
+    .re-hero {
+        padding-top: 56px;
+        padding-bottom: 48px;
+    }
+
+    .re-indice {
+        margin-top: 36px;
+        padding-top: 20px;
+    }
 }
 
 @media (max-height: 620px) and (min-width: 901px) {
-    .re-hero { padding: 48px 48px 44px; }
-    .re-hero__marca { margin-bottom: 18px; }
+    .re-hero {
+        padding: 48px 48px 44px;
+    }
+
+    .re-hero__marca {
+        margin-bottom: 18px;
+    }
 }
 
 /* =========================================
@@ -1382,12 +1677,28 @@
        estes 6 casos sao justamente os que ficaram de fora do
        `@media (hover: hover)` porque so interessam quando ha
        ponteiro de verdade. */
-    .re-coluna__apoio .topic-card:hover { padding-left: 0; }
-    .re-estante__linha:hover { padding-left: 0; }
-    .re-indice__item:hover { padding-left: 0; }
-    .re-indice-temas__grid .categoria-card:hover { padding-left: 0; }
-    .re-coluna__apoio .topic-card:hover .topic-card__cta { gap: 6px; }
+    .re-coluna__apoio .topic-card:hover {
+        padding-left: 0;
+    }
+
+    .re-estante__linha:hover {
+        padding-left: 0;
+    }
+
+    .re-indice__item:hover {
+        padding-left: 0;
+    }
+
+    .re-indice-temas__grid .categoria-card:hover {
+        padding-left: 0;
+    }
+
+    .re-coluna__apoio .topic-card:hover .topic-card__cta {
+        gap: 6px;
+    }
 
     /* E o corredor tambem. */
-    #em-breve .breve-card:hover { border-bottom-color: var(--re-borda); }
+    #em-breve .breve-card:hover {
+        border-bottom-color: var(--re-borda);
+    }
 }
