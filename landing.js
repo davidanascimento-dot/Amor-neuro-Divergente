@@ -13,7 +13,10 @@
     updateNav();
     window.addEventListener('scroll', updateNav, { passive: true });
 
-    menuToggle?.addEventListener('click', () => {
+    menuToggle?.addEventListener('click', (event) => {
+        // Sem stopPropagation o handler de document fechava o menu no
+        // mesmo clique em que o toggle abria — o menu nunca abria.
+        event.stopPropagation();
         const isOpen = navLinks?.classList.toggle('is-open');
         menuToggle.setAttribute('aria-expanded', String(Boolean(isOpen)));
         menuToggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
@@ -29,12 +32,28 @@
         });
     });
 
+    // Fecha o menu só quando o clique é FORA da navegação. Antes a
+    // condição fazia o contrário: o clique no toggle abria e o handler
+    // de document fechava no mesmo evento, e clique fora não fechava.
     document.addEventListener('click', event => {
-        if (!nav?.classList.contains('is-scrolled') && !nav?.contains(event.target)) return;
         if (!navLinks?.classList.contains('is-open')) return;
+        if (nav?.contains(event.target)) return;
         navLinks.classList.remove('is-open');
         menuToggle?.setAttribute('aria-expanded', 'false');
+        menuToggle?.setAttribute('aria-label', 'Abrar menu');
         if (menuToggle) menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Escape fecha o menu aberto e devolve o foco ao botão (teclado).
+    document.addEventListener('keydown', event => {
+        if (event.key !== 'Escape' || !navLinks?.classList.contains('is-open')) return;
+        navLinks.classList.remove('is-open');
+        menuToggle?.setAttribute('aria-expanded', 'false');
+        menuToggle?.setAttribute('aria-label', 'Abrar menu');
+        if (menuToggle) {
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            menuToggle.focus();
+        }
     });
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

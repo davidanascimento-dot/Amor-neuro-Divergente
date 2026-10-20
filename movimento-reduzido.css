@@ -16,7 +16,9 @@
     z-index: 9999;
     padding: 12px 20px;
     border-radius: 0 0 10px 10px;
-    background: var(--pf-verified, #1d9bf0);
+    /* #1d9bf0 com texto branco dava só 3.0:1 e derrubava o Lighthouse
+       da landing. #0b6dc9 mantém o azul e sobe para 4.83:1. */
+    background: var(--pf-verified, #0b6dc9);
     color: #ffffff;
     font-family: 'Inter', sans-serif;
     font-size: 15px;
