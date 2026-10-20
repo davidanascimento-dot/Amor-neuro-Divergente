@@ -3694,14 +3694,12 @@ function addHelpRequestLabel() {
     workspace.insertAdjacentHTML('beforeend', html);
 }
 
-// 4. REGRAS DA COMUNIDADE COM ÍCONES
+// 4. REGRAS DA COMUNIDADE — EXIBIDO ABAIXO DO BANNER (NÃO EM MODAL)
 window.showCommunityRules = function() {
-    var overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
-    
-    var modal = document.createElement('div');
-    modal.style.cssText = 'background:var(--bg-card,#fff);border-radius:20px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto;padding:24px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:fadeIn 0.25s ease;';
-    
+    var container = document.getElementById('communityRules');
+    var list = document.getElementById('communityRulesList');
+    if (!container || !list) return;
+
     var rules = [
         ['fa-handshake', 'Respeite as pessoas', 'Trate todos com respeito e empatia. Cada pessoa tem sua própria jornada.'],
         ['fa-ban', 'Não pratique bullying', 'Comportamentos agressivos, ofensivos ou discriminatórios não são tolerados.'],
@@ -3711,29 +3709,26 @@ window.showCommunityRules = function() {
         ['fa-filter', 'Conteúdo apropriado', 'Mantenha o conteúdo adequado para todas as idades.'],
         ['fa-bullseye', 'Mantenha o foco', 'Discussões construtivas e relacionadas à neurodiversidade.']
     ];
-    
+
     var rulesHtml = '';
     rules.forEach(function(r) {
-        rulesHtml += '<div style="padding:12px 14px;background:var(--bg-secondary,#f7f7f9);border-radius:10px;border-left:4px solid #7c3aed;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;">';
-        rulesHtml += '<i class="fa-solid ' + r[0] + '" style="color:#7c3aed;font-size:18px;margin-top:2px;"></i>';
-        rulesHtml += '<div><strong style="font-size:14px;color:var(--text-primary,#1e293b);">' + r[1] + '</strong>';
-        rulesHtml += '<p style="font-size:13px;color:var(--text-secondary,#64748b);margin:4px 0 0 0;">' + r[2] + '</p></div>';
-        rulesHtml += '</div>';
+        rulesHtml += '<div class="community-rule-item">' +
+            '<i class="fa-solid ' + r[0] + '"></i>' +
+            '<div>' +
+            '<strong>' + r[1] + '</strong>' +
+            '<p>' + r[2] + '</p>' +
+            '</div>' +
+            '</div>';
     });
-    
-    modal.innerHTML = 
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
-        '<h2 style="font-size:20px;font-weight:700;color:var(--text-primary,#1e293b);"><i class="fa-solid fa-shield-halved" style="color:#7c3aed;"></i> Regras da Comunidade</h2>' +
-        '<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="background:none;border:none;font-size:22px;color:var(--text-muted,#94a3b8);cursor:pointer;padding:4px 8px;">✕</button>' +
-        '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:8px;">' + rulesHtml + '</div>' +
-       '<button onclick="this.closest(\'div\').parentElement.parentElement.remove()" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:6px;background:#1a1a2e;color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:Inter,sans-serif;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.9\'" onmouseout="this.style.opacity=\'1\'">Entendi e concordo</button>';
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    
-    overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) overlay.remove();
-    });
+
+    list.innerHTML = rulesHtml;
+    container.hidden = false;
+
+    // Foca no título para acessibilidade
+    var title = container.querySelector('.community-rules-title');
+    if (title) {
+        title.focus();
+    }
 };
 
 // 4.1 BANNER DE BOAS-VINDAS

@@ -693,6 +693,75 @@ body {
     display: none;
 }
 
+/* ==========================================================================
+   REGRAS DA COMUNIDADE — abaixo do banner, não em modal
+   ========================================================================== */
+.community-rules {
+    margin: 24px 0 0;
+    padding: 0;
+    max-width: 900px;
+}
+.community-rules[hidden] {
+    display: none;
+}
+.community-rules-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.community-rules-header i {
+    font-size: 18px;
+    color: #7c3aed;
+}
+.community-rules-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary, #1e293b);
+    margin: 0;
+}
+.community-rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.community-rule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg-secondary, #f7f7f9);
+    border-left: 4px solid #7c3aed;
+    border-radius: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.community-rule-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+.community-rule-item i {
+    font-size: 18px;
+    color: #7c3aed;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+.community-rule-item div {
+    flex: 1;
+}
+.community-rule-item strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text-primary, #1e293b);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.community-rule-item p {
+    font-size: 13px;
+    color: var(--text-secondary, #64748b);
+    margin: 0;
+    line-height: 1.5;
+}
+
 /* ---- Responsivo ------------------------------------------------
    O título encolhe por clamp, sem height fixo. A lista de áreas cai
    para uma coluna antes de ficar espremida. */
@@ -3842,6 +3911,21 @@ body.a11y-dark-mode .welcome-area {
 body.a11y-dark-mode .welcome-area:hover {
     background: var(--cm-surface-green);
     border-color: var(--cm-green);
+}
+
+body.a11y-dark-mode .community-rules-item,
+body.a11y-dark-mode .community-rule-item {
+    background: #1e2a38;
+    border-left-color: #a78bfa;
+}
+body.a11y-dark-mode .community-rule-item strong {
+    color: #f3f4f6;
+}
+body.a11y-dark-mode .community-rule-item p {
+    color: #b8c4d0;
+}
+body.a11y-dark-mode .community-rule-item i {
+    color: #c4b5fd;
 }
 
 body.a11y-dark-mode .rules-banner-btn-boas-vindas {
