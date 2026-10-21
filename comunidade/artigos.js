@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    ARTIGOS.JS — a área "Artigos" da Comunidade
    --------------------------------------------------------------------------
    A tela que reúne o que a comunidade escreveu: a listagem, os filtros e os
@@ -20,7 +20,6 @@
     }
 
     const EL = {
-        busca:      document.getElementById('artigoBusca'),
         filtroSecao: document.getElementById('artigoFiltroSecao'),
         filtroTipo:  document.getElementById('artigoFiltroTipo'),
         carregando: document.getElementById('artigoCarregando'),
@@ -32,7 +31,7 @@
 
     const ESTADO = {
         artigos: [],
-        filtros: { secao: '', tipo: '', busca: '' }
+        filtros: { secao: '', tipo: '' }
     };
 
     /* =====================================================================
@@ -92,25 +91,11 @@
        ===================================================================== */
 
     function filtrar() {
-        const { secao, tipo, busca } = ESTADO.filtros;
-        const termo = busca.trim().toLowerCase();
+        const { secao, tipo } = ESTADO.filtros;
 
         return ESTADO.artigos.filter(artigo => {
             if (secao && (artigo.category || '') !== secao) return false;
             if (tipo && (artigo.kind || '') !== tipo) return false;
-
-            if (termo) {
-                const alvo = [
-                    artigo.title,
-                    artigo.subtitle,
-                    artigo.content,
-                    artigo.author_name,
-                    artigo.category,
-                    artigo.kind
-                ].filter(Boolean).join(' ').toLowerCase();
-
-                if (!alvo.includes(termo)) return false;
-            }
 
             return true;
         });
@@ -134,7 +119,7 @@
         if (EL.estado) {
             EL.estado.innerHTML = D.estadoVazio(
                 'Nenhum artigo com esses filtros',
-                'Tente outra seção, outro tipo ou limpe a busca. Se ninguém escreveu ainda, o primeiro artigo pode ser o seu.',
+                'Tente outra seção ou outro tipo. Se ninguém escreveu ainda, o primeiro artigo pode ser o seu.',
                 'Escrever o primeiro artigo',
                 '/comunidade/escrever-artigo.html'
             );
@@ -260,13 +245,6 @@
     }
 
     function ligarEventos() {
-        if (EL.busca) {
-            EL.busca.addEventListener('input', () => {
-                ESTADO.filtros.busca = EL.busca.value;
-                desenhar();
-            });
-        }
-
         if (EL.filtroSecao) {
             EL.filtroSecao.addEventListener('click', (evento) => {
                 const chip = evento.target.closest('.artigos-chip');
