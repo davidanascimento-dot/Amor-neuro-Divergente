@@ -190,6 +190,9 @@
             clearTimeout(travou);
             console.error('[artigos] Erro inesperado ao carregar:', e);
             mostrarErro('Não foi possível carregar os artigos agora. Verifique sua conexão e tente de novo.');
+        } finally {
+            // Garante que o carregando nunca fique travado na tela.
+            if (EL.carregando) EL.carregando.hidden = true;
         }
     }
 

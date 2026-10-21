@@ -518,50 +518,52 @@
             : '';
 
         card.innerHTML = `
-            <div class="art-card__cabecalho">
-                <div class="art-card__autor">
-                    <img class="art-card__avatar" src="${escapeHtml(avatar)}" alt=""
-                         onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'art-card__inicial',textContent:'${escapeHtml(inicial)}'}))">
-                    <div class="art-card__autor-dados">
-                        <span class="art-card__nome">${escapeHtml(nome)}</span>
-                        <span class="art-card__tag">${escapeHtml(secao)}</span>
+            <div class="art-card__esquerda">
+                <div class="art-card__cabecalho">
+                    <div class="art-card__autor">
+                        <img class="art-card__avatar" src="${escapeHtml(avatar)}" alt=""
+                             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'art-card__inicial',textContent:'${escapeHtml(inicial)}'}))">
+                        <div class="art-card__autor-dados">
+                            <span class="art-card__nome">${escapeHtml(nome)}</span>
+                            <span class="art-card__tag">${escapeHtml(secao)}</span>
+                        </div>
+                        <time class="art-card__data">${escapeHtml(data || '—')}</time>
                     </div>
-                    <time class="art-card__data">${escapeHtml(data || '—')}</time>
                 </div>
-                ${capa ? `<div class="art-card__capa-wrap">${capa}</div>` : ''}
+
+                <a class="art-card__link" href="${url}">
+                    <h3 class="art-card__titulo">${escapeHtml(artigo.title || 'Sem título')}</h3>
+                    ${artigo.subtitle ? `<p class="art-card__subtitulo">${escapeHtml(artigo.subtitle)}</p>` : ''}
+                    ${trecho ? `<p class="art-card__trecho">${escapeHtml(trecho)}</p>` : ''}
+                </a>
+
+                ${artigo.sensitive && artigo.warning ? `
+                <div class="art-card__aviso">
+                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                    ${escapeHtml(artigo.warning)}
+                </div>` : ''}
+
+                <footer class="art-card__acoes">
+                    ${mostrarFavorito ? `
+                    <button type="button" class="art-card__acao art-card__acao--favorito"
+                            data-acao="favoritar" aria-pressed="${favorito ? 'true' : 'false'}"
+                            title="Favoritar">
+                        <i class="fa-${favorito ? 'solid' : 'regular'} fa-heart" aria-hidden="true"></i>
+                    </button>` : ''}
+                    <button type="button" class="art-card__acao art-card__acao--compartilhar"
+                            data-acao="compartilhar" title="Compartilhar">
+                        <i class="fa-regular fa-share-from-square" aria-hidden="true"></i>
+                    </button>
+                    <span class="art-card__acao art-card__acao--repostar" title="Repostar">
+                        <i class="fa-regular fa-repeat" aria-hidden="true"></i>
+                    </span>
+                    <button type="button" class="art-card__acao art-card__acao--subir"
+                            data-acao="subir" title="Levar ao topo">
+                        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+                    </button>
+                </footer>
             </div>
-
-            <a class="art-card__link" href="${url}">
-                <h3 class="art-card__titulo">${escapeHtml(artigo.title || 'Sem título')}</h3>
-                ${artigo.subtitle ? `<p class="art-card__subtitulo">${escapeHtml(artigo.subtitle)}</p>` : ''}
-                ${trecho ? `<p class="art-card__trecho">${escapeHtml(trecho)}</p>` : ''}
-            </a>
-
-            ${artigo.sensitive && artigo.warning ? `
-            <div class="art-card__aviso">
-                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                ${escapeHtml(artigo.warning)}
-            </div>` : ''}
-
-            <footer class="art-card__acoes">
-                ${mostrarFavorito ? `
-                <button type="button" class="art-card__acao art-card__acao--favorito"
-                        data-acao="favoritar" aria-pressed="${favorito ? 'true' : 'false'}"
-                        title="Favoritar">
-                    <i class="fa-${favorito ? 'solid' : 'regular'} fa-heart" aria-hidden="true"></i>
-                </button>` : ''}
-                <button type="button" class="art-card__acao art-card__acao--compartilhar"
-                        data-acao="compartilhar" title="Compartilhar">
-                    <i class="fa-regular fa-share-from-square" aria-hidden="true"></i>
-                </button>
-                <span class="art-card__acao art-card__acao--repostar" title="Repostar">
-                    <i class="fa-regular fa-repeat" aria-hidden="true"></i>
-                </span>
-                <button type="button" class="art-card__acao art-card__acao--subir"
-                        data-acao="subir" title="Levar ao topo">
-                    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
-                </button>
-            </footer>
+            ${capa ? `<div class="art-card__capa-wrap">${capa}</div>` : ''}
         `;
 
         return card;
