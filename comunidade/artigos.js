@@ -275,17 +275,45 @@
        5. A SESSÃO
        ===================================================================== */
 
-    /* O espelho do login é gerenciado pelo auth-global.js. Aqui a gente só
-     * olha, para avisar quem está de fora e esconder o botão de escrever
-     * de quem não pode escrever. */
+    /* O espelho do login é gerenciado pelo auth-global.js, que grava
+     * userLoggedIn no localStorage de forma assíncrona (sincronizaComSupabase).
+     * Ler o localStorage logo de cara pode dar visitante falso quando o
+     * espelho ainda não foi gravado. Então a gente:
+     *   1. usa window.AuthGlobal.isLoggedIn() (a API pública do auth-global);
+     *   2. se ainda não deu true, espera um pouco e tenta de novo (até 3x);
+     *   3. como último recurso, olha o data-auth no body, que o auth-global
+     *      define após sincronizar com o Supabase. */
     function ajustarSessao() {
-        const logado = localStorage.getItem('userLoggedIn') === 'true';
+        function checar() {
+            const authGlobal = window.AuthGlobal;
+            const logado = authGlobal
+                ? authGlobal.isLoggedIn()
+                : localStorage.getItem('userLoggedIn') === 'true';
 
-        if (EL.loginAviso) EL.loginAviso.hidden = logado;
-        if (EL.btnEscrever && !logado) {
-            EL.btnEscrever.setAttribute('aria-disabled', 'true');
-            EL.btnEscrever.setAttribute('title', 'Entre para escrever um artigo');
+            if (EL.loginAviso) EL.loginAviso.hidden = logado;
+            if (EL.btnEscrever && !logado) {
+                EL.btnEscrever.setAttribute('aria-disabled', 'true');
+                EL.btnEscrever.setAttribute('title', 'Entre para escrever um artigo');
+            }
+
+            // Fallback: data-auth no body, definido pelo auth-global.js.
+            if (!logado && document.body.dataset.auth === 'member') {
+                if (EL.loginAviso) EL.loginAviso.hidden = true;
+                if (EL.btnEscrever) {
+                    EL.btnEscrever.removeAttribute('aria-disabled');
+                    EL.btnEscrever.removeAttribute('title');
+                }
+            }
+
+            // Se ainda não sabe se está logado, tenta de novo depois.
+            if (!logado && tentativas < 3) {
+                tentativas++;
+                setTimeout(checar, 400);
+            }
         }
+
+        let tentativas = 0;
+        checar();
     }
 
     /* =====================================================================
