@@ -38,6 +38,8 @@
         data:        document.getElementById('artigoData'),
         tempo:       document.getElementById('artigoTempo'),
         corpo:       document.getElementById('artigoCorpo'),
+        lerNoBlogBtn: document.getElementById('artigoLerNoBlogBtn'),
+        lerNoBlogTopoBtn: document.getElementById('artigoLerNoBlogTopoBtn'),
         topoAcoes:   document.getElementById('artigoTopoAcoes'),
 
         gostarBtn:   document.getElementById('artigoGostarBtn'),
@@ -156,9 +158,13 @@
 
         // Ações do autor: só aparecem para quem escreveu.
         desenharAcoesDoAutor();
+        // Conectar links para a área do Blog
+        const urlBlog = D.caminhoBlogArtigo ? D.caminhoBlogArtigo(a.id) : ('/blog/artigo.html?id=' + encodeURIComponent(a.id));
+        if (EL.lerNoBlogBtn) EL.lerNoBlogBtn.href = urlBlog;
+        if (EL.lerNoBlogTopoBtn) EL.lerNoBlogTopoBtn.href = urlBlog;
 
         // A conversa aparece junto com o artigo.
-        EL.conversa.hidden = false;
+        // Comentários desativados na comunidade
     }
 
     function desenharAcoesDoAutor() {
@@ -260,7 +266,7 @@
 
             contarLeitura();
             carregarCurtida();
-            carregarComentarios();
+            // Sem comentários
         } catch (e) {
             clearTimeout(travou);
             console.error('[artigo] Erro inesperado ao carregar:', e);

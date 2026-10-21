@@ -1933,9 +1933,220 @@ async function updateCommentCount(postId) {
 </article>`;
     }).join('');
 
+    // Card "Quem seguir" entre os posts. Assíncrono de propósito: o feed
+    // renderiza na hora e o card entra quando as sugestões chegam — e
+    // some sozinho se não houver ninguém para sugerir.
+    injetarQuemSeguir(feed);
+
     setupPostEvents();
        initCustomVideoPlayers();   // ← ADICIONE
 }
+
+    // =============================================
+    // 9.1 QUEM SEGUIR — sugestões no meio do feed
+    // =============================================
+    /* O card aparece ENTRE OS POSTS, na mesma linha do feed (mesma
+     * .post-card, mesma separação) — é o padrão de quem-seguir embutido
+     * no timeline, e o pedido foi exatamente este.
+     *
+     * O card NÃO recebe data-post-url: o clique no card do feed só
+     * navega em `.post-card[data-post-url]` (setupPostCardNavigation),
+     * então clicar fora dos botões dele não faz nada — sem link fantasma.
+     *
+     * DADOS — a mesma fonte do "Quem seguir" do perfil (sql/16):
+     *   - logado   -> RPC discover_people: já ordena por relevância
+     *     (grupos em comum, seguidores em comum) e traz `is_following`.
+     *   - visitante ou RPC fora -> `profiles` público, mais seguidores
+     *     primeiro. O insert em `follows` exige login (RLS), então o
+     *     botão do visitante pede login no MESMO formato do aviso
+     *     "Faça login para criar um post" que o feed já usa.
+     *
+     * IDEMPOTÊNCIA: renderPosts() reconstrói o feed inteiro por
+     * innerHTML, então o card antigo some sozinho a cada nova render
+     * (inclusive nos updates por realtime) — e esta função o re-insere.
+     * Antes de inserir, remove qualquer .qs-card restante: mesmo que
+     * duas renders rodem sobrepostas, o resultado é UM card.
+     *
+     * IGNORADOS: o X de cada pessoa grava o id em localStorage
+     * (`cm_quemSeguir_ignorados`). As próximas sugestões já vêm
+     * filtradas, e o card inteiro não volta quando sobra zero.
+     */
+    const QS_LIMITE = 3;
+    const QS_CHAVE_IGNORADOS = 'cm_quemSeguir_ignorados';
+
+    function qsIgnorados() {
+        try {
+            return new Set(JSON.parse(localStorage.getItem(QS_CHAVE_IGNORADOS) || '[]'));
+        } catch (e) {
+            return new Set();
+        }
+    }
+
+    function qsIgnorar(id) {
+        try {
+            const set = qsIgnorados();
+            set.add(id);
+            localStorage.setItem(QS_CHAVE_IGNORADOS, JSON.stringify([...set]));
+        } catch (e) {
+            // Sem localStorage o card só volta no próximo reload. Segue.
+        }
+    }
+
+    /* As sugestões. A RPC levanta exceção para visitante ("Faça login
+     * para encontrar pessoas") e pode não existir se o sql/16 não tiver
+     * rodado — nos dois casos cai para o perfil público, e o card
+     * continua útil em vez de sumir. */
+    async function qsBuscarSugestoes() {
+        if (currentUser) {
+            try {
+                const { data, error } = await supabase.rpc('discover_people', {
+                    p_limit: QS_LIMITE + 5,
+                    p_offset: 0,
+                    p_query: null
+                });
+                if (!error && Array.isArray(data) && data.length) return data;
+            } catch (e) {
+                // Cai para a consulta pública abaixo.
+            }
+        }
+
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('id, username, full_name, avatar_url, followers_count')
+            .eq('is_active', true)
+            .order('followers_count', { ascending: false })
+            .limit(QS_LIMITE + 5);
+
+        if (error) throw error;
+        return data || [];
+    }
+
+    function qsFiltrar(rows) {
+        const ignorados = qsIgnorados();
+        const meuId = currentUser ? currentUser.id : null;
+        return (Array.isArray(rows) ? rows : [])
+            .filter(p => p && p.id)
+            .filter(p => p.id !== meuId)                 // nunca sugere a si mesmo
+            .filter(p => !ignorados.has(p.id))           // já dispensado pelo X
+            .slice(0, QS_LIMITE);
+    }
+
+    function qsMontarPessoa(p) {
+        const nome = String(p.username || p.full_name || 'Sem nome').slice(0, 40);
+        const avatar = getSafeMediaUrl(p.avatar_url) || AVATAR_PADRAO;
+        const inicial = (nome.trim()[0] || '?').toUpperCase();
+        const seguindo = Boolean(p.is_following);
+        const url = `/comunidade/perfil.html?id=${encodeURIComponent(p.id)}`;
+
+        const el = document.createElement('div');
+        el.className = 'qs-pessoa';
+        el.innerHTML = `
+            <button class="qs-x" type="button" data-qs-x="${escapeHtml(p.id)}"
+                    aria-label="Não sugerir mais ${escapeHtml(nome)}"
+                    title="Não sugerir mais">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <a class="qs-avatar" href="${url}" aria-label="Ver perfil de ${escapeHtml(nome)}">
+                <img src="${escapeHtml(avatar)}" alt="" loading="lazy"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+                <span class="qs-inicial" style="display:none" aria-hidden="true">${escapeHtml(inicial)}</span>
+            </a>
+            <a class="qs-nome" href="${url}">${escapeHtml(nome)}</a>
+            <button class="qs-seguir${seguindo ? ' is-following' : ''}" type="button"
+                    data-qs-id="${escapeHtml(p.id)}" data-qs-nome="${escapeHtml(nome)}"
+                    aria-pressed="${seguindo}">${seguindo ? 'Seguindo' : 'Seguir'}</button>
+        `;
+        return el;
+    }
+
+    /* Seguir / deixar de seguir. O estado no servidor é a fonte: se o
+     * insert voltar 23505 (chave duplicada = já seguia), não é erro —
+     * só confirmamos o estado na tela. O toast usa textContent, então o
+     * nome não precisa de escaping aqui. */
+    async function qsAlternarFollow(btn) {
+        if (!currentUser) {
+            showToast('Faça login para seguir alguém', 'error');
+            return;
+        }
+
+        const id = btn.dataset.qsId;
+        const nome = btn.dataset.qsNome || 'essa pessoa';
+        const seguindo = btn.classList.contains('is-following');
+        btn.disabled = true;
+
+        try {
+            if (seguindo) {
+                const { error } = await supabase.from('follows')
+                    .delete()
+                    .eq('follower_id', currentUser.id)
+                    .eq('followed_id', id);
+                if (error) throw error;
+                btn.classList.remove('is-following');
+                btn.textContent = 'Seguir';
+                btn.setAttribute('aria-pressed', 'false');
+            } else {
+                const { error } = await supabase.from('follows')
+                    .insert({ follower_id: currentUser.id, followed_id: id });
+                if (error && String(error.code) !== '23505') throw error;
+                btn.classList.add('is-following');
+                btn.textContent = 'Seguindo';
+                btn.setAttribute('aria-pressed', 'true');
+            }
+        } catch (e) {
+            console.warn('[quem-seguir] falha ao seguir/deixar de seguir:', e);
+            showToast(`Não foi possível ${seguindo ? 'deixar de seguir' : 'seguir'} ${nome} agora.`, 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function injetarQuemSeguir(feed) {
+        if (!feed) return;
+        try {
+            const sugestoes = qsFiltrar(await qsBuscarSugestoes());
+            if (!sugestoes.length) return;   // ninguém para sugerir: sem card
+
+            feed.querySelectorAll('.qs-card').forEach(el => el.remove());
+
+            const card = document.createElement('article');
+            card.className = 'post-card qs-card';
+            card.setAttribute('aria-label', 'Sugestões de pessoas para seguir');
+            card.innerHTML = `
+                <div class="qs-topo">
+                    <span class="qs-titulo"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Quem seguir</span>
+                    <a class="qs-todos" href="/comunidade/perfil.html">Veja todos</a>
+                </div>
+                <div class="qs-lista"></div>
+            `;
+            const lista = card.querySelector('.qs-lista');
+            sugestoes.forEach(p => lista.appendChild(qsMontarPessoa(p)));
+
+            /* Posição: entre os posts — depois do 3º quando o feed é
+             * longo (o padrão do timeline), entre os dois quando há só
+             * 2, depois do único quando há 1. É índice 2 (0-based):
+             * posts[2] é o TERCEIRO post. */
+            const posts = [...feed.querySelectorAll('.post-card:not(.qs-card)')];
+            const apos = posts[Math.min(2, Math.max(0, posts.length - 2))] || posts[posts.length - 1];
+            if (apos) apos.after(card);
+            else feed.appendChild(card);
+
+            // Ações por delegação: os nós são reconstruídos a cada render.
+            card.addEventListener('click', (e) => {
+                const x = e.target.closest('[data-qs-x]');
+                if (x) {
+                    qsIgnorar(x.dataset.qsX);
+                    x.closest('.qs-pessoa')?.remove();
+                    if (!card.querySelector('.qs-pessoa')) card.remove();
+                    return;
+                }
+                const seguir = e.target.closest('.qs-seguir');
+                if (seguir) qsAlternarFollow(seguir);
+            });
+        } catch (e) {
+            // Sugestões indisponíveis: o feed continua normal, sem o card.
+            console.warn('[quem-seguir] sugestões indisponíveis:', e);
+        }
+    }
 
     // =============================================
     // 10. NOVO POST

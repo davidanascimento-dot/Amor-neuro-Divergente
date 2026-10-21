@@ -581,11 +581,13 @@
                      compartilhado (artigos-dados.js), para o mesmo artigo
                      ter a mesma forma aqui, no perfil e no Blog. Se ainda
                      não houver artigo publicado, o estado vazio do módulo
-                     aparece — em vez de um card de mentira. -->
-                <p class="art-carregando" id="explorarArtigosCarregando">
-                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                    <span>Carregando artigos…</span>
-                </p>
+                     aparece — em vez de um card de mentira.
+                     Sem spinner de carregamento (removido em 10/2026): o
+                     texto "Carregando artigos…" nunca escondia porque
+                     display:flex vencia o [hidden] do navegador, e a
+                     consulta é rápida — o estado vazio já dá o retorno.
+                     O Explorar.js tolera a ausência do elemento (guarda
+                     if (EXPLORAR_ARTIGOS.carregando)). -->
 
                 <div class="artigos-grade" id="explorarArtigosGrade"></div>
 

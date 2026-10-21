@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const frag = document.createDocumentFragment();
         for (const artigo of artigos) {
-            frag.appendChild(D.montarCard(artigo, perfis.get(artigo.author_id), { compacto: true }));
+            frag.appendChild(D.montarCard(artigo, perfis.get(artigo.author_id), { compacto: true, destino: 'blog' }));
         }
 
         PUBLICA_COMUNIDADE.artigos.replaceChildren(frag);

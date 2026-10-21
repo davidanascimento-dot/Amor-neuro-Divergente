@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Artigo completo no Blog do Amor NeuroDivergente.">
+    <link rel="icon" type="image/x-icon" href="/img/logo-LHN9gCw1.png">
+    <title>Carregando artigo… — Blog Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="/blog/blog.css">
+    <link rel="stylesheet" href="/blog/post-masking.css">
+    <link rel="stylesheet" href="/comunidade/artigos.css">
+    <link rel="stylesheet" href="/movimento-reduzido.css">
+
+    <style>
+        .blog-artigo-hero-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #db2777 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .artigo-acoes-barra {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2.5rem 0 1.5rem;
+            padding: 1.25rem;
+            background: var(--card-bg, rgba(255, 255, 255, 0.04));
+            border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+        }
+        .artigo-acoes-grupo {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            flex-wrap: wrap;
+        }
+        .btn-acao-blog {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .65rem 1.15rem;
+            border-radius: 999px;
+            background: rgba(147, 51, 234, 0.15);
+            color: #d8b4fe;
+            border: 1px solid rgba(147, 51, 234, 0.35);
+            font-size: .88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s ease;
+            text-decoration: none;
+        }
+        .btn-acao-blog:hover {
+            background: #9333ea;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .btn-acao-blog.is-curtido {
+            background: #e11d48;
+            color: #fff;
+            border-color: #e11d48;
+        }
+        .blog-estado-carregando, .blog-estado-erro {
+            max-width: 680px;
+            margin: 5rem auto;
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .article-content {
+            font-size: 1.125rem;
+            line-height: 1.85;
+            color: var(--text-color, #e2e8f0);
+        }
+        .article-content h2, .article-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+        }
+        .article-content blockquote {
+            border-left: 4px solid #9333ea;
+            padding: 1rem 1.5rem;
+            margin: 1.8rem 0;
+            background: rgba(147, 51, 234, 0.08);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+        }
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+        }
+        .article-content hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.5), transparent);
+            margin: 2.5rem 0;
+        }
+        .artigo-figura {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .artigo-figura__legenda {
+            margin-top: .6rem;
+            font-size: .85rem;
+            opacity: .75;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de progresso de leitura -->
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent" style="margin-left: 0; width: 100%;">
+
+        <!-- HEADER GLASS -->
+        <header class="header-glass" id="headerGlass" style="position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px);">
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="/inicio.html">Início</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <a href="/blog/blog.html">Blog</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span id="breadcrumbTitulo">Artigo</span>
+            </nav>
+            <a href="/inicio.html" class="logo">
+                <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+                <span class="logo-text">Amor NeuroDivergente</span>
+            </a>
+            <div style="display: flex; gap: .75rem; align-items: center;">
+                <a href="/blog/blog.html" class="btn-acao-blog" title="Voltar para a vitrine do Blog">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Vitrine do Blog</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- CARREGANDO -->
+        <div class="blog-estado-carregando" id="artigoCarregando">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2.2rem; color: #9333ea; margin-bottom: 1rem;"></i>
+            <h2 style="font-size: 1.3rem; margin-bottom: .5rem;">Carregando o artigo completo…</h2>
+            <p style="opacity: .7; font-size: .95rem;">Buscando o conteúdo e preparando a melhor leitura.</p>
+        </div>
+
+        <!-- ERRO -->
+        <div class="blog-estado-erro" id="artigoErro" hidden>
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.2rem; color: #eab308; margin-bottom: 1rem;"></i>
+            <h2 id="artigoErroTitulo" style="font-size: 1.3rem; margin-bottom: .5rem;">Artigo não encontrado</h2>
+            <p id="artigoErroMensagem" style="opacity: .75; font-size: .95rem; margin-bottom: 1.5rem;">O artigo solicitado não existe ou ainda não foi publicado.</p>
+            <a href="/blog/blog.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: .5rem; padding: .65rem 1.4rem; border-radius: 999px; text-decoration: none;">
+                <i class="fa-solid fa-book-open"></i> Explorar outros artigos no Blog
+            </a>
+        </div>
+
+        <!-- ARTIGO COMPLETO -->
+        <div id="artigoConteudoCompleto" hidden>
+
+            <!-- HERO EDITORIAL -->
+            <section class="article-hero">
+                <div class="article-hero__media" id="artigoHeroMedia">
+                    <img id="artigoHeroImg" src="" alt="Capa do artigo" loading="eager" hidden>
+                    <div class="blog-artigo-hero-placeholder" id="artigoHeroPlaceholder">
+                        <i class="fa-solid fa-feather-pointed" style="font-size: 5rem; color: rgba(255,255,255,0.25);"></i>
+                    </div>
+                    <div class="article-hero__overlay"></div>
+                </div>
+
+                <div class="article-hero__content">
+                    <span class="article-hero__eyebrow" id="artigoEyebrow">
+                        <i class="fa-solid fa-pen-nib"></i> Blog • Dica
+                    </span>
+                    <h1 class="article-hero__title" id="artigoTitulo"></h1>
+                    <p class="article-hero__sub" id="artigoSubtitulo" hidden></p>
+                </div>
+            </section>
+
+            <!-- META BAR -->
+            <section class="article-meta-bar">
+                <div class="article-meta-bar__container">
+                    <div class="article-meta-bar__left">
+                        <span class="article-meta-bar__author">
+                            <span class="article-meta-bar__avatar" id="artigoAutorAvatar">L</span>
+                            <span class="article-meta-bar__author-info">
+                                <strong id="artigoAutorNome">Autor</strong>
+                                <em id="artigoAutorTag">· Membro da Comunidade</em>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="article-meta-bar__right">
+                        <span><i class="fa-regular fa-calendar"></i> <span id="artigoData"></span></span>
+                        <span><i class="fa-regular fa-clock"></i> <span id="artigoTempo"></span></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ÁREA DE LEITURA -->
+            <article class="article-container">
+
+                <!-- Aviso sensível (se houver) -->
+                <div id="artigoAvisoCard" hidden style="margin-bottom: 2rem; padding: 1.1rem 1.4rem; background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.35); border-radius: 14px; display: flex; align-items: center; gap: .85rem; color: #fef08a;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.3rem; color: #eab308;"></i>
+                    <span id="artigoAvisoTexto">Este texto aborda temas sensíveis.</span>
+                </div>
+
+                <!-- CORPO COMPLETO -->
+                <div class="article-content" id="artigoCorpo"></div>
+
+                <!-- BARRA DE AÇÕES E COMPARTILHAMENTO -->
+                <div class="artigo-acoes-barra">
+                    <div class="artigo-acoes-grupo">
+                        <button type="button" class="btn-acao-blog" id="btnCurtirArtigo">
+                            <i class="fa-regular fa-heart"></i>
+                            <span>Curtir</span>
+                            <span id="contagemCurtidas" style="font-weight: 700; margin-left: 2px;">0</span>
+                        </button>
+                        <button type="button" class="btn-acao-blog" id="btnOuvirArtigo">
+                            <i class="fa-solid fa-volume-high"></i>
+                            <span>Ouvir artigo</span>
+                        </button>
+                        <a href="#" class="btn-acao-blog" id="btnVerNaComunidade" title="Ver prévia na comunidade">
+                            <i class="fa-solid fa-comments"></i>
+                            <span>Ver na Comunidade</span>
+                        </a>
+                    </div>
+
+                    <div class="artigo-acoes-grupo">
+                        <span style="font-size: .85rem; opacity: .7; margin-right: .2rem;">Compartilhar:</span>
+                        <a href="#" class="btn-acao-blog article-share__btn" id="btnShareWhats" target="_blank" rel="noopener noreferrer" aria-label="Compartilhar no WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="btn-acao-blog article-share__btn" id="btnShareX" target="_blank" rel="noopener noreferrer" aria-label="Compartilhar no X">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <button type="button" class="btn-acao-blog article-share__btn" id="btnCopiarLink" aria-label="Copiar link do artigo">
+                            <i class="fa-solid fa-link"></i> <span>Copiar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VOLTAR AO BLOG -->
+                <div style="text-align: center; margin: 3.5rem 0 2rem;">
+                    <a href="/blog/blog.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: .6rem; padding: .85rem 1.8rem; border-radius: 999px; text-decoration: none; font-weight: 700;">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar para todos os artigos do Blog
+                    </a>
+                </div>
+
+            </article>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-config.js"></script>
+    <script src="/js/supabase.js"></script>
+    <script src="/auth-global.js"></script>
+    <script src="/comunidade/artigos-dados.js"></script>
+    <script src="/blog/artigo.js"></script>
+    <script src="/pular-conteudo.js"></script>
+    <script src="/userway.js"></script>
+    <script src="/vlibras.js"></script>
+</body>
+</html>

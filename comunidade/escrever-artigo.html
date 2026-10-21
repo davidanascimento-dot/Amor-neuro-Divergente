@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -51,6 +51,12 @@
          ============================================ -->
     <main class="editor-main" id="mainContent">
 
+        <!-- Aviso de login -->
+        <div class="editor-login-aviso" id="editorLoginAviso" hidden>
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            <span>Para publicar, <a id="editorLoginLink" href="/login/login.html">entre na sua conta</a>. Enquanto isso, o rascunho fica seguro neste navegador.</span>
+        </div>
+
       
 
         <!-- ============================================
@@ -61,10 +67,10 @@
             <!-- Grupo esquerdo: formatação -->
             <div class="editor-barra__grupo editor-barra__grupo--formatacao">
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorDesfazerBtn" title="Desfazer">
-                    <i class="fa-regular fa-rotate-left" aria-hidden="true"></i>
+                    <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorRefazerBtn" title="Refazer">
-                    <i class="fa-regular fa-rotate-right" aria-hidden="true"></i>
+                    <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
                 </button>
 
                 <button type="button" class="editor-ferramenta editor-ferramenta--dropdown" id="editorEstiloBtn" aria-haspopup="true" aria-expanded="false" title="Estilo da letra">
@@ -109,22 +115,22 @@
             <!-- Grupo centro: listas e alinhamento -->
             <div class="editor-barra__grupo editor-barra__grupo--listas">
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorListaBulletBtn" title="Lista com marcadores">
-                    <i class="fa-regular fa-list-ul" aria-hidden="true"></i>
+                    <i class="fa-solid fa-list-ul" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorListaNumBtn" title="Lista numerada">
-                    <i class="fa-regular fa-list-ol" aria-hidden="true"></i>
+                    <i class="fa-solid fa-list-ol" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharEsqBtn" title="Alinhar à esquerda">
-                    <i class="fa-solid fa-text-left" aria-hidden="true"></i>
+                    <i class="fa-solid fa-align-left" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharCentroBtn" title="Centralizar">
-                    <i class="fa-solid fa-text-center" aria-hidden="true"></i>
+                    <i class="fa-solid fa-align-center" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharDirBtn" title="Alinhar à direita">
-                    <i class="fa-solid fa-text-right" aria-hidden="true"></i>
+                    <i class="fa-solid fa-align-right" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharJustBtn" title="Justificado">
-                    <i class="fa-solid fa-text-justify" aria-hidden="true"></i>
+                    <i class="fa-solid fa-align-justify" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -156,6 +162,40 @@
         <!-- O menu que abre embaixo das ferramentas. -->
         <div class="editor-popover" id="editorPopover" hidden role="menu"></div>
 
+        <!-- Dropdown de Imagem (Substack-style) -->
+        <div class="editor-dropdown-menu" id="editorImagemDropdown" hidden>
+            <button type="button" class="editor-dropdown-item" id="optImgUpload">
+                <i class="fa-solid fa-upload" aria-hidden="true"></i> Upload from device
+            </button>
+            <button type="button" class="editor-dropdown-item" id="optImgGallery">
+                <i class="fa-solid fa-images" aria-hidden="true"></i> Gallery (multiple)
+            </button>
+            <button type="button" class="editor-dropdown-item" id="optImgStock">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Stock photos
+            </button>
+            <button type="button" class="editor-dropdown-item" id="optImgLink">
+                <i class="fa-solid fa-link" aria-hidden="true"></i> Direct link (URL)
+            </button>
+        </div>
+
+        <!-- Flyout flutuante para Audio / Video / Stock Photos -->
+        <div class="editor-flyout" id="editorFlyout" hidden>
+            <div class="editor-flyout__header">
+                <span class="editor-flyout__title" id="editorFlyoutTitle">Add media</span>
+                <button type="button" class="editor-flyout__close" id="editorFlyoutClose" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="editor-flyout__body" id="editorFlyoutBody"></div>
+            <div class="editor-flyout__footer">
+                <button type="button" class="flyout-btn-cancel" id="editorFlyoutCancel">Cancel</button>
+                <button type="button" class="flyout-btn-insert" id="editorFlyoutInsert">Insert</button>
+            </div>
+        </div>
+
+        <!-- Input oculto para upload de arquivos -->
+        <input type="file" id="editorHiddenFileInput" hidden aria-hidden="true">
+
         <!-- ============================================
              A FOLHA DE ESCRITA — título, subtítulo, autor, corpo
              ============================================ -->
@@ -163,7 +203,7 @@
 
             <!-- Cabeçalho do artigo (como o modelo da referência) -->
             <div class="editor-cabecalho">
-                <span class="editor-cabecalho__rotulo">Cabeçalho e rodapé de e-mail</span>
+                <span class="editor-cabecalho__rotulo">Publicação para a Comunidade & Blog</span>
 
                 <label class="sr-only" for="editorTitulo">Título do artigo</label>
                 <textarea class="editor-titulo" id="editorTitulo" rows="1" maxlength="140"
@@ -175,15 +215,14 @@
 
                 <!-- Linha do autor: avatar + nome + botão de adicionar -->
                 <div class="editor-autor">
-                    <span class="editor-autor__chip" id="editorAutorChip">David <button type="button" class="editor-autor__remover" title="Remover autor">×</button></span>
+                    <span class="editor-autor__chip" id="editorAutorChip"><span id="editorAutorAvatar"></span><span id="editorAutorNome">Você</span> <button type="button" class="editor-autor__remover" id="editorAutorRemoverBtn" title="Remover autor">×</button></span>
                     <button type="button" class="editor-autor__adicionar" id="editorAutorAdicionarBtn" title="Adicionar autor">
                         <i class="fa-solid fa-plus" aria-hidden="true"></i>
                     </button>
                 </div>
 
                 <label class="sr-only" for="editorCorpo">Texto do artigo</label>
-                <textarea class="editor-corpo" id="editorCorpo"
-                          placeholder="Start writing..."></textarea>
+                <div class="editor-corpo" id="editorCorpo" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Comece a escrever sua publicação ou dica aqui..."></div>
             </div>
 
             <!-- Rodapé da folha: seção, tipo, contadores -->

@@ -3952,3 +3952,209 @@ body.a11y-dark-mode .rules-banner-btn-boas-vindas:hover {
     border-color: var(--cx-gold);
     color: var(--cx-gold);
 }
+
+/* ==========================================================================
+   QUEM SEGUIR — card de sugestões injetado no feed (comunidade.js, 9.1)
+
+   O card entra entre os posts como mais uma linha do feed: herda
+   .post-card (fundo, separação, padding) e só se diferencia no
+   conteúdo. Por isso o escopo é curto — nada aqui redesenha o feed.
+
+   Cores: tokens --cm-* / --cx-* da comunidade-tokens.css, que já têm
+   valores de modo escuro. O único ajuste manual é o texto do botão
+   no escuro (branco sobre roxo claro reprova; vira o fundo escuro).
+
+   Formas: card interno 5px (retângulo), avatar 50% (círculo),
+   botão Seguir 999px (pílula, mesmo formato do botão de seguir do
+   perfil em perfil.css).
+   ========================================================================== */
+
+.qs-card {
+    gap: 14px;
+}
+
+/* O hover herdado de .post-card pinta fundo e cursor de link: aqui
+   não há navegação no card inteiro, então é cancelado no par. */
+.post-card.qs-card:hover {
+    background: var(--cx-bg-soft);
+    cursor: default;
+}
+
+.qs-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.qs-titulo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--cx-text);
+}
+
+.qs-todos {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--cm-purple);
+    text-decoration: none;
+}
+
+.qs-todos:hover {
+    text-decoration: underline;
+}
+
+.qs-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.qs-pessoa {
+    position: relative;
+    flex: 1 1 150px;
+    min-width: 140px;
+    max-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px 14px;
+    border: 1px solid var(--cx-border);
+    border-radius: 5px;
+    background: var(--cx-bg);
+}
+
+.qs-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--cm-purple-soft);
+    display: grid;
+    place-items: center;
+}
+
+.qs-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.qs-inicial {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cm-purple);
+}
+
+.qs-nome {
+    max-width: 100%;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--cx-text);
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qs-nome:hover {
+    color: var(--cm-purple);
+    text-decoration: underline;
+}
+
+/* Branco sobre #7540a5 = 6,4:1 (medido, token da própria comunidade). */
+.qs-seguir {
+    min-width: 96px;
+    height: 30px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--cm-purple);
+    background: var(--cm-purple);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+
+.qs-seguir:hover:not(:disabled) {
+    background: var(--cm-purple-hover);
+    border-color: var(--cm-purple-hover);
+}
+
+/* Estado "Seguindo": contorno neutro; hover vira rosa para sinalizar
+   que o clique vai DESFAZER (o mesmo desenho do perfil.css). */
+.qs-seguir.is-following {
+    background: transparent;
+    color: var(--cx-text);
+    border-color: var(--cx-border-strong);
+}
+
+.qs-seguir.is-following:hover:not(:disabled) {
+    background: var(--cm-pink-soft);
+    color: var(--cm-pink);
+    border-color: var(--cm-pink);
+}
+
+.qs-seguir:disabled {
+    opacity: .6;
+    cursor: default;
+}
+
+.qs-x {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--cm-muted);
+    font-size: 11px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+}
+
+.qs-x:hover {
+    background: var(--cm-surface-green);
+    color: var(--cx-text);
+}
+
+.qs-seguir:focus-visible,
+.qs-x:focus-visible,
+.qs-nome:focus-visible,
+.qs-avatar:focus-visible,
+.qs-todos:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+}
+
+/* No escuro --cm-purple vira #b183e8 (clara, para ser lida sobre fundo
+   escuro) e o BRANCO sobre ela reprova. O texto passa a ser o fundo
+   escuro: #12161a sobre #b183e8 ≈ 9:1. */
+body.a11y-dark-mode .qs-seguir {
+    color: var(--cm-bg);
+}
+
+@media (max-width: 560px) {
+    .qs-pessoa {
+        flex-basis: 100%;
+        max-width: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .qs-seguir {
+        transition: none;
+    }
+}

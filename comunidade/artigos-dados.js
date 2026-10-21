@@ -31,6 +31,7 @@
        ===================================================================== */
 
     const SECOES = [
+        'Dicas',
         'Relatos',
         'Histórias',
         'Guia',
@@ -44,7 +45,7 @@
         'Cotidiano'
     ];
 
-    const TIPOS = ['Relato', 'História', 'Guia', 'Análise'];
+    const TIPOS = ['Dica', 'Relato', 'História', 'Guia', 'Análise'];
 
     const MODELOS = [
         { valor: 'padrao',      nome: 'Padrão',     descricao: 'Bloco central, capa no topo' },
@@ -294,9 +295,14 @@
         return `/comunidade/artigo.html?id=${encodeURIComponent(id)}`;
     }
 
+    /** Caminho da leitura completa no Blog. */
+    function caminhoBlogArtigo(id) {
+        return `/blog/artigo.html?id=${encodeURIComponent(id)}`;
+    }
+
     /** Caminho do editor, opcionalmente abrindo um artigo para editar. */
     function caminhoEditor(id) {
-        return `/comunidade/escrever-artigo.html${id ? `?id=${encodeURIComponent(id)}` : ''}`;
+        return `/comunidade/escrever-artigo.html${id ? '?id=' + encodeURIComponent(id) : ''}`;
     }
 
     /* =====================================================================
@@ -408,14 +414,60 @@
        texto, nunca HTML.
        ===================================================================== */
 
-    function renderizarConteudo(texto) {
-        const bruto = String(texto ?? '').replace(/\r\n/g, '\n');
-        const linhas = bruto.split('\n');
+        function renderizarInline(escapado) {
+        if (!escapado) return '';
+        // code
+        let s = escapado.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // bold
+        s = s.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
+        s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+        // italic
+        s = s.replace(/(^|[^\*])\*([^\*]+)\*([^\*]|$)/g, '$1<em>$2</em>$3');
+        s = s.replace(/(^|[^_])_([^_]+)_([^_]|$)/g, '$1<em>$2</em>$3');
+        // strikethrough
+        s = s.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+        // links
+        s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, rotulo, url) => {
+            const limpaUrl = urlSegura(url.trim());
+            if (!limpaUrl) return rotulo;
+            if (/^bot[ãa]o:\s*/i.test(rotulo)) {
+                const txt = rotulo.replace(/^bot[ãa]o:\s*/i, '');
+                return `<a class="btn-artigo-escrever artigo-btn-cta" href="${escapeHtml(limpaUrl)}" target="_blank" rel="noopener noreferrer">${txt}</a>`;
+            }
+            return `<a class="artigo-link-corpo" href="${escapeHtml(limpaUrl)}" target="_blank" rel="noopener noreferrer">${rotulo}</a>`;
+        });
+        return s;
+    }
 
+        function sanitizarHtml(html) {
+        if (!html) return '';
+        // Remove tags perigosas
+        let limpo = html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+            .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '')
+            .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
+            .replace(/javascript:/gi, '');
+        return limpo;
+    }
+
+    function renderizarConteudo(texto) {
+        if (!texto) return '';
+
+        const bruto = String(texto).replace(/\r\n/g, '\n');
+
+        // Se o conteúdo já foi salvo pelo editor visual com tags HTML como <p>, <figure>, <h2>, etc.
+        if (/<(p|figure|img|h2|h3|blockquote|ul|ol|pre|iframe|video|audio)[s>]/i.test(bruto)) {
+            return sanitizarHtml(bruto);
+        }
+
+        const linhas = bruto.split('\n');
         const saida = [];
         let paragrafo = [];
         let lista = null;   // 'ul' | 'ol'
         let citacao = [];
+        let emBlocoCodigo = false;
+        let blocoCodigoLinhas = [];
 
         function fecharParagrafo() {
             if (!paragrafo.length) return;
@@ -438,6 +490,24 @@
         for (const linha of linhas) {
             const limpa = linha.trim();
 
+            if (/^```/.test(limpa)) {
+                if (emBlocoCodigo) {
+                    saida.push(`<pre class="artigo-codigo-bloco"><code>${escapeHtml(blocoCodigoLinhas.join('\n'))}</code></pre>`);
+                    blocoCodigoLinhas = [];
+                    emBlocoCodigo = false;
+                } else {
+                    fecharParagrafo(); fecharLista(); fecharCitacao();
+                    emBlocoCodigo = true;
+                    blocoCodigoLinhas = [];
+                }
+                continue;
+            }
+
+            if (emBlocoCodigo) {
+                blocoCodigoLinhas.push(linha);
+                continue;
+            }
+
             if (!limpa) {
                 fecharParagrafo();
                 fecharLista();
@@ -445,23 +515,69 @@
                 continue;
             }
 
-            // ## Título
+            if (/^(?:---|\*\*\*|___)$/.test(limpa)) {
+                fecharParagrafo(); fecharLista(); fecharCitacao();
+                saida.push('<hr class="artigo-divisor">');
+                continue;
+            }
+
+            const matchImg = limpa.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+            if (matchImg) {
+                fecharParagrafo(); fecharLista(); fecharCitacao();
+                const legenda = matchImg[1].trim();
+                const src = urlSegura(matchImg[2].trim());
+                if (src) {
+                    saida.push(`<figure class="artigo-figura"><img src="${escapeHtml(src)}" alt="${escapeHtml(legenda)}" loading="lazy">${legenda ? `<figcaption class="artigo-figura__legenda">${escapeHtml(legenda)}</figcaption>` : ''}</figure>`);
+                }
+                continue;
+            }
+
+            const matchAudio = limpa.match(/^\[[Áá]udio:\s*([^\]]*)\]\(([^)]+)\)$/i);
+            if (matchAudio) {
+                fecharParagrafo(); fecharLista(); fecharCitacao();
+                const rot = matchAudio[1].trim() || 'Áudio';
+                const src = urlSegura(matchAudio[2].trim());
+                if (src) {
+                    saida.push(`<div class="artigo-audio-bloco"><span class="artigo-midia-tag"><i class="fa-solid fa-microphone"></i> ${escapeHtml(rot)}</span><audio controls src="${escapeHtml(src)}" preload="metadata"></audio></div>`);
+                }
+                continue;
+            }
+
+            const matchVideo = limpa.match(/^\[V[íi]deo:\s*([^\]]*)\]\(([^)]+)\)$/i);
+            if (matchVideo) {
+                fecharParagrafo(); fecharLista(); fecharCitacao();
+                const rot = matchVideo[1].trim() || 'Vídeo';
+                const src = matchVideo[2].trim();
+                let embedUrl = null;
+                const yt = src.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+                if (yt) {
+                    embedUrl = 'https://www.youtube-nocookie.com/embed/' + yt[1];
+                }
+                if (embedUrl) {
+                    saida.push(`<div class="artigo-video-bloco"><iframe src="${escapeHtml(embedUrl)}" title="${escapeHtml(rot)}" allowfullscreen loading="lazy"></iframe></div>`);
+                } else {
+                    const videoSrc = urlSegura(src);
+                    if (videoSrc) {
+                        saida.push(`<div class="artigo-video-bloco"><video controls src="${escapeHtml(videoSrc)}" preload="metadata"></video></div>`);
+                    }
+                }
+                continue;
+            }
+
             if (/^#{2,3}\s+/.test(limpa)) {
                 fecharParagrafo(); fecharLista(); fecharCitacao();
                 const nivel = limpa.startsWith('###') ? 3 : 2;
-                const textoTitulo = escapeHtml(limpa.replace(/^#{2,3}\s+/, ''));
+                const textoTitulo = renderizarInline(escapeHtml(limpa.replace(/^#{2,3}\s+/, '')));
                 saida.push(`<h${nivel}>${textoTitulo}</h${nivel}>`);
                 continue;
             }
 
-            // > citação
             if (/^>\s?/.test(limpa)) {
                 fecharParagrafo(); fecharLista();
-                citacao.push(escapeHtml(limpa.replace(/^>\s?/, '')));
+                citacao.push(renderizarInline(escapeHtml(limpa.replace(/^>\s?/, ''))));
                 continue;
             }
 
-            // - item  /  1. item
             const item = limpa.match(/^(?:[-*]|\d+\.)\s+(.*)$/);
             if (item) {
                 fecharParagrafo(); fecharCitacao();
@@ -471,13 +587,17 @@
                     saida.push(`<${tipo}>`);
                     lista = tipo;
                 }
-                saida.push(`<li>${escapeHtml(item[1])}</li>`);
+                saida.push(`<li>${renderizarInline(escapeHtml(item[1]))}</li>`);
                 continue;
             }
 
             fecharLista();
             fecharCitacao();
-            paragrafo.push(escapeHtml(limpa));
+            paragrafo.push(renderizarInline(escapeHtml(limpa)));
+        }
+
+        if (emBlocoCodigo && blocoCodigoLinhas.length) {
+            saida.push(`<pre class="artigo-codigo-bloco"><code>${escapeHtml(blocoCodigoLinhas.join('\n'))}</code></pre>`);
         }
 
         fecharParagrafo();
@@ -503,7 +623,7 @@
 
         const { nome, avatar } = resolverAutor(artigo, perfil);
         const inicial = nome.trim().charAt(0).toUpperCase() || '?';
-        const url = caminhoArtigo(artigo.id);
+        const url = opcoes.destino === 'blog' ? caminhoBlogArtigo(artigo.id) : caminhoArtigo(artigo.id);
         const data = formatarData(artigo.created_at);
         const secao = String(artigo.category || 'Relatos');
         const trecho = artigo.content ? resumoAutomatico(artigo.content, 90) : '';
@@ -626,6 +746,7 @@
         lerAutores,
         resolverAutor,
         caminhoArtigo,
+        caminhoBlogArtigo,
         caminhoEditor,
 
         listaFavoritos,

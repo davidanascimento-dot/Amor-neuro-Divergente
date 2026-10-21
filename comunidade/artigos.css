@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    ARTIGOS.CSS — o sistema de artigos da Comunidade
    --------------------------------------------------------------------------
    O QUE ESTE ARQUIVO É
@@ -1616,3 +1616,547 @@ html.a11y-dark-mode .art-chip--aviso {
 }
 
 html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color: var(--cm-text); }
+
+
+/* ==========================================================================
+   RESET COMPLETO DE OUTLINE LARANJA E LIMITAÇÕES DA FOLHA DE ESCRITA
+   ========================================================================== */
+.editor-main,
+.editor-folha,
+.editor-folha *,
+.editor-cabecalho,
+.editor-titulo,
+.editor-subtitulo,
+.editor-corpo {
+    outline: none !important;
+    outline-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.editor-titulo:focus,
+.editor-titulo:focus-visible,
+.editor-subtitulo:focus,
+.editor-subtitulo:focus-visible,
+.editor-corpo:focus,
+.editor-corpo:focus-visible {
+    outline: none !important;
+    outline-offset: 0 !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.editor-subtitulo {
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border-soft, rgba(255, 255, 255, 0.08)) !important;
+}
+
+/* Área de escrita rica e visual */
+.editor-corpo {
+    width: 100%;
+    min-height: 55vh;
+    margin-top: 1.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: 1.1rem;
+    line-height: 1.85;
+    outline: none !important;
+    overflow-y: visible;
+}
+
+.editor-corpo:empty::before {
+    content: attr(data-placeholder);
+    color: var(--cm-muted, #71717a);
+    opacity: 0.65;
+    pointer-events: none;
+    display: block;
+}
+
+.editor-corpo h2, .editor-preview h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    margin: 1.8rem 0 .8rem;
+    color: var(--cm-text);
+}
+
+.editor-corpo h3, .editor-preview h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 1.5rem 0 .6rem;
+    color: var(--cm-text);
+}
+
+.editor-corpo blockquote, .editor-preview blockquote {
+    border-left: 4px solid #9333ea;
+    padding: .8rem 1.25rem;
+    margin: 1.5rem 0;
+    background: rgba(147, 51, 234, 0.08);
+    border-radius: 0 12px 12px 0;
+    font-style: italic;
+    color: var(--cm-text-soft, inherit);
+}
+
+.editor-corpo hr, .editor-preview hr {
+    border: 0;
+    height: 1px;
+    background: var(--cm-border, rgba(255, 255, 255, 0.15));
+    margin: 2.2rem 0;
+}
+
+.editor-corpo pre, .editor-preview pre {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--cm-border, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: .95rem;
+    margin: 1.5rem 0;
+}
+
+.editor-corpo ul, .editor-preview ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.editor-corpo ol, .editor-preview ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.editor-corpo li, .editor-preview li {
+    margin-bottom: .4rem;
+}
+
+/* Blocos de mídia visuais dentro do editor */
+.editor-midia-bloco {
+    position: relative;
+    margin: 1.8rem auto;
+    text-align: center;
+    max-width: 100%;
+}
+
+.editor-midia-bloco img {
+    max-width: 100%;
+    max-height: 540px;
+    height: auto;
+    border-radius: 18px;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.editor-midia-legenda {
+    margin-top: .6rem;
+    font-size: .88rem;
+    color: var(--cm-text-soft, #a1a1aa);
+    font-style: italic;
+    display: inline-block;
+    padding: .2rem .6rem;
+    outline: none !important;
+}
+
+.editor-remover-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(15, 10, 25, 0.85);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    font-size: 14px;
+    z-index: 10;
+}
+
+.editor-remover-btn:hover {
+    background: #e11d48;
+    transform: scale(1.1);
+}
+
+
+/* ==========================================================================
+   FLYOUT POPOVERS — Modelo Substack / Medium das imagens de referência
+   ========================================================================== */
+.editor-flyout {
+    position: fixed;
+    top: 75px;
+    right: 24px;
+    width: 390px;
+    max-width: calc(100vw - 32px);
+    background: var(--cm-surface, #ffffff);
+    color: var(--cm-text, #1f2937);
+    border: 1px solid var(--cm-border, #e5e7eb);
+    border-radius: 16px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.18);
+    z-index: 9999;
+    overflow: hidden;
+    animation: flyoutSlide .2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editor-flyout[hidden] {
+    display: none !important;
+}
+
+@keyframes flyoutSlide {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.editor-flyout__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--cm-border-soft, #f3f4f6);
+}
+
+.editor-flyout__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.editor-flyout__close {
+    background: transparent;
+    border: 0;
+    color: var(--cm-text-soft, #6b7280);
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    transition: all .15s;
+}
+
+.editor-flyout__close:hover {
+    color: var(--cm-text, #111827);
+    background: var(--cm-surface-soft, #f3f4f6);
+}
+
+.editor-flyout__body {
+    padding: 18px 20px;
+    max-height: calc(85vh - 160px);
+    overflow-y: auto;
+}
+
+/* Área tracejada de Dropzone */
+.flyout-dropzone {
+    border: 1.5px dashed var(--cm-border-strong, #d1d5db);
+    border-radius: 14px;
+    padding: 26px 16px;
+    text-align: center;
+    background: var(--cm-surface-soft, #fafafa);
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.flyout-dropzone:hover, .flyout-dropzone.is-dragover {
+    border-color: #9333ea;
+    background: rgba(147, 51, 234, 0.06);
+}
+
+.flyout-dropzone__icon {
+    font-size: 2.2rem;
+    color: #9333ea;
+    margin-bottom: 8px;
+    opacity: .85;
+}
+
+.flyout-dropzone__text {
+    font-size: .92rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--cm-text, #374151);
+}
+
+.flyout-dropzone__sub {
+    font-size: .78rem;
+    color: var(--cm-muted, #9ca3af);
+    margin: 0;
+}
+
+.flyout-divisor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--cm-muted, #9ca3af);
+    text-transform: uppercase;
+}
+
+.flyout-divisor::before, .flyout-divisor::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cm-border-soft, #e5e7eb);
+}
+
+/* Botão Record (Gravar com microfone) */
+.flyout-btn-record {
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all .15s;
+}
+
+.flyout-btn-record:hover {
+    background: #fca5a5;
+    color: #991b1b;
+}
+
+.flyout-btn-record.is-recording {
+    background: #ef4444;
+    color: #fff;
+    border-color: #dc2626;
+    animation: pulseRecording .8s infinite alternate;
+}
+
+@keyframes pulseRecording {
+    from { transform: scale(0.99); opacity: 0.9; }
+    to { transform: scale(1.01); opacity: 1; }
+}
+
+/* Card de opções / switches */
+.flyout-opcoes-card {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--cm-border-soft, #f3f4f6);
+    border-radius: 12px;
+    background: var(--cm-surface-soft, #ffffff);
+}
+
+.flyout-opcao-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.flyout-opcao-item + .flyout-opcao-item {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--cm-border-soft, #f3f4f6);
+}
+
+.flyout-opcao-info strong {
+    display: block;
+    font-size: .86rem;
+    color: var(--cm-text, #1f2937);
+    margin-bottom: 2px;
+}
+
+.flyout-opcao-info p {
+    font-size: .76rem;
+    color: var(--cm-muted, #6b7280);
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* Switch toggle */
+.flyout-switch {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 22px;
+    flex-shrink: 0;
+}
+.flyout-switch input { opacity: 0; width: 0; height: 0; }
+.flyout-switch__slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #d1d5db;
+    border-radius: 999px;
+    transition: .2s;
+}
+.flyout-switch__slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .2s;
+}
+.flyout-switch input:checked + .flyout-switch__slider {
+    background-color: #9333ea;
+}
+.flyout-switch input:checked + .flyout-switch__slider:before {
+    transform: translateX(16px);
+}
+
+/* Rodapé do Flyout */
+.editor-flyout__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--cm-border-soft, #f3f4f6);
+    background: var(--cm-surface-soft, #fafafa);
+}
+
+.flyout-btn-cancel {
+    background: transparent;
+    border: 0;
+    color: var(--cm-text-soft, #4b5563);
+    font-weight: 600;
+    font-size: .88rem;
+    cursor: pointer;
+    padding: 6px 12px;
+}
+
+.flyout-btn-cancel:hover {
+    color: var(--cm-text, #111827);
+}
+
+.flyout-btn-insert {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 0;
+    background: var(--cm-border-soft, #e5e7eb);
+    color: var(--cm-muted, #9ca3af);
+    font-weight: 700;
+    font-size: .88rem;
+    cursor: not-allowed;
+    transition: all .15s;
+}
+
+.flyout-btn-insert.is-active {
+    background: #9333ea;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.flyout-btn-insert.is-active:hover {
+    background: #7e22ce;
+}
+
+/* Dropdown Menu de Imagem (Substack style) */
+.editor-dropdown-menu {
+    position: absolute;
+    background: var(--cm-surface, #ffffff);
+    color: var(--cm-text, #1f2937);
+    border: 1px solid var(--cm-border, #e5e7eb);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 6px;
+    min-width: 190px;
+    z-index: 9999;
+}
+
+.editor-dropdown-menu[hidden] {
+    display: none !important;
+}
+
+.editor-dropdown-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+}
+
+.editor-dropdown-item:hover {
+    background: var(--cm-surface-soft, #f3f4f6);
+    color: #9333ea;
+}
+
+.editor-dropdown-item i {
+    width: 18px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+/* Galeria de Fotos Prontas (Stock Photos) */
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.stock-thumb {
+    width: 100%;
+    height: 95px;
+    border-radius: 8px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+}
+
+.stock-thumb:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 15px rgba(147, 51, 234, 0.3);
+}
+
+
+/* Aviso de Login no Editor */
+.editor-login-aviso {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    margin: 0 auto 12px;
+    max-width: 760px;
+    background: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.3);
+    border-radius: 12px;
+    font-size: .88rem;
+    color: var(--cm-text, #1f2937);
+}
+
+.editor-login-aviso[hidden] {
+    display: none !important;
+}
+
+.editor-login-aviso i {
+    color: #eab308;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.editor-login-aviso a {
+    color: #9333ea;
+    font-weight: 700;
+    text-decoration: underline;
+}
