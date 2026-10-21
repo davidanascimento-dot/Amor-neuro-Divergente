@@ -20,6 +20,8 @@
     <!-- A camada nova da primeira dobra. ULTIMO de proposito: precisa vencer. -->
     <link rel="stylesheet" href="/Explorar/explorar-descoberta.css">
   <script src="/imagens.js"></script>
+  <!-- O card de artigo: a mesma folha que a área Artigos da Comunidade usa. -->
+  <link rel="stylesheet" href="/comunidade/artigos.css">
 </head>
 
 <body>
@@ -561,46 +563,36 @@
         </section>
 
         <!-- =============================================
-             ARTIGOS E GUIAS
+             ARTIGOS DA COMUNIDADE
              ============================================= -->
         <section class="explore-featured explore-section" id="artigos">
             <div class="container">
                 <header class="section-head">
                     <div class="section-head__title-group">
-                        <span class="section-icon"><i class="fa-solid fa-book-open"></i></span>
-                        <h2>Artigos e Guias</h2>
+                        <span class="section-icon"><i class="fa-solid fa-feather-pointed"></i></span>
+                        <h2>Artigos da Comunidade</h2>
                     </div>
-                    <a href="/Recursos/recursos.html" class="section-head__link">
+                    <a href="/comunidade/artigos.html" class="section-head__link">
                         Ver todos <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </header>
 
-                <article class="featured-card">
-                    <div class="featured-card__media explore-section-image">
-                        <a href="/blog/post-masking.html" class="featured-card__link" aria-hidden="true" tabindex="-1"><img src="/img/Pessoa lendo um artigo em um tablet, com uma xícara de chá ao lado, em ambiente tranquilo.jpg" alt="Pessoa em ambiente calmo" loading="lazy"></a>
-                    </div>
-                    <div class="featured-card__body explore-section-text">
-                        <span class="tag tag--autismo">Autismo</span>
-                        <h3 class="featured-card__title"><a href="/blog/post-masking.html">O dia em que você para de sobreviver e começa a viver</a></h3>
-                        <p class="featured-card__excerpt">
-                            Existe uma diferença silenciosa entre estar vivo e sentir que estamos vivendo.
-                            Podemos acordar todos os dias, cumprir compromissos, trabalhar, estudar — e ainda
-                            assim sentir que não estamos de verdade presentes na nossa própria vida.
-                        </p>
-                        <div class="featured-card__meta">
-                            <span class="author">
-                                <span class="author__avatar">L</span>
-                                <span class="author__name">Luti Christóforo <em>· Psicólogo</em></span>
-                            </span>
-                            <span class="meta-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
-                        </div>
-                        <a href="/blog/post-masking.html" class="explore-btn">
-                            Ler artigo <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
+                <!-- Os cards são os mesmos da área Artigos: vêm do módulo
+                     compartilhado (artigos-dados.js), para o mesmo artigo
+                     ter a mesma forma aqui, no perfil e no Blog. Se ainda
+                     não houver artigo publicado, o estado vazio do módulo
+                     aparece — em vez de um card de mentira. -->
+                <p class="art-carregando" id="explorarArtigosCarregando">
+                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    <span>Carregando artigos…</span>
+                </p>
+
+                <div class="artigos-grade" id="explorarArtigosGrade"></div>
+
+                <div id="explorarArtigosEstado"></div>
             </div>
         </section>
+
 
         <!-- =============================================
              BLOG
@@ -1002,6 +994,7 @@
     <script src="/js/supabase.js"></script>
 
     <!-- 3. Script principal -->
+    <script src="/comunidade/artigos-dados.js"></script>
     <script src="Explorar.js"></script>
     <script src="/auth-global.js"></script>
 

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Escrever um artigo para a comunidade do Amor NeuroDivergente.">
+    <title>Escrever artigo — Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="comunidade.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-tokens.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-nav.css">
+    <link rel="stylesheet" href="/comunidade/artigos.css">
+    <script src="/comunidade/theme.js"></script>
+    <link rel="stylesheet" href="/movimento-reduzido.css">
+    <script src="/imagens.js"></script>
+</head>
+<body class="community-app" data-img-fundo="fundo-comunidade">
+
+    <!-- ============================================
+         HEADER SUPERIOR
+         ============================================ -->
+    <header class="header-glass" id="headerGlass">
+        <a href="/inicio.html" class="logo">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+            <span class="logo-text">Amor NeuroDivergente</span>
+        </a>
+
+        <a href="/comunidade/artigos.html" class="btn-voltar-site" title="Voltar para os artigos" aria-label="Voltar para os artigos">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar</span>
+        </a>
+
+        <a class="header-profile-btn" id="headerProfileBtn" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img src="/img/foto-padrão.jpg" alt="Meu perfil" class="header-avatar" id="headerAvatar">
+        </a>
+
+        <button class="header-theme-toggle" type="button" data-a11y="darkMode" aria-pressed="false" aria-label="Ativar modo escuro" title="Ativar modo escuro">
+            <i class="fa-regular fa-moon"></i>
+        </button>
+    </header>
+
+    <!-- ============================================
+         O EDITOR
+         ============================================ -->
+    <main class="editor-main" id="mainContent">
+
+        <!-- Aviso de quem não está com a sessão aberta. -->
+        <p class="art-login-aviso" id="editorLoginAviso" hidden>
+            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+            Você pode escrever, mas precisa <a href="/login/login.html?redirect=/comunidade/escrever-artigo.html" id="editorLoginLink">entrar</a>
+            para publicar.
+        </p>
+
+        <!-- ============================================
+             BARRA DE FERRAMENTAS
+             ============================================ -->
+        <div class="editor-barra" role="toolbar" aria-label="Ferramentas do editor">
+
+            <div class="editor-barra__grupo">
+                <button type="button" class="editor-ferramenta" id="editorFavoritoBtn" aria-pressed="false"
+                        title="Marcar como favorito">
+                    <i class="fa-regular fa-bookmark" aria-hidden="true"></i> Favorito
+                </button>
+
+                <button type="button" class="editor-ferramenta" id="editorPreviaBtn" aria-pressed="false"
+                        title="Ver como o artigo vai aparecer">
+                    <i class="fa-regular fa-eye" aria-hidden="true"></i> Pré-visualização
+                </button>
+
+                <button type="button" class="editor-ferramenta" id="editorEstiloBtn"
+                        aria-haspopup="true" aria-expanded="false" title="O estilo da letra">
+                    <i class="fa-solid fa-paintbrush" aria-hidden="true"></i> Estilo
+                </button>
+
+                <button type="button" class="editor-ferramenta" id="editorModeloBtn"
+                        aria-haspopup="true" aria-expanded="false" title="O modelo da página">
+                    <i class="fa-solid fa-table-cells" aria-hidden="true"></i> Modelo
+                </button>
+
+                <button type="button" class="editor-ferramenta" id="editorMaisBtn"
+                        aria-haspopup="true" aria-expanded="false" title="Mais opções">
+                    <i class="fa-solid fa-ellipsis" aria-hidden="true"></i> Mais
+                </button>
+            </div>
+
+            <div class="editor-barra__grupo">
+                <span class="editor-barra__autor">
+                    <span class="editor-barra__avatar" id="editorAvatar" aria-hidden="true"></span>
+                    <span id="editorAutorNome">Você</span>
+                </span>
+
+                <button type="button" class="btn-artigo-escrever" id="editorContinuarBtn">
+                    Continuar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- O menu que abre embaixo das ferramentas. -->
+        <div class="editor-popover" id="editorPopover" hidden role="menu"></div>
+
+        <!-- ============================================
+             A FOLHA
+             ============================================ -->
+        <div class="editor-folha" id="editorFolha">
+
+            <div class="editor-categoria">
+                <span class="art-card__secao" id="editorSecaoRotulo">RELATOS</span>
+                <span class="art-chip art-chip--tipo" id="editorTipoRotulo">Relato</span>
+            </div>
+
+            <label class="sr-only" for="editorTitulo">Título do artigo</label>
+            <textarea class="editor-titulo" id="editorTitulo" rows="1" maxlength="140"
+                      placeholder="Start writing..."></textarea>
+
+            <label class="sr-only" for="editorSubtitulo">Subtítulo</label>
+            <textarea class="editor-subtitulo" id="editorSubtitulo" rows="1" maxlength="220"
+                      placeholder="Uma linha que explica do que se trata (opcional)"></textarea>
+
+            <label class="sr-only" for="editorCorpo">Texto do artigo</label>
+            <textarea class="editor-corpo" id="editorCorpo"
+                      placeholder="Escreva aqui. Linha em branco separa parágrafos.
+
+## Um subtítulo marca uma parte nova
+> Uma citação fica recuada.
+- Um item de lista começa com hífen."></textarea>
+
+            <div class="editor-contador">
+                <span id="editorContadorPalavras">0 palavras</span>
+                <span id="editorContadorTempo">1 min de leitura</span>
+                <span id="editorContadorSalvo">Rascunho guardado neste navegador</span>
+            </div>
+        </div>
+
+        <!-- ============================================
+             A PRÉ-VISUALIZAÇÃO
+             ============================================ -->
+        <section class="editor-preview" id="editorPrevia" aria-label="Pré-visualização do artigo">
+            <p class="editor-preview__rotulo">
+                <i class="fa-regular fa-eye" aria-hidden="true"></i> Como vai aparecer
+            </p>
+            <div id="editorPreviaConteudo"></div>
+        </section>
+
+        <!-- ============================================
+             CONFIGURAÇÕES
+             ============================================ -->
+        <div class="editor-config">
+            <button type="button" class="editor-config__abrir" id="editorConfigAbrir"
+                    aria-expanded="false" aria-controls="editorConfigPainel">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i> Configurações
+            </button>
+        </div>
+
+        <div class="editor-config__painel" id="editorConfigPainel" hidden aria-label="Configurações do artigo">
+
+            <div class="editor-config__cabecalho">
+                <h2>Configurações do artigo</h2>
+                <button type="button" class="editor-config__fechar" id="editorConfigFechar" aria-label="Fechar configurações">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="editor-campo">
+                <label for="editorSecao">Seção</label>
+                <input type="text" id="editorSecao" list="editorSecaoLista" maxlength="40" placeholder="Relatos">
+                <datalist id="editorSecaoLista"></datalist>
+                <small class="editor-campo__dica">É o nome que aparece em maiúsculas no topo do card.</small>
+            </div>
+
+            <div class="editor-campo">
+                <label for="editorTipo">Tipo</label>
+                <select id="editorTipo"></select>
+                <small class="editor-campo__dica">Relato, História, Guia ou Análise.</small>
+            </div>
+
+            <div class="editor-campo">
+                <label for="editorCapa">Capa (endereço da imagem)</label>
+                <input type="url" id="editorCapa" placeholder="https://…">
+                <small class="editor-campo__dica">Opcional. A imagem aparece no topo do artigo.</small>
+            </div>
+
+            <div class="editor-campo">
+                <label for="editorAviso">Aviso de conteúdo sensível</label>
+                <textarea id="editorAviso" maxlength="220" placeholder="Ex.: Este texto aborda suicídio e pensamentos suicidas."></textarea>
+                <label class="editor-toggle" style="margin-top:.5rem;">
+                    <input type="checkbox" id="editorSensivel">
+                    <span>Marcar como conteúdo sensível</span>
+                </label>
+                <small class="editor-campo__dica">O aviso aparece antes do texto, em destaque.</small>
+            </div>
+
+            <div class="editor-campo">
+                <label for="editorPrioridade">Prioridade</label>
+                <div class="editor-faixa">
+                    <input type="range" id="editorPrioridade" min="0" max="10" step="1" value="5">
+                    <span class="editor-faixa__valor" id="editorPrioridadeValor">5/10</span>
+                </div>
+                <small class="editor-campo__dica">Opcional. Serve para ordenar o que é mais urgente.</small>
+            </div>
+
+            <div class="editor-campo">
+                <label class="editor-toggle">
+                    <input type="checkbox" id="editorPago">
+                    <span>Artigo pago</span>
+                </label>
+                <small class="editor-campo__dica">Mostra a marca "Pago" no card.</small>
+            </div>
+
+            <div class="editor-config__acoes">
+                <button type="button" class="btn-artigo-escrever btn-artigo-escrever--fantasma" id="editorRascunhoBtn">
+                    <i class="fa-regular fa-file" aria-hidden="true"></i> Salvar rascunho
+                </button>
+                <button type="button" class="btn-artigo-escrever" id="editorPublicarBtn">
+                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Publicar artigo
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-config.js"></script>
+    <script src="/js/supabase.js"></script>
+    <script src="/auth-global.js"></script>
+    <script src="/comunidade/comunidade-nav.js"></script>
+    <script src="/comunidade/artigos-dados.js"></script>
+    <script src="/comunidade/escrever-artigo.js"></script>
+    <script src="/pular-conteudo.js"></script>
+    <script src="/userway.js"></script>
+    <script src="/vlibras.js"></script>
+</body>
+</html>

@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/comunidade/comunidade-tokens.css">
     <link rel="stylesheet" href="/comunidade/comunidade-nav.css">
     <link rel="stylesheet" href="perfil.css">
+    <link rel="stylesheet" href="/comunidade/artigos.css">
     <script src="/comunidade/theme.js"></script>
   <link rel="stylesheet" href="/movimento-reduzido.css">
   <script src="/imagens.js"></script>
@@ -47,6 +48,10 @@
     <nav class="community-subnav" id="communitySubnav" aria-label="Seções da comunidade">
         <div class="community-subnav-inner">
             <a class="subnav-tab active" data-tab="forum" href="/comunidade/comunidade.html#screen-forum"><i class="fa-regular fa-message"></i><span>Fórum</span></a>
+
+            <a class="subnav-tab" data-tab="artigos" href="/comunidade/artigos.html">
+                <i class="fa-solid fa-feather-pointed"></i><span>Artigos</span>
+            </a>
 
             <a class="subnav-tab" data-tab="grupos" href="/comunidade/explorar-grupos.html">
                 <i class="fa-solid fa-users"></i><span>Grupos</span>
@@ -107,6 +112,9 @@
                     <button class="btn-hero-primary" id="openEditBtn" style="display:none;">
                         <i class="fa-solid fa-pen"></i> Editar Perfil
                     </button>
+                    <a class="btn-hero-artigo" id="btnEscreverArtigo" href="/comunidade/escrever-artigo.html" style="display:none;" title="Escrever um artigo">
+                        <i class="fa-regular fa-pen-to-square"></i> Escrever artigo
+                    </a>
                     <button class="btn-hero-friend" id="profileFriendBtn" style="display:none;">
                         <i class="fa-solid fa-user-plus"></i> Adicionar amigo
                     </button>
@@ -154,6 +162,9 @@
                 <nav class="profile-inner-tabs" role="tablist">
                     <button class="profile-inner-tab active" data-tab="posts" role="tab">
                         <i class="fa-regular fa-message"></i> Posts
+                    </button>
+                    <button class="profile-inner-tab" data-tab="artigos" role="tab">
+                        <i class="fa-solid fa-feather-pointed"></i> Artigos
                     </button>
                     <button class="profile-inner-tab" data-tab="respostas" role="tab">
                         <i class="fa-regular fa-comment"></i> Respostas
@@ -359,6 +370,7 @@
     <script src="/js/supabase.js"></script>
     <script src="/auth-global.js"></script>
     <script src="/comunidade/comunidade-nav.js"></script>
+    <script src="/comunidade/artigos-dados.js"></script>
 <script src="perfil.js"></script>
 <script src="/pular-conteudo.js"></script>
 <script src="/userway.js"></script>

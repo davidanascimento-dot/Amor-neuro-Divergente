@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentTab = 'posts';
     let allPosts = [];        // cache dos posts do usuário
     let allSavedPosts = [];   // cache dos posts salvos
+    let allArticles = [];     // cache dos artigos do usuário
     let suggestedProfiles = [];
     const followedUserIds = new Set();
 
@@ -118,6 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             await loadPosts();
             await loadStats();
             await loadSavedPosts();
+            await loadArticles();
             renderHighlights();
 
         } catch (err) {
@@ -255,6 +257,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             editBtn.style.display = isOwnProfile ? 'flex' : 'none';
         }
 
+        /* "Escrever artigo" também só no próprio perfil — e só com sessão
+         * aberta, porque o editor exige quem está logado. */
+        const btnArtigo = document.getElementById('btnEscreverArtigo');
+        if (btnArtigo) {
+            btnArtigo.style.display = (isOwnProfile && currentUser) ? 'flex' : 'none';
+        }
+
         // Ações de amizade no perfil de terceiros
         if (!isOwnProfile) {
             loadFriendshipHero();
@@ -350,6 +359,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         allSavedPosts = [];
     }
 }
+
+    // =============================================
+    // 5.1. ARTIGOS DO USUÁRIO
+    // ------------------------------------------------------------------------
+    // A aba "Artigos" mostra o que a pessoa escreveu. A leitura é feita pelo
+    // módulo compartilhado (artigos-dados.js) para o card sair exatamente
+    // igual ao da área Artigos, ao do Explorar e ao do Blog.
+    //
+    // Quem olha o perfil de outra pessoa vê só o que está publicado. Quem
+    // olha o próprio perfil vê também os rascunhos — é onde a pessoa
+    // retoma o texto que deixou pela metade.
+    // =============================================
+    async function loadArticles() {
+        const D = window.artigosDados;
+        if (!D) {
+            allArticles = [];
+            return;
+        }
+
+        try {
+            const { artigos, erro } = await D.lerArtigos({
+                autorId: targetUserId,
+                limite: 50,
+                incluirRascunhos: isOwnProfile
+            });
+
+            if (erro) {
+                console.warn('⚠️ [loadArticles] Erro ao carregar artigos:', erro);
+                allArticles = [];
+                renderCurrentTab();
+                return;
+            }
+
+            allArticles = artigos || [];
+            renderCurrentTab();
+        } catch (e) {
+            console.warn('❌ [loadArticles] Exceção:', e);
+            allArticles = [];
+            renderCurrentTab();
+        }
+    }
        // =============================================
     // 5.2. RENDERIZAR DESTAQUES DA COMUNIDADE
     // =============================================
@@ -400,6 +450,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const container = document.getElementById('profileContent');
         if (!container) return;
 
+        /* A aba "Artigos" não é uma lista de posts: ela tem o seu próprio
+         * desenho, porque o card de artigo é outro objeto. */
+        if (currentTab === 'artigos') {
+            renderArticlesTab(container);
+            return;
+        }
+
         let filtered = allPosts;
 
         if (currentTab === 'midia') {
@@ -436,8 +493,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             case 'midia': return 'Nenhuma mídia publicada ainda.';
             case 'curtidas': return 'Nenhuma curtida ainda.';
             case 'salvos': return 'Nenhum post salvo ainda — salve no fórum para vê-los aqui.';
+            case 'artigos': return 'Nenhum artigo publicado ainda.';
             default: return '';
         }
+    }
+
+    // =============================================
+    // 6.1. ABA DE ARTIGOS
+    // ------------------------------------------------------------------------
+    // O card é o mesmo da área Artigos — vem do módulo compartilhado. Aqui
+    // só se escolhe o formato (compacto) e se liga os botões. Se cada tela
+    // desenhasse o seu, o mesmo artigo apareceria de cinco jeitos.
+    // =============================================
+    function renderArticlesTab(container) {
+        const D = window.artigosDados;
+
+        if (!D) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-feather-pointed"></i>
+                    <p>Nada por aqui ainda</p>
+                    <small>Nenhum artigo publicado ainda.</small>
+                </div>
+            `;
+            return;
+        }
+
+        if (!allArticles.length) {
+            const mensagem = isOwnProfile
+                ? 'Escreva o primeiro — a área Artigos é aberta a todo mundo da comunidade.'
+                : 'Nenhum artigo publicado ainda.';
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-feather-pointed"></i>
+                    <p>Nada por aqui ainda</p>
+                    <small>${mensagem}</small>
+                </div>
+            `;
+            return;
+        }
+
+        const frag = document.createDocumentFragment();
+        for (const artigo of allArticles) {
+            frag.appendChild(D.montarCard(artigo, profileUser, { compacto: true }));
+        }
+
+        container.innerHTML = '';
+        container.appendChild(frag);
     }
 
     // =============================================
@@ -1209,6 +1311,56 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentTab = tab.dataset.tab || 'posts';
             renderCurrentTab();
         });
+    });
+
+    /* Os botões do card de artigo (ouvir, favoritar) têm o mesmo
+     * comportamento da área Artigos. O clique é delegado no container, e
+     * não em cada card, porque os cards são redesenhados a cada troca de
+     * aba. */
+    const profileContent = document.getElementById('profileContent');
+    if (profileContent) {
+        profileContent.addEventListener('click', (evento) => {
+            const D = window.artigosDados;
+            if (!D) return;
+
+            const botao = evento.target.closest('[data-acao]');
+            if (!botao) return;
+
+            const cartao = botao.closest('[data-article-id]');
+            if (!cartao) return;
+
+            const id = cartao.getAttribute('data-article-id');
+            const acao = botao.getAttribute('data-acao');
+
+            if (acao === 'favoritar') {
+                const agoraFavorito = D.alternarFavorito(id);
+                botao.classList.toggle('is-ativo', agoraFavorito);
+                botao.setAttribute('aria-pressed', agoraFavorito ? 'true' : 'false');
+                const icone = botao.querySelector('i');
+                if (icone) icone.className = `fa-${agoraFavorito ? 'solid' : 'regular'} fa-bookmark`;
+                return;
+            }
+
+            if (acao === 'ouvir') {
+                const artigo = allArticles.find(a => a.id === id);
+                if (!artigo) return;
+
+                if (!D.podeFalar()) {
+                    showToast('Este navegador não tem leitura em voz alta.');
+                    return;
+                }
+
+                const começou = D.falar(artigo);
+                botao.classList.toggle('is-ativo', começou);
+                if (!começou) D.pararDeFalar();
+            }
+        });
+    }
+
+    // Parar de falar quando a pessoa sai da página.
+    window.addEventListener('beforeunload', () => {
+        const D = window.artigosDados;
+        if (D) D.pararDeFalar();
     });
 
     // =============================================

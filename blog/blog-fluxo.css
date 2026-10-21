@@ -1463,6 +1463,22 @@ body.a11y-dark-mode .editorial-card__excerto { color: #94a3b8; }
     margin-top: 28px;
 }
 
+/* O rotulo de cada grupo da secao (Artigos / Publicacoes). A lista de
+   artigos vem primeiro, entao o primeiro rotulo nao precisa de espaco
+   em cima — os outros recebem. */
+.blog-comunidade__rotulo {
+    margin: 28px 0 0;
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--bl-suave);
+}
+
+.blog-comunidade__lista + .blog-comunidade__rotulo {
+    margin-top: 2.25rem;
+}
+
 /* ---------- O card ---------- */
 
 .comunidade-card {

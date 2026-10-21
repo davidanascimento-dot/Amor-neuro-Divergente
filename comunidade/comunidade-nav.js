@@ -40,6 +40,9 @@
        ------------------------------------------------------------------ */
     var VOLTA = {
         'comunidade.html':      { tipo: 'topo' },
+        'artigos.html':         { tipo: 'detalhe', href: '/comunidade/artigos.html' },
+        'artigo.html':          { tipo: 'detalhe', href: '/comunidade/artigos.html' },
+        'escrever-artigo.html': { tipo: 'detalhe', href: '/comunidade/artigos.html' },
         'explorar-grupos.html': { tipo: 'topo' },
         'conversas.html':       { tipo: 'topo' },
         'meus-grupos.html':     { tipo: 'detalhe', href: '/comunidade/explorar-grupos.html' },

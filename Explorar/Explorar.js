@@ -183,6 +183,122 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
+    // CLIENT — ARTIGOS DA COMUNIDADE
+    // =============================================
+    /* O bloco "Artigos da Comunidade" é o mesmo card da área Artigos, do
+     * perfil e do Blog: vem do módulo compartilhado (artigos-dados.js).
+     * O card é montado em um lugar só justamente para o mesmo artigo não
+     * aparecer de cinco jeitos diferentes.
+     *
+     * O limite aqui é 3 — é amostra, não acervo. Quem lista tudo é a área
+     * Artigos da Comunidade.
+     */
+    const EXPLORAR_ARTIGOS = {
+        carregando: document.getElementById('explorarArtigosCarregando'),
+        grade:      document.getElementById('explorarArtigosGrade'),
+        estado:     document.getElementById('explorarArtigosEstado'),
+    };
+
+    (async function carregarArtigosExplorar() {
+        const D = window.artigosDados;
+        if (!D || !EXPLORAR_ARTIGOS.grade) return;
+
+        const esconderCarregando = () => {
+            if (EXPLORAR_ARTIGOS.carregando) EXPLORAR_ARTIGOS.carregando.hidden = true;
+        };
+
+        const mostrarEstado = (titulo, texto) => {
+            if (!EXPLORAR_ARTIGOS.estado) return;
+            EXPLORAR_ARTIGOS.estado.innerHTML = D.estadoVazio(
+                titulo,
+                texto,
+                'Ver a área Artigos',
+                '/comunidade/artigos.html'
+            );
+        };
+
+        let artigos = [];
+        let erro = null;
+
+        try {
+            const resultado = await D.lerArtigos({ limite: LIMITE_EXPLORAR });
+            artigos = resultado.artigos || [];
+            erro = resultado.erro;
+        } catch (e) {
+            erro = e;
+        }
+
+        esconderCarregando();
+
+        if (erro) {
+            console.warn('[Explorar] Artigos da comunidade indisponíveis.', erro);
+            EXPLORAR_ARTIGOS.grade.innerHTML = '';
+            mostrarEstado(
+                'Artigos indisponíveis agora',
+                'Não foi possível carregar os artigos da comunidade. Tente de novo em instantes.'
+            );
+            return;
+        }
+
+        if (!artigos.length) {
+            EXPLORAR_ARTIGOS.grade.innerHTML = '';
+            mostrarEstado(
+                'Nenhum artigo publicado ainda',
+                'Assim que alguém publicar um artigo na Comunidade, ele aparece aqui.'
+            );
+            return;
+        }
+
+        // Os autores são buscados em UMA consulta para todos os artigos.
+        const ids = artigos.map(a => a.author_id).filter(Boolean);
+        const perfis = await D.lerAutores(ids);
+
+        const frag = document.createDocumentFragment();
+        for (const artigo of artigos) {
+            frag.appendChild(D.montarCard(artigo, perfis.get(artigo.author_id), { compacto: true }));
+        }
+
+        EXPLORAR_ARTIGOS.grade.replaceChildren(frag);
+        if (EXPLORAR_ARTIGOS.estado) EXPLORAR_ARTIGOS.estado.innerHTML = '';
+
+        // Os botões do card (ouvir, favoritar) funcionam igual aos da área
+        // Artigos. O clique é delegado, e não preso em cada card.
+        EXPLORAR_ARTIGOS.grade.addEventListener('click', (evento) => {
+            const botao = evento.target.closest('[data-acao]');
+            if (!botao) return;
+
+            const cartao = botao.closest('[data-article-id]');
+            if (!cartao) return;
+
+            const id = cartao.getAttribute('data-article-id');
+            const acao = botao.getAttribute('data-acao');
+
+            if (acao === 'favoritar') {
+                const agoraFavorito = D.alternarFavorito(id);
+                botao.classList.toggle('is-ativo', agoraFavorito);
+                botao.setAttribute('aria-pressed', agoraFavorito ? 'true' : 'false');
+                const icone = botao.querySelector('i');
+                if (icone) icone.className = `fa-${agoraFavorito ? 'solid' : 'regular'} fa-bookmark`;
+                return;
+            }
+
+            if (acao === 'ouvir') {
+                const artigo = artigos.find(a => a.id === id);
+                if (!artigo) return;
+
+                if (!D.podeFalar()) {
+                    console.info('[Explorar] Este navegador não tem leitura em voz alta.');
+                    return;
+                }
+
+                const começou = D.falar(artigo);
+                botao.classList.toggle('is-ativo', começou);
+                if (!começou) D.pararDeFalar();
+            }
+        });
+    })();
+
+    // =============================================
     // 0. SINCRONIZAÇÃO DE PERFIL
     // =============================================
     function syncProfile() {

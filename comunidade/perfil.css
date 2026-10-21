@@ -234,6 +234,32 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
+/* Botão "Escrever artigo" — só aparece no próprio perfil */
+.btn-hero-artigo {
+    padding: 10px 24px;
+    background: #6d3bd1;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.btn-hero-artigo:hover {
+    background: #5b2cb8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
 /* Botão ícone circular (Compartilhar) */
 .btn-hero-icon {
     width: 42px;
@@ -1365,6 +1391,11 @@ body.a11y-dark-mode .suggestion-friend-button.is-friends {
         font-size: 13px;
     }
 
+    .btn-hero-artigo {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
     .btn-hero-icon,
     .btn-hero-secondary {
         width: 38px;
@@ -1725,6 +1756,15 @@ body.a11y-dark-mode .profile-page {
 body.a11y-dark-mode .btn-hero-primary {
     background: #6d3bd1;
     color: #fff;
+}
+
+body.a11y-dark-mode .btn-hero-artigo {
+    background: #6d3bd1;
+    color: #fff;
+}
+
+body.a11y-dark-mode .btn-hero-artigo:hover {
+    background: #7d4fe0;
 }
 
 body.a11y-dark-mode .btn-hero-icon,

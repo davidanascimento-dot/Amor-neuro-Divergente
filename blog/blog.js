@@ -456,6 +456,11 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const PUBLICA_COMUNIDADE = {
         lista:      document.getElementById('comunidadeLista'),
+        /* Os ARTIGOS: a mesma lista, o mesmo card, o mesmo modulo da area
+         * Artigos da Comunidade. Vem da tabela `articles`. */
+        artigos:    document.getElementById('comunidadeArtigosLista'),
+        rotuloArtigos: document.getElementById('comunidadeArtigosRotulo'),
+        rotuloPosts:   document.getElementById('comunidadePostsRotulo'),
         carregando: document.getElementById('comunidadeCarregando'),
         erro:       document.getElementById('comunidadeErro'),
         erroTexto:  document.getElementById('comunidadeErroTexto'),
@@ -511,12 +516,21 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Sentinela: evita mostrar "há 0 dias" ou um nome vazio. */
     const AVATAR_PADRAO = '/img/foto-padrão.jpg';
 
-    function mostrarEstado(nome) {
+    /* O estado da seção. `posts` e `artigos` dizem o que TEM conteúdo:
+     * às vezes há artigo e não há post (ninguém postou no Fórum, mas
+     * alguém escreveu um artigo), e as duas listas precisam aparecer e
+     * sumir separadamente. */
+    function mostrarEstado(nome, opcoes = {}) {
         // 'carregando' | 'erro' | 'vazio' | 'lista'
+        const { posts = true, artigos = false } = opcoes;
+
         if (PUBLICA_COMUNIDADE.carregando) PUBLICA_COMUNIDADE.carregando.hidden = nome !== 'carregando';
         if (PUBLICA_COMUNIDADE.erro)       PUBLICA_COMUNIDADE.erro.hidden       = nome !== 'erro';
         if (PUBLICA_COMUNIDADE.vazio)      PUBLICA_COMUNIDADE.vazio.hidden      = nome !== 'vazio';
-        if (PUBLICA_COMUNIDADE.lista)      PUBLICA_COMUNIDADE.lista.hidden      = nome !== 'lista';
+        if (PUBLICA_COMUNIDADE.lista)      PUBLICA_COMUNIDADE.lista.hidden      = nome !== 'lista' || !posts;
+        if (PUBLICA_COMUNIDADE.artigos)    PUBLICA_COMUNIDADE.artigos.hidden    = nome !== 'lista' || !artigos;
+        if (PUBLICA_COMUNIDADE.rotuloPosts)   PUBLICA_COMUNIDADE.rotuloPosts.hidden   = nome !== 'lista' || !posts;
+        if (PUBLICA_COMUNIDADE.rotuloArtigos) PUBLICA_COMUNIDADE.rotuloArtigos.hidden = nome !== 'lista' || !artigos;
         if (PUBLICA_COMUNIDADE.rodape)     PUBLICA_COMUNIDADE.rodape.hidden     = nome !== 'lista';
     }
 
@@ -561,6 +575,58 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
         `;
         return card;
+    }
+
+    /* ------------------------------------------------------------------
+     * Os ARTIGOS da comunidade.
+     *
+     * Vêm do módulo compartilhado (artigos-dados.js) — o mesmo que a área
+     * Artigos, o perfil e o Explorar usam. É o que garante que o mesmo
+     * artigo tenha o mesmo card nas quatro telas, em vez de quatro
+     * formatos diferentes.
+     *
+     * Se a tabela `articles` ainda não existir (o sql/28_artigos.sql não
+     * foi rodado), a falha é absorvida aqui: os posts continuam
+     * aparecendo. Uma tabela que falta não pode derrubar a seção toda.
+     * ------------------------------------------------------------------ */
+    async function lerArtigosComunidade() {
+        const D = window.artigosDados;
+        if (!D) return [];
+
+        try {
+            const { artigos, erro } = await D.lerArtigos({ limite: LIMITE_COMUNIDADE });
+
+            if (erro) {
+                console.warn('[blog] Artigos indisponíveis; mostrando só as publicações.', erro);
+                return [];
+            }
+
+            return artigos || [];
+        } catch (e) {
+            console.warn('[blog] Artigos indisponíveis; mostrando só as publicações.', e);
+            return [];
+        }
+    }
+
+    async function desenharArtigosComunidade(artigos) {
+        const D = window.artigosDados;
+        if (!D || !PUBLICA_COMUNIDADE.artigos) return;
+
+        if (!artigos.length) {
+            PUBLICA_COMUNIDADE.artigos.replaceChildren();
+            return;
+        }
+
+        /* Os perfis dos autores em UMA consulta, e não uma por artigo. */
+        const ids = [...new Set(artigos.map(a => a.author_id).filter(Boolean))];
+        const perfis = ids.length ? await D.lerAutores(ids) : new Map();
+
+        const frag = document.createDocumentFragment();
+        for (const artigo of artigos) {
+            frag.appendChild(D.montarCard(artigo, perfis.get(artigo.author_id), { compacto: true }));
+        }
+
+        PUBLICA_COMUNIDADE.artigos.replaceChildren(frag);
     }
 
     /* ------------------------------------------------------------------
@@ -633,6 +699,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mostrarEstado('carregando');
 
+        /* Os ARTIGOS vêm primeiro, e a leitura deles é independente da
+         * de posts: uma tabela que ainda não existe não pode impedir os
+         * posts de aparecerem. */
+        const artigos = await lerArtigosComunidade();
+
         try {
             /* A consulta: só posts ativos, mais recentes primeiro.
              *
@@ -643,7 +714,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (error) throw error;
 
-            if (!posts || posts.length === 0) {
+            const listaPosts = posts || [];
+
+            // Nada dos dois lados: a seção fica vazia de verdade.
+            if (!listaPosts.length && !artigos.length) {
                 mostrarEstado('vazio');
                 return;
             }
@@ -652,7 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
              * post). Se falhar, seguimos sem os nomes — o card cai no
              * rótulo genérico, e o Blog não quebra por causa disso. */
             let perfis = new Map();
-            const idsAutores = [...new Set(posts.map(p => p.author_id).filter(Boolean))];
+            const idsAutores = [...new Set(listaPosts.map(p => p.author_id).filter(Boolean))];
 
             if (idsAutores.length) {
                 try {
@@ -670,15 +744,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const frag = document.createDocumentFragment();
-            for (const post of posts) {
+            for (const post of listaPosts) {
                 frag.appendChild(montarCard(post, perfis.get(post.author_id)));
             }
-
             PUBLICA_COMUNIDADE.lista.replaceChildren(frag);
-            mostrarEstado('lista');
+
+            await desenharArtigosComunidade(artigos);
+
+            mostrarEstado('lista', {
+                posts: listaPosts.length > 0,
+                artigos: artigos.length > 0
+            });
 
         } catch (error) {
             console.error('[blog] Erro ao carregar publicações da comunidade:', error);
+
+            /* Se os posts falharam mas os artigos vieram, mostra o que
+             * tem: uma seção vazia seria pior do que uma seção parcial. */
+            if (artigos.length) {
+                await desenharArtigosComunidade(artigos);
+                mostrarEstado('lista', { posts: false, artigos: true });
+                return;
+            }
+
             mostrarEstado('erro');
 
             /* A mensagem precisa dizer o que fazer. "Tente recarregar" era
@@ -691,7 +779,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-
     carregarPublicacoesComunidade();
 
     // =============================================
@@ -700,6 +787,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('📝 Blog inicializado!');
     console.log('   ♿ Acessibilidade integrada (hub flutuante + sidebar)');
     console.log('   🎬 Modal de vídeo + filtros por chips');
-    console.log('   💬 Publicações da comunidade carregadas da tabela `posts`');
+    console.log('   💬 Publicações e artigos da comunidade carregados do banco');
     console.log('   👤 Perfil:', localStorage.getItem('userName') || 'Visitante');
 });

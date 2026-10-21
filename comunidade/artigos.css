@@ -1,0 +1,1264 @@
+/* ==========================================================================
+   ARTIGOS.CSS — o sistema de artigos da Comunidade
+   --------------------------------------------------------------------------
+   O QUE ESTE ARQUIVO É
+   A folha de estilo das três telas novas do sistema de artigos:
+
+     1. /comunidade/artigos.html          — a área "Artigos" da subnav
+     2. /comunidade/artigo.html           — a página de leitura
+     3. /comunidade/escrever-artigo.html  — o editor
+
+   E o card de artigo, que também aparece no Explorar e no Blog.
+
+   DE ONDE VEM A COR
+   Nada de cor nova. Tudo usa os tokens de --cm-* (comunidade-tokens.css),
+   que já têm a versão clara e a versão escura. Se a paleta mudar, este
+   arquivo não muda.
+
+   ========================================================================== */
+
+/* ==========================================================================
+   0. FALLBACK DE COR
+   --------------------------------------------------------------------------
+   O Explorar e o Blog carregam este arquivo SEM a comunidade-tokens.css.
+   Sem estas variáveis, o card de artigo sairia sem cor nenhuma.
+
+   O `:where()` é de propósito: ele zera a especificidade. Assim, quando os
+   dois arquivos estão na mesma página, o comunidade-tokens.css — que tem
+   especificidade normal — continua mandando, e aqui só entra o valor de
+   último recurso.
+   ========================================================================== */
+
+:where(:root) {
+    --cm-bg: #f4f6f0;
+    --cm-surface: #ffffff;
+    --cm-surface-soft: #fbfcfa;
+    --cm-surface-green: #dceadf;
+
+    --cm-purple: #7540a5;
+    --cm-purple-hover: #633389;
+    --cm-purple-soft: #f0e8f7;
+    --cm-green: #436c51;
+    --cm-green-hover: #365842;
+    --cm-green-soft: #e7f0e9;
+    --cm-pink: #ad4276;
+    --cm-pink-soft: #f8e9f1;
+
+    --cm-text: #25263a;
+    --cm-text-soft: #647060;
+    --cm-muted: #646f65;
+    --cm-text-on-dark: #ffffff;
+
+    --cm-border: #dfe4da;
+    --cm-border-soft: #ecefe8;
+    --cm-border-strong: #c6cfc2;
+    --cm-border-input: #7f8f7b;
+    --cm-focus: #7540a5;
+
+    --cm-radius: 16px;
+    --cm-radius-sm: 10px;
+    --cm-radius-btn: 30px;
+
+    --cm-shadow-sm: 0 1px 2px rgba(37, 38, 58, .05);
+    --cm-shadow: 0 2px 10px rgba(37, 38, 58, .06);
+    --cm-shadow-hover: 0 6px 22px rgba(37, 38, 58, .10);
+}
+
+/* O modo escuro dos tokens da Comunidade, para quem carrega só este
+   arquivo. Mesma técnica: `:where()` para não competir com o outro. */
+:where(html.a11y-dark-mode),
+:where(body.a11y-dark-mode) {
+    --cm-bg: #12161a;
+    --cm-surface: #1a1f24;
+    --cm-surface-soft: #21272d;
+    --cm-surface-green: #1e2a22;
+
+    --cm-purple: #b183e8;
+    --cm-purple-hover: #c49ef0;
+    --cm-purple-soft: #2a2036;
+    --cm-green: #8fc4a4;
+    --cm-green-hover: #a6d5b7;
+    --cm-green-soft: #1c2a20;
+    --cm-pink: #e59ac0;
+    --cm-pink-soft: #2f1f28;
+
+    --cm-text: #eef1ee;
+    --cm-text-soft: #a8b3ab;
+    --cm-muted: #8b978e;
+
+    --cm-border: #2c343a;
+    --cm-border-soft: #242b30;
+    --cm-border-strong: #3d474e;
+    --cm-focus: #b183e8;
+
+    --cm-shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --cm-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+    --cm-shadow-hover: 0 6px 22px rgba(0, 0, 0, .45);
+}
+
+/* ==========================================================================
+   1. BASE
+   ========================================================================== */
+
+.artigos-main,
+.artigo-main,
+.editor-main {
+    position: relative;
+    z-index: 1;
+    width: min(1180px, 100% - 2rem);
+    margin-inline: auto;
+    padding-block: 1.75rem 4rem;
+}
+
+.artigos-main {
+    width: min(1240px, 100% - 2rem);
+}
+
+/* O título da tela, no mesmo formato dos outros cabeçalhos da Comunidade. */
+.artigos-cabecalho {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.artigos-cabecalho__texto { min-width: 0; }
+
+.artigos-cabecalho__titulo {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin: 0 0 .35rem;
+    font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--cm-text);
+}
+
+.artigos-cabecalho__titulo i { color: var(--cm-purple); }
+
+.artigos-cabecalho__sub {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--cm-text-soft);
+    font-size: .98rem;
+    line-height: 1.6;
+}
+
+/* O botão de escrever, o mesmo verde/roxo de ação da casa. */
+.btn-artigo-escrever {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .7rem 1.25rem;
+    border: 0;
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-purple);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    font-size: .95rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+.btn-artigo-escrever:hover,
+.btn-artigo-escrever:focus-visible {
+    background: var(--cm-purple-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--cm-shadow-hover);
+}
+
+.btn-artigo-escrever--fantasma {
+    background: transparent;
+    color: var(--cm-purple);
+    box-shadow: inset 0 0 0 2px var(--cm-purple);
+}
+
+.btn-artigo-escrever--fantasma:hover,
+.btn-artigo-escrever--fantasma:focus-visible {
+    background: var(--cm-purple-soft);
+}
+
+/* ==========================================================================
+   2. FILTROS
+   ========================================================================== */
+
+.artigos-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 1.25rem;
+    padding: .7rem;
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-sm);
+}
+
+.artigos-busca {
+    position: relative;
+    flex: 1 1 240px;
+    min-width: 200px;
+}
+
+.artigos-busca i {
+    position: absolute;
+    left: .85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cm-muted);
+    pointer-events: none;
+}
+
+.artigos-busca input {
+    width: 100%;
+    padding: .6rem .9rem .6rem 2.4rem;
+    border: 1px solid var(--cm-border-input);
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-surface-soft);
+    color: var(--cm-text);
+    font: inherit;
+    font-size: .92rem;
+}
+
+.artigos-busca input::placeholder { color: var(--cm-muted); }
+
+.artigos-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+.artigos-chip {
+    padding: .4rem .85rem;
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.artigos-chip:hover { border-color: var(--cm-border-strong); color: var(--cm-text); }
+
+.artigos-chip.is-ativo {
+    background: var(--cm-purple);
+    border-color: var(--cm-purple);
+    color: #fff;
+}
+
+/* ==========================================================================
+   3. O CARD
+   --------------------------------------------------------------------------
+   A forma segue o mockup: seção em maiúsculas no topo, marcas à direita,
+   título grande, subtítulo, aviso e rodapé com autor, tempo de leitura e
+   contagens.
+   ========================================================================== */
+
+.art-card {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+    padding: 1.15rem 1.25rem 1rem;
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-sm);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.art-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cm-shadow-hover);
+    border-color: var(--cm-border-strong);
+}
+
+.art-card__topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .6rem;
+    flex-wrap: wrap;
+}
+
+.art-card__secao {
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cm-purple);
+}
+
+.art-card__marcas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+}
+
+.art-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .22rem .55rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 999px;
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+button.art-chip { cursor: pointer; }
+button.art-chip:hover { border-color: var(--cm-border-strong); color: var(--cm-text); }
+
+.art-chip--ouvir:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
+.art-chip--favorito.is-ativo { color: var(--cm-pink); border-color: var(--cm-pink); background: var(--cm-pink-soft); }
+.art-chip--pago { color: var(--cm-green); border-color: var(--cm-green); background: var(--cm-green-soft); }
+.art-chip--aviso { color: #8a5a00; border-color: #d9b066; background: #fdf3e2; }
+.art-chip--tipo { color: var(--cm-text-soft); }
+
+.art-card__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.art-card__titulo {
+    margin: 0;
+    font-size: 1.28rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--cm-text);
+}
+
+.art-card__link:hover .art-card__titulo { color: var(--cm-purple); }
+
+.art-card__subtitulo {
+    margin: .45rem 0 0;
+    font-size: .95rem;
+    line-height: 1.55;
+    color: var(--cm-text-soft);
+}
+
+.art-card__aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: .45rem;
+    margin: 0;
+    padding: .55rem .7rem;
+    border-radius: var(--cm-radius-sm);
+    background: #fdf3e2;
+    border: 1px solid #e6c98f;
+    color: #6b4700;
+    font-size: .82rem;
+    line-height: 1.45;
+}
+
+.art-card__aviso i { margin-top: .15rem; }
+
+.art-card__rodape {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .6rem .9rem;
+    margin-top: auto;
+    padding-top: .7rem;
+    border-top: 1px solid var(--cm-border-soft);
+}
+
+.art-card__autor {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    min-width: 0;
+}
+
+.art-card__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--cm-purple-soft);
+    flex: 0 0 auto;
+}
+
+.art-card__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.art-card__inicial {
+    font-size: .78rem;
+    font-weight: 800;
+    color: var(--cm-purple);
+}
+
+.art-card__nome {
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--cm-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.art-card__meta {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--cm-muted);
+}
+
+.art-card__prioridade { color: var(--cm-green); }
+
+.art-card__contagens {
+    display: inline-flex;
+    gap: .7rem;
+    margin-left: auto;
+    font-size: .8rem;
+    color: var(--cm-muted);
+}
+
+.art-card__contagens i { margin-right: .2rem; }
+
+/* Versão compacta: a que vai no Explorar e no Blog. */
+.art-card--compacto { padding: .9rem 1rem .85rem; }
+.art-card--compacto .art-card__titulo { font-size: 1.05rem; }
+.art-card--compacto .art-card__contagens { display: none; }
+
+/* A grade da listagem. */
+.artigos-grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.1rem;
+}
+
+/* A primeira linha em destaque: ocupa a largura toda. */
+.artigos-grade > .art-card:first-child:nth-last-child(1),
+.artigos-grade > .art-card:first-child:last-child {
+    grid-column: 1 / -1;
+}
+
+/* ==========================================================================
+   4. ESTADOS
+   ========================================================================== */
+
+.art-estado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .45rem;
+    padding: 2.75rem 1.5rem;
+    text-align: center;
+    background: var(--cm-surface);
+    border: 1px dashed var(--cm-border-strong);
+    border-radius: var(--cm-radius);
+    color: var(--cm-text-soft);
+}
+
+.art-estado i { font-size: 1.8rem; color: var(--cm-muted); }
+.art-estado strong { font-size: 1.05rem; color: var(--cm-text); }
+.art-estado span { max-width: 46ch; font-size: .92rem; line-height: 1.55; }
+.art-estado--erro { border-style: solid; border-color: #e6c98f; background: #fdf3e2; color: #6b4700; }
+.art-estado--erro i { color: #b07b16; }
+
+.art-estado__link {
+    margin-top: .4rem;
+    color: var(--cm-purple);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid var(--cm-purple-soft);
+}
+
+.art-estado__link:hover { border-bottom-color: var(--cm-purple); }
+
+.art-carregando {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    padding: 2.5rem 1rem;
+    color: var(--cm-muted);
+    font-size: .92rem;
+}
+
+.art-carregando i { color: var(--cm-purple); }
+
+/* ==========================================================================
+   5. A PÁGINA DE LEITURA
+   ========================================================================== */
+
+.artigo-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.artigo-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .45rem .9rem;
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-surface);
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.artigo-voltar:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
+
+.artigo-capa {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: var(--cm-radius);
+    margin-bottom: 1.5rem;
+    background: var(--cm-surface-soft);
+}
+
+.artigo-cartao {
+    max-width: 72ch;
+    margin-inline: auto;
+}
+
+.artigo-secao {
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--cm-purple);
+}
+
+.artigo-titulo {
+    margin: .6rem 0 0;
+    font-size: clamp(2rem, 1.2rem + 3.4vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.02em;
+    color: var(--cm-text);
+}
+
+.artigo-subtitulo {
+    margin: .9rem 0 0;
+    font-size: clamp(1.05rem, .95rem + .5vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--cm-text-soft);
+    font-weight: 500;
+}
+
+.artigo-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+    margin: 1.5rem 0 0;
+    padding: .85rem 1rem;
+    border-radius: var(--cm-radius-sm);
+    background: #fdf3e2;
+    border: 1px solid #e6c98f;
+    color: #6b4700;
+    font-size: .9rem;
+    line-height: 1.5;
+}
+
+.artigo-aviso i { margin-top: .15rem; }
+
+.artigo-byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .6rem .9rem;
+    margin: 1.6rem 0 0;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.artigo-byline__autor {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.artigo-byline__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--cm-purple-soft);
+    flex: 0 0 auto;
+}
+
+.artigo-byline__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.artigo-byline__nome { font-weight: 700; color: var(--cm-text); font-size: .95rem; }
+.artigo-byline__handle { font-size: .82rem; color: var(--cm-muted); }
+.artigo-byline__data { font-size: .78rem; font-weight: 700; letter-spacing: .08em; color: var(--cm-muted); }
+
+.artigo-corpo {
+    margin-top: 1.9rem;
+    font-size: 1.06rem;
+    line-height: 1.78;
+    color: var(--cm-text);
+}
+
+.artigo-corpo p { margin: 0 0 1.15rem; }
+.artigo-corpo p:last-child { margin-bottom: 0; }
+
+.artigo-corpo h2,
+.artigo-corpo h3 {
+    margin: 2rem 0 .7rem;
+    line-height: 1.25;
+    color: var(--cm-text);
+}
+
+.artigo-corpo h2 { font-size: 1.45rem; }
+.artigo-corpo h3 { font-size: 1.18rem; }
+
+.artigo-corpo blockquote {
+    margin: 1.6rem 0;
+    padding: .2rem 0 .2rem 1.2rem;
+    border-left: 3px solid var(--cm-purple);
+    color: var(--cm-text-soft);
+    font-style: italic;
+}
+
+.artigo-corpo ul,
+.artigo-corpo ol { margin: 0 0 1.15rem; padding-left: 1.4rem; }
+.artigo-corpo li { margin-bottom: .4rem; }
+
+.artigo-corpo strong { font-weight: 700; }
+.artigo-corpo em { font-style: italic; }
+
+.artigo-corpo code {
+    padding: .1rem .35rem;
+    border-radius: 5px;
+    background: var(--cm-surface-soft);
+    border: 1px solid var(--cm-border-soft);
+    font-size: .9em;
+}
+
+/* --- Estilos tipográficos (o seletor "Estilo" do editor) ------------------ */
+
+.artigo-corpo--serifada { font-family: Georgia, 'Times New Roman', serif; }
+.artigo-corpo--sem-serifa { font-family: 'Inter', system-ui, sans-serif; }
+.artigo-corpo--poetica {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.14rem;
+    line-height: 1.95;
+    letter-spacing: .004em;
+}
+.artigo-corpo--poetica p { max-width: 58ch; }
+
+/* --- Modelos de layout (o seletor "Modelo" do editor) -------------------- */
+
+.artigo-cartao--revista { max-width: 100%; }
+.artigo-cartao--revista .artigo-corpo {
+    column-gap: 2.6rem;
+    column-count: 2;
+}
+.artigo-cartao--revista .artigo-corpo p { break-inside: avoid; }
+
+.artigo-cartao--minimalista .artigo-capa { display: none; }
+.artigo-cartao--minimalista .artigo-titulo { font-size: clamp(1.8rem, 1.1rem + 2.6vw, 2.7rem); }
+
+.artigo-cartao--capa .artigo-capa {
+    max-height: 70vh;
+    margin-bottom: 2.2rem;
+}
+
+/* --- Rodapé de ações ------------------------------------------------------ */
+
+.artigo-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .6rem;
+    margin: 2.2rem 0 0;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--cm-border);
+}
+
+.artigo-acao {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem 1rem;
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-surface);
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.artigo-acao:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
+.artigo-acao.is-ativo { color: var(--cm-pink); border-color: var(--cm-pink); background: var(--cm-pink-soft); }
+.artigo-acao[disabled] { opacity: .55; cursor: not-allowed; }
+
+.artigo-contador {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .85rem;
+    color: var(--cm-muted);
+}
+
+/* --- Conversa -------------------------------------------------------------- */
+
+.artigo-conversa {
+    max-width: 72ch;
+    margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--cm-border);
+}
+
+.artigo-conversa__titulo {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--cm-text);
+}
+
+.artigo-comentario-form {
+    display: flex;
+    gap: .6rem;
+    margin-bottom: 1.4rem;
+}
+
+.artigo-comentario-form textarea {
+    flex: 1;
+    min-height: 76px;
+    padding: .7rem .9rem;
+    border: 1px solid var(--cm-border-input);
+    border-radius: var(--cm-radius-sm);
+    background: var(--cm-surface);
+    color: var(--cm-text);
+    font: inherit;
+    font-size: .93rem;
+    resize: vertical;
+}
+
+.artigo-comentario {
+    display: flex;
+    gap: .7rem;
+    padding: .9rem 0;
+    border-top: 1px solid var(--cm-border-soft);
+}
+
+.artigo-comentario__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--cm-purple-soft);
+    flex: 0 0 auto;
+}
+
+.artigo-comentario__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.artigo-comentario__cabecalho {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .5rem;
+    margin-bottom: .25rem;
+}
+
+.artigo-comentario__nome { font-weight: 700; font-size: .9rem; color: var(--cm-text); }
+.artigo-comentario__data { font-size: .76rem; color: var(--cm-muted); }
+.artigo-comentario__texto { margin: 0; font-size: .94rem; line-height: 1.6; color: var(--cm-text); }
+
+/* ==========================================================================
+   6. O EDITOR
+   --------------------------------------------------------------------------
+   A tela cheia, no formato do mockup: barra fixa no topo com as ferramentas,
+   a folha de escrita no centro, e as configurações no canto.
+   ========================================================================== */
+
+.editor-main {
+    width: min(880px, 100% - 2rem);
+    padding-block: 0 5rem;
+}
+
+.editor-barra {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    padding: .7rem 0;
+    margin-bottom: 1.5rem;
+    background: var(--cm-bg);
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.editor-barra__grupo {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    flex-wrap: wrap;
+}
+
+.editor-barra__separador {
+    width: 1px;
+    height: 22px;
+    background: var(--cm-border);
+    margin-inline: .35rem;
+}
+
+.editor-ferramenta {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .45rem .8rem;
+    border: 1px solid transparent;
+    border-radius: var(--cm-radius-btn);
+    background: transparent;
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .86rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.editor-ferramenta:hover { background: var(--cm-surface); color: var(--cm-text); }
+.editor-ferramenta.is-ativo { background: var(--cm-purple-soft); color: var(--cm-purple); }
+.editor-ferramenta[disabled] { opacity: .5; cursor: not-allowed; }
+
+.editor-barra__autor {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin-left: auto;
+    color: var(--cm-text-soft);
+    font-size: .86rem;
+    font-weight: 600;
+}
+
+.editor-barra__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--cm-purple-soft);
+}
+
+.editor-barra__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.editor-folha {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    padding: clamp(1.2rem, 2.5vw, 2.6rem);
+    box-shadow: var(--cm-shadow);
+}
+
+.editor-categoria {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-bottom: .8rem;
+}
+
+.editor-titulo {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    padding: 0;
+    resize: none;
+    overflow: hidden;
+}
+
+.editor-titulo::placeholder { color: var(--cm-muted); opacity: .65; }
+.editor-titulo:focus { outline: none; }
+
+.editor-subtitulo {
+    width: 100%;
+    margin-top: .6rem;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: transparent;
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    padding: 0 0 .9rem;
+    resize: none;
+    overflow: hidden;
+}
+
+.editor-subtitulo::placeholder { color: var(--cm-muted); opacity: .7; }
+.editor-subtitulo:focus { outline: none; border-bottom-color: var(--cm-border); }
+
+.editor-corpo {
+    width: 100%;
+    min-height: 46vh;
+    margin-top: 1.2rem;
+    border: 0;
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    resize: vertical;
+}
+
+.editor-corpo::placeholder { color: var(--cm-muted); opacity: .7; }
+.editor-corpo:focus { outline: none; }
+
+.editor-contador {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem 1rem;
+    margin-top: 1.2rem;
+    padding-top: .9rem;
+    border-top: 1px solid var(--cm-border-soft);
+    font-size: .82rem;
+    color: var(--cm-muted);
+}
+
+/* A pré-visualização: o mesmo desenho da página de leitura. */
+.editor-preview {
+    display: none;
+    margin-top: 1.5rem;
+    padding: clamp(1.2rem, 2.5vw, 2.6rem);
+    background: var(--cm-surface-soft);
+    border: 1px dashed var(--cm-border-strong);
+    border-radius: var(--cm-radius);
+}
+
+.editor-preview.is-visivel { display: block; }
+.editor-folha.is-previa .editor-titulo,
+.editor-folha.is-previa .editor-subtitulo,
+.editor-folha.is-previa .editor-corpo { display: none; }
+
+.editor-preview__rotulo {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    margin: 0 0 1.1rem;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cm-muted);
+}
+
+/* --- O menu que abre embaixo das ferramentas -------------------------------- */
+
+.editor-popover {
+    position: relative;
+    z-index: 35;
+    margin-bottom: 1rem;
+    padding: .5rem;
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-hover);
+}
+
+.editor-popover[hidden] { display: none; }
+
+.editor-popover__titulo {
+    margin: .2rem .45rem .45rem;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--cm-muted);
+}
+
+.editor-popover__item {
+    display: block;
+    width: 100%;
+    padding: .5rem .6rem;
+    border: 0;
+    border-radius: var(--cm-radius-sm);
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: .9rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.editor-popover__item:hover { background: var(--cm-surface-soft); }
+.editor-popover__item.is-ativo { background: var(--cm-purple-soft); color: var(--cm-purple); font-weight: 700; }
+
+.editor-popover__descricao {
+    display: block;
+    font-size: .78rem;
+    color: var(--cm-muted);
+    font-weight: 400;
+}
+
+.editor-popover__separador {
+    height: 1px;
+    margin: .4rem .2rem;
+    background: var(--cm-border-soft);
+}
+
+/* --- O painel de configurações ------------------------------------------- */
+
+.editor-config {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 40;
+}
+
+.editor-config__abrir {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .6rem 1rem;
+    border: 0;
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-text);
+    color: var(--cm-bg);
+    font: inherit;
+    font-size: .86rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--cm-shadow-hover);
+}
+
+.editor-config__abrir:hover { background: var(--cm-purple); color: #fff; }
+
+.editor-config__painel {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 41;
+    width: min(380px, calc(100vw - 2.5rem));
+    max-height: min(70vh, 620px);
+    overflow-y: auto;
+    padding: 1.25rem;
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-hover);
+}
+
+.editor-config__painel[hidden] { display: none; }
+
+.editor-config__cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.editor-config__cabecalho h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--cm-text);
+}
+
+.editor-config__fechar {
+    border: 0;
+    background: transparent;
+    color: var(--cm-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: .2rem .4rem;
+    border-radius: var(--cm-radius-sm);
+}
+
+.editor-config__fechar:hover { color: var(--cm-text); background: var(--cm-surface-soft); }
+
+.editor-campo { margin-bottom: 1.1rem; }
+
+.editor-campo > label {
+    display: block;
+    margin-bottom: .35rem;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    color: var(--cm-text-soft);
+}
+
+.editor-campo select,
+.editor-campo input[type="text"],
+.editor-campo input[type="url"],
+.editor-campo textarea {
+    width: 100%;
+    padding: .55rem .7rem;
+    border: 1px solid var(--cm-border-input);
+    border-radius: var(--cm-radius-sm);
+    background: var(--cm-surface-soft);
+    color: var(--cm-text);
+    font: inherit;
+    font-size: .9rem;
+}
+
+.editor-campo textarea { resize: vertical; min-height: 70px; }
+
+.editor-campo__dica {
+    display: block;
+    margin-top: .3rem;
+    font-size: .78rem;
+    color: var(--cm-muted);
+    line-height: 1.45;
+}
+
+.editor-opcoes { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+.editor-opcao {
+    padding: .4rem .8rem;
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .84rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.editor-opcao.is-ativo { background: var(--cm-purple); border-color: var(--cm-purple); color: #fff; }
+
+.editor-toggle {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: .9rem;
+    color: var(--cm-text);
+    cursor: pointer;
+}
+
+.editor-toggle input { width: 1.05rem; height: 1.05rem; accent-color: var(--cm-purple); }
+
+.editor-faixa { display: flex; align-items: center; gap: .7rem; }
+.editor-faixa input[type="range"] { flex: 1; accent-color: var(--cm-purple); }
+.editor-faixa__valor { font-weight: 800; color: var(--cm-purple); min-width: 2.5rem; text-align: right; }
+
+.editor-config__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--cm-border-soft);
+}
+
+.editor-config__acoes .btn-artigo-escrever { flex: 1 1 auto; justify-content: center; }
+
+/* ==========================================================================
+   7. AVISO DE LOGIN
+   ========================================================================== */
+
+.art-login-aviso {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .8rem 1rem;
+    margin-bottom: 1.2rem;
+    border-radius: var(--cm-radius-sm);
+    background: var(--cm-pink-soft);
+    border: 1px solid var(--cm-pink);
+    color: var(--cm-text);
+    font-size: .9rem;
+}
+
+.art-login-aviso a { color: var(--cm-purple); font-weight: 700; }
+
+/* ==========================================================================
+   8. TELA PEQUENA
+   ========================================================================== */
+
+@media (max-width: 900px) {
+    .artigo-cartao--revista .artigo-corpo { column-count: 1; }
+}
+
+@media (max-width: 640px) {
+    .artigos-cabecalho { flex-direction: column; align-items: stretch; }
+    .artigos-grade { grid-template-columns: 1fr; }
+    .art-card__contagens { margin-left: 0; }
+    .editor-barra__autor { width: 100%; margin-left: 0; }
+    .editor-config, .editor-config__painel { right: .75rem; left: .75rem; width: auto; }
+    .artigo-corpo { font-size: 1rem; }
+}
+
+/* ==========================================================================
+   9. MODO ESCURO
+   --------------------------------------------------------------------------
+   Os tokens já trocam de cor. Aqui só vão os ajustes que dependem de uma
+   cor fixa (as faixas de aviso), que no escuro ficariam claras demais.
+   ========================================================================== */
+
+html.a11y-dark-mode .art-card__aviso,
+html.a11y-dark-mode .artigo-aviso {
+    background: #33280f;
+    border-color: #6b5312;
+    color: #f2d9a2;
+}
+
+html.a11y-dark-mode .art-estado--erro {
+    background: #33280f;
+    border-color: #6b5312;
+    color: #f2d9a2;
+}
+
+html.a11y-dark-mode .art-estado--erro i { color: #e0b556; }
+
+html.a11y-dark-mode .art-chip--aviso {
+    background: #33280f;
+    border-color: #6b5312;
+    color: #f2d9a2;
+}
+
+html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color: var(--cm-text); }
