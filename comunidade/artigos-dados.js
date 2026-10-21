@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    ARTIGOS-DADOS.JS — a camada de dados dos artigos da Comunidade
    --------------------------------------------------------------------------
    ESTE ARQUIVO É O ÚNICO LUGAR QUE FALA COM A TABELA `articles`.
@@ -498,95 +498,74 @@
        os alvos do link.
        ===================================================================== */
 
-    function montarCard(artigo, perfil, opcoes = {}) {
+        function montarCard(artigo, perfil, opcoes = {}) {
         const { compacto = false, mostrarFavorito = true } = opcoes;
 
         const { nome, avatar } = resolverAutor(artigo, perfil);
         const inicial = nome.trim().charAt(0).toUpperCase() || '?';
         const url = caminhoArtigo(artigo.id);
-        const tempo = Number(artigo.read_minutes) || minutosLeitura(artigo.content);
         const data = formatarData(artigo.created_at);
         const secao = String(artigo.category || 'Relatos');
-        const tipo = String(artigo.kind || 'Relato');
+        const trecho = artigo.content ? resumoAutomatico(artigo.content, 90) : '';
 
         const card = document.createElement('article');
         card.className = 'art-card' + (compacto ? ' art-card--compacto' : '');
         card.setAttribute('data-article-id', artigo.id);
 
-        const marcas = [];
-        if (artigo.sensitive) {
-            marcas.push('<span class="art-chip art-chip--aviso"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Aviso</span>');
-        }
-        if (artigo.is_paid) {
-            marcas.push('<span class="art-chip art-chip--pago"><i class="fa-solid fa-lock" aria-hidden="true"></i> Pago</span>');
-        }
-        marcas.push(`<span class="art-chip art-chip--tipo">${escapeHtml(tipo)}</span>`);
-
         const favorito = ehFavorito(artigo.id);
+        const capa = artigo.cover_url
+            ? `<img class="art-card__capa" src="${escapeHtml(artigo.cover_url)}" alt="" loading="lazy">`
+            : '';
 
         card.innerHTML = `
-            <header class="art-card__topo">
-                <span class="art-card__secao">${escapeHtml(secao)}</span>
-                <div class="art-card__marcas">
-                    <button type="button" class="art-chip art-chip--ouvir" data-acao="ouvir"
-                            title="Ouvir o artigo em voz alta">
-                        <i class="fa-solid fa-volume-high" aria-hidden="true"></i> Ouça
-                    </button>
-                    ${marcas.join('')}
-                    ${mostrarFavorito ? `
-                    <button type="button" class="art-chip art-chip--favorito${favorito ? ' is-ativo' : ''}"
-                            data-acao="favoritar" aria-pressed="${favorito ? 'true' : 'false'}"
-                            title="Salvar para ler depois">
-                        <i class="fa-${favorito ? 'solid' : 'regular'} fa-bookmark" aria-hidden="true"></i> Favorito
-                    </button>` : ''}
+            <div class="art-card__cabecalho">
+                <div class="art-card__autor">
+                    <img class="art-card__avatar" src="${escapeHtml(avatar)}" alt=""
+                         onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'art-card__inicial',textContent:'${escapeHtml(inicial)}'}))">
+                    <div class="art-card__autor-dados">
+                        <span class="art-card__nome">${escapeHtml(nome)}</span>
+                        <span class="art-card__tag">${escapeHtml(secao)}</span>
+                    </div>
+                    <time class="art-card__data">${escapeHtml(data || '—')}</time>
                 </div>
-            </header>
+                ${capa ? `<div class="art-card__capa-wrap">${capa}</div>` : ''}
+            </div>
 
             <a class="art-card__link" href="${url}">
                 <h3 class="art-card__titulo">${escapeHtml(artigo.title || 'Sem título')}</h3>
                 ${artigo.subtitle ? `<p class="art-card__subtitulo">${escapeHtml(artigo.subtitle)}</p>` : ''}
+                ${trecho ? `<p class="art-card__trecho">${escapeHtml(trecho)}</p>` : ''}
             </a>
 
             ${artigo.sensitive && artigo.warning ? `
-            <p class="art-card__aviso">
+            <div class="art-card__aviso">
                 <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
                 ${escapeHtml(artigo.warning)}
-            </p>` : ''}
+            </div>` : ''}
 
-            <footer class="art-card__rodape">
-                <span class="art-card__autor">
-                    <span class="art-card__avatar" aria-hidden="true">
-                        <img src="${escapeHtml(avatar)}" alt="" loading="lazy"
-                             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'art-card__inicial',textContent:'${escapeHtml(inicial)}'}))">
-                    </span>
-                    <span class="art-card__nome">${escapeHtml(nome)}</span>
+            <footer class="art-card__acoes">
+                ${mostrarFavorito ? `
+                <button type="button" class="art-card__acao art-card__acao--favorito"
+                        data-acao="favoritar" aria-pressed="${favorito ? 'true' : 'false'}"
+                        title="Favoritar">
+                    <i class="fa-${favorito ? 'solid' : 'regular'} fa-heart" aria-hidden="true"></i>
+                </button>` : ''}
+                <button type="button" class="art-card__acao art-card__acao--compartilhar"
+                        data-acao="compartilhar" title="Compartilhar">
+                    <i class="fa-regular fa-share-from-square" aria-hidden="true"></i>
+                </button>
+                <span class="art-card__acao art-card__acao--repostar" title="Repostar">
+                    <i class="fa-regular fa-repeat" aria-hidden="true"></i>
                 </span>
-
-                <span class="art-card__meta">
-                    <span class="art-card__tempo">${tempo} MIN LEITURA</span>
-                    ${data ? `<span class="art-card__data">${escapeHtml(data)}</span>` : ''}
-                    ${artigo.priority !== null && artigo.priority !== undefined ? `
-                    <span class="art-card__prioridade" title="Prioridade">
-                        Prioridade ${Number(artigo.priority)}/10
-                    </span>` : ''}
-                </span>
-
-                <span class="art-card__contagens">
-                    <span title="Curtidas"><i class="fa-regular fa-heart" aria-hidden="true"></i> ${formatarContagem(artigo.likes)}</span>
-                    <span title="Comentários"><i class="fa-regular fa-comment" aria-hidden="true"></i> ${formatarContagem(artigo.comment_count)}</span>
-                </span>
+                <button type="button" class="art-card__acao art-card__acao--subir"
+                        data-acao="subir" title="Levar ao topo">
+                    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+                </button>
             </footer>
         `;
 
         return card;
     }
-
-    /* =====================================================================
-       8. ESTADOS DE LISTAGEM
-       --------------------------------------------------------------------------
-       Carregando / vazio / erro: as três formas que toda listagem precisa.
-       ===================================================================== */
-
     function estadoVazio(titulo, texto, linkTexto, linkUrl) {
         return `
             <div class="art-estado art-estado--vazio">

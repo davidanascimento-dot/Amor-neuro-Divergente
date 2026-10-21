@@ -200,7 +200,7 @@
             botao.classList.toggle('is-ativo', agoraFavorito);
             botao.setAttribute('aria-pressed', agoraFavorito ? 'true' : 'false');
             const icone = botao.querySelector('i');
-            if (icone) icone.className = `fa-${agoraFavorito ? 'solid' : 'regular'} fa-bookmark`;
+            if (icone) icone.className = `fa-${agoraFavorito ? 'solid' : 'regular'} fa-heart`;
             return;
         }
 
