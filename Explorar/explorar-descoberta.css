@@ -708,6 +708,38 @@
     margin: 0 auto;
 }
 
+/* Ponte para o Blog e a Comunidade. Fica logo abaixo do subtitulo e e
+   mais discreta: orienta para onde ir, sem competir com o titulo.
+   Escopada em `.explore-intro` para nao vazar para outras secoes. */
+.explore-intro__ponte {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.explore-intro__ponte a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Secao "Do Blog": o subtitulo que explica a area de destino. Nao
+   existia classe antes; a secao only tinha badge e titulo. */
+.explore-latest__sub {
+    max-width: 560px;
+    margin: 8px 0 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.explore-latest__sub a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 /* =========================================
    8. O QUE A DOBRA ANTES CONTRAIA COM O .ed-hero::before
 

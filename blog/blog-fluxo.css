@@ -328,6 +328,22 @@
     color: var(--bl-suave);
 }
 
+/* Ponte para o Explorar. Herda a tipografia do apoio e fica mais
+   discreta que ele: e uma linha de orientacao, nao a chamada principal
+   da dobra. Sem `!important` — so ajusta margem e corpo. */
+.bl-hero__ponte {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    color: var(--bl-suave);
+}
+
+.bl-hero__ponte a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 /* ---------- O DESTAQUE, na coluna da direita.
 
    Nao e um card: e uma peca de abertura. Sem fundo, sem borda, sem

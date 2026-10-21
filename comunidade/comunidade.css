@@ -661,6 +661,20 @@ body {
     line-height: 1.45;
 }
 
+/* Ponte para o Blog. Mesmo tom do hint acima, com um respiro extra para
+   nao colar no texto anterior. A area so aponta o Blog — nao promete que
+   o post criado aqui apareca la, porque isso ainda nao existe. */
+.welcome-areas-ponte {
+    margin-top: 12px;
+}
+
+.welcome-areas-ponte a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 /* Dispensar. Pequeno e discreto, para não competir com o título. */
 .welcome-dismiss {
     position: absolute;
