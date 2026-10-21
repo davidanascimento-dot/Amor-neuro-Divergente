@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -45,7 +45,9 @@
     </header>
 
     <!-- ============================================
-         O EDITOR
+         O EDITOR — modelo da referência:
+         barra de ferramentas em cima, pré-visualização e continuar à direita,
+         folha de escrita no centro com título, subtítulo, autor e corpo.
          ============================================ -->
     <main class="editor-main" id="mainContent">
 
@@ -57,82 +59,150 @@
         </p>
 
         <!-- ============================================
-             BARRA DE FERRAMENTAS
+             BARRA DE FERRAMENTAS — topo, com todos os botões de formatação
              ============================================ -->
         <div class="editor-barra" role="toolbar" aria-label="Ferramentas do editor">
 
-            <div class="editor-barra__grupo">
-                <button type="button" class="editor-ferramenta" id="editorFavoritoBtn" aria-pressed="false"
-                        title="Marcar como favorito">
-                    <i class="fa-regular fa-bookmark" aria-hidden="true"></i> Favorito
+            <!-- Grupo esquerdo: formatação -->
+            <div class="editor-barra__grupo editor-barra__grupo--formatacao">
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorDesfazerBtn" title="Desfazer">
+                    <i class="fa-regular fa-rotate-left" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorRefazerBtn" title="Refazer">
+                    <i class="fa-regular fa-rotate-right" aria-hidden="true"></i>
                 </button>
 
-                <button type="button" class="editor-ferramenta" id="editorPreviaBtn" aria-pressed="false"
-                        title="Ver como o artigo vai aparecer">
-                    <i class="fa-regular fa-eye" aria-hidden="true"></i> Pré-visualização
+                <button type="button" class="editor-ferramenta editor-ferramenta--dropdown" id="editorEstiloBtn" aria-haspopup="true" aria-expanded="false" title="Estilo da letra">
+                    <i class="fa-solid font-selector-icon" aria-hidden="true">T</i> Estilo
                 </button>
 
-                <button type="button" class="editor-ferramenta" id="editorEstiloBtn"
-                        aria-haspopup="true" aria-expanded="false" title="O estilo da letra">
-                    <i class="fa-solid fa-paintbrush" aria-hidden="true"></i> Estilo
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorNegritoBtn" title="Negrito">
+                    <i class="fa-solid fa-bold" aria-hidden="true"></i>
                 </button>
-
-                <button type="button" class="editor-ferramenta" id="editorModeloBtn"
-                        aria-haspopup="true" aria-expanded="false" title="O modelo da página">
-                    <i class="fa-solid fa-table-cells" aria-hidden="true"></i> Modelo
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorItalicoBtn" title="Itálico">
+                    <i class="fa-solid fa-italic" aria-hidden="true"></i>
                 </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorRiscadoBtn" title="Riscado">
+                    <i class="fa-solid fa-strikethrough" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorCodigoBtn" title="Código">
+                    <i class="fa-solid fa-code" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorTituloBtn" title="Título">
+                    <i class="fa-solid fa-heading" aria-hidden="true"></i> T
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorLinhaBtn" title="Linha divisória">
+                    <i class="fa-solid fa-minus" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorLinkBtn" title="Inserir link">
+                    <i class="fa-solid fa-link" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorImagemBtn" title="Inserir imagem">
+                    <i class="fa-solid fa-image" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAudioBtn" title="Inserir áudio">
+                    <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorVideoBtn" title="Inserir vídeo">
+                    <i class="fa-solid fa-video" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorCotacaoBtn" title="Citação">
+                    <i class="fa-solid fa-quote-right" aria-hidden="true"></i>
+                </button>
+            </div>
 
-                <button type="button" class="editor-ferramenta" id="editorMaisBtn"
-                        aria-haspopup="true" aria-expanded="false" title="Mais opções">
+            <!-- Grupo centro: listas e alinhamento -->
+            <div class="editor-barra__grupo editor-barra__grupo--listas">
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorListaBulletBtn" title="Lista com marcadores">
+                    <i class="fa-regular fa-list-ul" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorListaNumBtn" title="Lista numerada">
+                    <i class="fa-regular fa-list-ol" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharEsqBtn" title="Alinhar à esquerda">
+                    <i class="fa-solid fa-text-left" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharCentroBtn" title="Centralizar">
+                    <i class="fa-solid fa-text-center" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharDirBtn" title="Alinhar à direita">
+                    <i class="fa-solid fa-text-right" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--icone" id="editorAlinharJustBtn" title="Justificado">
+                    <i class="fa-solid fa-text-justify" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <!-- Grupo direito: estilo de bloco, modelo, mais -->
+            <div class="editor-barra__grupo editor-barra__grupo--blocos">
+                <button type="button" class="editor-ferramenta editor-ferramenta--dropdown" id="editorBotaoBtn" aria-haspopup="true" aria-expanded="false" title="Botão">
+                    <i class="fa-solid fa-square" aria-hidden="true"></i> Botão
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--dropdown" id="editorModeloBtn" aria-haspopup="true" aria-expanded="false" title="Modelo da página">
+                    <i class="fa-solid fa-pen-nib" aria-hidden="true"></i> Modelo
+                </button>
+                <button type="button" class="editor-ferramenta editor-ferramenta--dropdown" id="editorMaisBtn" aria-haspopup="true" aria-expanded="false" title="Mais opções">
                     <i class="fa-solid fa-ellipsis" aria-hidden="true"></i> Mais
                 </button>
             </div>
 
-            <div class="editor-barra__grupo">
-                <span class="editor-barra__autor">
-                    <span class="editor-barra__avatar" id="editorAvatar" aria-hidden="true"></span>
-                    <span id="editorAutorNome">Você</span>
-                </span>
-
+            <!-- Grupo far right: Pré-visualização e Continuar -->
+            <div class="editor-barra__grupo editor-barra__grupo--acoes">
+                <button type="button" class="btn-artigo-escrever btn-artigo-escrever--fantasma" id="editorPreviaBtn" title="Ver como o artigo vai aparecer">
+                    <i class="fa-regular fa-eye" aria-hidden="true"></i> Pré-visualização
+                </button>
                 <button type="button" class="btn-artigo-escrever" id="editorContinuarBtn">
                     Continuar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </div>
+
         </div>
 
         <!-- O menu que abre embaixo das ferramentas. -->
         <div class="editor-popover" id="editorPopover" hidden role="menu"></div>
 
         <!-- ============================================
-             A FOLHA
+             A FOLHA DE ESCRITA — título, subtítulo, autor, corpo
              ============================================ -->
         <div class="editor-folha" id="editorFolha">
 
-            <div class="editor-categoria">
-                <span class="art-card__secao" id="editorSecaoRotulo">RELATOS</span>
-                <span class="art-chip art-chip--tipo" id="editorTipoRotulo">Relato</span>
+            <!-- Cabeçalho do artigo (como o modelo da referência) -->
+            <div class="editor-cabecalho">
+                <span class="editor-cabecalho__rotulo">Cabeçalho e rodapé de e-mail</span>
+
+                <label class="sr-only" for="editorTitulo">Título do artigo</label>
+                <textarea class="editor-titulo" id="editorTitulo" rows="1" maxlength="140"
+                          placeholder="Title"></textarea>
+
+                <label class="sr-only" for="editorSubtitulo">Subtítulo</label>
+                <textarea class="editor-subtitulo" id="editorSubtitulo" rows="1" maxlength="220"
+                          placeholder="Add a subtitle..."></textarea>
+
+                <!-- Linha do autor: avatar + nome + botão de adicionar -->
+                <div class="editor-autor">
+                    <span class="editor-autor__chip" id="editorAutorChip">David <button type="button" class="editor-autor__remover" title="Remover autor">×</button></span>
+                    <button type="button" class="editor-autor__adicionar" id="editorAutorAdicionarBtn" title="Adicionar autor">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <label class="sr-only" for="editorCorpo">Texto do artigo</label>
+                <textarea class="editor-corpo" id="editorCorpo"
+                          placeholder="Start writing..."></textarea>
             </div>
 
-            <label class="sr-only" for="editorTitulo">Título do artigo</label>
-            <textarea class="editor-titulo" id="editorTitulo" rows="1" maxlength="140"
-                      placeholder="Start writing..."></textarea>
+            <!-- Rodapé da folha: seção, tipo, contadores -->
+            <div class="editor-rodape">
+                <div class="editor-categoria">
+                    <span class="art-card__secao" id="editorSecaoRotulo">RELATOS</span>
+                    <span class="art-chip art-chip--tipo" id="editorTipoRotulo">Relato</span>
+                </div>
 
-            <label class="sr-only" for="editorSubtitulo">Subtítulo</label>
-            <textarea class="editor-subtitulo" id="editorSubtitulo" rows="1" maxlength="220"
-                      placeholder="Uma linha que explica do que se trata (opcional)"></textarea>
-
-            <label class="sr-only" for="editorCorpo">Texto do artigo</label>
-            <textarea class="editor-corpo" id="editorCorpo"
-                      placeholder="Escreva aqui. Linha em branco separa parágrafos.
-
-## Um subtítulo marca uma parte nova
-> Uma citação fica recuada.
-- Um item de lista começa com hífen."></textarea>
-
-            <div class="editor-contador">
-                <span id="editorContadorPalavras">0 palavras</span>
-                <span id="editorContadorTempo">1 min de leitura</span>
-                <span id="editorContadorSalvo">Rascunho guardado neste navegador</span>
+                <div class="editor-contador">
+                    <span id="editorContadorPalavras">0 palavras</span>
+                    <span id="editorContadorTempo">1 min de leitura</span>
+                    <span id="editorContadorSalvo">Rascunho guardado neste navegador</span>
+                </div>
             </div>
         </div>
 

@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    ESCREVER-ARTIGO.JS — o editor de artigos da Comunidade
    --------------------------------------------------------------------------
    A tela do mockup: barra de ferramentas em cima, folha de escrita no
@@ -38,8 +38,32 @@
         popover:     document.getElementById('editorPopover'),
         continuarBtn: document.getElementById('editorContinuarBtn'),
 
-        avatar:      document.getElementById('editorAvatar'),
-        autorNome:   document.getElementById('editorAutorNome'),
+        // Novos botões da barra de formatação.
+        desfazerBtn: document.getElementById('editorDesfazerBtn'),
+        refazerBtn:  document.getElementById('editorRefazerBtn'),
+        negritoBtn:  document.getElementById('editorNegritoBtn'),
+        italicoBtn:  document.getElementById('editorItalicoBtn'),
+        riscadoBtn:  document.getElementById('editorRiscadoBtn'),
+        codigoBtn:   document.getElementById('editorCodigoBtn'),
+        tituloBtn:   document.getElementById('editorTituloBtn'),
+        linhaBtn:    document.getElementById('editorLinhaBtn'),
+        linkBtn:     document.getElementById('editorLinkBtn'),
+        imagemBtn:   document.getElementById('editorImagemBtn'),
+        audioBtn:    document.getElementById('editorAudioBtn'),
+        videoBtn:    document.getElementById('editorVideoBtn'),
+        cotacaoBtn:  document.getElementById('editorCotacaoBtn'),
+        listaBulletBtn: document.getElementById('editorListaBulletBtn'),
+        listaNumBtn:    document.getElementById('editorListaNumBtn'),
+        alinharEsqBtn:  document.getElementById('editorAlinharEsqBtn'),
+        alinharCentroBtn: document.getElementById('editorAlinharCentroBtn'),
+        alinharDirBtn:  document.getElementById('editorAlinharDirBtn'),
+        alinharJustBtn: document.getElementById('editorAlinharJustBtn'),
+        botaoBtn:   document.getElementById('editorBotaoBtn'),
+
+        // Autor (chip + adicionar).
+        autorChip: document.getElementById('editorAutorChip'),
+        autorRemoverBtn: document.getElementById('editorAutorRemoverBtn'),
+        autorAdicionarBtn: document.getElementById('editorAutorAdicionarBtn'),
 
         folha:       document.getElementById('editorFolha'),
         secaoRotulo: document.getElementById('editorSecaoRotulo'),
@@ -645,6 +669,11 @@
         });
 
         EL.continuarBtn.addEventListener('click', () => {
+            alternarConfig(true);
+            guardarRascunho();
+        });
+
+        EL.autorAdicionarBtn.addEventListener('click', () => {
             alternarConfig(true);
             guardarRascunho();
         });

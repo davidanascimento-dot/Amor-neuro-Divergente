@@ -849,8 +849,10 @@
 /* ==========================================================================
    6. O EDITOR
    --------------------------------------------------------------------------
-   A tela cheia, no formato do mockup: barra fixa no topo com as ferramentas,
-   a folha de escrita no centro, e as configurações no canto.
+   Modelo da referência: barra de ferramentas fixa no topo com todos os
+   botões de formatação, Pré-visualização e Continuar à direita, folha de
+   escrita no centro com título, subtítulo, autor e corpo. Sem background
+   branco estranho — segue o estilo escuro do site.
    ========================================================================== */
 
 .editor-main {
@@ -858,6 +860,7 @@
     padding-block: 0 5rem;
 }
 
+/* Barra de ferramentas: sticky no topo, sem background branco. */
 .editor-barra {
     position: sticky;
     top: 0;
@@ -866,10 +869,10 @@
     align-items: center;
     gap: .5rem;
     flex-wrap: wrap;
-    padding: .7rem 0;
+    padding: .6rem 0;
     margin-bottom: 1.5rem;
-    background: var(--cm-bg);
-    border-bottom: 1px solid var(--cm-border);
+    background: transparent;
+    border-bottom: none;
 }
 
 .editor-barra__grupo {
@@ -879,6 +882,10 @@
     flex-wrap: wrap;
 }
 
+.editor-barra__grupo--acoes {
+    margin-left: auto;
+}
+
 .editor-barra__separador {
     width: 1px;
     height: 22px;
@@ -886,11 +893,12 @@
     margin-inline: .35rem;
 }
 
+/* Botão de ferramenta: sem background branco, apenas cor de texto. */
 .editor-ferramenta {
     display: inline-flex;
     align-items: center;
     gap: .4rem;
-    padding: .45rem .8rem;
+    padding: .45rem .65rem;
     border: 1px solid transparent;
     border-radius: var(--cm-radius-btn);
     background: transparent;
@@ -902,141 +910,22 @@
     white-space: nowrap;
 }
 
-.editor-ferramenta:hover { background: var(--cm-surface); color: var(--cm-text); }
-.editor-ferramenta.is-ativo { background: var(--cm-purple-soft); color: var(--cm-purple); }
+.editor-ferramenta:hover { background: var(--cm-surface-soft); color: var(--cm-text); }
+.editor-ferramenta.is-ativo { background: var(--cm-purple-soft); color: var(--cm-purple); border-color: var(--cm-purple); }
 .editor-ferramenta[disabled] { opacity: .5; cursor: not-allowed; }
 
-.editor-barra__autor {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    margin-left: auto;
-    color: var(--cm-text-soft);
-    font-size: .86rem;
-    font-weight: 600;
-}
+.editor-ferramenta--icone { gap: 0; padding: .45rem; }
+.editor-ferramenta--dropdown .font-selector-icon { font-size: 1.1rem; }
 
-.editor-barra__avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: var(--cm-purple-soft);
-}
-
-.editor-barra__avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-.editor-folha {
-    background: var(--cm-surface);
-    border: 1px solid var(--cm-border);
-    border-radius: var(--cm-radius);
-    padding: clamp(1.2rem, 2.5vw, 2.6rem);
-    box-shadow: var(--cm-shadow);
-}
-
-.editor-categoria {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    flex-wrap: wrap;
-    margin-bottom: .8rem;
-}
-
-.editor-titulo {
-    width: 100%;
-    border: 0;
+/* Pré-visualização e Continuar: destaque à direita. */
+.btn-artigo-escrever--fantasma {
     background: transparent;
-    color: var(--cm-text);
-    font: inherit;
-    font-size: clamp(1.9rem, 1.2rem + 3vw, 3rem);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -.02em;
-    padding: 0;
-    resize: none;
-    overflow: hidden;
+    color: var(--cm-purple);
+    box-shadow: inset 0 0 0 2px var(--cm-purple);
 }
+.btn-artigo-escrever--fantasma:hover { background: var(--cm-purple-soft); }
 
-.editor-titulo::placeholder { color: var(--cm-muted); opacity: .65; }
-.editor-titulo:focus { outline: none; }
-
-.editor-subtitulo {
-    width: 100%;
-    margin-top: .6rem;
-    border: 0;
-    border-bottom: 1px solid transparent;
-    background: transparent;
-    color: var(--cm-text-soft);
-    font: inherit;
-    font-size: 1.1rem;
-    line-height: 1.5;
-    padding: 0 0 .9rem;
-    resize: none;
-    overflow: hidden;
-}
-
-.editor-subtitulo::placeholder { color: var(--cm-muted); opacity: .7; }
-.editor-subtitulo:focus { outline: none; border-bottom-color: var(--cm-border); }
-
-.editor-corpo {
-    width: 100%;
-    min-height: 46vh;
-    margin-top: 1.2rem;
-    border: 0;
-    background: transparent;
-    color: var(--cm-text);
-    font: inherit;
-    font-size: 1.05rem;
-    line-height: 1.8;
-    resize: vertical;
-}
-
-.editor-corpo::placeholder { color: var(--cm-muted); opacity: .7; }
-.editor-corpo:focus { outline: none; }
-
-.editor-contador {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .6rem 1rem;
-    margin-top: 1.2rem;
-    padding-top: .9rem;
-    border-top: 1px solid var(--cm-border-soft);
-    font-size: .82rem;
-    color: var(--cm-muted);
-}
-
-/* A pré-visualização: o mesmo desenho da página de leitura. */
-.editor-preview {
-    display: none;
-    margin-top: 1.5rem;
-    padding: clamp(1.2rem, 2.5vw, 2.6rem);
-    background: var(--cm-surface-soft);
-    border: 1px dashed var(--cm-border-strong);
-    border-radius: var(--cm-radius);
-}
-
-.editor-preview.is-visivel { display: block; }
-.editor-folha.is-previa .editor-titulo,
-.editor-folha.is-previa .editor-subtitulo,
-.editor-folha.is-previa .editor-corpo { display: none; }
-
-.editor-preview__rotulo {
-    display: flex;
-    align-items: center;
-    gap: .45rem;
-    margin: 0 0 1.1rem;
-    font-size: .75rem;
-    font-weight: 800;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--cm-muted);
-}
-
-/* --- O menu que abre embaixo das ferramentas -------------------------------- */
-
+/* O menu que abre embaixo das ferramentas. */
 .editor-popover {
     position: relative;
     z-index: 35;
@@ -1087,6 +976,187 @@
     height: 1px;
     margin: .4rem .2rem;
     background: var(--cm-border-soft);
+}
+
+/* Folha de escrita: sem background branco, sem sombra estranha. */
+.editor-folha {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.editor-folha.is-previa .editor-titulo,
+.editor-folha.is-previa .editor-subtitulo,
+.editor-folha.is-previa .editor-corpo { display: none; }
+
+/* Cabeçalho da folha: título, subtítulo, autor. */
+.editor-cabecalho {
+    margin-bottom: 2rem;
+}
+
+.editor-cabecalho__rotulo {
+    display: block;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--cm-text-soft);
+    margin-bottom: .4rem;
+}
+
+.editor-titulo {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: clamp(2rem, 1.2rem + 3vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    padding: 0;
+    resize: none;
+    overflow: hidden;
+}
+
+.editor-titulo::placeholder { color: var(--cm-muted); opacity: .65; }
+.editor-titulo:focus { outline: none; }
+
+.editor-subtitulo {
+    width: 100%;
+    margin-top: .6rem;
+    border: 0;
+    border-bottom: 1px solid var(--cm-border-soft);
+    background: transparent;
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    padding: 0 0 .9rem;
+    resize: none;
+    overflow: hidden;
+}
+
+.editor-subtitulo::placeholder { color: var(--cm-muted); opacity: .7; }
+.editor-subtitulo:focus { outline: none; border-bottom-color: var(--cm-border); }
+
+/* Linha do autor: chip + botão adicionar. */
+.editor-autor {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    margin-top: 1rem;
+}
+
+.editor-autor__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .2rem .55rem;
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+.editor-autor__remover {
+    background: transparent;
+    border: none;
+    color: var(--cm-text-soft);
+    cursor: pointer;
+    padding: 0 .2rem;
+    font-size: 1rem;
+    line-height: 1;
+}
+.editor-autor__remover:hover { color: var(--cm-text); }
+
+.editor-autor__adicionar {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .2rem .55rem;
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius-btn);
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.editor-autor__adicionar:hover { border-color: var(--cm-border-strong); color: var(--cm-text); }
+
+/* Corpo do texto. */
+.editor-corpo {
+    width: 100%;
+    min-height: 60vh;
+    margin-top: 1.5rem;
+    border: 0;
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    resize: vertical;
+}
+
+.editor-corpo::placeholder { color: var(--cm-muted); opacity: .7; }
+.editor-corpo:focus { outline: none; }
+
+/* Rodapé da folha: seção, tipo, contadores. */
+.editor-rodape {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--cm-border-soft);
+}
+
+.editor-categoria {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+.editor-contador {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem 1rem;
+    font-size: .82rem;
+    color: var(--cm-muted);
+}
+
+/* A pré-visualização: o mesmo desenho da página de leitura. */
+.editor-preview {
+    display: none;
+    margin-top: 1.5rem;
+    padding: clamp(1.2rem, 2.5vw, 2.6rem);
+    background: var(--cm-surface-soft);
+    border: 1px dashed var(--cm-border-strong);
+    border-radius: var(--cm-radius);
+}
+
+.editor-preview.is-visivel { display: block; }
+
+.editor-preview__rotulo {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    margin: 0 0 1.1rem;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cm-muted);
 }
 
 /* --- O painel de configurações ------------------------------------------- */
@@ -1236,7 +1306,6 @@
 }
 
 .editor-config__acoes .btn-artigo-escrever { flex: 1 1 auto; justify-content: center; }
-
 /* ==========================================================================
    7. AVISO DE LOGIN
    ========================================================================== */
