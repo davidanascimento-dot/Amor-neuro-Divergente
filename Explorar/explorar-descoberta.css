@@ -741,6 +741,139 @@
 }
 
 /* =========================================
+   PUBLICACOES DA COMUNIDADE (Fase 4)
+
+   Substitui o antigo `.explore-latest__grid` quando ha dado real na
+   tabela `posts`. Limite de 3 — e amostra, nao acervo. Sem imagem,
+   porque `posts` nao tem coluna de capa.
+   ========================================= */
+
+.explorar-comunidade__lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.explorar-comunidade__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid #e8e3dd;
+    border-radius: 5px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease;
+}
+
+.explorar-comunidade__item:hover {
+    border-color: #7c3aed;
+}
+
+.explorar-comunidade__item:focus-visible {
+    outline: 2px solid #7c3aed;
+    outline-offset: 2px;
+}
+
+/* Circulo: e um avatar. */
+.explorar-comunidade__avatar {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #ede9fe;
+    display: grid;
+    place-items: center;
+}
+
+.explorar-comunidade__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.explorar-comunidade__inicial {
+    font-weight: 700;
+    color: #7c3aed;
+}
+
+.explorar-comunidade__corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.explorar-comunidade__nome {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.explorar-comunidade__texto {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #5c5652;
+}
+
+.explorar-comunidade__meta {
+    margin-left: auto;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #5c5652;
+}
+
+.explore-latest__rodape {
+    margin: 20px 0 0;
+    text-align: center;
+}
+
+.explore-latest__rodape a {
+    font-weight: 700;
+    color: #7c3aed;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.explore-latest__rodape a:hover {
+    text-decoration: underline;
+}
+
+/* No escuro, os tons claros reprovam — mesmo caso do Blog. */
+body.a11y-dark-mode .explorar-comunidade__item {
+    background: #16162a;
+    border-color: #2e2e4a;
+}
+
+body.a11y-dark-mode .explorar-comunidade__texto,
+body.a11y-dark-mode .explorar-comunidade__meta {
+    color: #94a3b8;
+}
+
+@media (max-width: 560px) {
+    .explorar-comunidade__item {
+        align-items: flex-start;
+    }
+
+    .explorar-comunidade__meta span {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .explorar-comunidade__item {
+        transition: none;
+    }
+}
+
+/* =========================================
    8. O QUE A DOBRA ANTES CONTRAIA COM O .ed-hero::before
 
    `.explore-banner` ja tinha `overflow: hidden`, que cortaria os

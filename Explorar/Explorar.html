@@ -469,26 +469,40 @@
                      mesmo href, e quem chega por aqui chega pelo caminho
                      certo. -->
                 <header class="explore-latest__head">
-                    <span class="section-badge"><i class="fa-solid fa-newspaper"></i> Do Blog</span>
-                    <h2>Histórias e reflexões que a comunidade escreveu</h2>
+                    <span class="section-badge"><i class="fa-solid fa-newspaper"></i> Da Comunidade</span>
+                    <h2 id="explorarComunidadeTitulo">O que a comunidade publicou por último</h2>
                     <p class="explore-latest__sub">
-                        Textos escritos por pessoas neurodivergentes e por quem convive.
-                        Para ler mais e ver quem escreveu, visite o
+                        Uma amostra curta — até 3 publicações. Para ler tudo, visite o
                         <a href="/blog/blog.html">Blog</a>.
                     </p>
                 </header>
 
-                <div class="explore-latest__grid">
+                <!-- ============================================================
+                     ESTA SECAO VEM DO BANCO (tabela `posts`).
+
+                     A Fase 4 pede que o Explorar NAO reproduza a listagem do
+                     Blog: no maximo 3 itens, claramente identificados como
+                     amostra. Quem alimenta e o `explorar.js`, com a mesma
+                     consulta do Blog (posts ativos, mais recentes primeiro).
+
+                     O BLOCO ABAIXO E O FALLBACK. Ele aparece quando a tabela
+                     `posts` esta vazia ou indisponivel — e nesse caso mostra
+                     os posts editoriais do Blog, que sempre existem. Assim a
+                     secao nunca fica em branco e nenhum link se perde.
+
+                     Quando houver dado real, `explorar.js` esconde este bloco
+                     e preenche o #explorarComunidadeLista. -->
+                <div class="explore-latest__grid" id="explorarComunidadeFallback">
                     <article class="latest-feature">
                         <a href="/blog/post-masking.html" class="latest-feature__media">
                             <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop" alt="Pessoa em ambiente calmo" loading="lazy">
                         </a>
                         <div class="latest-feature__body">
                             <div class="latest-feature__meta">
-                                <span class="latest-avatar">L</span>
+                                <span class="latest-avatar" aria-hidden="true">L</span>
                                 <div class="latest-meta-text">
                                     <strong>Luti Christóforo</strong>
-                                    <span>há 1 dia · 4 min de leitura</span>
+                                    <span>no Blog · 4 min de leitura</span>
                                 </div>
                             </div>
                             <h3 class="latest-feature__title">
@@ -501,7 +515,7 @@
                         <a href="/blog/blog.html" class="latest-item">
                             <div class="latest-item__text">
                                 <h4>Como tornar a comunicação mais inclusiva para profissionais neurodivergentes.</h4>
-                                <span class="latest-item__date">há 3 dias</span>
+                                <span class="latest-item__date">no Blog</span>
                             </div>
                             <div class="latest-item__thumb">
                                 <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop" alt="" loading="lazy">
@@ -512,7 +526,7 @@
                         <a href="/blog/blog.html" class="latest-item">
                             <div class="latest-item__text">
                                 <h4>Neurodivergência na infância e adolescência</h4>
-                                <span class="latest-item__date">há 3 dias</span>
+                                <span class="latest-item__date">no Blog</span>
                             </div>
                             <div class="latest-item__thumb">
                                 <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=200&h=200&fit=crop" alt="" loading="lazy">
@@ -523,7 +537,7 @@
                         <a href="/blog/blog.html" class="latest-item">
                             <div class="latest-item__text">
                                 <h4>Autismo e Saúde Mental</h4>
-                                <span class="latest-item__date">há 3 dias</span>
+                                <span class="latest-item__date">no Blog</span>
                             </div>
                             <div class="latest-item__thumb">
                                 <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=200&h=200&fit=crop" alt="" loading="lazy">
@@ -532,6 +546,17 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Lista real, preenchida por explorar.js a partir da tabela
+                     `posts`. Fica escondida ate haver dado; se nao houver,
+                     este bloco nunca aparece e o fallback acima continua. -->
+                <div class="explorar-comunidade__lista" id="explorarComunidadeLista" hidden></div>
+
+                <p class="explore-latest__rodape" id="explorarComunidadeRodape" hidden>
+                    <a href="/comunidade/comunidade.html">
+                        Publicar na Comunidade <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </p>
             </div>
         </section>
 

@@ -316,6 +316,87 @@
             </div>
         </section>
 
+        <!-- ============================================================
+             PUBLICACOES DA COMUNIDADE
+
+             O QUE ESTA SECAO E
+             Ate aqui o Blog so tinha cards escritos no HTML. Esta secao
+             e a unica parte da pagina alimentada pelo banco: ela le a
+             tabela `posts`, que e a mesma que a Comunidade grava quando
+             alguem publica no Forum.
+
+             POR QUE ELA EXISTE
+             A auditoria (AUDITORIA-EXPLORAR-BLOG-COMUNIDADE.md) mostrou
+             que nenhum arquivo de /blog/ lia `posts`. Quem escrevia na
+             Comunidade nao era lido por ninguem fora dela. Esta e a
+             ponte que faltava.
+
+             O QUE ELA NAO FAZ
+             - Nao inventa publicacao, autor nem data. Se a tabela
+               estiver vazia, aparece o estado vazio de verdade.
+             - Nao copia o post: o card leva para a pagina original em
+               /comunidade/post.html?id=..., onde os comentarios e as
+               curtidas continuam funcionando.
+             - Nao mostra post inativo (is_active = false).
+
+             ONDE FICA
+             Depois do grid editorial e fora do #blogGrid de proposito:
+             o filtro de categoria (blog.js) esconde `.bl-item`, e um
+             post de comunidade nao pode desaparecer quando alguem
+             filtra por "TDAH".
+
+             O CONTEUDO VEM DO BANCO, ENTRE OUTRAS COISAS
+             ============================================================ -->
+        <section class="blog-comunidade" id="blogComunidade" aria-labelledby="blogComunidadeTitulo">
+            <div class="blog-grid-section__container">
+
+                <header class="blog-grid-section__head">
+                    <div>
+                        <span class="blog-grid-section__eyebrow">
+                            <i class="fa-regular fa-comments" aria-hidden="true"></i> Da Comunidade
+                        </span>
+                        <h2 id="blogComunidadeTitulo">O que a comunidade está publicando</h2>
+                        <p>
+                            Publicações escritas por quem usa o site. Abrir leva para a
+                            publicação original, com os comentários e as curtidas.
+                        </p>
+                    </div>
+                </header>
+
+                <!-- Carregando. Ocupa o lugar da lista para a pagina nao pular. -->
+                <div class="blog-comunidade__estado" id="comunidadeCarregando">
+                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    <span>Carregando publicações…</span>
+                </div>
+
+                <!-- Erro: mesma forma do carregando, texto diferente. -->
+                <div class="blog-comunidade__estado blog-comunidade__estado--erro" id="comunidadeErro" hidden>
+                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                    <span id="comunidadeErroTexto">Não foi possível carregar as publicações agora.</span>
+                </div>
+
+                <!-- Vazio: existe de verdade. Nao e erro. -->
+                <div class="blog-comunidade__estado blog-comunidade__estado--vazio" id="comunidadeVazio" hidden>
+                    <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+                    <span>
+                        Ainda não há publicações da comunidade.
+                        <a href="/comunidade/comunidade.html">Que tal escrever a primeira?</a>
+                    </span>
+                </div>
+
+                <!-- A lista. Preenchida por blog.js a partir da tabela `posts`. -->
+                <div class="blog-comunidade__lista" id="comunidadeLista" hidden></div>
+
+                <!-- Rodape da secao: leva para a Comunidade de verdade. -->
+                <p class="blog-comunidade__rodape" id="comunidadeRodape" hidden>
+                    <a href="/comunidade/comunidade.html">
+                        Ver tudo na Comunidade <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </p>
+
+            </div>
+        </section>
+
         <!-- =============================================
         NEWSLETTER
         ============================================= -->

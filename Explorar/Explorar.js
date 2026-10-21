@@ -20,6 +20,169 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =============================================
+    // CLIENT — PUBLICAÇÕES DA COMUNIDADE
+    // =============================================
+    /* A seção "O que a comunidade publicou por último" (Fase 4).
+     *
+     * REGRA DA FASE 4: o Explorar NÃO reproduz a listagem do Blog. Por
+     * isso o limite aqui é 3 — é amostra, não acervo. Quem lista tudo é
+     * o Blog.
+     *
+     * O FALLBACK FICA
+     * O HTML já traz três itens editoriais do Blog dentro de
+     * `#explorarComunidadeFallback`. Eles NÃO são removidos: se a tabela
+     * `posts` estiver vazia ou falhar, é o fallback que aparece, e a
+     * seção nunca fica em branco nem perde link.
+     *
+     * Sem imagem nos cards reais: `posts` não tem coluna de capa e
+     * `video_url` está sempre null. Inventar uma imagem seria o defeito
+     * que a auditoria apontou nos outros cards.
+     */
+    const EXPLORAR_COMUNIDADE = {
+        fallback: document.getElementById('explorarComunidadeFallback'),
+        lista:    document.getElementById('explorarComunidadeLista'),
+        rodape:   document.getElementById('explorarComunidadeRodape'),
+    };
+
+    const LIMITE_EXPLORAR = 3;
+
+    function explorarEscape(texto) {
+        return String(texto ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function explorarUrlSegura(url) {
+        if (!url) return null;
+        const t = String(url).trim();
+        if (t.startsWith('/')) return t;
+        if (/^https?:\/\//i.test(t)) return t;
+        return null;
+    }
+
+    function explorarData(iso) {
+        if (!iso) return null;
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return null;
+        const dias = Math.floor((Date.now() - d.getTime()) / 86400000);
+        if (dias <= 0) return 'hoje';
+        if (dias === 1) return 'ontem';
+        if (dias < 30) return `há ${dias} dias`;
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function explorarTrecho(texto, limite = 140) {
+        const t = String(texto ?? '').trim();
+        if (t.length <= limite) return t;
+        return t.slice(0, limite).replace(/\s+\S*$/, '') + '…';
+    }
+
+    function montarItemExplorar(post, autor) {
+        const nome = post.author_name || autor?.username || 'Membro da comunidade';
+        const data = explorarData(post.created_at);
+        const url = `/comunidade/post.html?id=${encodeURIComponent(post.id)}`;
+        const avatar = explorarUrlSegura(post.author_avatar)
+            || explorarUrlSegura(autor?.avatar_url)
+            || '/img/foto-padrão.jpg';
+        const inicial = nome.trim().charAt(0).toUpperCase() || '?';
+
+        const item = document.createElement('a');
+        item.className = 'explorar-comunidade__item';
+        item.href = url;
+        item.innerHTML = `
+            <span class="explorar-comunidade__avatar" aria-hidden="true">
+                <img src="${explorarEscape(avatar)}" alt="" loading="lazy"
+                     onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'explorar-comunidade__inicial',textContent:'${explorarEscape(inicial)}'}))">
+            </span>
+            <span class="explorar-comunidade__corpo">
+                <strong class="explorar-comunidade__nome">${explorarEscape(nome)}</strong>
+                <span class="explorar-comunidade__texto">${explorarEscape(explorarTrecho(post.content))}</span>
+            </span>
+            <span class="explorar-comunidade__meta">
+                ${data ? `<span>${explorarEscape(data)}</span>` : ''}
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </span>
+        `;
+        return item;
+    }
+
+    (async function carregarComunidadeExplorar() {
+        if (!EXPLORAR_COMUNIDADE.lista || !sb) return; // fallback estático permanece
+
+        /* Mesma defesa do Blog (blog.js, consultarPosts): uma sessão
+         * guardada que o servidor já não aceita faz o supabase-js trocar a
+         * chave anônima pelo token inválido, e a leitura pública volta 401.
+         * Aqui o sintoma seria discreto — o fallback ficaria no lugar e
+         * ninguém saberia que o dado real existe. Então: se o erro for de
+         * sessão, encerra a sessão e refaz a leitura como visitante. */
+        const ehErroDeSessao = (error) => {
+            if (!error) return false;
+            const status = error.status ?? error.statusCode ?? error.code;
+            const texto = String(error.message ?? '');
+            return status === 401
+                || texto.includes('PGRST301')
+                || /jwt|token|unauthorized/i.test(texto);
+        };
+
+        const montarConsulta = () => sb
+            .from('posts')
+            .select('id, author_id, author_name, author_avatar, content, created_at, is_active')
+            .eq('is_active', true)
+            .order('created_at', { ascending: false })
+            .limit(LIMITE_EXPLORAR);
+
+        try {
+            let { data: posts, error } = await montarConsulta();
+
+            if (error && ehErroDeSessao(error)) {
+                console.warn('[Explorar] Sessão inválida; refazendo a leitura como visitante.', error);
+                try {
+                    if (sb.auth && typeof sb.auth.signOut === 'function') {
+                        await sb.auth.signOut({ scope: 'local' });
+                    }
+                } catch (_) { /* segue mesmo assim: a chave anônima já basta */ }
+                ({ data: posts, error } = await montarConsulta());
+            }
+
+            if (error) throw error;
+
+            // Sem dado real: mantém o fallback, não mostra lista vazia.
+            if (!posts || posts.length === 0) return;
+
+            let perfis = new Map();
+            const ids = [...new Set(posts.map(p => p.author_id).filter(Boolean))];
+            if (ids.length) {
+                try {
+                    const { data: linhas, error: e2 } = await sb
+                        .from('profiles')
+                        .select('id, username, avatar_url')
+                        .in('id', ids);
+                    if (!e2 && linhas) perfis = new Map(linhas.map(p => [p.id, p]));
+                } catch (_) { /* sem perfis: cai no rótulo genérico */ }
+            }
+
+            const frag = document.createDocumentFragment();
+            for (const post of posts) {
+                frag.appendChild(montarItemExplorar(post, perfis.get(post.author_id)));
+            }
+
+            EXPLORAR_COMUNIDADE.lista.replaceChildren(frag);
+            EXPLORAR_COMUNIDADE.lista.hidden = false;
+
+            // Só agora esconde o fallback: nunca há um instante sem conteúdo.
+            if (EXPLORAR_COMUNIDADE.fallback) EXPLORAR_COMUNIDADE.fallback.hidden = true;
+            if (EXPLORAR_COMUNIDADE.rodape) EXPLORAR_COMUNIDADE.rodape.hidden = false;
+
+        } catch (error) {
+            // Falhou: o fallback estático continua no lugar. Nada a fazer.
+            console.warn('[Explorar] Publicações da comunidade indisponíveis; usando o fallback.', error);
+        }
+    })();
+
+    // =============================================
     // 0. SINCRONIZAÇÃO DE PERFIL
     // =============================================
     function syncProfile() {
