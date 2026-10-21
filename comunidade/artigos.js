@@ -153,17 +153,16 @@
     async function carregar() {
         mostrarCarregando();
 
-        // Timeout de segurança: se o banco não responder em 10s, esconde o
-        // carregando para a pagina não ficar travada para sempre.
-        const travou = setTimeout(() => {
-            if (EL.carregando) EL.carregando.hidden = true;
-            console.warn('[artigos] Consulta demorou demais; carregando forçado a sumir.');
-        }, 10000);
+        // Promise.race com timeout de 8s: se o banco não responder, a consulta
+        // é considerada falha e o carregando some. Isso evita a tela ficar
+        // travada para sempre em "Carregando artigos…".
+        const timeout = new Promise((_, rejeita) =>
+            setTimeout(() => rejeita(new Error('timeout')), 8000)
+        );
 
         try {
-            const { artigos, erro } = await D.lerArtigos({ limite: 60 });
-
-            clearTimeout(travou);
+            const consulta = D.lerArtigos({ limite: 60 });
+            const { artigos, erro } = await Promise.race([consulta, timeout]);
 
             if (erro) {
                 console.error('[artigos] Erro ao carregar os artigos:', erro);
@@ -187,7 +186,6 @@
 
             desenhar();
         } catch (e) {
-            clearTimeout(travou);
             console.error('[artigos] Erro inesperado ao carregar:', e);
             mostrarErro('Não foi possível carregar os artigos agora. Verifique sua conexão e tente de novo.');
         } finally {
