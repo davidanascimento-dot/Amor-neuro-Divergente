@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    ARTIGO.JS — a página de leitura de um artigo
    --------------------------------------------------------------------------
    O que ela faz:
@@ -212,45 +212,60 @@
         /* Busca direta pelo id. A listagem (lerArtigos) não serve aqui:
          * ela ordena por data e filtra só o que está publicado, e um
          * rascunho do próprio autor precisa abrir também. */
-        const { data, error } = await D.consultar(sb, () => sb
-            .from('articles')
-            .select('*')
-            .eq('id', idArtigo)
-            .eq('is_active', true)
-            .maybeSingle());
+        // Timeout de segurança: se o banco não responder em 10s, esconde o
+        // carregando para a pagina não ficar travada para sempre.
+        const travou = setTimeout(() => {
+            if (EL.carregando) EL.carregando.hidden = true;
+            console.warn('[artigo] Consulta demorou demais; carregando forçado a sumir.');
+        }, 10000);
 
-        if (error) {
-            if (D.ehTabelaAusente(error)) {
-                mostrarErro(D.AVISO_BANCO);
+        try {
+            const { data, error } = await D.consultar(sb, () => sb
+                .from('articles')
+                .select('*')
+                .eq('id', idArtigo)
+                .eq('is_active', true)
+                .maybeSingle());
+
+            clearTimeout(travou);
+
+            if (error) {
+                if (D.ehTabelaAusente(error)) {
+                    mostrarErro(D.AVISO_BANCO);
+                    return;
+                }
+                mostrarErro(D.ehErroDeSessao(error)
+                    ? 'Sua sessão expirou. Entre novamente para ler este artigo.'
+                    : 'Não foi possível carregar este artigo agora.');
                 return;
             }
-            mostrarErro(D.ehErroDeSessao(error)
-                ? 'Sua sessão expirou. Entre novamente para ler este artigo.'
-                : 'Não foi possível carregar este artigo agora.');
-            return;
+
+            if (!data) {
+                mostrarErro('Este artigo não existe mais, ou nunca foi publicado.');
+                return;
+            }
+
+            ESTADO.artigo = data;
+
+            // O perfil do autor, para o avatar e o @username.
+            if (data.author_id) {
+                const perfis = await D.lerAutores([data.author_id]);
+                ESTADO.perfil = perfis.get(data.author_id) || null;
+            }
+
+            if (EL.carregando) EL.carregando.hidden = true;
+            if (EL.estado) EL.estado.innerHTML = '';
+
+            desenhar();
+
+            contarLeitura();
+            carregarCurtida();
+            carregarComentarios();
+        } catch (e) {
+            clearTimeout(travou);
+            console.error('[artigo] Erro inesperado ao carregar:', e);
+            mostrarErro('Não foi possível carregar este artigo agora. Verifique sua conexão e tente de novo.');
         }
-
-        if (!data) {
-            mostrarErro('Este artigo não existe mais, ou nunca foi publicado.');
-            return;
-        }
-
-        ESTADO.artigo = data;
-
-        // O perfil do autor, para o avatar e o @username.
-        if (data.author_id) {
-            const perfis = await D.lerAutores([data.author_id]);
-            ESTADO.perfil = perfis.get(data.author_id) || null;
-        }
-
-        if (EL.carregando) EL.carregando.hidden = true;
-        if (EL.estado) EL.estado.innerHTML = '';
-
-        desenhar();
-
-        contarLeitura();
-        carregarCurtida();
-        carregarComentarios();
     }
 
     async function contarLeitura() {

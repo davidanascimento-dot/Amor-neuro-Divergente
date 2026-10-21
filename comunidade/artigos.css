@@ -268,16 +268,14 @@
     flex-direction: column;
     gap: .6rem;
     padding: 1rem 1rem .9rem;
-    background: var(--cm-surface);
+    background: transparent;
     border: 1px solid var(--cm-border);
     border-radius: var(--cm-radius);
-    box-shadow: var(--cm-shadow-sm);
-    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    box-shadow: none;
+    transition: border-color .18s ease;
 }
 
 .art-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--cm-shadow-hover);
     border-color: var(--cm-border-strong);
 }
 
@@ -354,15 +352,15 @@
     white-space: nowrap;
 }
 
-/* Imagem da capa ao lado do autor. */
+/* Imagem da capa ao lado do autor: bordas arredondadas grandes, sem background estranho. */
 .art-card__capa-wrap {
     flex: 0 0 auto;
-    max-width: 140px;
-    max-height: 90px;
-    border-radius: var(--cm-radius-sm);
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 20px;
     overflow: hidden;
-    background: var(--cm-surface-soft);
-    border: 1px solid var(--cm-border-soft);
+    background: transparent;
+    border: none;
 }
 
 .art-card__capa-wrap img {
@@ -441,17 +439,17 @@
     padding: .35rem .65rem;
     border: 1px solid var(--cm-border);
     border-radius: var(--cm-radius-btn);
-    background: var(--cm-surface-soft);
+    background: transparent;
     color: var(--cm-text-soft);
     font: inherit;
     font-size: .78rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    transition: background .15s ease, color .15s ease, border-color .15s ease;
+    transition: border-color .15s ease, color .15s ease;
 }
 
-.art-card__acao:hover { border-color: var(--cm-border-strong); color: var(--cm-text); }
+.art-card__acao:hover { border-color: var(--cm-border-strong); color: var(--cm-text); background: var(--cm-surface-soft); }
 
 .art-card__acao i { font-size: .85rem; }
 
@@ -515,6 +513,11 @@
 
 /* ==========================================================================
    5. A PÁGINA DE LEITURA
+   --------------------------------------------------------------------------
+   Modelo das imagens de referência: fundo escuro (sem backgrounds brancos),
+   avatar do autor, nome, título grande, texto claro, imagens com bordas
+   arredondadas grandes e citações com aspas. Sem card branco ao redor —
+   o texto respira sobre o fundo da página.
    ========================================================================== */
 
 .artigo-topo {
@@ -543,30 +546,40 @@
 
 .artigo-voltar:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
 
+/* Capa do artigo: imagem grande, bordas arredondadas, sem background branco. */
 .artigo-capa {
     width: 100%;
     max-height: 420px;
     object-fit: cover;
-    border-radius: var(--cm-radius);
-    margin-bottom: 1.5rem;
+    border-radius: 24px;
+    margin-bottom: 2rem;
     background: var(--cm-surface-soft);
+    display: block;
 }
 
+/* O cartão do artigo: sem background branco, sem sombra estranha. */
 .artigo-cartao {
     max-width: 72ch;
     margin-inline: auto;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
 }
 
 .artigo-secao {
-    font-size: .78rem;
+    display: inline-block;
+    font-size: .72rem;
     font-weight: 800;
     letter-spacing: .18em;
     text-transform: uppercase;
     color: var(--cm-purple);
+    margin-bottom: .6rem;
 }
 
 .artigo-titulo {
-    margin: .6rem 0 0;
+    margin: 0 0 1rem;
     font-size: clamp(2rem, 1.2rem + 3.4vw, 3.4rem);
     font-weight: 800;
     line-height: 1.08;
@@ -575,7 +588,7 @@
 }
 
 .artigo-subtitulo {
-    margin: .9rem 0 0;
+    margin: 0 0 1.5rem;
     font-size: clamp(1.05rem, .95rem + .5vw, 1.3rem);
     line-height: 1.5;
     color: var(--cm-text-soft);
@@ -598,12 +611,13 @@
 
 .artigo-aviso i { margin-top: .15rem; }
 
+/* Byline: avatar + nome + data + tempo. */
 .artigo-byline {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: .6rem .9rem;
-    margin: 1.6rem 0 0;
+    margin: 2rem 0 1.5rem;
     padding-bottom: 1.4rem;
     border-bottom: 1px solid var(--cm-border);
 }
@@ -634,19 +648,20 @@
 .artigo-byline__handle { font-size: .82rem; color: var(--cm-muted); }
 .artigo-byline__data { font-size: .78rem; font-weight: 700; letter-spacing: .08em; color: var(--cm-muted); }
 
+/* Corpo do texto: sem background, cor clara, bom espaçamento. */
 .artigo-corpo {
-    margin-top: 1.9rem;
+    margin-top: 1.5rem;
     font-size: 1.06rem;
     line-height: 1.78;
     color: var(--cm-text);
 }
 
-.artigo-corpo p { margin: 0 0 1.15rem; }
+.artigo-corpo p { margin: 0 0 1.3rem; }
 .artigo-corpo p:last-child { margin-bottom: 0; }
 
 .artigo-corpo h2,
 .artigo-corpo h3 {
-    margin: 2rem 0 .7rem;
+    margin: 2rem 0 .8rem;
     line-height: 1.25;
     color: var(--cm-text);
 }
@@ -655,15 +670,30 @@
 .artigo-corpo h3 { font-size: 1.18rem; }
 
 .artigo-corpo blockquote {
-    margin: 1.6rem 0;
-    padding: .2rem 0 .2rem 1.2rem;
-    border-left: 3px solid var(--cm-purple);
+    margin: 2rem 0;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid var(--cm-purple);
+    background: var(--cm-surface-soft);
+    border-radius: 12px;
     color: var(--cm-text-soft);
     font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    position: relative;
+}
+
+.artigo-corpo blockquote::before {
+    content: open-quote;
+    font-size: 3rem;
+    color: var(--cm-purple);
+    position: absolute;
+    top: -.4rem;
+    left: -.6rem;
+    line-height: 1;
 }
 
 .artigo-corpo ul,
-.artigo-corpo ol { margin: 0 0 1.15rem; padding-left: 1.4rem; }
+.artigo-corpo ol { margin: 0 0 1.3rem; padding-left: 1.4rem; }
 .artigo-corpo li { margin-bottom: .4rem; }
 
 .artigo-corpo strong { font-weight: 700; }
@@ -713,7 +743,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: .6rem;
-    margin: 2.2rem 0 0;
+    margin: 2.5rem 0 0;
     padding: 1rem 0 0;
     border-top: 1px solid var(--cm-border);
 }
@@ -816,7 +846,6 @@
 .artigo-comentario__nome { font-weight: 700; font-size: .9rem; color: var(--cm-text); }
 .artigo-comentario__data { font-size: .76rem; color: var(--cm-muted); }
 .artigo-comentario__texto { margin: 0; font-size: .94rem; line-height: 1.6; color: var(--cm-text); }
-
 /* ==========================================================================
    6. O EDITOR
    --------------------------------------------------------------------------

@@ -153,29 +153,44 @@
     async function carregar() {
         mostrarCarregando();
 
-        const { artigos, erro } = await D.lerArtigos({ limite: 60 });
+        // Timeout de segurança: se o banco não responder em 10s, esconde o
+        // carregando para a pagina não ficar travada para sempre.
+        const travou = setTimeout(() => {
+            if (EL.carregando) EL.carregando.hidden = true;
+            console.warn('[artigos] Consulta demorou demais; carregando forçado a sumir.');
+        }, 10000);
 
-        if (erro) {
-            console.error('[artigos] Erro ao carregar os artigos:', erro);
+        try {
+            const { artigos, erro } = await D.lerArtigos({ limite: 60 });
 
-            if (D.ehTabelaAusente(erro)) {
-                mostrarErro(D.AVISO_BANCO);
-            } else if (D.ehErroDeSessao(erro)) {
-                mostrarErro('Sua sessão expirou. Entre novamente para ver os artigos da comunidade.');
-            } else {
-                mostrarErro('Não foi possível carregar os artigos agora. Verifique sua conexão e tente de novo.');
+            clearTimeout(travou);
+
+            if (erro) {
+                console.error('[artigos] Erro ao carregar os artigos:', erro);
+
+                if (D.ehTabelaAusente(erro)) {
+                    mostrarErro(D.AVISO_BANCO);
+                } else if (D.ehErroDeSessao(erro)) {
+                    mostrarErro('Sua sessão expirou. Entre novamente para ver os artigos da comunidade.');
+                } else {
+                    mostrarErro('Não foi possível carregar os artigos agora. Verifique sua conexão e tente de novo.');
+                }
+                return;
             }
-            return;
+
+            ESTADO.artigos = artigos;
+
+            // Os autores são buscados em UMA consulta para todos os artigos.
+            const ids = artigos.map(a => a.author_id).filter(Boolean);
+            const perfis = await D.lerAutores(ids);
+            ESTADO.perfis = perfis;
+
+            desenhar();
+        } catch (e) {
+            clearTimeout(travou);
+            console.error('[artigos] Erro inesperado ao carregar:', e);
+            mostrarErro('Não foi possível carregar os artigos agora. Verifique sua conexão e tente de novo.');
         }
-
-        ESTADO.artigos = artigos;
-
-        // Os autores são buscados em UMA consulta para todos os artigos.
-        const ids = artigos.map(a => a.author_id).filter(Boolean);
-        const perfis = await D.lerAutores(ids);
-        ESTADO.perfis = perfis;
-
-        desenhar();
     }
 
     /* =====================================================================
