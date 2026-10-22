@@ -451,6 +451,8 @@
             .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
             .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '')
             .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
+            .replace(/\scontenteditable\s*=\s*["'][^"']*["']/gi, '')
+            .replace(/\scontenteditable\s*=\s*[^\s>]+/gi, '')
             .replace(/javascript:/gi, '');
         return limpo;
     }

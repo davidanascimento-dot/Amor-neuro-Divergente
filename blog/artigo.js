@@ -271,6 +271,10 @@
             EL_BLOG.heroImg.src = capaUrl;
             EL_BLOG.heroImg.hidden = false;
             EL_BLOG.heroPlaceholder.hidden = true;
+            EL_BLOG.heroImg.onerror = function () {
+                EL_BLOG.heroImg.hidden = true;
+                EL_BLOG.heroPlaceholder.hidden = false;
+            };
         } else if (EL_BLOG.heroPlaceholder) {
             EL_BLOG.heroPlaceholder.hidden = false;
             if (EL_BLOG.heroImg) EL_BLOG.heroImg.hidden = true;

@@ -34,18 +34,21 @@
     position: absolute;
     inset: 0;
     z-index: 0;
+    display: block;
 }
 .article-hero__media img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
     display: block;
-    filter: brightness(0.75) saturate(0.9);
 }
 .article-hero__overlay {
     position: absolute;
     inset: 0;
+    z-index: 1;
+    display: block;
     background: linear-gradient(
         180deg,
         rgba(15, 10, 30, 0.55) 0%,
@@ -77,8 +80,8 @@
     margin-bottom: 22px;
 }
 .article-hero__eyebrow i {
-    font-size: 12px;
-    color: #c4b5e8;
+    font-size: 10px;
+    color: #7c3aed;
 }
 .article-hero__title {
     font-size: clamp(2rem, 5vw, 3.4rem);
@@ -145,12 +148,12 @@
 .article-meta-bar__author-info strong {
     font-size: 14px;
     font-weight: 700;
-    color: #1a1a2e;
+    color: #111827;
 }
 .article-meta-bar__author-info em {
-    font-size: 12px;
+    font-size: 11px;
     font-style: normal;
-    color: #8a827c;
+    color: #6b7280;
 }
 .article-meta-bar__right {
     display: flex;
@@ -162,7 +165,7 @@
 }
 .article-meta-bar__right i {
     margin-right: 4px;
-    color: #0ea5e9;
+    color: #9ca3af;
 }
 
 /* =========================================
@@ -181,12 +184,22 @@
     color: #2d3748;
 }
 
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    margin: 1.5rem 0;
+    display: block;
+}
+
 .article-content p {
-    margin-bottom: 24px;
+    margin-bottom: 1rem;
 }
 
 .article-content p.article-lead {
-    font-size: 21px;
+    font-size: 1.125rem;
     line-height: 1.7;
     font-weight: 500;
     color: #1a1a2e;
@@ -582,11 +595,11 @@ body.a11y-reduce-motion * {
    ========================================= */
 @media (max-width: 768px) {
     .article-hero {
-        min-height: 420px;
-        margin-top: 65px;
+        min-height: auto;
+        margin-top: 15px;
     }
     .article-hero__content {
-        padding: 60px 20px;
+        padding: 20px 20px 30px;
     }
     .article-hero__title {
         font-size: 1.8rem;
@@ -653,3 +666,4 @@ body.a11y-reduce-motion * {
         font-size: 14px;
     }
 }
+

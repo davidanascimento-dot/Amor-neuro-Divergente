@@ -97,9 +97,6 @@
         secao:       document.getElementById('editorSecao'),
         secaoLista:  document.getElementById('editorSecaoLista'),
         tipo:        document.getElementById('editorTipo'),
-        capa:        document.getElementById('editorCapa'),
-        capaEnviarBtn: document.getElementById('editorCapaEnviarBtn'),
-        capaArquivo:   document.getElementById('editorCapaArquivo'),
         sensivel:    document.getElementById('editorSensivel'),
         aviso:       document.getElementById('editorAviso'),
         prioridade:  document.getElementById('editorPrioridade'),
@@ -1348,85 +1345,6 @@
     /* =====================================================================
        7.b CAPA POR UPLOAD
        --------------------------------------------------------------------
-       O campo da capa aceita um endereço; este bloco envia a imagem do
-       próprio dispositivo e preenche o campo com o endereço público —
-       assim ninguém precisa de link de terceiro para ter capa.
-       O bucket ideal é 'article-covers'; se ainda não existir, cai no
-       'avatars' (o mesmo caminho comprovado do perfil.js).
-       ===================================================================== */
-    const CAPA_TAMANHO_MAX = 5 * 1024 * 1024; // 5 MB
-
-    function extensaoSegura(nome) {
-        const m = /\.([a-z0-9]{1,5})$/i.exec(String(nome || ''));
-        const ext = m ? m[1].toLowerCase() : 'jpg';
-        return /^[a-z0-9]{1,5}$/.test(ext) ? ext : 'jpg';
-    }
-
-    async function enviarCapaParaArmazenamento(file) {
-        const sb = window.supabaseClient;
-        const caminho = `${ESTADO.usuario.id}/capa-${Date.now()}.${extensaoSegura(file.name)}`;
-        const opcoes = { upsert: true, cacheControl: '3600' };
-
-        // Tentativa 1: bucket dedicado às capas.
-        const primeiro = await sb.storage.from('article-covers').upload(caminho, file, opcoes);
-        if (!primeiro.error) {
-            return sb.storage.from('article-covers').getPublicUrl(caminho).data.publicUrl;
-        }
-
-        console.warn('[editor] Bucket article-covers indisponível; usando avatars.', primeiro.error);
-        const segundo = await sb.storage.from('avatars').upload(caminho, file, opcoes);
-        if (segundo.error) throw segundo.error;
-        return sb.storage.from('avatars').getPublicUrl(caminho).data.publicUrl;
-    }
-
-    async function enviarCapa(file) {
-        if (!file) return;
-
-        if (!/^image\//.test(file.type)) {
-            avisar('Escolha um arquivo de imagem (JPG, PNG, WebP…).', 'alerta');
-            return;
-        }
-        if (file.size > CAPA_TAMANHO_MAX) {
-            avisar('A imagem passa de 5 MB. Escolha uma menor.', 'alerta');
-            return;
-        }
-        if (!ESTADO.usuario) {
-            avisar('Entre na sua conta para enviar a imagem da capa.', 'alerta');
-            return;
-        }
-
-        const sb = window.supabaseClient;
-        if (!sb || !sb.storage) {
-            avisar('O armazenamento de imagens não está disponível.', 'alerta');
-            return;
-        }
-
-        const botao = EL.capaEnviarBtn;
-        if (botao) {
-            botao.disabled = true;
-            botao.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Enviando…';
-        }
-
-        try {
-            const url = await enviarCapaParaArmazenamento(file);
-            if (EL.capa) {
-                EL.capa.value = url;
-                guardarRascunho();
-            }
-            avisar('Imagem da capa enviada! O endereço foi preenchido sozinho.', 'sucesso');
-        } catch (e) {
-            console.error('[editor] Falha ao enviar a capa:', e);
-            avisar('Não foi possível enviar a imagem: ' + (e && e.message ? e.message : 'tente de novo.'), 'alerta');
-        } finally {
-            if (botao) {
-                botao.disabled = false;
-                botao.innerHTML = '<i class="fa-solid fa-upload" aria-hidden="true"></i> Enviar';
-            }
-            if (EL.capaArquivo) EL.capaArquivo.value = '';
-        }
-    }
-
-    /* =====================================================================
        8. LIGAÇÃO DE EVENTOS
        ===================================================================== */
 
@@ -1476,18 +1394,6 @@
         // Metadados
         if (EL.secao) EL.secao.addEventListener('input', () => { atualizarRotulos(); guardarRascunho(); });
         if (EL.tipo) EL.tipo.addEventListener('change', () => { atualizarRotulos(); guardarRascunho(); });
-        if (EL.capa) EL.capa.addEventListener('input', guardarRascunho);
-        if (EL.capaEnviarBtn) {
-            EL.capaEnviarBtn.addEventListener('click', () => {
-                if (EL.capaArquivo) EL.capaArquivo.click();
-            });
-        }
-        if (EL.capaArquivo) {
-            EL.capaArquivo.addEventListener('change', (e) => {
-                const arquivo = e.target.files && e.target.files[0];
-                enviarCapa(arquivo);
-            });
-        }
         if (EL.aviso) EL.aviso.addEventListener('input', guardarRascunho);
         if (EL.sensivel) EL.sensivel.addEventListener('change', guardarRascunho);
         if (EL.pago) EL.pago.addEventListener('change', guardarRascunho);

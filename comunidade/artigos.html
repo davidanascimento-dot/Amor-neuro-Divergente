@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Artigos escritos pela comunidade do Amor NeuroDivergente — relatos, histórias, guias e análises.">
-    <title>Artigos da Comunidade — Amor NeuroDivergente</title>
+    <meta name="description" content="Artigos escritos pela comunidade do Amor NeuroDivergente - relatos, histórias, guias e análises.">
+    <title>Artigos da Comunidade - Amor NeuroDivergente</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,12 +18,128 @@
     <script src="/comunidade/theme.js"></script>
     <link rel="stylesheet" href="/movimento-reduzido.css">
     <script src="/imagens.js"></script>
+
+    <!-- Tailwind (escopo visual do modal de leitura) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        corePlugins: { preflight: false },
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                orange: '#FF6719',
+                // Dark mode (base)
+                bg: '#121212',
+                card: '#191919',
+                button: '#282828',
+                hover: '#333333',
+                border: '#262626',
+                text: '#E0E0E0',
+                textMuted: '#888888',
+                // Light mode (light:* variants)
+                lightBg: '#FFFFFF',
+                lightCard: '#F7F7F7',
+                lightButton: '#EEEEEE',
+                lightHover: '#E0E0E0',
+                lightBorder: '#DDDDDD',
+                lightText: '#1A1A1A',
+                lightTextMuted: '#666666'
+              }
+            },
+            fontFamily: {
+              serif: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+            },
+            typography: (theme) => ({
+              DEFAULT: {
+                css: {
+                  '--tw-prose-body': theme('colors.brand.lightText'),
+                  '--tw-prose-headings': theme('colors.brand.lightText'),
+                  '--tw-prose-lead': theme('colors.brand.lightTextMuted'),
+                  '--tw-prose-links': theme('colors.brand.orange'),
+                  '--tw-prose-bold': theme('colors.brand.lightText'),
+                  '--tw-prose-counters': theme('colors.brand.lightTextMuted'),
+                  '--tw-prose-bullets': theme('colors.brand.lightTextMuted'),
+                  '--tw-prose-hr': theme('colors.brand.lightBorder'),
+                  '--tw-prose-quotes': theme('colors.brand.lightText'),
+                  '--tw-prose-quote-borders': theme('colors.brand.orange'),
+                  '--tw-prose-captions': theme('colors.brand.lightTextMuted'),
+                  '--tw-prose-code': theme('colors.brand.lightText'),
+                  '--tw-prose-pre-code': theme('colors.brand.lightText'),
+                  '--tw-prose-pre-bg': theme('colors.brand.lightButton'),
+                  '--tw-prose-th-borders': theme('colors.brand.lightBorder'),
+                  '--tw-prose-td-borders': theme('colors.brand.lightBorder'),
+                }
+              },
+              invert: {
+                css: {
+                  '--tw-prose-body': theme('colors.brand.text'),
+                  '--tw-prose-headings': theme('colors.brand.text'),
+                  '--tw-prose-lead': theme('colors.brand.textMuted'),
+                  '--tw-prose-links': theme('colors.brand.orange'),
+                  '--tw-prose-bold': theme('colors.brand.text'),
+                  '--tw-prose-counters': theme('colors.brand.textMuted'),
+                  '--tw-prose-bullets': theme('colors.brand.textMuted'),
+                  '--tw-prose-hr': theme('colors.brand.border'),
+                  '--tw-prose-quotes': theme('colors.brand.text'),
+                  '--tw-prose-quote-borders': theme('colors.brand.orange'),
+                  '--tw-prose-captions': theme('colors.brand.textMuted'),
+                  '--tw-prose-code': theme('colors.brand.text'),
+                  '--tw-prose-pre-code': theme('colors.brand.text'),
+                  '--tw-prose-pre-bg': theme('colors.brand.button'),
+                  '--tw-prose-th-borders': theme('colors.brand.border'),
+                  '--tw-prose-td-borders': theme('colors.brand.border'),
+                }
+              }
+            })
+          }
+        },
+        plugins: [
+          require('@tailwindcss/typography')
+        ]
+      };
+      // Sync with site's theme (comunidade uses a11y-dark-mode on html & body)
+      (function() {
+        function syncTheme() {
+          const isDark = document.body?.classList.contains('a11y-dark-mode') || 
+                         document.documentElement?.classList.contains('a11y-dark-mode') ||
+                         window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        }
+        // Run immediately
+        syncTheme();
+        // Run again after DOM ready (body exists)
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', syncTheme);
+        } else {
+          syncTheme();
+        }
+        // Watch for theme changes
+        const observer = new MutationObserver(syncTheme);
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme);
+      })();
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      .reader-scroll::-webkit-scrollbar { width: 6px; }
+      .reader-scroll::-webkit-scrollbar-track { background: transparent; }
+      .reader-scroll::-webkit-scrollbar-thumb { background: #333333; border-radius: 3px; }
+      .reader-scroll::-webkit-scrollbar-thumb:hover { background: #444444; }
+    </style>
 </head>
 <body class="community-app" data-img-fundo="fundo-comunidade">
 
-    <!-- ============================================
-         HEADER SUPERIOR
-         ============================================ -->
+    <!-- HEADER SUPERIOR -->
     <header class="header-glass" id="headerGlass">
         <a href="/inicio.html" class="logo">
             <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
@@ -44,9 +160,7 @@
         </button>
     </header>
 
-    <!-- ============================================
-         NAV SECUNDÁRIA
-         ============================================ -->
+    <!-- NAV SECUNDÁRIA -->
     <nav class="community-subnav" id="communitySubnav" aria-label="Seções da comunidade">
         <div class="community-subnav-inner">
             <a class="subnav-tab" data-tab="forum" href="/comunidade/comunidade.html#screen-forum"><i class="fa-regular fa-message"></i><span>Fórum</span></a>
@@ -60,28 +174,15 @@
             <a class="subnav-tab" data-tab="eventos" href="/comunidade/comunidade.html#screen-eventos"><i class="fa-regular fa-calendar"></i><span>Eventos</span></a>
 
             <a class="subnav-tab" data-tab="conversa" href="/comunidade/conversas.html">
-                <i class="fa-regular fa-comment-dots"></i><span>Conversa</span>
-                <span class="subnav-dot">●</span>
+                <i class="fa-solid fa-comment-dots"></i><span>Conversa</span>
+                <span class="subnav-dot">?</span>
             </a>
         </div>
     </nav>
 
-    <!-- ============================================
-         ÁREA DOS ARTIGOS
-         ============================================ -->
+    <!-- ÁREA DOS ARTIGOS -->
     <main class="artigos-main" id="mainContent">
 
-
-
-
-
-        <!-- ============================================
-             ABAS + ORDENAÇÃO — a barra do mockup:
-             Todos | Ouça | Pago | Favorito | História,
-             com a ordenação (Prioridade primeiro) do
-             outro lado. Clicar só filtra a lista que já
-             está na página; não consulta o banco.
-             ============================================ -->
         <div class="artigos-barra">
             <div class="artigos-abas" id="artigoAbas" role="group" aria-label="Filtrar artigos">
                 <button type="button" class="artigos-aba is-ativo" data-aba="todos" aria-pressed="true">Todos</button>
@@ -99,14 +200,10 @@
                     <option value="recentes">Mais recentes</option>
                     <option value="lidos">Mais lidos</option>
                     <option value="curtidos">Mais curtidos</option>
-                    <option value="az">A–Z</option>
+                    <option value="az">A-Z</option>
                 </select>
             </div>
         </div>
-
-        <!-- ============================================
-             A LISTA
-             ============================================ -->
 
         <div id="artigoEstado"></div>
 
@@ -118,6 +215,113 @@
             </a>
         </p>
     </main>
+
+    <!-- SUBSTACK READER MODAL -->
+    <div id="modalBackdrop" class="fixed inset-0 bg-black/85 dark:bg-black/85 backdrop-blur-md z-[100] flex items-center justify-center p-0 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-200" hidden>
+        
+        <div id="modalContainer" class="bg-brand-lightCard dark:bg-brand-card text-brand-lightText dark:text-brand-text w-full max-w-5xl h-full sm:h-[94vh] sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden relative border border-brand-lightBorder dark:border-brand-border transform scale-98 transition-transform duration-200">
+            
+            <!-- TOP NAVIGATION BAR -->
+            <header class="h-14 border-b border-brand-lightBorder dark:border-brand-border px-4 flex items-center justify-between shrink-0 bg-brand-lightCard/90 dark:bg-brand-card/90 backdrop-blur z-20">
+                <!-- Left: Close Button -->
+                <div>
+                    <button id="closeModalBtn" class="w-9 h-9 flex items-center justify-center bg-brand-lightButton dark:bg-brand-button hover:bg-brand-lightHover dark:hover:bg-brand-hover text-brand-lightTextMuted dark:text-brand-textMuted hover:text-brand-lightText dark:hover:text-brand-text rounded-md transition-colors" title="Fechar (Esc)" aria-label="Fechar leitura">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Center: Substack Icon -->
+                <div class="absolute left-1/2 transform -translate-x-1/2">
+                    <div class="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center shadow-md">
+                        <svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24">
+                            <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-2">
+                    <button id="modalSubscribedBtn" class="px-3 py-1.5 bg-brand-lightButton dark:bg-brand-button hover:bg-brand-lightHover dark:hover:bg-brand-hover text-brand-lightText dark:text-brand-text text-xs font-semibold rounded-md transition-colors border border-brand-lightBorder dark:border-brand-border">
+                        Inscrito
+                    </button>
+                    <button id="modalPlayBtn" class="w-9 h-9 flex items-center justify-center bg-brand-lightButton dark:bg-brand-button hover:bg-brand-lightHover dark:hover:bg-brand-hover text-brand-lightText dark:text-brand-text rounded-md transition-colors" title="Ouvir" aria-label="Ouvir artigo">
+                        <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                    </button>
+                    <button id="modalMoreBtn" class="w-9 h-9 flex items-center justify-center bg-brand-lightButton dark:bg-brand-button hover:bg-brand-lightHover dark:hover:bg-brand-hover text-brand-lightTextMuted dark:text-brand-textMuted hover:text-brand-lightText dark:hover:text-brand-text rounded-md transition-colors" title="Mais opções" aria-label="Mais opções">
+                        <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- BODY AREA -->
+            <div class="flex-1 flex relative overflow-hidden">
+                
+                <!-- LEFT FLOATING CONTROLS -->
+                <aside class="absolute left-4 top-4 flex flex-col space-y-2 z-10 hidden sm:flex">
+                    <button id="modalPrevBtn" class="w-8 h-8 flex items-center justify-center bg-brand-lightButton dark:bg-brand-button hover:bg-brand-lightHover dark:hover:bg-brand-hover text-brand-lightTextMuted dark:text-brand-textMuted hover:text-brand-lightText dark:hover:text-brand-text rounded-md transition-colors border border-brand-lightBorder dark:border-brand-border" title="Anterior" aria-label="Artigo anterior">
+                        <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                    </button>
+                    <button id="modalNextBtn" class="w-8 h-8 flex items-center justify-center bg-brand-lightButton dark:bg-brand-button hover:bg-brand-lightHover dark:hover:bg-brand-hover text-brand-lightTextMuted dark:text-brand-textMuted hover:text-brand-lightText dark:hover:text-brand-text rounded-md transition-colors border border-brand-lightBorder dark:border-brand-border" title="Próximo" aria-label="Próximo artigo">
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                    
+                    <!-- Indicator Lines -->
+                    <div class="pt-6 flex flex-col space-y-1 items-center opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+                        <div class="w-3 h-[2px] border-t border-brand-lightBorder dark:border-brand-border"></div>
+                        <div class="w-3 h-[2px] border-t border-brand-lightBorder dark:border-brand-border"></div>
+                        <div class="w-3 h-[2px] border-t border-brand-lightBorder dark:border-brand-border"></div>
+                    </div>
+                </aside>
+
+                <!-- ARTICLE CONTENT -->
+                <main id="modalContent" class="flex-1 overflow-y-auto reader-scroll px-6 sm:px-16 md:px-24 py-10 flex justify-center">
+                    <article class="max-w-2xl w-full font-serif text-[18px] sm:text-[20px] leading-[1.65] space-y-7 selection:bg-brand-orange selection:text-white prose dark:prose-invert" id="modalArticleBody"></article>
+                </main>
+            </div>
+
+            <!-- BOTTOM FLOATING FOOTER TOOLBAR -->
+            <footer class="h-14 border-t border-brand-lightBorder dark:border-brand-border px-6 flex items-center justify-center shrink-0 bg-brand-lightCard dark:bg-brand-card z-20">
+                <div class="flex items-center space-x-10 sm:space-x-16 text-brand-lightTextMuted dark:text-brand-textMuted">
+                    
+                    <!-- Like Button -->
+                    <button id="modalLikeBtn" class="flex items-center space-x-2 hover:text-brand-lightText dark:hover:text-brand-text transition-colors group" aria-label="Curtir">
+                        <i data-lucide="heart" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                        <span id="modalLikeCount" class="text-sm font-sans font-medium">0</span>
+                    </button>
+
+                    <!-- Comment Button -->
+                    <button id="modalCommentBtn" class="flex items-center space-x-2 hover:text-brand-lightText dark:hover:text-brand-text transition-colors group" title="Comentar" aria-label="Comentar">
+                        <i data-lucide="message-square" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                        <span id="modalCommentCount" class="text-sm font-sans font-medium">0</span>
+                    </button>
+
+                    <!-- Restack / Repost Button -->
+                    <button id="modalRestackBtn" class="flex items-center space-x-2 hover:text-brand-lightText dark:hover:text-brand-text transition-colors group" aria-label="Restack">
+                        <i data-lucide="repeat" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                        <span id="modalRestackCount" class="text-sm font-sans font-medium">0</span>
+                    </button>
+
+                    <!-- Share Button -->
+                    <button id="modalShareBtn" class="flex items-center space-x-2 hover:text-brand-lightText dark:hover:text-brand-text transition-colors group" title="Compartilhar" aria-label="Compartilhar">
+                        <i data-lucide="share" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    </button>
+
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-config.js"></script>
+    <script src="/js/supabase.js"></script>
+    <script src="/auth-global.js"></script>
+    <script src="/comunidade/comunidade-nav.js"></script>
+    <script src="/comunidade/artigos-dados.js"></script>
+    <script src="/comunidade/artigos.js"></script>
+    <script src="/pular-conteudo.js"></script>
+    <script src="/userway.js"></script>
+    <script src="/vlibras.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/js/supabase-config.js"></script>

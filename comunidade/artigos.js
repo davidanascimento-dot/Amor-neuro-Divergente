@@ -1,10 +1,10 @@
 ﻿/* ==========================================================================
-   ARTIGOS.JS — a área "Artigos" da Comunidade
+   ARTIGOS.JS - a área "Artigos" da Comunidade
    --------------------------------------------------------------------------
    A tela que reúne o que a comunidade escreveu: a listagem, os filtros e os
    botões de cada card (ouvir, favoritar).
 
-   A leitura do banco e a montagem do card NÃO são feitas aqui — elas estão
+   A leitura do banco e a montagem do card NÃO são feitas aqui - elas estão
    em /comunidade/artigos-dados.js, o mesmo arquivo que o Blog, o Explorar e
    o perfil usam. É o que garante que o mesmo artigo tenha a mesma forma em
    toda parte.
@@ -26,7 +26,25 @@
         estado:     document.getElementById('artigoEstado'),
         grade:      document.getElementById('artigoGrade'),
         loginAviso: document.getElementById('artigoLoginAviso'),
-        btnEscrever: document.getElementById('btnEscreverArtigo')
+        btnEscrever: document.getElementById('btnEscreverArtigo'),
+
+        // Modal Substack
+        modalBackdrop:    document.getElementById('modalBackdrop'),
+        modalContainer:   document.getElementById('modalContainer'),
+        modalCloseBtn:    document.getElementById('closeModalBtn'),
+        modalContent:     document.getElementById('modalContent'),
+        modalArticleBody: document.getElementById('modalArticleBody'),
+        modalLikeBtn:     document.getElementById('modalLikeBtn'),
+        modalLikeCount:   document.getElementById('modalLikeCount'),
+        modalCommentBtn:  document.getElementById('modalCommentBtn'),
+        modalCommentCount: document.getElementById('modalCommentCount'),
+        modalRestackBtn:  document.getElementById('modalRestackBtn'),
+        modalRestackCount: document.getElementById('modalRestackCount'),
+        modalShareBtn:    document.getElementById('modalShareBtn'),
+        modalPrevBtn:     document.getElementById('modalPrevBtn'),
+        modalNextBtn:     document.getElementById('modalNextBtn'),
+        modalPlayBtn:     document.getElementById('modalPlayBtn'),
+        modalMoreBtn:     document.getElementById('modalMoreBtn'),
     };
 
     const ESTADO = {
@@ -34,33 +52,18 @@
         filtros: { aba: 'todos' },
         ordenacao: 'prioridade'
     };
+    let artigoSelecionadoModal = null;
+    let artigoSelecionadoIndex = -1;
 
     /* =====================================================================
        1. AS ABAS E A ORDENAÇÃO
-       --------------------------------------------------------------------------
-       A barra vem do mockup: Todos | Ouça | Pago | Favorito | História, com a
-       ordenação por Prioridade do outro lado. Cada aba é um filtro sobre a
-       MESMA lista — nada de nova consulta ao banco.
-
-       O que cada aba significa, com o que existe no card e na tabela:
-
-         Todos     — a lista inteira.
-         Ouça      — artigos que trazem áudio embutido (bloco [Áudio: ...]
-                     do markdown-lite ou <audio> do editor visual). Todo
-                     card tem o botão de leitura em voz alta; esta aba é
-                     para quem procura gravação de verdade.
-         Pago      — artigos com is_paid (o editor tem o campo "Pago").
-         Favorito  — as leituras salvas desta pessoa (localStorage, a mesma
-                     lista do coração dos cards).
-         História  — kind "História" (ou a seção "Histórias").
        ===================================================================== */
 
     const ORDENACOES = ['prioridade', 'recentes', 'lidos', 'curtidos', 'az'];
 
-    /* Áudio embutido: o bloco do markdown-lite ou o <audio> do editor visual. */
     function temAudio(artigo) {
         const c = String(artigo?.content || '');
-        return /\[[Áá]udio:/i.test(c) || /<audio\b/i.test(c);
+        return /\[[áa]udio:/i.test(c) || /<audio\b/i.test(c);
     }
 
     function marcarAtivo(container, atributo, valor) {
@@ -78,7 +81,6 @@
 
     function filtrar() {
         const aba = ESTADO.filtros.aba;
-
         return ESTADO.artigos.filter(artigo => {
             switch (aba) {
                 case 'pago':     return artigo.is_paid === true;
@@ -91,8 +93,6 @@
         });
     }
 
-    /* A ordenação é local: os artigos já estão todos na página. O empate
-     * em prioridade cai na data — o mais novo primeiro, como antes. */
     function porDataDesc(a, b) {
         return new Date(b.created_at || 0) - new Date(a.created_at || 0);
     }
@@ -100,7 +100,6 @@
     function ordenar(lista) {
         const copia = [...lista];
         const numero = v => Number(v) || 0;
-
         switch (ESTADO.ordenacao) {
             case 'recentes': return copia.sort(porDataDesc);
             case 'lidos':    return copia.sort((a, b) => numero(b.views) - numero(a.views) || porDataDesc(a, b));
@@ -126,8 +125,6 @@
         if (EL.carregando) EL.carregando.hidden = true;
         if (EL.grade) EL.grade.innerHTML = '';
 
-        // Um "nenhum resultado" honesto: diz o que a aba procura e por que
-        // ela pode estar vazia, em vez de um genérico "tente de novo".
         const avisos = {
             ouca: ['Nenhum artigo com áudio ainda',
                    'Todo artigo pode ser lido em voz alta pelo coração do card. Quando alguém publicar uma gravação, ela aparece aqui.'],
@@ -165,7 +162,21 @@
         const frag = document.createDocumentFragment();
         for (const artigo of lista) {
             const perfil = ESTADO.perfis ? ESTADO.perfis.get(artigo.author_id) : null;
-            frag.appendChild(D.montarCard(artigo, perfil, { mostrarFavorito: true }));
+            const card = D.montarCard(artigo, perfil, { mostrarFavorito: true });
+            const link = card.querySelector('.art-card__link');
+            if (link) {
+                link.setAttribute('href', 'javascript:void(0)');
+                link.style.cursor = 'pointer';
+            }
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('[data-acao]')) return;
+                e.preventDefault();
+                e.stopPropagation();
+                const idx = ESTADO.artigos.findIndex(a => a.id === artigo.id);
+                abrirModalArtigo(artigo, idx);
+            });
+            frag.appendChild(card);
         }
 
         if (EL.grade) EL.grade.replaceChildren(frag);
@@ -178,9 +189,6 @@
     async function carregar() {
         mostrarCarregando();
 
-        // Promise.race com timeout de 8s: se o banco não responder, a consulta
-        // é considerada falha e o carregando some. Isso evita a tela ficar
-        // travada para sempre em "Carregando artigos…".
         const timeout = new Promise((_, rejeita) =>
             setTimeout(() => rejeita(new Error('timeout')), 8000)
         );
@@ -204,7 +212,6 @@
 
             ESTADO.artigos = artigos;
 
-            // Os autores são buscados em UMA consulta para todos os artigos.
             const ids = artigos.map(a => a.author_id).filter(Boolean);
             const perfis = await D.lerAutores(ids);
             ESTADO.perfis = perfis;
@@ -214,19 +221,254 @@
             console.error('[artigos] Erro inesperado ao carregar:', e);
             mostrarErro('Não foi possível carregar os artigos agora. Verifique sua conexão e tente de novo.');
         } finally {
-            // Garante que o carregando nunca fique travado na tela.
             if (EL.carregando) EL.carregando.hidden = true;
         }
     }
 
     /* =====================================================================
-       4. EVENTOS
+       4. MODAL SUBSTACK - Leitura em overlay
        ===================================================================== */
 
-    /* O clique nos botões do card é delegado: os cards são recriados a cada
-     * desenho da lista, e um listener em cada card seria trabalho jogado
-     * fora. */
+    function resetarBarraModal() {
+        const likeBtn = EL.modalLikeBtn;
+        const restackBtn = EL.modalRestackBtn;
+
+        if (likeBtn) {
+            likeBtn.classList.remove('text-red-500');
+            // Base muted colors are in HTML: text-brand-lightTextMuted dark:text-brand-textMuted
+            const icon = likeBtn.querySelector('i');
+            if (icon) icon.removeAttribute('fill');
+        }
+        if (restackBtn) {
+            restackBtn.classList.remove('text-green-500');
+        }
+    }
+
+    async function abrirModalArtigo(artigo, index) {
+        if (!EL.modalBackdrop || !EL.modalContainer) return;
+
+        artigoSelecionadoModal = artigo;
+        artigoSelecionadoIndex = index;
+
+        // Reset UI
+        resetarBarraModal();
+
+        // Show backdrop with animation
+        EL.modalBackdrop.hidden = false;
+        requestAnimationFrame(() => {
+            EL.modalBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+            EL.modalBackdrop.classList.add('opacity-100');
+            EL.modalContainer.classList.remove('scale-98');
+            EL.modalContainer.classList.add('scale-100');
+        });
+        document.body.style.overflow = 'hidden';
+
+        try {
+            desenharArtigoNoModal(artigo);
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        } catch (e) {
+            console.error('[artigos] Erro ao abrir modal de leitura:', e);
+        }
+    }
+
+    function fecharModalArtigo() {
+        if (!EL.modalBackdrop || !EL.modalContainer) return;
+
+        EL.modalBackdrop.classList.remove('opacity-100');
+        EL.modalBackdrop.classList.add('opacity-0', 'pointer-events-none');
+        EL.modalContainer.classList.remove('scale-100');
+        EL.modalContainer.classList.add('scale-98');
+
+        setTimeout(() => {
+            EL.modalBackdrop.hidden = true;
+            document.body.style.overflow = '';
+            artigoSelecionadoModal = null;
+            artigoSelecionadoIndex = -1;
+        }, 200);
+    }
+
+    function desenharArtigoNoModal(artigo) {
+        if (!D) return;
+
+        const nomeAutor = artigo.author_name || 'Membro da Comunidade';
+        const tipoTag = artigo.kind || 'Artigo';
+        const secaoTag = artigo.category || 'Reflexão';
+        const min = Number(artigo.read_minutes) || (D ? D.minutosLeitura(artigo.content) : 3);
+        const data = D ? D.formatarData(artigo.created_at) || 'recente' : 'recente';
+        const renderizado = D ? D.renderizarConteudo(artigo.content) : '<p>' + (artigo.content || '') + '</p>';
+
+        const avatarUrl = (D ? D.urlSegura(artigo.author_avatar) : null) || '/img/foto-padrão.jpg';
+
+        // Build article HTML matching Substack style - prose handles colors via light/dark
+        EL.modalArticleBody.innerHTML =
+            '<header class="mb-8 space-y-4">' +
+            '  <div class="flex items-center space-x-2 text-xs font-semibold text-sky-400 uppercase tracking-wider">' +
+            '    <span>' + D.escapeHtml(secaoTag) + '</span>' +
+            '  </div>' +
+            '  <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">' + D.escapeHtml(artigo.title || 'Sem título') + '</h1>' +
+            (artigo.subtitle ? '<p class="text-lg sm:text-xl leading-relaxed font-normal">' + D.escapeHtml(artigo.subtitle) + '</p>' : '') +
+            '  <div class="flex items-center space-x-3 pt-4 border-t">' +
+            '    <img src="' + avatarUrl + '" alt="Avatar" class="w-10 h-10 rounded-full object-cover border" />' +
+            '    <div>' +
+            '      <p class="text-sm font-semibold">' + D.escapeHtml(nomeAutor) + '</p>' +
+            '      <p class="text-xs">' + D.escapeHtml(data) + ' · ' + min + ' min de leitura</p>' +
+            '    </div>' +
+            '  </div>' +
+            '</header>' +
+            '<div class="prose dark:prose-invert max-w-none space-y-7">' + renderizado + '</div>';
+
+        // Update toolbar counts
+        if (EL.modalLikeCount) EL.modalLikeCount.textContent = Number(artigo.likes || 0);
+        if (EL.modalCommentCount) EL.modalCommentCount.textContent = Number(artigo.comments_count || artigo.comments || 0);
+        if (EL.modalRestackCount) EL.modalRestackCount.textContent = Number(artigo.restacks || artigo.reposts || 0);
+
+        // Recreate Lucide icons in injected content
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+    }
+
+    function navegarArtigo(direcao) {
+        if (!artigoSelecionadoModal) return;
+        const lista = ordenar(filtrar());
+        const novoIndex = artigoSelecionadoIndex + direcao;
+        if (novoIndex >= 0 && novoIndex < lista.length) {
+            abrirModalArtigo(lista[novoIndex], novoIndex);
+        }
+    }
+
+    function ligarEventosModalArtigo() {
+        // Close button
+        if (EL.modalCloseBtn) {
+            EL.modalCloseBtn.addEventListener('click', fecharModalArtigo);
+        }
+
+        // Click backdrop to close
+        if (EL.modalBackdrop) {
+            EL.modalBackdrop.addEventListener('click', (e) => {
+                if (e.target === EL.modalBackdrop) fecharModalArtigo();
+            });
+        }
+
+        // ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && EL.modalBackdrop && !EL.modalBackdrop.hidden) {
+                fecharModalArtigo();
+            }
+        });
+
+        // Navigation
+        if (EL.modalPrevBtn) {
+            EL.modalPrevBtn.addEventListener('click', () => navegarArtigo(-1));
+        }
+        if (EL.modalNextBtn) {
+            EL.modalNextBtn.addEventListener('click', () => navegarArtigo(1));
+        }
+
+        // Keyboard nav (j/k or arrow keys)
+        document.addEventListener('keydown', (e) => {
+            if (EL.modalBackdrop && !EL.modalBackdrop.hidden) {
+                if (e.key === 'ArrowUp' || e.key === 'j') {
+                    e.preventDefault();
+                    navegarArtigo(-1);
+                } else if (e.key === 'ArrowDown' || e.key === 'k') {
+                    e.preventDefault();
+                    navegarArtigo(1);
+                }
+            }
+        });
+
+        // Like toggle
+        if (EL.modalLikeBtn) {
+            EL.modalLikeBtn.addEventListener('click', () => {
+                const countEl = EL.modalLikeCount;
+                const icon = EL.modalLikeBtn.querySelector('i');
+                const liked = EL.modalLikeBtn.classList.toggle('text-red-500');
+                if (liked) {
+                    if (icon) icon.setAttribute('fill', 'currentColor');
+                    if (countEl) countEl.textContent = (Number(countEl.textContent) || 0) + 1;
+                } else {
+                    if (icon) icon.removeAttribute('fill');
+                    if (countEl) countEl.textContent = Math.max(0, (Number(countEl.textContent) || 0) - 1);
+                }
+                // Sync with article data
+                if (artigoSelecionadoModal) {
+                    artigoSelecionadoModal.likes = Number(countEl.textContent) || 0;
+                }
+            });
+        }
+
+        // Restack toggle
+        if (EL.modalRestackBtn) {
+            EL.modalRestackBtn.addEventListener('click', () => {
+                const countEl = EL.modalRestackCount;
+                const restacked = EL.modalRestackBtn.classList.toggle('text-green-500');
+                if (restacked) {
+                    if (countEl) countEl.textContent = (Number(countEl.textContent) || 0) + 1;
+                } else {
+                    if (countEl) countEl.textContent = Math.max(0, (Number(countEl.textContent) || 0) - 1);
+                }
+                if (artigoSelecionadoModal) {
+                    artigoSelecionadoModal.restacks = Number(countEl.textContent) || 0;
+                }
+            });
+        }
+
+        // Share
+        if (EL.modalShareBtn) {
+            EL.modalShareBtn.addEventListener('click', () => {
+                const url = window.location.origin + '/comunidade/artigo.html?id=' + encodeURIComponent(artigoSelecionadoModal?.id);
+                if (navigator.clipboard && url) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        if (typeof avisar === 'function') avisar('Link copiado!');
+                    });
+                }
+            });
+        }
+
+        // Comment - scroll to comments section or show prompt
+        if (EL.modalCommentBtn) {
+            EL.modalCommentBtn.addEventListener('click', () => {
+                // Could open a comment panel or navigate to article page
+                if (typeof avisar === 'function') {
+                    avisar('Comentários disponíveis na página do artigo');
+                }
+            });
+        }
+
+        // Play button - could trigger TTS
+        if (EL.modalPlayBtn) {
+            EL.modalPlayBtn.addEventListener('click', () => {
+                if (D && D.podeFalar && D.falar) {
+                    const comeu = D.falar(artigoSelecionadoModal);
+                    if (!comeu && D.pararDeFalar) D.pararDeFalar();
+                }
+            });
+        }
+    }
+
+    /* =====================================================================
+       5. EVENTOS DOS CARDS
+       ===================================================================== */
+
     function onCardClick(evento) {
+        const link = evento.target.closest('.art-card__link');
+        if (link) {
+            evento.preventDefault();
+            const cartao = link.closest('[data-article-id]');
+            if (cartao) {
+                const id = cartao.getAttribute('data-article-id');
+                const artigo = ESTADO.artigos.find(a => a.id === id);
+                if (artigo) {
+                    const idx = ESTADO.artigos.findIndex(a => a.id === id);
+                    abrirModalArtigo(artigo, idx);
+                }
+            }
+            return;
+        }
+
         const botao = evento.target.closest('[data-acao]');
         if (!botao) return;
 
@@ -243,8 +485,6 @@
             const icone = botao.querySelector('i');
             if (icone) icone.className = `fa-${agoraFavorito ? 'solid' : 'regular'} fa-heart`;
 
-            // Na aba Favorito, desfavoritar tira o card da vista na hora —
-            // e favoritar de outra aba já deixa o card pronto para a próxima.
             if (ESTADO.filtros.aba === 'favorito') desenhar();
             return;
         }
@@ -258,13 +498,12 @@
                 return;
             }
 
-            const começou = D.falar(artigo);
-            botao.classList.toggle('is-ativo', começou);
-            if (!começou) D.pararDeFalar();
+            const comecou = D.falar(artigo);
+            botao.classList.toggle('is-ativo', comecou);
+            if (!comecou) D.pararDeFalar();
         }
     }
 
-    /* Um aviso curto, no canto. some sozinho. */
     let avisoTimer = null;
     function avisar(texto) {
         let caixa = document.getElementById('artigoAviso');
@@ -310,22 +549,15 @@
 
         if (EL.grade) EL.grade.addEventListener('click', onCardClick);
 
-        // Parar de falar quando a pessoa sai da página.
+        ligarEventosModalArtigo();
+
         window.addEventListener('beforeunload', D.pararDeFalar);
     }
 
     /* =====================================================================
-       5. A SESSÃO
+       6. SESSÃO
        ===================================================================== */
 
-    /* O espelho do login é gerenciado pelo auth-global.js, que grava
-     * userLoggedIn no localStorage de forma assíncrona (sincronizaComSupabase).
-     * Ler o localStorage logo de cara pode dar visitante falso quando o
-     * espelho ainda não foi gravado. Então a gente:
-     *   1. usa window.AuthGlobal.isLoggedIn() (a API pública do auth-global);
-     *   2. se ainda não deu true, espera um pouco e tenta de novo (até 3x);
-     *   3. como último recurso, olha o data-auth no body, que o auth-global
-     *      define após sincronizar com o Supabase. */
     function ajustarSessao() {
         function checar() {
             const authGlobal = window.AuthGlobal;
@@ -339,7 +571,6 @@
                 EL.btnEscrever.setAttribute('title', 'Entre para escrever um artigo');
             }
 
-            // Fallback: data-auth no body, definido pelo auth-global.js.
             if (!logado && document.body.dataset.auth === 'member') {
                 if (EL.loginAviso) EL.loginAviso.hidden = true;
                 if (EL.btnEscrever) {
@@ -348,7 +579,6 @@
                 }
             }
 
-            // Se ainda não sabe se está logado, tenta de novo depois.
             if (!logado && tentativas < 3) {
                 tentativas++;
                 setTimeout(checar, 400);
@@ -360,13 +590,16 @@
     }
 
     /* =====================================================================
-       6. INÍCIO
+       7. INÍCIO
        ===================================================================== */
 
     function iniciar() {
         ligarEventos();
         ajustarSessao();
         carregar();
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
     }
 
     if (document.readyState === 'loading') {
