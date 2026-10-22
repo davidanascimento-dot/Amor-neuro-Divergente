@@ -229,7 +229,7 @@
             kind: EL.tipo ? EL.tipo.value : ESTADO.kind,
             style: ESTADO.style,
             template: ESTADO.template,
-            cover_url: EL.capa ? EL.capa.value : '',
+            cover_url: '', // Sem capa por enquanto
             sensitive: EL.sensivel ? EL.sensivel.checked : false,
             warning: EL.aviso ? EL.aviso.value : '',
             is_paid: EL.pago ? EL.pago.checked : false,
@@ -278,7 +278,7 @@
 
         if (EL.secao) EL.secao.value     = dados.category || dados.secao || 'Dicas';
         if (EL.tipo) EL.tipo.value      = dados.kind || dados.tipo || 'Dica';
-        if (EL.capa) EL.capa.value      = dados.cover_url || dados.capa || '';
+        // if (EL.capa) EL.capa.value      = dados.cover_url || dados.capa || '';
         if (EL.sensivel) EL.sensivel.checked = !!dados.sensitive;
         if (EL.aviso) EL.aviso.value     = dados.warning || dados.aviso || '';
         if (EL.pago) EL.pago.checked    = !!dados.is_paid;
@@ -1079,7 +1079,7 @@
             ? `<p class="artigo-aviso"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>${D.escapeHtml(EL.aviso.value.trim() || 'Este texto aborda temas sensíveis.')}</span></p>`
             : '';
 
-        const capa = D.urlSegura(EL.capa.value.trim());
+        const capa = ''; // Sem capa por enquanto
         const secaoEscolhida = EL.secao.value.trim() || 'Dicas';
         const tipoEscolhido = EL.tipo.value || 'Dica';
 
@@ -1185,7 +1185,7 @@
             kind: EL.tipo.value || 'Dica',
             style: ESTADO.style,
             template: ESTADO.template,
-            cover_url: D.urlSegura(EL.capa.value.trim()),
+            cover_url: null, // Sem capa por enquanto (elemento n�o existe no editor)
             sensitive: EL.sensivel.checked,
             warning: EL.sensivel.checked ? (EL.aviso.value.trim() || 'Este texto aborda temas sensíveis.') : null,
             is_paid: EL.pago.checked,
@@ -1282,7 +1282,7 @@
             kind: EL.tipo.value === 'Dica' ? 'Guia' : (EL.tipo.value || 'Guia'),
             style: ESTADO.style,
             template: ESTADO.template,
-            cover_url: D.urlSegura(EL.capa.value.trim()),
+            cover_url: null, // Sem capa por enquanto (elemento n�o existe no editor)
             sensitive: EL.sensivel.checked,
             warning: EL.sensivel.checked ? (EL.aviso.value.trim() || 'Este texto aborda temas sensíveis.') : null,
             is_paid: EL.pago.checked,

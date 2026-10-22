@@ -626,13 +626,13 @@
        ===================================================================== */
 
         function montarCard(artigo, perfil, opcoes = {}) {
-            const { compacto = false, mostrarFavorito = true } = opcoes;
+            const { compacto = false, mostrarFavorito = true, comunidade = false } = opcoes;
 
-            const { nome } = resolverAutor(artigo, perfil);
+            const { nome, avatar } = resolverAutor(artigo, perfil);
             const url = opcoes.destino === 'blog' ? caminhoBlogArtigo(artigo.id) : caminhoArtigo(artigo.id);
             const data = formatarData(artigo.created_at);
             const secao = String(artigo.category || 'Relatos');
-            const trecho = artigo.content ? resumoAutomatico(artigo.content, 110) : '';
+            const trecho = artigo.content ? resumoAutomatico(artigo.content, 160) : '';
             const minutos = Number(artigo.read_minutes) || minutosLeitura(artigo.content || '');
             const iconesTipo = {
                 'Dica': 'fa-lightbulb',
@@ -645,63 +645,124 @@
             const descricao = artigo.subtitle || trecho;
 
             const card = document.createElement('article');
-            card.className = 'art-card' + (compacto ? ' art-card--compacto' : '');
+            // Comunidade usa layout lateral com imagem; blog/explorar usam topo
+            const classBase = 'art-card' + (compacto ? ' art-card--compacto' : '') + (comunidade ? ' art-card--comunidade' : '');
+            card.className = classBase;
             card.setAttribute('data-article-id', artigo.id);
 
             const favorito = ehFavorito(artigo.id);
-            const capa = artigo.cover_url
-                ? `<div class="art-card__capa-wrap"><img class="art-card__capa" src="${escapeHtml(artigo.cover_url)}" alt="" loading="lazy"></div>`
+            const likes = Number(artigo.likes) || 0;
+            const comments = Number(artigo.comments_count) || Number(artigo.comments) || 0;
+            const restacks = Number(artigo.restacks) || Number(artigo.reposts) || 0;
+
+            // Capa: se tiver cover_url, usa; senão tenta extrair primeira imagem do conteúdo
+            let coverUrl = artigo.cover_url || '';
+            
+            if (!coverUrl && artigo.content) {
+                const imgMatch = artigo.content.match(/<img[^>]+src=["']([^"']+)["']/i) || 
+                                 artigo.content.match(/\[Imagem:\s*([^\]]+)\]/i) ||
+                                 artigo.content.match(/!\[.*?\]\(([^)]+)\)/i);
+                if (imgMatch && imgMatch[1]) {
+                    coverUrl = imgMatch[1];
+                }
+            }
+            
+            const capaHtml = coverUrl
+                ? `<div class="art-card__capa-wrap"><img class="art-card__capa" src="${escapeHtml(coverUrl)}" alt="" loading="lazy"></div>`
                 : '';
 
-            card.innerHTML = `
-                <div class="art-card__topo">
-                    <span class="art-card__selo" aria-hidden="true"><i class="fa-solid ${iconeTipo}"></i></span>
-                    <span class="art-card__secao">${escapeHtml(secao)}</span>
-                    ${artigo.is_paid ? '<span class="art-card__pago">Pago</span>' : ''}
-                    ${data ? `<time class="art-card__data">${escapeHtml(data)}</time>` : ''}
-                </div>
-                <div class="art-card__corpo">
-                    <div class="art-card__textos">
+            if (comunidade) {
+                // Layout COMUNIDADE: imagem à esquerda, conteúdo à direita, sem actions
+                card.innerHTML = `
+                    <div class="art-card__lateral">
+                        ${capaHtml}
+                    </div>
+                    <div class="art-card__conteudo">
+                        <div class="art-card__topo">
+                            <span class="art-card__selo" aria-hidden="true"><i class="fa-solid ${iconeTipo}"></i></span>
+                            <span class="art-card__secao">${escapeHtml(secao)}</span>
+                            ${artigo.is_paid ? '<span class="art-card__pago">Pago</span>' : ''}
+                            ${data ? '<time class="art-card__data">' + escapeHtml(data) + '</time>' : ''}
+                        </div>
                         <a class="art-card__link" href="${url}">
                             <h3 class="art-card__titulo">${escapeHtml(artigo.title || 'Sem título')}</h3>
                         </a>
-                        ${descricao ? `<p class="art-card__descricao">${escapeHtml(descricao)}</p>` : ''}
-                        <p class="art-card__assinatura">${escapeHtml(nome)} <span aria-hidden="true">•</span> ${minutos} min de leitura</p>
+                        ${descricao ? '<p class="art-card__descricao">' + escapeHtml(descricao) + '</p>' : ''}
+                        <div class="art-card__assinatura">
+                            <div class="art-card__autor">
+                                <img class="art-card__avatar" src="${escapeHtml(avatar)}" alt="${escapeHtml(nome)}" loading="lazy">
+                                <span class="art-card__nome">${escapeHtml(nome)}</span>
+                            </div>
+                            <span class="art-card__meta" aria-hidden="true">· ${minutos} min de leitura</span>
+                        </div>
+                        ${artigo.sensitive && artigo.warning ? `
+                        <div class="art-card__aviso">
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            ${escapeHtml(artigo.warning)}
+                        </div>` : ''}
                     </div>
-                    ${capa}
-                </div>
-                ${artigo.sensitive && artigo.warning ? `
-                <div class="art-card__aviso">
-                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                    ${escapeHtml(artigo.warning)}
-                </div>` : ''}
-                <footer class="art-card__acoes">
-                    ${mostrarFavorito ? `
-                    <button type="button" class="art-card__acao art-card__acao--favorito"
-                            data-acao="favoritar" aria-pressed="${favorito ? 'true' : 'false'}"
-                            title="Favoritar">
-                        <i class="fa-${favorito ? 'solid' : 'regular'} fa-heart" aria-hidden="true"></i>
-                    </button>` : ''}
-                    <span class="art-card__info" title="Comentários">
-                        <i class="fa-regular fa-comment" aria-hidden="true"></i>
-                        ${Number(artigo.comment_count) || 0}
-                    </span>
-                    <span class="art-card__acao art-card__acao--repostar" title="Repostar">
-                        <i class="fa-regular fa-repeat" aria-hidden="true"></i>
-                    </span>
-                    <button type="button" class="art-card__acao art-card__acao--compartilhar"
-                            data-acao="compartilhar" title="Compartilhar">
-                        <i class="fa-regular fa-share-from-square" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="art-card__acao art-card__acao--subir"
-                            data-acao="subir" title="Levar ao topo">
-                        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
-                    </button>
-                </footer>
-            `;
+                `;
+            } else {
+                // Layout BLOG/EXPLORAR/PERFIL: imagem no topo, com actions no footer
+                card.innerHTML = `
+                    ${capaHtml}
+                    <div class="art-card__conteudo">
+                        <div class="art-card__topo">
+                            <span class="art-card__selo" aria-hidden="true"><i class="fa-solid ${iconeTipo}"></i></span>
+                            <span class="art-card__secao">${escapeHtml(secao)}</span>
+                            ${artigo.is_paid ? '<span class="art-card__pago">Pago</span>' : ''}
+                            ${data ? '<time class="art-card__data">' + escapeHtml(data) + '</time>' : ''}
+                        </div>
+                        <a class="art-card__link" href="${url}">
+                            <h3 class="art-card__titulo">${escapeHtml(artigo.title || 'Sem título')}</h3>
+                        </a>
+                        ${descricao ? '<p class="art-card__descricao">' + escapeHtml(descricao) + '</p>' : ''}
+                        <div class="art-card__assinatura">
+                            <div class="art-card__autor">
+                                <img class="art-card__avatar" src="${escapeHtml(avatar)}" alt="${escapeHtml(nome)}" loading="lazy">
+                                <span class="art-card__nome">${escapeHtml(nome)}</span>
+                            </div>
+                            <span class="art-card__meta" aria-hidden="true">· ${minutos} min de leitura</span>
+                        </div>
+                        ${artigo.sensitive && artigo.warning ? `
+                        <div class="art-card__aviso">
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            ${escapeHtml(artigo.warning)}
+                        </div>` : ''}
+                        <footer class="art-card__acoes">
+                            ${mostrarFavorito ? `
+                            <button type="button" class="art-card__acao art-card__acao--favorito"
+                                    data-acao="favoritar" aria-pressed="${favorito ? 'true' : 'false'}"
+                                    title="Favoritar">
+                                <i class="fa-${favorito ? 'solid' : 'regular'} fa-heart" aria-hidden="true"></i>
+                                <span class="art-card__contagem">${likes > 0 ? formatarContagem(likes) : ''}</span>
+                            </button>` : ''}
+                            <button type="button" class="art-card__acao art-card__acao--comentario"
+                                    data-acao="comentario" title="Comentários">
+                                <i class="fa-regular fa-comment" aria-hidden="true"></i>
+                                <span class="art-card__contagem">${comments > 0 ? formatarContagem(comments) : ''}</span>
+                            </button>
+                            <button type="button" class="art-card__acao art-card__acao--restack"
+                                    data-acao="restack" title="Restack">
+                                <i class="fa-regular fa-repeat" aria-hidden="true"></i>
+                                <span class="art-card__contagem">${restacks > 0 ? formatarContagem(restacks) : ''}</span>
+                            </button>
+                            <button type="button" class="art-card__acao art-card__acao--compartilhar"
+                                    data-acao="compartilhar" title="Compartilhar">
+                                <i class="fa-regular fa-share-from-square" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="art-card__acao art-card__acao--subir"
+                                    data-acao="subir" title="Levar ao topo">
+                                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+                            </button>
+                        </footer>
+                    </div>
+                `;
+            }
 
             return card;
         }
+
     function estadoVazio(titulo, texto, linkTexto, linkUrl) {
         return `
             <div class="art-estado art-estado--vazio">

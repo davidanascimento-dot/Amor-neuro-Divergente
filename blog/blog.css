@@ -369,29 +369,7 @@ body.a11y-reduce-motion .blog-nav__chip i {
     margin-bottom: 48px;
 }
 
-/* =========================================
-   CARD EDITORIAL — Base (artigo + vídeo)
-   ========================================= */
-.editorial-card {
-    display: flex;
-    flex-direction: column;
-    background: var(--blog-card);
-    border: 1px solid var(--blog-border);
-    border-radius: 5px;
-    overflow: hidden;
 
-}
-
-.editorial-card[hidden] { display: none; }
-
-.editorial-card__media {
-    position: relative;
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    background: #f3f4f6;
-}
 .editorial-card__media img {
     width: 100%;
     height: 100%;

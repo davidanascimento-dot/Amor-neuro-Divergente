@@ -162,7 +162,7 @@
         const frag = document.createDocumentFragment();
         for (const artigo of lista) {
             const perfil = ESTADO.perfis ? ESTADO.perfis.get(artigo.author_id) : null;
-            const card = D.montarCard(artigo, perfil, { mostrarFavorito: true });
+            const card = D.montarCard(artigo, perfil, { mostrarFavorito: false, comunidade: true });
             const link = card.querySelector('.art-card__link');
             if (link) {
                 link.setAttribute('href', 'javascript:void(0)');
