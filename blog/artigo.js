@@ -166,7 +166,12 @@
         btnCurtir: document.getElementById('btnCurtirArtigo'),
         contagemCurtidas: document.getElementById('contagemCurtidas'),
         btnOuvir: document.getElementById('btnOuvirArtigo'),
-        btnVerComunidade: document.getElementById('btnVerNaComunidade')
+        btnVerComunidade: document.getElementById('btnVerNaComunidade'),
+
+        // Ações do autor (só aparecem para quem escreveu o artigo)
+        acoesAutor: document.getElementById('artigoAcoesAutor'),
+        btnEditar: document.getElementById('btnEditarArtigo'),
+        btnExcluir: document.getElementById('btnExcluirArtigo')
     };
 
     let artigoCarregado = null;
@@ -213,6 +218,9 @@
             }
 
             desenharArtigoBlog(artigo, perfilAutor);
+
+            // Editar/Excluir: só para o autor, confirmado pela sessão.
+            desenharAcoesDoAutor();
 
             // Incrementa contador de visualizações
             incrementarLeitura(artigo.id);
@@ -336,6 +344,54 @@
 
         // Atualiza links de compartilhamento
         montarCompartilhamento();
+    }
+
+    /* ---------------------------------------------------------------------
+       AÇÕES DO AUTOR — Editar e Excluir
+       ---------------------------------------------------------------------
+       O editor já entende /escrever-artigo.html?id=... (carregarParaEditar);
+       aqui mora a porta de entrada: o grupo de botões fica escondido até a
+       sessão confirmar que o artigo é da pessoa logada. É o mesmo espelho
+       das ações do autor que existem em /comunidade/artigo.js.
+       --------------------------------------------------------------------- */
+    function desenharAcoesDoAutor() {
+        if (!EL_BLOG.acoesAutor || !artigoCarregado || !usuarioAtual) return;
+        if (usuarioAtual.id !== artigoCarregado.author_id) return;
+
+        const destino = (D && D.caminhoEditor)
+            ? D.caminhoEditor(artigoCarregado.id)
+            : `/comunidade/escrever-artigo.html?id=${encodeURIComponent(artigoCarregado.id)}`;
+
+        if (EL_BLOG.btnEditar) EL_BLOG.btnEditar.href = destino;
+        EL_BLOG.acoesAutor.hidden = false;
+
+        if (EL_BLOG.btnExcluir) EL_BLOG.btnExcluir.addEventListener('click', excluirArtigo);
+    }
+
+    async function excluirArtigo() {
+        const sb = window.supabaseClient;
+        if (!sb || !artigoCarregado || !usuarioAtual) return;
+
+        if (!confirm('Excluir este artigo? Ele some da área Artigos e do Blog. Não dá para desfazer.')) return;
+
+        try {
+            // O filtro por author_id aqui é só reforço do lado do cliente;
+            // no banco, a política articles_autor_remove (sql/28) já
+            // impede que terceiros apaguem o que não é seu.
+            const { error } = await sb
+                .from('articles')
+                .delete()
+                .eq('id', artigoCarregado.id)
+                .eq('author_id', usuarioAtual.id);
+
+            if (error) throw error;
+
+            mostrarAviso('Artigo excluído.');
+            setTimeout(() => { window.location.href = '/comunidade/artigos.html'; }, 900);
+        } catch (e) {
+            console.error('[blog-artigo] Erro ao excluir:', e);
+            mostrarAviso('Não foi possível excluir o artigo agora.');
+        }
     }
 
     async function incrementarLeitura(artigoId) {

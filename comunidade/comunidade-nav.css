@@ -217,13 +217,13 @@
     color: var(--cm-green);
 }
 
+/* No celular o "voltar" some POR INTEIRO, não só o texto. Quem leva
+   para as outras áreas é a barra inferior (seção 6); o botão aqui só
+   ocupava espaço na barra e pesava no carregamento visual. Voltar ao
+   site continua pelo logo (primeiro item do cabeçalho). */
 @media (max-width: 768px) {
-    .btn-voltar-site span {
-        display: none;
-    }
-
     .btn-voltar-site {
-        padding: 8px 12px;
+        display: none;
     }
 }
 

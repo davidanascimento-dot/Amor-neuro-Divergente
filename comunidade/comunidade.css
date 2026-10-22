@@ -1380,6 +1380,212 @@ body {
 }
 
 /* ==========================================================================
+   9.1 FEED NO MODELO DA REFERÊNCIA (lista estilo Substack)
+
+   O feed do Fórum passa a seguir o desenho da tela de referência:
+
+     [avatar] NOME · DATA            ⋮        [miniatura]
+              título em negrito, 4 linhas no máximo
+              ♡ 146   💬 28   ↻ 0   ⤴
+
+   Tudo por CSS — o HTML gerado por comunidade.js não muda. O truque é
+   `.post-body { display: contents }`: a caixa some da árvore de
+   renderização e os três filhos dela (autor, texto, mídia) entram como
+   itens da grade do `.post-header`. Assim a miniatura vai para a
+   direita sem tocar no JavaScript.
+
+   Escopo: só `.posts-feed` (o feed do fórum, em comunidade.html). As
+   outras telas que reutilizam .post-card continuam como estavam.
+   ========================================================================== */
+.posts-feed {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.posts-feed .post-card {
+    padding: 16px 6px;
+    background: transparent;
+    border-bottom: 1px solid var(--cm-border-soft);
+    gap: 8px;
+}
+
+.posts-feed .post-card:hover {
+    background: var(--cm-surface-soft);
+}
+
+.posts-feed .post-card:last-child {
+    border-bottom: none;
+}
+
+/* --- Cabeçalho em grade: avatar | textos | miniatura -------------------- */
+.posts-feed .post-header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: 12px;
+    align-items: start;
+}
+
+.posts-feed .post-body {
+    display: contents;
+}
+
+.posts-feed .post-author-avatar-wrapper {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+}
+
+.posts-feed .post-author-info {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+    padding-right: 0;
+}
+
+.posts-feed .post-text-link {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--cm-text);
+    /* Prévia: o texto longo é cortado aqui e continua no post completo.
+       -webkit-box é o que o line-clamp exige; sem ele o corte não
+       acontece e a lista volta a ficar pesada. */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.posts-feed .post-text-link:hover {
+    color: var(--cm-purple);
+    text-decoration: none;
+}
+
+/* A miniatura de imagem vai para a direita, quadrada, como no card da
+   referência. Vídeo NÃO entra aqui: ocupa a linha inteira abaixo. */
+.posts-feed .post-image-container {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    width: 92px;
+    height: 92px;
+    min-height: 0;
+    margin-top: 0;
+    border-radius: 10px;
+    border: 1px solid var(--cm-border-soft);
+}
+
+.posts-feed .post-image-container img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: cover;
+}
+
+.posts-feed .custom-video-player {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 4px;
+}
+
+/* --- Linha de topo: nome em caixa alta, data, menu à direita ------------ */
+.posts-feed .post-author-name {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--cm-text);
+}
+
+.posts-feed .post-date {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cm-muted);
+}
+
+/* O menu dos três pontinhos é position:absolute no card (regra da seção
+   9). Dentro do feed ele volta para o fluxo, no fim da linha de autor —
+   assim não cai em cima da miniatura. */
+.posts-feed .post-menu-btn {
+    position: static;
+    margin-left: auto;
+    padding: 4px 6px;
+    color: var(--cm-muted);
+}
+
+.posts-feed .post-menu-btn:hover {
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+/* --- Rodapé: ações sem moldura, só ícone + contagem -------------------- */
+.posts-feed .post-footer {
+    margin-top: 0;
+    padding-top: 2px;
+    border-top: none;
+    gap: 4px;
+}
+
+.posts-feed .action-btn {
+    min-width: 0;
+    padding: 6px 9px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-muted);
+}
+
+.posts-feed .action-btn:hover:not(:disabled) {
+    border-color: transparent;
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+.posts-feed .action-btn.liked {
+    border-color: transparent;
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+body.a11y-dark-mode .posts-feed .action-btn.liked {
+    background: rgba(239, 68, 68, .16);
+}
+
+.posts-feed .btn-saiba-mais {
+    padding: 6px 9px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-purple);
+    font-size: 12.5px;
+}
+
+.posts-feed .btn-saiba-mais:hover {
+    background: var(--cm-purple-soft);
+    color: var(--cm-purple);
+}
+
+/* Celular: a miniatura encolhe para o texto respirar. */
+@media (max-width: 480px) {
+    .posts-feed .post-card {
+        padding: 14px 2px;
+    }
+
+    .posts-feed .post-image-container {
+        width: 74px;
+        height: 74px;
+    }
+
+    .posts-feed .post-text-link {
+        font-size: .98rem;
+        -webkit-line-clamp: 3;
+    }
+}
+
+/* ==========================================================================
    10. COMENTÁRIOS
    ========================================================================== */
 .comments-section {
@@ -3256,12 +3462,11 @@ body {
         display: none;
     }
 
-    .btn-voltar-site span {
-        display: none;
-    }
-
+    /* Voltar some no mobile (a regra mora em comunidade-nav.css junto
+       com o resto do cabeçalho; aqui só garantimos que nenhum estilo
+       deste arquivo reative o botão em telas pequenas). */
     .btn-voltar-site {
-        padding: 8px 12px;
+        display: none;
     }
 
     .community-subnav {
@@ -4156,5 +4361,293 @@ body.a11y-dark-mode .qs-seguir {
 @media (prefers-reduced-motion: reduce) {
     .qs-seguir {
         transition: none;
+    }
+}
+
+/* ==========================================================================
+   22. PAINEL DE NOTIFICAÇÕES — no modelo da lista de referência
+
+   No desktop é um cartão pendurado no sino. No celular vira TELA CHEIA
+   com o mesmo desenho da referência: selo + título no topo, chips de
+   filtro e linhas com ponto laranja para o que ainda não foi lido.
+
+   SEM botão de voltar: o ✕ do topo fecha, e a barra inferior de
+   seções continua visível embaixo do painel — é por ela que a pessoa
+   se move no celular. Todo o estilo é por classe; o JS não escreve
+   uma linha de CSS inline (quem quiser trocar cores mexe aqui).
+   ========================================================================== */
+#notificationPanel.notif-sheet {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    max-height: min(70vh, 560px);
+    overflow: hidden;
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(18, 22, 26, .18);
+    animation: fadeIn .2s ease;
+}
+
+/* --- Topo: selo + título + fechar --------------------------------------- */
+.notif-sheet__topo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--cm-border-soft);
+}
+
+.notif-sheet__selo {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--cm-purple);
+    color: #fff;
+    font-size: .85rem;
+}
+
+.notif-sheet__titulo {
+    flex: 1;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--cm-text);
+}
+
+.notif-sheet__fechar {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--cm-muted);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+.notif-sheet__fechar:hover {
+    background: var(--cm-green-soft);
+    color: var(--cm-green);
+}
+
+/* --- Chips de filtro (mesma receita das abas dos artigos) --------------- */
+.notif-chips {
+    display: flex;
+    gap: 6px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--cm-border-soft);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.notif-chips::-webkit-scrollbar {
+    display: none;
+}
+
+.notif-chip {
+    padding: .4rem .95rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 999px;
+    background: var(--cm-surface-soft);
+    color: var(--cm-text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: .85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.notif-chip:hover {
+    border-color: var(--cm-border-strong);
+    color: var(--cm-text);
+}
+
+.notif-chip.is-ativo {
+    background: var(--cm-purple);
+    border-color: var(--cm-purple);
+    color: #fff;
+}
+
+.notif-chip:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 1px;
+}
+
+/* --- A lista ------------------------------------------------------------- */
+.notif-lista {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 0;
+}
+
+.notif-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--cm-border-soft);
+    cursor: pointer;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-item:hover {
+    background: var(--cm-surface-soft);
+}
+
+.notif-item__icone {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--cm-purple-soft);
+    color: var(--cm-purple);
+    font-size: .85rem;
+}
+
+.notif-item.is-nao-lida .notif-item__icone {
+    background: var(--cm-purple);
+    color: #fff;
+}
+
+.notif-item__corpo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.notif-item__linha {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+
+.notif-item__titulo {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--cm-text);
+}
+
+.notif-item__hora {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cm-muted);
+}
+
+.notif-item__texto {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--cm-text-soft);
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.notif-item__extra {
+    margin-top: 6px;
+}
+
+/* O ponto laranja do "não lida" entra como último item da linha —
+   posicionado em cima ele brigava com a hora. */
+.notif-item__ponto {
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: #f97316;
+}
+
+/* --- Estado vazio e rodapé ---------------------------------------------- */
+.notif-vazio {
+    padding: 34px 20px;
+    text-align: center;
+    color: var(--cm-muted);
+}
+
+.notif-vazio i {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 26px;
+    opacity: .4;
+}
+
+.notif-vazio__titulo {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cm-text);
+}
+
+.notif-vazio__texto {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+.notif-sheet__rodape {
+    padding: 10px 16px;
+    border-top: 1px solid var(--cm-border-soft);
+    text-align: center;
+}
+
+.notif-marcar-todas {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-purple);
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+.notif-marcar-todas:hover {
+    background: var(--cm-purple-soft);
+}
+
+/* --- Celular: tela cheia, menos a barra inferior de seções -------------- */
+@media (max-width: 640px) {
+    #notificationPanel.notif-sheet {
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: calc(var(--cm-subnav-h, 62px) + env(safe-area-inset-bottom, 0px));
+        width: auto;
+        max-height: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .notif-sheet__topo {
+        padding-top: 14px;
     }
 }

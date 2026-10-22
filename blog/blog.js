@@ -455,12 +455,10 @@ document.addEventListener('DOMContentLoaded', () => {
      *   é post curto e o que é relato. Isso é a Fase 3, adiada.
      */
     const PUBLICA_COMUNIDADE = {
-        lista:      document.getElementById('comunidadeLista'),
         /* Os ARTIGOS: a mesma lista, o mesmo card, o mesmo modulo da area
          * Artigos da Comunidade. Vem da tabela `articles`. */
         artigos:    document.getElementById('comunidadeArtigosLista'),
         rotuloArtigos: document.getElementById('comunidadeArtigosRotulo'),
-        rotuloPosts:   document.getElementById('comunidadePostsRotulo'),
         carregando: document.getElementById('comunidadeCarregando'),
         erro:       document.getElementById('comunidadeErro'),
         erroTexto:  document.getElementById('comunidadeErroTexto'),
@@ -522,18 +520,32 @@ document.addEventListener('DOMContentLoaded', () => {
      * sumir separadamente. */
     function mostrarEstado(nome, opcoes = {}) {
         // 'carregando' | 'erro' | 'vazio' | 'lista'
-        const { posts = true, artigos = false } = opcoes;
+        const { artigos = false } = opcoes;
 
         if (PUBLICA_COMUNIDADE.carregando) PUBLICA_COMUNIDADE.carregando.hidden = nome !== 'carregando';
         if (PUBLICA_COMUNIDADE.erro)       PUBLICA_COMUNIDADE.erro.hidden       = nome !== 'erro';
         if (PUBLICA_COMUNIDADE.vazio)      PUBLICA_COMUNIDADE.vazio.hidden      = nome !== 'vazio';
-        if (PUBLICA_COMUNIDADE.lista)      PUBLICA_COMUNIDADE.lista.hidden      = nome !== 'lista' || !posts;
         if (PUBLICA_COMUNIDADE.artigos)    PUBLICA_COMUNIDADE.artigos.hidden    = nome !== 'lista' || !artigos;
-        if (PUBLICA_COMUNIDADE.rotuloPosts)   PUBLICA_COMUNIDADE.rotuloPosts.hidden   = nome !== 'lista' || !posts;
         if (PUBLICA_COMUNIDADE.rotuloArtigos) PUBLICA_COMUNIDADE.rotuloArtigos.hidden = nome !== 'lista' || !artigos;
         if (PUBLICA_COMUNIDADE.rodape)     PUBLICA_COMUNIDADE.rodape.hidden     = nome !== 'lista';
     }
 
+    /* Tempo de leitura: o mesmo resultado do módulo de artigos, para o
+     * card dizer "3 min de leitura" igual a referência. Calcula sobre o
+     * texto INTEIRO — o trecho do card está truncado e sempre daria 1. */
+    function minutosDeLeitura(textoInteiro) {
+        const D = window.artigosDados;
+        if (D && typeof D.minutosLeitura === 'function') {
+            return D.minutosLeitura(textoInteiro);
+        }
+        const palavras = String(textoInteiro ?? '').trim().split(/\s+/).filter(Boolean).length;
+        return Math.max(1, Math.round(palavras / 220));
+    }
+
+    /* O card da publicação. O desenho segue a referência do cartão do
+     * Substack: autor e data numa linha (data encostada na direita), o
+     * texto no meio, e no rodapé curtidas, comentários e o tempo de
+     * leitura. O card INTEIRO é o link — não há botão "Abrir" solto. */
     function montarCard(post, autor) {
         const nome = post.author_name || autor?.username || 'Membro da comunidade';
         const avatar = urlSegura(post.author_avatar) || urlSegura(autor?.avatar_url) || AVATAR_PADRAO;
@@ -541,6 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const texto = trecho(post.content);
         const url = `/comunidade/post.html?id=${encodeURIComponent(post.id)}`;
         const inicial = nome.trim().charAt(0).toUpperCase() || '?';
+        const minutos = minutosDeLeitura(post.content);
 
         const card = document.createElement('article');
         card.className = 'comunidade-card';
@@ -553,10 +566,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img src="${escapeHtml(avatar)}" alt="" loading="lazy"
                              onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'comunidade-card__inicial',textContent:'${escapeHtml(inicial)}'}))">
                     </span>
-                    <span class="comunidade-card__meta">
-                        <strong class="comunidade-card__nome">${escapeHtml(nome)}</strong>
-                        ${data ? `<span class="comunidade-card__data">${escapeHtml(data)}</span>` : ''}
-                    </span>
+                    <strong class="comunidade-card__nome">${escapeHtml(nome)}</strong>
+                    ${data ? `<span class="comunidade-card__data">${escapeHtml(data)}</span>` : ''}
                 </div>
                 <p class="comunidade-card__texto">${escapeHtml(texto)}</p>
                 <span class="comunidade-card__rodape">
@@ -568,9 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fa-regular fa-comment" aria-hidden="true"></i>
                         <span>${Number(post.comment_count) || 0}</span>
                     </span>
-                    <span class="comunidade-card__abrir">
-                        Abrir publicação <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                    </span>
+                    <span class="comunidade-card__tempo">${minutos} min de leitura</span>
                 </span>
             </a>
         `;
@@ -683,102 +692,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function carregarPublicacoesComunidade() {
-        // A seção pode não existir em outra página que reusa este script.
-        if (!PUBLICA_COMUNIDADE.lista) return;
-
-        const supabase = window.supabaseClient;
-
-        if (!supabase) {
-            mostrarEstado('erro');
-            if (PUBLICA_COMUNIDADE.erroTexto) {
-                PUBLICA_COMUNIDADE.erroTexto.textContent =
-                    'Não foi possível conectar ao banco de dados.';
-            }
-            return;
-        }
+        // A se��o pode n�o existir em outra p�gina que reusa este script.
+        if (!PUBLICA_COMUNIDADE.artigos) return;
 
         mostrarEstado('carregando');
 
-        /* Os ARTIGOS vêm primeiro, e a leitura deles é independente da
-         * de posts: uma tabela que ainda não existe não pode impedir os
-         * posts de aparecerem. */
         const artigos = await lerArtigosComunidade();
 
-        try {
-            /* A consulta: só posts ativos, mais recentes primeiro.
-             *
-             * `author_name` e `author_avatar` são selecionados mesmo
-             * sabendo que hoje são null: se um dia o insert passar a
-             * preenchê-los, o card já usa os dois sem mudar nada aqui. */
-            const { data: posts, error } = await consultarPosts(supabase);
-
-            if (error) throw error;
-
-            const listaPosts = posts || [];
-
-            // Nada dos dois lados: a seção fica vazia de verdade.
-            if (!listaPosts.length && !artigos.length) {
-                mostrarEstado('vazio');
-                return;
-            }
-
-            /* Busca os perfis dos autores em UMA consulta (não uma por
-             * post). Se falhar, seguimos sem os nomes — o card cai no
-             * rótulo genérico, e o Blog não quebra por causa disso. */
-            let perfis = new Map();
-            const idsAutores = [...new Set(listaPosts.map(p => p.author_id).filter(Boolean))];
-
-            if (idsAutores.length) {
-                try {
-                    const { data: linhas, error: errPerfis } = await supabase
-                        .from('profiles')
-                        .select('id, username, avatar_url')
-                        .in('id', idsAutores);
-
-                    if (!errPerfis && linhas) {
-                        perfis = new Map(linhas.map(p => [p.id, p]));
-                    }
-                } catch (e) {
-                    console.warn('[blog] Perfis não carregaram; usando rótulo genérico.', e);
-                }
-            }
-
-            const frag = document.createDocumentFragment();
-            for (const post of listaPosts) {
-                frag.appendChild(montarCard(post, perfis.get(post.author_id)));
-            }
-            PUBLICA_COMUNIDADE.lista.replaceChildren(frag);
-
-            await desenharArtigosComunidade(artigos);
-
-            mostrarEstado('lista', {
-                posts: listaPosts.length > 0,
-                artigos: artigos.length > 0
-            });
-
-        } catch (error) {
-            console.error('[blog] Erro ao carregar publicações da comunidade:', error);
-
-            /* Se os posts falharam mas os artigos vieram, mostra o que
-             * tem: uma seção vazia seria pior do que uma seção parcial. */
-            if (artigos.length) {
-                await desenharArtigosComunidade(artigos);
-                mostrarEstado('lista', { posts: false, artigos: true });
-                return;
-            }
-
-            mostrarEstado('erro');
-
-            /* A mensagem precisa dizer o que fazer. "Tente recarregar" era
-             * um pedido inútil quando a causa é a sessão: recarregar não
-             * conserta um token que o servidor já recusou. */
-            if (PUBLICA_COMUNIDADE.erroTexto) {
-                PUBLICA_COMUNIDADE.erroTexto.textContent = ehErroDeSessao(error)
-                    ? 'Sua sessão expirou. Entre novamente para ver as publicações da comunidade.'
-                    : 'Não foi possível carregar as publicações agora. Verifique sua conexão e tente de novo.';
-            }
+        if (!artigos.length) {
+            mostrarEstado('vazio');
+            return;
         }
+
+        await desenharArtigosComunidade(artigos);
+        mostrarEstado('lista', { artigos: true });
     }
+
     carregarPublicacoesComunidade();
 
     // =============================================

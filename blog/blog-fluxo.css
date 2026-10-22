@@ -1542,15 +1542,13 @@ body.a11y-dark-mode .editorial-card__excerto { color: #94a3b8; }
     color: var(--bl-roxo);
 }
 
-.comunidade-card__meta {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
+/* Nome em caixa alta e a data encostada na direita — a linha do
+   "ON SUBSTACK … 10:00" da referencia. */
 .comunidade-card__nome {
-    font-size: 0.9rem;
-    font-weight: 700;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--bl-tinta);
     white-space: nowrap;
     overflow: hidden;
@@ -1558,12 +1556,15 @@ body.a11y-dark-mode .editorial-card__excerto { color: #94a3b8; }
 }
 
 .comunidade-card__data {
-    font-size: 0.78rem;
+    margin-left: auto;
+    flex: 0 0 auto;
+    font-size: 0.74rem;
     color: var(--bl-suave);
 }
 
 /* O texto do post. `pre-wrap` porque o conteudo pode ter quebra de
-   linha; sem `overflow: hidden`, para nao cortar no meio de uma frase. */
+   linha. Quatro linhas no maximo: o card e vitrine, o texto inteiro
+   mora na publicacao — e o card inteiro leva la. */
 .comunidade-card__texto {
     margin: 0;
     font-size: 0.9375rem;
@@ -1572,6 +1573,11 @@ body.a11y-dark-mode .editorial-card__excerto { color: #94a3b8; }
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     flex: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden;
 }
 
 .comunidade-card__rodape {
@@ -1590,16 +1596,25 @@ body.a11y-dark-mode .editorial-card__excerto { color: #94a3b8; }
     gap: 5px;
 }
 
-.comunidade-card__abrir {
+/* "...3 MIN LEITURA" da referencia: caixa alta, na direita, sem cor
+   de link — o card inteiro ja e o alvo de clique. */
+.comunidade-card__tempo {
     margin-left: auto;
+    font-size: 0.72rem;
     font-weight: 700;
-    color: var(--bl-roxo);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bl-suave);
+    white-space: nowrap;
 }
 
 /* ---------- Os estados: carregando, erro, vazio ---------- */
+
+.blog-comunidade__estado[hidden],
+.blog-comunidade__lista[hidden] {
+    /* Trap do [hidden]: regra autora com display vence a UA. */
+    display: none;
+}
 
 .blog-comunidade__estado {
     display: flex;
@@ -1641,9 +1656,13 @@ body.a11y-dark-mode .editorial-card__excerto { color: #94a3b8; }
     text-decoration: underline;
 }
 
-/* No escuro, `--bl-suave` reprova (mesmo caso do excerto acima). */
+/* No escuro, `--bl-suave` reprova (mesmo caso do excerto acima):
+   o rotulo do grupo, a data, o rodape e o tempo de leitura precisam
+   de um cinza claro para continuarem legiveis. */
 body.a11y-dark-mode .comunidade-card__data,
 body.a11y-dark-mode .comunidade-card__rodape,
+body.a11y-dark-mode .comunidade-card__tempo,
+body.a11y-dark-mode .blog-comunidade__rotulo,
 body.a11y-dark-mode .blog-comunidade__estado { color: #94a3b8; }
 
 body.a11y-dark-mode .comunidade-card {
@@ -1651,8 +1670,16 @@ body.a11y-dark-mode .comunidade-card {
     border-color: #2e2e4a;
 }
 
+/* A linha divisoria do rodape usava `--bl-borda` (creme) e sobrava
+   clara em cima do card escuro. */
+body.a11y-dark-mode .comunidade-card__rodape { border-top-color: #2e2e4a; }
+
 body.a11y-dark-mode .comunidade-card__texto,
 body.a11y-dark-mode .comunidade-card__nome { color: #e2e8f0; }
+
+/* O roxo medio nao alcanca contraste no fundo escuro; a versao
+   clara (#a78bfa) sim — usada so no escuro. */
+body.a11y-dark-mode .blog-comunidade__rodape a { color: #a78bfa; }
 
 body.a11y-dark-mode .blog-comunidade__estado--erro {
     border-color: #fbbf24;

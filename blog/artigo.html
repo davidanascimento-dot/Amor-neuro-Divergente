@@ -44,6 +44,12 @@
             gap: .75rem;
             flex-wrap: wrap;
         }
+        /* O grupo de ações do autor começa com [hidden] e só é revelado
+           quando a sessão confirma que o artigo é da pessoa logada.
+           Sem esta linha, o display:flex acima venceria o [hidden]
+           padrão do navegador e os botões apareceriam para todo mundo
+           (mesma armadilha do antigo "Carregando artigos…" no Explorar). */
+        .artigo-acoes-grupo[hidden] { display: none; }
         .btn-acao-blog {
             display: inline-flex;
             align-items: center;
@@ -247,6 +253,20 @@
                         </a>
                         <button type="button" class="btn-acao-blog article-share__btn" id="btnCopiarLink" aria-label="Copiar link do artigo">
                             <i class="fa-solid fa-link"></i> <span>Copiar</span>
+                        </button>
+                    </div>
+
+                    <!-- Ações do autor: o grupo fica escondido até a página
+                         confirmar, pela sessão, que o artigo é de quem está
+                         logado (blog/artigo.js → desenharAcoesDoAutor). -->
+                    <div class="artigo-acoes-grupo" id="artigoAcoesAutor" hidden>
+                        <a href="#" class="btn-acao-blog" id="btnEditarArtigo" title="Editar este artigo">
+                            <i class="fa-solid fa-pen"></i>
+                            <span>Editar</span>
+                        </a>
+                        <button type="button" class="btn-acao-blog" id="btnExcluirArtigo" title="Excluir este artigo">
+                            <i class="fa-regular fa-trash-can"></i>
+                            <span>Excluir</span>
                         </button>
                     </div>
                 </div>

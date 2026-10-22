@@ -3,36 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Artigo da comunidade do Amor NeuroDivergente.">
-    <title>Artigo — Amor NeuroDivergente</title>
+    <meta name="description" content="A leitura dos artigos da comunidade acontece no Blog do Amor NeuroDivergente. Esta página leva para lá.">
+    <title>Artigo no Blog — Amor NeuroDivergente</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/inicio.css">
-    <link rel="stylesheet" href="comunidade.css">
-    <link rel="stylesheet" href="/comunidade/comunidade-tokens.css">
-    <link rel="stylesheet" href="/comunidade/comunidade-nav.css">
-    <link rel="stylesheet" href="/comunidade/artigos.css">
-    <script src="/comunidade/theme.js"></script>
-    <link rel="stylesheet" href="/movimento-reduzido.css">
-    <script src="/imagens.js"></script>
+    <!-- ============================================
+         TRAMPOLIM — a leitura do artigo inteiro mora no Blog
+         (/blog/artigo.html?id=...), junto com comentários, curtidas
+         e as ações de editar/excluir do autor.
+         Esta página existia como leitora; virou casca quando os
+         comentários foram desativados na comunidade e o artigo.js
+         passou a carregar sem nenhum elemento da tela (morria em
+         silêncio no console). Agora ela só redireciona, preservando
+         os links antigos que apontam para cá.
+         ============================================ -->
+    <style>
+        :root { --fundo: #faf7f5; --texto: #2b2333; --roxo: #7c3aed; }
+        @media (prefers-color-scheme: dark) {
+            :root { --fundo: #17131f; --texto: #f3eefa; }
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background: var(--fundo);
+            color: var(--texto);
+            font: 600 1rem/1.6 Inter, system-ui, sans-serif;
+            text-align: center;
+        }
+        p { max-width: 34rem; }
+        strong { color: var(--roxo); }
+        a { color: var(--roxo); font-weight: 700; }
+        small { display: block; margin-top: .9rem; opacity: .65; font-weight: 400; }
+    </style>
+
+    <!-- O id que a URL trouxer segue para o Blog; sem id (link antigo
+         solto), cai na lista da área Artigos. location.replace evita
+         que o "voltar" do navegador volte para esta página. -->
+    <script>
+        (function () {
+            var id = new URLSearchParams(window.location.search).get('id');
+            window.location.replace(
+                id
+                    ? '/blog/artigo.html?id=' + encodeURIComponent(id)
+                    : '/comunidade/artigos.html'
+            );
+        })();
+    </script>
 </head>
-<body class="community-app" data-img-fundo="fundo-comunidade">
-
-    <!-- Os comentários foram desativados na comunidade. A leitura do artigo inteiro ocorre no Blog. -->
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase-config.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/auth-global.js"></script>
-    <script src="/comunidade/comunidade-nav.js"></script>
-    <script src="/comunidade/artigos-dados.js"></script>
-    <script src="/comunidade/artigo.js"></script>
-    <script src="/pular-conteudo.js"></script>
-    <script src="/userway.js"></script>
-    <script src="/vlibras.js"></script>
+<body>
+    <p>
+        A leitura dos artigos acontece no <strong>Blog</strong> agora — com
+        comentários, curtidas e as ações de editar e excluir do autor.
+        <br>Se não for levado automaticamente,
+        <a href="/comunidade/artigos.html">abra a área de Artigos</a>.
+        <small>Amor NeuroDivergente</small>
+    </p>
 </body>
 </html>

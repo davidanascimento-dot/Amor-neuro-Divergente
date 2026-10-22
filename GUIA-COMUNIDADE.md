@@ -72,8 +72,8 @@ não dentro do `/comunidade/comunidade.html`. A aba fica lá como atalho.
 |---|---|
 | **Logo** (canto superior esquerdo) | Vai para a **home do site** (`/inicio.html`) |
 | **Selo "COMUNIDADE"** | Identificação. Não é botão — mostra que a pessoa está na comunidade |
-| **← Voltar ao site** | Nas telas de topo vai para a home. **Nas telas de detalhe** volta para a lista da área (ver seção 12) |
-| **Sino** (só no Fórum) | Notificações. Badge vermelho quando há alguma |
+| **← Voltar ao site** | **Só aparece no computador.** Nas telas de topo vai para a home. **Nas telas de detalhe** volta para a lista da área (ver seção 12). **No celular o botão não existe** — quem leva para a home é o logo, e a navegação entre áreas é pela barra de ícones embaixo |
+| **Sino** (só no Fórum) | Notificações. Badge com a contagem quando há alguma. Abre a lista com os filtros **Todas / Não lidas** (ver seção 11.4) |
 | **Foto de perfil** | Abre `/comunidade/perfil.html` |
 | **Lua / Sol** | Alterna modo escuro |
 
@@ -408,9 +408,32 @@ TDAH, Autismo, Organização, Crise sensorial, Direitos, Desabafar.
 - **VLibras**: botão flutuante na tela, traduce em Libras.
 - **UserWay**: widget de acessibilidade injetado pelo navegador.
 
+### 11.4 Notificações (o sino no topo do Fórum)
+
+O sino abre uma lista no mesmo modelo do feed: selo + título no topo,
+chips **Todas | Não lidas** e as linhas com **ponto laranja** no que
+ainda não foi lido.
+
+| O que a pessoa faz | O que acontece |
+|---|---|
+| Clica no **sino** | Abre a lista (no celular é tela cheia, sem botão de voltar — o **✕** fecha) |
+| Clica num **chip** | Filtra: tudo, ou só o que não foi lido |
+| Clica numa **linha** | Marca aquela notificação como lida (o ponto some) |
+| **Fechar** a lista | Marca tudo como lido e zera o badge |
+| **Marcar todas como lidas** | Zera o badge sem fechar a lista |
+
+As notificações são **em memória**: valem enquanto a página está
+aberta e somem ao recarregar. Ela não é uma caixa de entrada — é um
+recado do momento.
+
 ---
 
 ## 12. Para onde o "Voltar" leva
+
+**No celular não existe botão de voltar** — ele foi removido da
+barra de cima. Lá, a pessoa volta pelo **logo** (home) ou pela
+**barra de ícones embaixo** (Fórum · Artigos · Grupos · Eventos ·
+Conversa). A tabela abaixo vale para o **computador**:
 
 | Tela | Volta para |
 |---|---|
@@ -494,5 +517,5 @@ não vai mudar.
 
 ---
 
-**Atualizado em:** 2026-10-16
+**Atualizado em:** 2026-10-21
 **Área:** `/comunidade` — 9 telas

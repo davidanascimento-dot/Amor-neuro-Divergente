@@ -4208,7 +4208,13 @@ function filterGroupCards() {
 }
 
 // 7. SISTEMA DE NOTIFICAÇÕES IN-APP
+//
+// No mesmo modelo da tela de referência: título no topo, chips de
+// filtro, lista com ponto laranja no item não lido. Todo o estilo mora
+// em comunidade.css (seção 22) — aqui não existe NENHUM estilo inline,
+// que era o que tornava o painel difícil de ajustar e pesado de ler.
 var inMemoryNotifications = [];
+var notifFiltro = 'todas';
 
 function addInAppNotification(title, body, extraHtml) {
     inMemoryNotifications.unshift({
@@ -4220,13 +4226,7 @@ function addInAppNotification(title, body, extraHtml) {
         time: new Date()
     });
 
-    // Atualizar badge de notificação
-    var badge = document.getElementById('notifBadge');
-    if (badge) {
-        var unread = inMemoryNotifications.filter(function(n) { return !n.read; }).length;
-        badge.textContent = unread;
-        badge.style.display = unread > 0 ? 'block' : 'none';
-    }
+    atualizarBadgeNotificacoes();
 
     // Se o painel estiver aberto, re-renderizar
     var panel = document.getElementById('notificationPanel');
@@ -4235,51 +4235,87 @@ function addInAppNotification(title, body, extraHtml) {
     }
 }
 
+/* A contagem do sininho. Uma função só, em vez do mesmo cálculo
+   repetido em três lugares. */
+function atualizarBadgeNotificacoes() {
+    var badge = document.getElementById('notifBadge');
+    if (!badge) return;
+    var naoLidas = inMemoryNotifications.filter(function(n) { return !n.read; }).length;
+    badge.textContent = naoLidas;
+    badge.style.display = naoLidas > 0 ? 'block' : 'none';
+}
+
+function notificacoesVisiveis() {
+    if (notifFiltro === 'nao-lidas') {
+        return inMemoryNotifications.filter(function(n) { return !n.read; });
+    }
+    return inMemoryNotifications;
+}
+
 function renderNotificationsInPanel() {
     var list = document.getElementById('notificationsList');
     if (!list) return;
 
-    if (inMemoryNotifications.length === 0) {
+    var visiveis = notificacoesVisiveis();
+
+    if (!visiveis.length) {
+        // Diz o motivo do vazio em vez de um "nenhum" seco — e, se o
+        // filtro é "não lidas", o vazio é uma BOA notícia.
+        var titulo = notifFiltro === 'nao-lidas' ? 'Tudo lido por aqui' : 'Nenhuma notificação';
+        var texto = notifFiltro === 'nao-lidas'
+            ? 'Quando chegar algo novo, ele aparece com o ponto laranja.'
+            : 'Convites, respostas e recados da comunidade aparecem aqui.';
         list.innerHTML =
-            '<div style="text-align:center;padding:30px 20px;color:var(--text-muted,#94a3b8);">' +
-            '<i class="fa-regular fa-bell-slash" style="font-size:28px;display:block;margin-bottom:10px;opacity:0.3;"></i>' +
-            '<p style="font-size:14px;">Nenhuma notificação</p></div>';
+            '<div class="notif-vazio">' +
+            '<i class="fa-regular fa-bell-slash" aria-hidden="true"></i>' +
+            '<p class="notif-vazio__titulo">' + titulo + '</p>' +
+            '<p class="notif-vazio__texto">' + texto + '</p>' +
+            '</div>';
         return;
     }
 
-    list.innerHTML = inMemoryNotifications.map(function(n) {
-        var timeStr = n.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        return '<div style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);' + (n.read ? 'opacity:0.6;' : '') + '">' +
-            '<div style="font-size:13px;font-weight:700;color:var(--text-primary,#1e293b);margin-bottom:4px;">' + n.title + '</div>' +
-            '<div style="font-size:12px;color:var(--text-secondary,#64748b);white-space:pre-line;line-height:1.5;">' + n.body + '</div>' +
-            (n.extraHtml ? '<div style="margin-top:8px;">' + n.extraHtml + '</div>' : '') +
-            '<div style="font-size:11px;color:var(--text-muted,#94a3b8);margin-top:4px;">' + timeStr + '</div>' +
-            '</div>';
+    list.innerHTML = visiveis.map(function(n) {
+        var hora = n.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        // A linha é uma div, não um <button>: o extraHtml pode trazer um
+        // botão por dentro (copiar código), e botão dentro de botão o
+        // navegador quebra ao montar o DOM.
+        return '<div class="notif-item' + (n.read ? '' : ' is-nao-lida') + '" data-notif-id="' + n.id + '">' +
+            '<span class="notif-item__icone" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
+            '<div class="notif-item__corpo">' +
+                '<div class="notif-item__linha">' +
+                    '<span class="notif-item__titulo">' + n.title + '</span>' +
+                    '<span class="notif-item__hora">' + hora + '</span>' +
+                '</div>' +
+                '<div class="notif-item__texto">' + n.body + '</div>' +
+                (n.extraHtml ? '<div class="notif-item__extra">' + n.extraHtml + '</div>' : '') +
+            '</div>' +
+            (n.read ? '' : '<span class="notif-item__ponto" title="Não lida"></span>') +
+        '</div>';
     }).join('');
-
-    // Marcar todas como lidas
-    inMemoryNotifications.forEach(function(n) { n.read = true; });
-    var badge = document.getElementById('notifBadge');
-    if (badge) badge.style.display = 'none';
 }
 
 // 7. BOTÃO DE NOTIFICAÇÕES
 function addNotificationButton() {
     if (document.getElementById('notificationsToggle')) return;
-    
+
     var header = document.querySelector('.header-glass');
     if (!header) return;
-    
+
     var btn = document.createElement('button');
     btn.id = 'notificationsToggle';
-    btn.style.cssText = 'background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:50%;position:relative;color:var(--text-secondary,#64748b);font-size:18px;transition:all 0.2s;';
-    btn.innerHTML = '<i class="fa-regular fa-bell"></i><span id="notifBadge" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:50%;display:none;min-width:18px;text-align:center;">0</span>';
+    btn.type = 'button';
     btn.title = 'Notificações';
-    
+    btn.setAttribute('aria-label', 'Abrir notificações');
+    // Sem estilo inline: o botão é pintado por comunidade-nav.css,
+    // junto com o resto do cabeçalho. O badge usa a mesma classe do
+    // resto da Comunidade (.community-notif-badge).
+    btn.innerHTML = '<i class="fa-regular fa-bell"></i>' +
+        '<span id="notifBadge" class="community-notif-badge" style="display:none;">0</span>';
+
     btn.addEventListener('click', function() {
         showNotificationPanel();
     });
-    
+
     var links = header.querySelector('.header-links');
     if (links) {
         links.after(btn);
@@ -4291,42 +4327,103 @@ function addNotificationButton() {
 function showNotificationPanel() {
     var existing = document.getElementById('notificationPanel');
     if (existing) {
-        existing.remove();
+        fecharPainelNotificacoes();
         return;
     }
-    
+
+    // Cada abertura recomeça em "Todas": os chips são desenhados já
+    // nesse estado, e um filtro da abertura anterior não podia sobrar
+    // por baixo deles.
+    notifFiltro = 'todas';
+
     var panel = document.createElement('div');
     panel.id = 'notificationPanel';
-    panel.style.cssText = 'position:fixed;top:70px;right:20px;width:360px;max-height:70vh;background:var(--bg-card,#fff);border-radius:16px;border:1px solid var(--border-color,#e2e8f0);box-shadow:0 12px 40px rgba(0,0,0,0.12);z-index:10000;overflow:hidden;display:flex;flex-direction:column;animation:fadeIn 0.25s ease;';
-    
-    panel.innerHTML = 
-        '<div style="padding:12px 16px;border-bottom:1px solid var(--border-color,#e2e8f0);display:flex;justify-content:space-between;align-items:center;">' +
-        '<h4 style="font-size:15px;font-weight:700;color:var(--text-primary,#1e293b);"><i class="fa-regular fa-bell" style="color:#7c3aed;"></i> Notificações</h4>' +
-        '<button onclick="this.closest(\'#notificationPanel\').remove()" style="background:none;border:none;font-size:18px;color:var(--text-muted,#94a3b8);cursor:pointer;">✕</button>' +
+    panel.className = 'notif-sheet';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Notificações');
+
+    panel.innerHTML =
+        '<div class="notif-sheet__topo">' +
+            '<span class="notif-sheet__selo" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
+            '<h4 class="notif-sheet__titulo">Notificações</h4>' +
+            '<button type="button" class="notif-sheet__fechar" aria-label="Fechar notificações">✕</button>' +
         '</div>' +
-        '<div id="notificationsList" style="flex:1;overflow-y:auto;padding:8px 0;"></div>' +
-        '<div style="padding:8px 16px;border-top:1px solid var(--border-color,#e2e8f0);text-align:center;">' +
-        '<button onclick="markAllRead()" style="background:none;border:none;color:#7c3aed;font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;">Marcar todas como lidas</button></div>';
-    
+        '<div class="notif-chips" role="group" aria-label="Filtrar notificações">' +
+            '<button type="button" class="notif-chip is-ativo" data-notif-filtro="todas" aria-pressed="true">Todas</button>' +
+            '<button type="button" class="notif-chip" data-notif-filtro="nao-lidas" aria-pressed="false">Não lidas</button>' +
+        '</div>' +
+        '<div id="notificationsList" class="notif-lista"></div>' +
+        '<div class="notif-sheet__rodape">' +
+            '<button type="button" class="notif-marcar-todas" onclick="markAllRead()">Marcar todas como lidas</button>' +
+        '</div>';
+
     document.body.appendChild(panel);
-    
-    // Renderizar notificações em memória
+
+    panel.querySelector('.notif-sheet__fechar').addEventListener('click', fecharPainelNotificacoes);
+
+    // Chips: trocam o filtro e redesenham SÓ a lista.
+    panel.querySelectorAll('.notif-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+            notifFiltro = chip.getAttribute('data-notif-filtro');
+            panel.querySelectorAll('.notif-chip').forEach(function(outro) {
+                var ativo = outro === chip;
+                outro.classList.toggle('is-ativo', ativo);
+                outro.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+            });
+            renderNotificationsInPanel();
+        });
+    });
+
+    // Clicar numa linha (fora de botão/link dela) marca aquela como
+    // lida, sem redesenhar a lista inteira.
+    panel.querySelector('#notificationsList').addEventListener('click', function(e) {
+        if (e.target.closest('button, a')) return;
+        var linha = e.target.closest('.notif-item.is-nao-lida');
+        if (!linha) return;
+        var id = Number(linha.getAttribute('data-notif-id'));
+        var notificacao = inMemoryNotifications.filter(function(n) { return n.id === id; })[0];
+        if (!notificacao) return;
+        notificacao.read = true;
+        linha.classList.remove('is-nao-lida');
+        var ponto = linha.querySelector('.notif-item__ponto');
+        if (ponto) ponto.remove();
+        if (notifFiltro === 'nao-lidas') renderNotificationsInPanel();
+    });
+
     renderNotificationsInPanel();
-    
+
+    // Fecha clicando fora (no celular o painel é tela cheia, então não
+    // existe "fora").
     setTimeout(function() {
         document.addEventListener('click', function closePanel(e) {
-            if (!panel.contains(e.target) && e.target.id !== 'notificationsToggle') {
-                panel.remove();
+            if (!panel.isConnected) {
+                document.removeEventListener('click', closePanel);
+                return;
+            }
+            if (!panel.contains(e.target) && e.target.closest('#notificationsToggle') === null) {
+                fecharPainelNotificacoes();
                 document.removeEventListener('click', closePanel);
             }
         });
     }, 100);
 }
 
-window.markAllRead = function() {
-    showToast('✅ Todas as notificações marcadas como lidas', 'success', 2000);
+/* Fechar é quando a lista foi vista: tudo o que restou vira lido e o
+   badge volta ao zero — mesmo comportamento de antes, só que no lugar
+   certo (antes já marcava tudo lido ao ABRIR, e o filtro "não lidas"
+   nascia morto). */
+function fecharPainelNotificacoes() {
     var panel = document.getElementById('notificationPanel');
     if (panel) panel.remove();
+    inMemoryNotifications.forEach(function(n) { n.read = true; });
+    atualizarBadgeNotificacoes();
+}
+
+window.markAllRead = function() {
+    inMemoryNotifications.forEach(function(n) { n.read = true; });
+    atualizarBadgeNotificacoes();
+    renderNotificationsInPanel();
+    showToast('✅ Todas as notificações marcadas como lidas', 'success', 2000);
 };
 
 

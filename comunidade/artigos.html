@@ -76,9 +76,37 @@
 
 
         <!-- ============================================
+             ABAS + ORDENAÇÃO — a barra do mockup:
+             Todos | Ouça | Pago | Favorito | História,
+             com a ordenação (Prioridade primeiro) do
+             outro lado. Clicar só filtra a lista que já
+             está na página; não consulta o banco.
+             ============================================ -->
+        <div class="artigos-barra">
+            <div class="artigos-abas" id="artigoAbas" role="group" aria-label="Filtrar artigos">
+                <button type="button" class="artigos-aba is-ativo" data-aba="todos" aria-pressed="true">Todos</button>
+                <button type="button" class="artigos-aba" data-aba="ouca" aria-pressed="false">Ouça</button>
+                <button type="button" class="artigos-aba" data-aba="pago" aria-pressed="false">Pago</button>
+                <button type="button" class="artigos-aba" data-aba="favorito" aria-pressed="false">Favorito</button>
+                <button type="button" class="artigos-aba" data-aba="historia" aria-pressed="false">História</button>
+            </div>
+
+            <div class="artigos-ordenar">
+                <i class="fa-solid fa-arrow-down-up-across-line" aria-hidden="true"></i>
+                <label class="sr-only" for="artigoOrdenacao">Ordenar artigos por</label>
+                <select id="artigoOrdenacao" class="artigos-ordenar__select">
+                    <option value="prioridade">Prioridade</option>
+                    <option value="recentes">Mais recentes</option>
+                    <option value="lidos">Mais lidos</option>
+                    <option value="curtidos">Mais curtidos</option>
+                    <option value="az">A–Z</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ============================================
              A LISTA
              ============================================ -->
-       
 
         <div id="artigoEstado"></div>
 

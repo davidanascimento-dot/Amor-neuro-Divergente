@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pesquisar pessoas, grupos e eventos da comunidade Amor NeuroDivergente.">
+    <title>Pesquisar — Comunidade Amor NeuroDivergente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/inicio.css">
+    <link rel="stylesheet" href="comunidade.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-tokens.css">
+    <link rel="stylesheet" href="/comunidade/comunidade-nav.css">
+    <link rel="stylesheet" href="/movimento-reduzido.css">
+    <script src="/comunidade/theme.js"></script>
+    <script src="/imagens.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-config.js"></script>
+    <script src="/js/supabase.js"></script>
+    <style>
+        /* ---------- PESQUISAR ---------- */
+        .pesquisar-cabecalho {
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .pesquisar-busca {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .pesquisar-busca i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cm-text-soft);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .pesquisar-busca input {
+            width: 100%;
+            padding: .8rem 1rem .8rem 2.75rem;
+            border: 1px solid var(--cm-border);
+            border-radius: var(--cm-radius);
+            background: var(--cm-surface);
+            color: var(--cm-text);
+            font: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .pesquisar-busca input::placeholder { color: var(--cm-text-soft); opacity: .7; }
+
+        .pesquisar-sec {
+            margin-bottom: 2rem;
+        }
+
+        .pesquisar-sec__titulo {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--cm-text);
+        }
+
+        .pesquisar-sec__titulo i { color: var(--cm-purple); font-size: 1.2rem; }
+
+        .pesquisar-sec__veja-tudo {
+            margin-left: auto;
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--cm-purple);
+            cursor: pointer;
+        }
+
+        /* --- Pessoas para seguir --- */
+        .pessoas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .pessoa-card {
+            background: var(--cm-surface);
+            border: 1px solid var(--cm-border);
+            border-radius: var(--cm-radius);
+            padding: .8rem .75rem .85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .6rem;
+            text-align: center;
+            transition: border-color .18s ease;
+        }
+
+        .pessoa-card:hover { border-color: var(--cm-border-strong); }
+
+        .pessoa-card__topo {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--cm-purple-soft);
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+        }
+
+        .pessoa-card__topo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .pessoa-card__topo .inicial {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--cm-purple);
+        }
+
+        .pessoa-card__fechar {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(0,0,0,.55);
+            color: #fff;
+            border: 0;
+            font-size: 11px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .pessoa-card__fechar:hover { background: rgba(0,0,0,.8); }
+
+        .pessoa-card__nome {
+            font-weight: 800;
+            font-size: .92rem;
+            color: var(--cm-text);
+            line-height: 1.25;
+        }
+
+        .pessoa-card__desc {
+            font-size: .8rem;
+            color: var(--cm-text-soft);
+            line-height: 1.35;
+        }
+
+        .pessoa-card__seguir {
+            width: 100%;
+            padding: .5rem 0;
+            border-radius: var(--cm-radius-sm);
+            background: #f59e0b;
+            border: 0;
+            color: #1f1a10;
+            font: inherit;
+            font-weight: 800;
+            font-size: .88rem;
+            cursor: pointer;
+            transition: opacity .15s ease;
+        }
+
+        .pessoa-card__seguir:hover { opacity: .9; }
+
+        /* --- Grupos / Eventos --- */
+        .grupos-eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .card-quadrado {
+            background: var(--cm-surface);
+            border: 1px solid var(--cm-border);
+            border-radius: var(--cm-radius);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: .65rem;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color .18s ease;
+        }
+
+        .card-quadrado:hover { border-color: var(--cm-border-strong); }
+
+        .card-quadrado__imagem {
+            width: 100%;
+            height: 110px;
+            border-radius: var(--cm-radius-sm);
+            background: var(--cm-purple-soft);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .card-quadrado__imagem img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .card-quadrado__imagem .inicial {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--cm-purple);
+        }
+
+        .card-quadrado__titulo {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--cm-text);
+            line-height: 1.3;
+        }
+
+        .card-quadrado__desc {
+            font-size: .85rem;
+            color: var(--cm-text-soft);
+            line-height: 1.45;
+        }
+
+        /* --- Posts / Feed --- */
+        .post-card {
+            background: var(--cm-surface);
+            border: 1px solid var(--cm-border);
+            border-radius: var(--cm-radius);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .post-card__cabecalho {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            padding: .9rem 1rem;
+            border-bottom: 1px solid var(--cm-border-soft);
+        }
+
+        .post-card__avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--cm-purple-soft);
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            color: var(--cm-purple);
+            font-size: .9rem;
+        }
+
+        .post-card__avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .post-card__autor {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .post-card__nome {
+            font-weight: 800;
+            font-size: .92rem;
+            color: var(--cm-text);
+            line-height: 1.2;
+        }
+
+        .post-card__tempo {
+            font-size: .78rem;
+            color: var(--cm-text-soft);
+        }
+
+        .post-card__menu {
+            flex: 0 0 auto;
+            border: 0;
+            background: transparent;
+            color: var(--cm-text-soft);
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .post-card__conteudo {
+            padding: 1rem;
+            font-size: 1rem;
+            line-height: 1.65;
+            color: var(--cm-text);
+        }
+
+        .post-card__acoes {
+            display: flex;
+            gap: 1.5rem;
+            padding: .7rem 1rem;
+            border-top: 1px solid var(--cm-border-soft);
+        }
+
+        .post-card__acao {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            border: 0;
+            background: transparent;
+            color: var(--cm-text-soft);
+            font: inherit;
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .post-card__acao i { font-size: 1rem; }
+
+        .post-card__acao--curtido { color: #f59e0b; }
+
+        /* Estados */
+        .pesquisar-vazio {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--cm-text-soft);
+        }
+
+        .pesquisar-vazio i { font-size: 2.5rem; color: var(--cm-muted); display: block; margin-bottom: .75rem; }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .pesquisar-busca { max-width: 100%; }
+            .grupos-eventos-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body class="community-app" data-img-fundo="fundo-comunidade">
+
+    <header class="header-glass" id="headerGlass">
+        <a href="/inicio.html" class="logo">
+            <img src="/img/logo-LHN9gCw1.png" alt="Amor NeuroDivergente" class="logo-img">
+            <span class="logo-text">Amor NeuroDivergente</span>
+        </a>
+
+        <a href="/comunidade/comunidade.html" class="btn-voltar-site" title="Voltar para a comunidade" aria-label="Voltar para a comunidade">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar</span>
+        </a>
+
+        <a class="header-profile-btn" id="headerProfileBtn" href="/comunidade/perfil.html" aria-label="Abrir meu perfil">
+            <img src="/img/foto-padrão.jpg" alt="Meu perfil" class="header-avatar" id="headerAvatar">
+        </a>
+
+        <button class="header-theme-toggle" type="button" data-a11y="darkMode" aria-pressed="false" aria-label="Ativar modo escuro" title="Ativar modo escuro">
+            <i class="fa-regular fa-moon"></i>
+        </button>
+    </header>
+
+    <nav class="community-subnav" id="communitySubnav" aria-label="Seções da comunidade">
+        <div class="community-subnav-inner">
+            <a class="subnav-tab" data-tab="forum" href="/comunidade/comunidade.html#screen-forum">
+                <i class="fa-regular fa-message"></i><span>Fórum</span>
+            </a>
+            <a class="subnav-tab" data-tab="artigos" href="/comunidade/artigos.html">
+                <i class="fa-solid fa-feather-pointed"></i><span>Artigos</span>
+            </a>
+            <a class="subnav-tab" data-tab="grupos" href="/comunidade/explorar-grupos.html">
+                <i class="fa-solid fa-users"></i><span>Grupos</span>
+            </a>
+            <a class="subnav-tab" data-tab="eventos" href="/comunidade/comunidade.html#screen-eventos">
+                <i class="fa-regular fa-calendar"></i><span>Eventos</span>
+            </a>
+            <a class="subnav-tab active" data-tab="pesquisar" href="/comunidade/pesquisa.html" aria-current="page">
+                <i class="fa-solid fa-magnifying-glass"></i><span>Pesquisar</span>
+            </a>
+        </div>
+    </nav>
+
+    <main style="max-width: 900px; margin: 0 auto; padding: 1rem 1rem 7rem;">
+        <!-- Busca no topo -->
+        <div class="pesquisar-cabecalho">
+            <div class="pesquisar-busca">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="pesquisarInput" placeholder="Pesquisar pessoas, grupos e eventos…" autocomplete="off">
+            </div>
+        </div>
+
+        <!-- Pessoas para seguir -->
+        <section class="pesquisar-sec" id="secaoPessoas">
+            <div class="pesquisar-sec__titulo">
+                <i class="fa-regular fa-user"></i>
+                <span>Pessoas para seguir</span>
+                <span class="pesquisar-sec__veja-tudo">Veja todos</span>
+            </div>
+            <div class="pessoas-grid" id="pessoasGrid"></div>
+        </section>
+
+        <!-- Grupos -->
+        <section class="pesquisar-sec" id="secaoGrupos">
+            <div class="pesquisar-sec__titulo">
+                <i class="fa-solid fa-users"></i>
+                <span>Grupos</span>
+            </div>
+            <div class="grupos-eventos-grid" id="gruposGrid"></div>
+        </section>
+
+        <!-- Eventos -->
+        <section class="pesquisar-sec" id="secaoEventos">
+            <div class="pesquisar-sec__titulo">
+                <i class="fa-regular fa-calendar"></i>
+                <span>Eventos</span>
+            </div>
+            <div class="grupos-eventos-grid" id="eventosGrid"></div>
+        </section>
+
+        <!-- Feed de posts -->
+        <section class="pesquisar-sec" id="secaoPosts">
+            <div class="pesquisar-sec__titulo">
+                <i class="fa-regular fa-message"></i>
+                <span>Publicações recentes</span>
+            </div>
+            <div id="postsGrid"></div>
+        </section>
+    </main>
+
+    <script>
+        
+        function escapeHtml(t) { return String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+        function inicial(nome) { return (nome || '?').trim().charAt(0).toUpperCase(); }
+
+        /* ---------- Pessoas para seguir ---------- */
+        async function carregarPessoas() {
+            const grid = document.getElementById('pessoasGrid');
+            if (!grid) return;
+            // Dados estáticos de fallback (sem credenciais de Supabase)
+            const estaticos = [
+                { id: '1', username: 'Emma Watson', avatar: '/img/foto-padrão.jpg' },
+                { id: '2', username: 'Garotas que pensam de...', avatar: '/img/foto-padrão.jpg' },
+                { id: '3', username: 'Lucas Mendes', avatar: '/img/foto-padrão.jpg' },
+                { id: '4', username: 'Sofia Rocha', avatar: '/img/foto-padrão.jpg' },
+                { id: '5', username: 'Mateus Dias', avatar: '/img/foto-padrão.jpg' },
+                { id: '6', username: 'Camila Alves', avatar: '/img/foto-padrão.jpg' }
+            ];
+            let pessoas = estaticos;
+            try {
+                if (window.supabaseClient) {
+                    const { data, error } = await window.supabaseClient.rpc('search_users', { p_query: '' });
+                    if (!error && data && data.length) pessoas = data;
+                }
+            } catch (e) { console.warn('supabase indisponível, usando estático:', e.message); }
+            grid.innerHTML = pessoas.slice(0, 6).map(u => {
+                const avatarHtml = u.avatar_url
+                    ? '<img src="' + escapeHtml(u.avatar_url) + '" alt="">'
+                    : '<span class="inicial">' + inicial(u.username) + '</span>';
+                return '<article class="pessoa-card">' +
+                    '<div class="pessoa-card__topo">' + avatarHtml +
+                    '<button class="pessoa-card__fechar" aria-label="Descartar">×</button>' +
+                    '</div>' +
+                    '<div class="pessoa-card__nome">' + escapeHtml(u.username) + '</div>' +
+                    '<div class="pessoa-card__desc">Membro da comunidade</div>' +
+                    '<button class="pessoa-card__seguir">Seguir</button>' +
+                    '</article>';
+            }).join('');
+            grid.querySelectorAll('.pessoa-card__fechar').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    btn.closest('.pessoa-card').remove();
+                });
+            });
+        }
+
+/* ---------- Grupos ---------- */
+        async function carregarGrupos() {
+            const grid = document.getElementById('gruposGrid');
+            if (!grid) return;
+            const grupos = [
+                { nome: 'TDAH & Organização', desc: 'Dicas e relatos sobre foco e rotina', tipo: 'dicas' },
+                { nome: 'Autismo no Dia a Dia', desc: 'Experiências e apoio mútuo', tipo: 'autismo' },
+                { nome: 'Crise Sensorial', desc: 'Sinais, gatilhos e acolhimento', tipo: 'sensorial' }
+            ];
+            grid.innerHTML = grupos.map(g => `
+                <a href="/comunidade/grupo.html" class="card-quadrado">
+                    <div class="card-quadrado__imagem">
+                        <span class="inicial">${g.nome.charAt(0)}</span>
+                    </div>
+                    <div class="card-quadrado__titulo">${escapeHtml(g.nome)}</div>
+                    <div class="card-quadrado__desc">${escapeHtml(g.desc)}</div>
+                </a>
+            `).join('');
+        }
+
+        /* ---------- Eventos ---------- */
+        async function carregarEventos() {
+            const grid = document.getElementById('eventosGrid');
+            if (!grid) return;
+            const eventos = [
+                { nome: 'Rodada de Conversa', desc: 'Quinta, 20h — encontro online', tipo: 'conversa' },
+                { nome: 'Workshop: Rotina TDAH', desc: 'Sábado, 10h — presencial', tipo: 'workshop' }
+            ];
+            grid.innerHTML = eventos.map(e => `
+                <a href="/comunidade/eventos.html" class="card-quadrado">
+                    <div class="card-quadrado__imagem">
+                        <span class="inicial">${e.nome.charAt(0)}</span>
+                    </div>
+                    <div class="card-quadrado__titulo">${escapeHtml(e.nome)}</div>
+                    <div class="card-quadrado__desc">${escapeHtml(e.desc)}</div>
+                </a>
+            `).join('');
+        }
+
+        /* ---------- Posts ---------- */
+        function carregarPosts() {
+            const grid = document.getElementById('postsGrid');
+            if (!grid) return;
+            const posts = [
+                { autor: 'Secrets', tempo: '3d', texto: 'amo negar sentimentos que claramente tá estampado na minha cara', curtidas: 507, comentarios: 200 },
+                { autor: 'Ana', tempo: '2d', texto: 'Hoje foi um dia difícil, mas consegui terminar a lista de tarefas.', curtidas: 144, comentarios: 28 }
+            ];
+            grid.innerHTML = posts.map(p => `
+                <article class="post-card">
+                    <div class="post-card__cabecalho">
+                        <div class="post-card__avatar">${inicial(p.autor)}</div>
+                        <div class="post-card__autor">
+                            <div class="post-card__nome">${escapeHtml(p.autor)}</div>
+                            <div class="post-card__tempo">${p.tempo}</div>
+                        </div>
+                        <button class="post-card__menu"><i class="fa-regular fa-ellipsis"></i></button>
+                    </div>
+                    <div class="post-card__conteudo">${escapeHtml(p.texto)}</div>
+                    <div class="post-card__acoes">
+                        <button class="post-card__acao post-card__acao--curtido"><i class="fa-regular fa-heart"></i><span>${p.curtidas}</span></button>
+                        <button class="post-card__acao"><i class="fa-regular fa-comment"></i><span>${p.comentarios}</span></button>
+                        <button class="post-card__acao"><i class="fa-solid fa-share-from-square"></i></button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarPessoas();
+            carregarGrupos();
+            carregarEventos();
+            carregarPosts();
+        });
+    </script>
+    <script src="/comunidade/theme.js"></script>
+    <script src="/imagens.js"></script>
+</body>
+</html>

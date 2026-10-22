@@ -256,119 +256,293 @@
 }
 
 /* ==========================================================================
+   2.1 A BARRA DO MOCKUP (ABAS + ORDENAÇÃO)
+   --------------------------------------------------------------------------
+   Todos | Ouça | Pago | Favorito | História, com a ordenação do outro
+   lado. Visualmente é a barra escura do mockup; nas cores é só token
+   --cm-*, então acompanha o claro e o escuro sem nada hardcoded aqui.
+   ========================================================================== */
+
+/* Utilitário: o <label> da ordenação é só para leitor de tela. As outras
+   folhas da Comunidade têm o seu; este arquivo também precisa porque o
+   Explorar e o Blog carregam só ele. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.artigos-barra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-bottom: 1.25rem;
+}
+
+.artigos-abas {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+    padding: .3rem;
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    box-shadow: var(--cm-shadow-sm);
+}
+
+.artigos-aba {
+    padding: .45rem .95rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--cm-text-soft);
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.artigos-aba:hover {
+    background: var(--cm-surface-soft);
+    color: var(--cm-text);
+}
+
+/* O ativo é a pílula mais clara com borda, como no mockup — não o roxo
+   cheio dos chips: aqui a aba ativa é o estado de repouso da leitura. */
+.artigos-aba.is-ativo {
+    background: var(--cm-surface-soft);
+    border-color: var(--cm-border-strong);
+    color: var(--cm-text);
+}
+
+.artigos-aba:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 1px;
+}
+
+.artigos-ordenar {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .45rem .9rem;
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: 12px;
+    color: var(--cm-text-soft);
+    box-shadow: var(--cm-shadow-sm);
+}
+
+.artigos-ordenar:focus-within { border-color: var(--cm-focus); }
+
+/* O select nativo por baixo do ícone: seta do sistema fora, foco e
+   teclado continuam funcionando (nada de div fingindo ser combobox). */
+.artigos-ordenar__select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: .15rem .1rem;
+    border: 0;
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.artigos-ordenar__select:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+}
+
+/* Celular: as abas viram uma tira que rola DENTRO dela — a página
+   inteira nunca rola de lado por causa da barra. O wrap fica nowrap
+   de propósito: com column + wrap, a tira nowrap das abas abriria
+   uma coluna extra de 410px e a ordenação esticaria junto. */
+@media (max-width: 600px) {
+    /* No celular a barra fica em linha: as abas rolam de lado e a
+       ordena��o fica na LATERAL, n�o empilhada embaixo (ficava feio). */
+    .artigos-barra {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    .artigos-abas {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .artigos-abas::-webkit-scrollbar { display: none; }
+    .artigos-ordenar { flex: 0 0 auto; justify-content: center; }
+
+    /* No celular o texto da ordena��o ("Prioridade", "Mais recentes"...)
+       fica feio dentro do bot�o. O select vira um �cone clic�vel: o
+       texto some e o dropdown nativo continua abrindo ao tocar no �cone. */
+    .artigos-ordenar {
+        position: relative;
+        padding: .35rem .5rem;
+    }
+    .artigos-ordenar__select {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+}
+
+/* ==========================================================================
    3. O CARD
    --------------------------------------------------------------------------
-   Modelo da referência: avatar + nome + tag + data à esquerda, imagem à
-   direita, título em negrito, subtítulo e trecho no meio, rodapé com ações
-   (coração, lista, repostar, subir, compartilhar). Sem background branco
-   estranho.
+   Desenho (referência: cartão do Substack): selo com ícone do tipo + seção
+   em maiúsculas e a data no canto direito; título em negrito, descrição e
+   a assinatura "NOME • X MIN LEITURA" no meio; imagem da capa à direita
+   (quando existe); rodapé com as ações.
    ========================================================================== */
 
 .art-card {
     display: flex;
-    flex-direction: row;
-    gap: 1rem;
+    flex-direction: column;
+    gap: .6rem;
     padding: 1rem 1rem .9rem;
     background: transparent;
     border: 1px solid var(--cm-border);
     border-radius: var(--cm-radius);
     box-shadow: none;
     transition: border-color .18s ease;
-    align-items: flex-start;
 }
 
 .art-card:hover {
     border-color: var(--cm-border-strong);
 }
 
-/* --- Lado esquerdo: autor e texto --------------------------------------- */
+/* --- Linha de topo: selo + seção + (Pago) + data ----------------------- */
 
-.art-card__esquerda {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-}
-
-.art-card__cabecalho {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: .8rem;
-    flex-wrap: wrap;
-}
-
-.art-card__autor {
+.art-card__topo {
     display: flex;
     align-items: center;
     gap: .6rem;
     min-width: 0;
 }
 
-.art-card__avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: var(--cm-purple-soft);
+/* Selo quadrado com o ícone do tipo. 50% é para avatares; aqui o selo é
+   um retângulo, então usa o raio pequeno do sistema. */
+.art-card__selo {
     flex: 0 0 auto;
-}
-
-.art-card__avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-.art-card__inicial {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    background: var(--cm-purple);
+    color: #fff;
     font-size: .8rem;
-    font-weight: 800;
-    color: var(--cm-purple);
 }
 
-.art-card__autor-dados {
-    display: flex;
-    flex-direction: column;
-    gap: .1rem;
-    min-width: 0;
-}
-
-.art-card__nome {
-    font-size: .9rem;
-    font-weight: 800;
-    color: var(--cm-text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.art-card__tag {
-    font-size: .68rem;
+.art-card__secao {
+    font-size: .7rem;
     font-weight: 700;
-    letter-spacing: .06em;
+    letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--cm-purple);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Marca "Pago": laranja é a cor reservada dos badges de estado. */
+.art-card__pago {
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .15rem .45rem;
+    border-radius: var(--cm-radius-sm);
+    background: #f59e0b;
+    color: #1f1a10;
 }
 
 .art-card__data {
+    margin-left: auto;
+    flex: 0 0 auto;
     font-size: .7rem;
     font-weight: 700;
     letter-spacing: .05em;
     text-transform: uppercase;
     color: var(--cm-muted);
     white-space: nowrap;
-    margin-left: auto;
 }
 
-/* Imagem da capa ao lado direito. */
+/* --- Corpo: textos + capa ---------------------------------------------- */
+
+.art-card__corpo {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.art-card__textos {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+}
+
+.art-card__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.art-card__titulo {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--cm-text);
+}
+
+.art-card__link:hover .art-card__titulo { color: var(--cm-purple); }
+
+.art-card__descricao {
+    margin: 0;
+    font-size: .88rem;
+    line-height: 1.5;
+    color: var(--cm-text-soft);
+    overflow-wrap: anywhere;
+}
+
+.art-card__assinatura {
+    margin: .15rem 0 0;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--cm-muted);
+}
+
 .art-card__capa-wrap {
     flex: 0 0 auto;
     max-width: 160px;
     max-height: 110px;
-    border-radius: 20px;
+    border-radius: var(--cm-radius-sm);
     overflow: hidden;
     background: transparent;
     border: none;
@@ -381,45 +555,13 @@
     display: block;
 }
 
-/* --- Conteúdo (link do artigo) ------------------------------------------ */
-
-.art-card__link {
-    display: block;
-    color: inherit;
-    text-decoration: none;
-}
-
-.art-card__titulo {
-    margin: 0 0 .35rem;
-    font-size: 1.15rem;
-    font-weight: 800;
-    line-height: 1.3;
-    color: var(--cm-text);
-}
-
-.art-card__link:hover .art-card__titulo { color: var(--cm-purple); }
-
-.art-card__subtitulo {
-    margin: 0 0 .5rem;
-    font-size: .88rem;
-    line-height: 1.5;
-    color: var(--cm-text-soft);
-}
-
-.art-card__trecho {
-    margin: 0;
-    font-size: .8rem;
-    line-height: 1.5;
-    color: var(--cm-muted);
-}
-
-/* --- Aviso de conteúdo sensível ----------------------------------------- */
+/* --- Aviso de conteúdo sensível ---------------------------------------- */
 
 .art-card__aviso {
     display: flex;
     align-items: flex-start;
     gap: .45rem;
-    margin: .5rem 0 0;
+    margin: .2rem 0 0;
     padding: .55rem .7rem;
     border-radius: var(--cm-radius-sm);
     background: #fdf3e2;
@@ -431,105 +573,52 @@
 
 .art-card__aviso i { margin-top: .15rem; }
 
-/* --- Rodapé de ações ---------------------------------------------------- */
+/* --- Rodapé de ações --------------------------------------------------- */
 
 .art-card__acoes {
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: .35rem;
     margin-top: auto;
     padding-top: .6rem;
     border-top: 1px solid var(--cm-border-soft);
+}
+
+.art-card__info {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    margin-right: .25rem;
+    font-size: .8rem;
+    color: var(--cm-muted);
 }
 
 .art-card__acao {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: .3rem;
-    padding: .35rem .65rem;
-    border: 1px solid var(--cm-border);
-    border-radius: var(--cm-radius-btn);
+    width: 2rem;
+    height: 2rem;
+    border: 0;
     background: transparent;
+    border-radius: var(--cm-radius-sm);
     color: var(--cm-text-soft);
-    font: inherit;
-    font-size: .78rem;
-    font-weight: 600;
+    font-size: .9rem;
     cursor: pointer;
-    text-decoration: none;
-    transition: border-color .15s ease, color .15s ease;
+    transition: color .15s ease, background .15s ease;
 }
 
-.art-card__acao:hover { border-color: var(--cm-border-strong); color: var(--cm-text); background: var(--cm-surface-soft); }
+.art-card__acao:hover { color: var(--cm-text); background: var(--cm-surface-soft); }
 
-.art-card__acao i { font-size: .85rem; }
+.art-card__acao--favorito.is-ativo { color: var(--cm-pink); background: var(--cm-pink-soft); }
+.art-card__acao--favorito:hover { color: var(--cm-pink); }
+.art-card__acao--compartilhar:hover { color: var(--cm-purple); }
+.art-card__acao--repostar:hover { color: var(--cm-green); }
+.art-card__acao--subir { margin-left: auto; }
+.art-card__acao--subir:hover { color: var(--cm-purple); }
 
-.art-card__acao--favorito.is-ativo {
-    color: var(--cm-pink);
-    border-color: var(--cm-pink);
-    background: var(--cm-pink-soft);
-}
-
-.art-card__acao--compartilhar:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
-.art-card__acao--repostar:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
-.art-card__acao--subir:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
-
-/* Versão compacta: Explorar e Blog. */
-.art-card--compacto { padding: .85rem .9rem .8rem; }
-.art-card--compacto .art-card__titulo { font-size: 1rem; }
-.art-card--compacto .art-card__capa-wrap { max-width: 120px; max-height: 80px; }
-/* ==========================================================================
-   3. O CARD
-   --------------------------------------------------------------------------
-   Novo modelo (segue o mockup): linha de topo com avatar + nome + tag +
-   data à esquerda e imagem à direita; título, subtítulo e trecho no meio;
-   rodapé com ações (favorito, compartilhar, repostar, subir).
-   ========================================================================== */
-
-.art-card {
-    display: flex;
-    flex-direction: column;
-    gap: .6rem;
-    padding: 1rem 1rem .9rem;
-    background: transparent;
-    border: 1px solid var(--cm-border);
-    border-radius: var(--cm-radius);
-    box-shadow: none;
-    transition: border-color .18s ease;
-}
-
-.art-card:hover {
-    border-color: var(--cm-border-strong);
-}
-
-/* --- Linha de topo: autor | imagem --------------------------------------- */
-
-.art-card__cabecalho {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.art-card__autor {
-    display: flex;
-    align-items: center;
-    gap: .7rem;
-    min-width: 0;
-}
-
-.art-card__avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: var(--cm-purple-soft);
-    flex: 0 0 auto;
-}
-
-.art-card__avatar img { width: 100%; height: 100%; object-fit: cover; }
-
+/* Mantido para compatibilidade: a página de leitura (artigo.js) usa esta
+   classe nos fallbacks de avatar. */
 .art-card__inicial {
     display: flex;
     align-items: center;
@@ -541,155 +630,13 @@
     color: var(--cm-purple);
 }
 
-.art-card__autor-dados {
-    display: flex;
-    flex-direction: column;
-    gap: .15rem;
-    min-width: 0;
-}
-
-.art-card__nome {
-    font-size: .9rem;
-    font-weight: 800;
-    color: var(--cm-text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.art-card__tag {
-    font-size: .68rem;
-    font-weight: 700;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--cm-purple);
-    white-space: nowrap;
-}
-
-.art-card__data {
-    font-size: .7rem;
-    font-weight: 700;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    color: var(--cm-muted);
-    white-space: nowrap;
-}
-
-/* Imagem da capa ao lado do autor: bordas arredondadas grandes, sem background estranho. */
-.art-card__capa-wrap {
-    flex: 0 0 auto;
-    max-width: 150px;
-    max-height: 100px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: transparent;
-    border: none;
-}
-
-.art-card__capa-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-/* --- Conteúdo (link do artigo) ------------------------------------------- */
-
-.art-card__link {
-    display: block;
-    color: inherit;
-    text-decoration: none;
-}
-
-.art-card__titulo {
-    margin: 0 0 .35rem;
-    font-size: 1.15rem;
-    font-weight: 800;
-    line-height: 1.3;
-    color: var(--cm-text);
-}
-
-.art-card__link:hover .art-card__titulo { color: var(--cm-purple); }
-
-.art-card__subtitulo {
-    margin: 0 0 .5rem;
-    font-size: .88rem;
-    line-height: 1.5;
-    color: var(--cm-text-soft);
-}
-
-.art-card__trecho {
-    margin: 0;
-    font-size: .8rem;
-    line-height: 1.5;
-    color: var(--cm-muted);
-}
-
-/* --- Aviso de conteúdo sensível ------------------------------------------ */
-
-.art-card__aviso {
-    display: flex;
-    align-items: flex-start;
-    gap: .45rem;
-    margin: .5rem 0 0;
-    padding: .55rem .7rem;
-    border-radius: var(--cm-radius-sm);
-    background: #fdf3e2;
-    border: 1px solid #e6c98f;
-    color: #6b4700;
-    font-size: .82rem;
-    line-height: 1.45;
-}
-
-.art-card__aviso i { margin-top: .15rem; }
-
-/* --- Rodapé de ações ----------------------------------------------------- */
-
-.art-card__acoes {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    margin-top: auto;
-    padding-top: .6rem;
-    border-top: 1px solid var(--cm-border-soft);
-}
-
-.art-card__acao {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: .3rem;
-    padding: .35rem .65rem;
-    border: 1px solid var(--cm-border);
-    border-radius: var(--cm-radius-btn);
-    background: transparent;
-    color: var(--cm-text-soft);
-    font: inherit;
-    font-size: .78rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: border-color .15s ease, color .15s ease;
-}
-
-.art-card__acao:hover { border-color: var(--cm-border-strong); color: var(--cm-text); background: var(--cm-surface-soft); }
-
-.art-card__acao i { font-size: .85rem; }
-
-.art-card__acao--favorito.is-ativo {
-    color: var(--cm-pink);
-    border-color: var(--cm-pink);
-    background: var(--cm-pink-soft);
-}
-
-.art-card__acao--compartilhar:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
-.art-card__acao--repostar:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
-.art-card__acao--subir:hover { color: var(--cm-purple); border-color: var(--cm-purple); }
-
-/* Versão compacta: Explorar e Blog. */
-.art-card--compacto { padding: .85rem .9rem .8rem; }
+/* Versão compacta: Explorar, Blog e perfil. */
+.art-card--compacto { padding: .8rem .85rem .75rem; }
 .art-card--compacto .art-card__titulo { font-size: 1rem; }
-.art-card--compacto .art-card__capa-wrap { max-width: 110px; max-height: 70px; }
+.art-card--compacto .art-card__capa-wrap { max-width: 120px; max-height: 80px; }
+.art-card--compacto .art-card__descricao { font-size: .85rem; }
+
+/* ==========================================================================
    4. ESTADOS
    ========================================================================== */
 
@@ -1502,6 +1449,45 @@
 
 .editor-campo textarea { resize: vertical; min-height: 70px; }
 
+/* Capa: campo de endereço + botão de envio direto do dispositivo */
+.editor-capa-linha {
+    display: flex;
+    gap: .4rem;
+    align-items: stretch;
+}
+
+.editor-capa-linha input[type="url"] {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+}
+
+.editor-capa-enviar {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .55rem .8rem;
+    border: 1px solid var(--cm-border-input);
+    border-radius: var(--cm-radius-sm);
+    background: var(--cm-surface-soft);
+    color: var(--cm-purple);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+}
+
+.editor-capa-enviar:hover,
+.editor-capa-enviar:focus-visible {
+    background: var(--cm-purple-soft);
+    border-color: var(--cm-purple);
+}
+
+.editor-capa-enviar:disabled { opacity: .6; cursor: wait; }
+
 .editor-campo__dica {
     display: block;
     margin-top: .3rem;
@@ -1600,6 +1586,10 @@ html.a11y-dark-mode .artigo-aviso {
     border-color: #6b5312;
     color: #f2d9a2;
 }
+
+/* Selo: no escuro o roxo fica claro (#b183e8), então o ícone
+   precisa ser escuro para manter contraste. */
+html.a11y-dark-mode .art-card__selo { color: #1a1f24; }
 
 html.a11y-dark-mode .art-estado--erro {
     background: #33280f;

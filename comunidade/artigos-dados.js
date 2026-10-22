@@ -5,11 +5,15 @@
 
    Quem usa:
      - comunidade/artigos.js         (a listagem da área Artigos)
-     - comunidade/artigo.js          (a página de leitura)
+     - blog/artigo.js                (a página de leitura)
      - comunidade/escrever-artigo.js (o editor)
      - comunidade/perfil.js          (a aba "Artigos" do perfil)
      - Explorar/Explorar.js          (o bloco "Artigos da Comunidade")
      - blog/blog.js                 (as publicações do Blog)
+
+    A antiga comunidade/artigo.html virou um trampolim que redireciona
+    para /blog/artigo.html?id=; o artigo.js da comunidade ficou órfão
+    de página (nenhum HTML o carrega mais).
 
    POR QUE UM ARQUIVO SÓ
    O card de artigo é desenhado em cinco telas. Se cada uma desenhasse o seu,
@@ -609,60 +613,66 @@
 
     /* =====================================================================
        7. O CARD
-       --------------------------------------------------------------------------
-       A forma do card segue o mockup: seção em maiúsculas no topo, título,
-       subtítulo, aviso de conteúdo sensível, e no rodapé o autor, o tempo
-       de leitura e a prioridade.
-       O card inteiro NÃO é um link: os botões (Ouvir, Favorito) precisam
-       ser clicáveis sem disparar a navegação. O título e o subtítulo são
-       os alvos do link.
+       ----------------------------------------------------------------------
+       Desenho (referência: cartão do Substack): selo com ícone do tipo +
+       seção em maiúsculas e a data no canto direito; título em negrito,
+       descrição e a assinatura "NOME • X MIN LEITURA" no meio; imagem da
+       capa à direita (quando existe); rodapé com as ações.
+       O card inteiro NÃO é um link: os botões (Favoritar, Compartilhar,
+       Subir) precisam ser clicáveis sem disparar a navegação. O título é
+       o alvo do link.
        ===================================================================== */
 
         function montarCard(artigo, perfil, opcoes = {}) {
-        const { compacto = false, mostrarFavorito = true } = opcoes;
+            const { compacto = false, mostrarFavorito = true } = opcoes;
 
-        const { nome, avatar } = resolverAutor(artigo, perfil);
-        const inicial = nome.trim().charAt(0).toUpperCase() || '?';
-        const url = opcoes.destino === 'blog' ? caminhoBlogArtigo(artigo.id) : caminhoArtigo(artigo.id);
-        const data = formatarData(artigo.created_at);
-        const secao = String(artigo.category || 'Relatos');
-        const trecho = artigo.content ? resumoAutomatico(artigo.content, 90) : '';
+            const { nome } = resolverAutor(artigo, perfil);
+            const url = opcoes.destino === 'blog' ? caminhoBlogArtigo(artigo.id) : caminhoArtigo(artigo.id);
+            const data = formatarData(artigo.created_at);
+            const secao = String(artigo.category || 'Relatos');
+            const trecho = artigo.content ? resumoAutomatico(artigo.content, 110) : '';
+            const minutos = Number(artigo.read_minutes) || minutosLeitura(artigo.content || '');
+            const iconesTipo = {
+                'Dica': 'fa-lightbulb',
+                'Relato': 'fa-heart',
+                'História': 'fa-book-open',
+                'Guia': 'fa-compass',
+                'Análise': 'fa-magnifying-glass'
+            };
+            const iconeTipo = iconesTipo[String(artigo.kind || '')] || 'fa-pen-nib';
+            const descricao = artigo.subtitle || trecho;
 
-        const card = document.createElement('article');
-        card.className = 'art-card' + (compacto ? ' art-card--compacto' : '');
-        card.setAttribute('data-article-id', artigo.id);
+            const card = document.createElement('article');
+            card.className = 'art-card' + (compacto ? ' art-card--compacto' : '');
+            card.setAttribute('data-article-id', artigo.id);
 
-        const favorito = ehFavorito(artigo.id);
-        const capa = artigo.cover_url
-            ? `<img class="art-card__capa" src="${escapeHtml(artigo.cover_url)}" alt="" loading="lazy">`
-            : '';
+            const favorito = ehFavorito(artigo.id);
+            const capa = artigo.cover_url
+                ? `<div class="art-card__capa-wrap"><img class="art-card__capa" src="${escapeHtml(artigo.cover_url)}" alt="" loading="lazy"></div>`
+                : '';
 
-        card.innerHTML = `
-            <div class="art-card__esquerda">
-                <div class="art-card__cabecalho">
-                    <div class="art-card__autor">
-                        <img class="art-card__avatar" src="${escapeHtml(avatar)}" alt=""
-                             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'art-card__inicial',textContent:'${escapeHtml(inicial)}'}))">
-                        <div class="art-card__autor-dados">
-                            <span class="art-card__nome">${escapeHtml(nome)}</span>
-                            <span class="art-card__tag">${escapeHtml(secao)}</span>
-                        </div>
-                        <time class="art-card__data">${escapeHtml(data || '—')}</time>
-                    </div>
+            card.innerHTML = `
+                <div class="art-card__topo">
+                    <span class="art-card__selo" aria-hidden="true"><i class="fa-solid ${iconeTipo}"></i></span>
+                    <span class="art-card__secao">${escapeHtml(secao)}</span>
+                    ${artigo.is_paid ? '<span class="art-card__pago">Pago</span>' : ''}
+                    ${data ? `<time class="art-card__data">${escapeHtml(data)}</time>` : ''}
                 </div>
-
-                <a class="art-card__link" href="${url}">
-                    <h3 class="art-card__titulo">${escapeHtml(artigo.title || 'Sem título')}</h3>
-                    ${artigo.subtitle ? `<p class="art-card__subtitulo">${escapeHtml(artigo.subtitle)}</p>` : ''}
-                    ${trecho ? `<p class="art-card__trecho">${escapeHtml(trecho)}</p>` : ''}
-                </a>
-
+                <div class="art-card__corpo">
+                    <div class="art-card__textos">
+                        <a class="art-card__link" href="${url}">
+                            <h3 class="art-card__titulo">${escapeHtml(artigo.title || 'Sem título')}</h3>
+                        </a>
+                        ${descricao ? `<p class="art-card__descricao">${escapeHtml(descricao)}</p>` : ''}
+                        <p class="art-card__assinatura">${escapeHtml(nome)} <span aria-hidden="true">•</span> ${minutos} min de leitura</p>
+                    </div>
+                    ${capa}
+                </div>
                 ${artigo.sensitive && artigo.warning ? `
                 <div class="art-card__aviso">
                     <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
                     ${escapeHtml(artigo.warning)}
                 </div>` : ''}
-
                 <footer class="art-card__acoes">
                     ${mostrarFavorito ? `
                     <button type="button" class="art-card__acao art-card__acao--favorito"
@@ -670,24 +680,26 @@
                             title="Favoritar">
                         <i class="fa-${favorito ? 'solid' : 'regular'} fa-heart" aria-hidden="true"></i>
                     </button>` : ''}
+                    <span class="art-card__info" title="Comentários">
+                        <i class="fa-regular fa-comment" aria-hidden="true"></i>
+                        ${Number(artigo.comment_count) || 0}
+                    </span>
+                    <span class="art-card__acao art-card__acao--repostar" title="Repostar">
+                        <i class="fa-regular fa-repeat" aria-hidden="true"></i>
+                    </span>
                     <button type="button" class="art-card__acao art-card__acao--compartilhar"
                             data-acao="compartilhar" title="Compartilhar">
                         <i class="fa-regular fa-share-from-square" aria-hidden="true"></i>
                     </button>
-                    <span class="art-card__acao art-card__acao--repostar" title="Repostar">
-                        <i class="fa-regular fa-repeat" aria-hidden="true"></i>
-                    </span>
                     <button type="button" class="art-card__acao art-card__acao--subir"
                             data-acao="subir" title="Levar ao topo">
                         <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
                     </button>
                 </footer>
-            </div>
-            ${capa ? `<div class="art-card__capa-wrap">${capa}</div>` : ''}
-        `;
+            `;
 
-        return card;
-    }
+            return card;
+        }
     function estadoVazio(titulo, texto, linkTexto, linkUrl) {
         return `
             <div class="art-estado art-estado--vazio">

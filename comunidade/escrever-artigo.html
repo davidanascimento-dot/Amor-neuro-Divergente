@@ -284,8 +284,15 @@
 
             <div class="editor-campo">
                 <label for="editorCapa">Capa (endereço da imagem)</label>
-                <input type="url" id="editorCapa" placeholder="https://…">
-                <small class="editor-campo__dica">Opcional. A imagem aparece no topo do artigo.</small>
+                <div class="editor-capa-linha">
+                    <input type="url" id="editorCapa" placeholder="https://…">
+                    <button type="button" class="editor-capa-enviar" id="editorCapaEnviarBtn"
+                            title="Enviar uma imagem do computador ou celular">
+                        <i class="fa-solid fa-upload" aria-hidden="true"></i> Enviar
+                    </button>
+                </div>
+                <input type="file" id="editorCapaArquivo" accept="image/*" hidden aria-hidden="true">
+                <small class="editor-campo__dica">Opcional. Envie uma imagem do dispositivo — ou cole um endereço. Ela aparece no topo do artigo.</small>
             </div>
 
             <div class="editor-campo">

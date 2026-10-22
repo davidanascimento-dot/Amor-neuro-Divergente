@@ -20,8 +20,8 @@
     }
 
     const EL = {
-        filtroSecao: document.getElementById('artigoFiltroSecao'),
-        filtroTipo:  document.getElementById('artigoFiltroTipo'),
+        abas:        document.getElementById('artigoAbas'),
+        ordenacao:   document.getElementById('artigoOrdenacao'),
         carregando: document.getElementById('artigoCarregando'),
         estado:     document.getElementById('artigoEstado'),
         grade:      document.getElementById('artigoGrade'),
@@ -31,58 +31,44 @@
 
     const ESTADO = {
         artigos: [],
-        filtros: { secao: '', tipo: '' }
+        filtros: { aba: 'todos' },
+        ordenacao: 'prioridade'
     };
 
     /* =====================================================================
-       1. OS FILTROS
+       1. AS ABAS E A ORDENAÇÃO
+       --------------------------------------------------------------------------
+       A barra vem do mockup: Todos | Ouça | Pago | Favorito | História, com a
+       ordenação por Prioridade do outro lado. Cada aba é um filtro sobre a
+       MESMA lista — nada de nova consulta ao banco.
+
+       O que cada aba significa, com o que existe no card e na tabela:
+
+         Todos     — a lista inteira.
+         Ouça      — artigos que trazem áudio embutido (bloco [Áudio: ...]
+                     do markdown-lite ou <audio> do editor visual). Todo
+                     card tem o botão de leitura em voz alta; esta aba é
+                     para quem procura gravação de verdade.
+         Pago      — artigos com is_paid (o editor tem o campo "Pago").
+         Favorito  — as leituras salvas desta pessoa (localStorage, a mesma
+                     lista do coração dos cards).
+         História  — kind "História" (ou a seção "Histórias").
        ===================================================================== */
 
-    /* Monta os botões de seção. "Todas" vem primeiro e sempre está lá:
-     * um filtro que não tem como ser desligado é um filtro que prende. */
-    function montarFiltroSecao() {
-        if (!EL.filtroSecao) return;
+    const ORDENACOES = ['prioridade', 'recentes', 'lidos', 'curtidos', 'az'];
 
-        const secoes = ['Todas', ...D.SECOES];
-        EL.filtroSecao.innerHTML = '';
-
-        for (const secao of secoes) {
-            const botao = document.createElement('button');
-            botao.type = 'button';
-            botao.className = 'artigos-chip' + (secao === 'Todas' ? ' is-ativo' : '');
-            botao.textContent = secao;
-            botao.dataset.secao = secao === 'Todas' ? '' : secao;
-            botao.setAttribute('aria-pressed', secao === 'Todas' ? 'true' : 'false');
-            EL.filtroSecao.appendChild(botao);
-        }
-    }
-
-    /* O filtro por tipo é o que diferencia o que a auditoria pediu: um
-     * relato não é a mesma coisa que um guia, e a pessoa filtra por isso
-     * quando sabe o que procura. */
-    function montarFiltroTipo() {
-        if (!EL.filtroTipo) return;
-
-        const tipos = ['Todos', ...D.TIPOS];
-        EL.filtroTipo.innerHTML = '';
-
-        for (const tipo of tipos) {
-            const botao = document.createElement('button');
-            botao.type = 'button';
-            botao.className = 'artigos-chip' + (tipo === 'Todos' ? ' is-ativo' : '');
-            botao.textContent = tipo;
-            botao.dataset.tipo = tipo === 'Todos' ? '' : tipo;
-            botao.setAttribute('aria-pressed', tipo === 'Todos' ? 'true' : 'false');
-            EL.filtroTipo.appendChild(botao);
-        }
+    /* Áudio embutido: o bloco do markdown-lite ou o <audio> do editor visual. */
+    function temAudio(artigo) {
+        const c = String(artigo?.content || '');
+        return /\[[Áá]udio:/i.test(c) || /<audio\b/i.test(c);
     }
 
     function marcarAtivo(container, atributo, valor) {
         if (!container) return;
-        container.querySelectorAll('.artigos-chip').forEach(chip => {
-            const ativado = (chip.dataset[atributo] || '') === valor;
-            chip.classList.toggle('is-ativo', ativado);
-            chip.setAttribute('aria-pressed', ativado ? 'true' : 'false');
+        container.querySelectorAll('[data-' + atributo + ']').forEach(botao => {
+            const ativado = (botao.dataset[atributo] || '') === valor;
+            botao.classList.toggle('is-ativo', ativado);
+            botao.setAttribute('aria-pressed', ativado ? 'true' : 'false');
         });
     }
 
@@ -91,14 +77,37 @@
        ===================================================================== */
 
     function filtrar() {
-        const { secao, tipo } = ESTADO.filtros;
+        const aba = ESTADO.filtros.aba;
 
         return ESTADO.artigos.filter(artigo => {
-            if (secao && (artigo.category || '') !== secao) return false;
-            if (tipo && (artigo.kind || '') !== tipo) return false;
-
-            return true;
+            switch (aba) {
+                case 'pago':     return artigo.is_paid === true;
+                case 'favorito': return D.ehFavorito(artigo.id);
+                case 'historia': return (artigo.kind || '') === 'História'
+                                      || (artigo.category || '') === 'Histórias';
+                case 'ouca':     return temAudio(artigo);
+                default:         return true;
+            }
         });
+    }
+
+    /* A ordenação é local: os artigos já estão todos na página. O empate
+     * em prioridade cai na data — o mais novo primeiro, como antes. */
+    function porDataDesc(a, b) {
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    }
+
+    function ordenar(lista) {
+        const copia = [...lista];
+        const numero = v => Number(v) || 0;
+
+        switch (ESTADO.ordenacao) {
+            case 'recentes': return copia.sort(porDataDesc);
+            case 'lidos':    return copia.sort((a, b) => numero(b.views) - numero(a.views) || porDataDesc(a, b));
+            case 'curtidos': return copia.sort((a, b) => numero(b.likes) - numero(a.likes) || porDataDesc(a, b));
+            case 'az':       return copia.sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'pt-BR'));
+            default:         return copia.sort((a, b) => numero(b.priority) - numero(a.priority) || porDataDesc(a, b));
+        }
     }
 
     function mostrarCarregando() {
@@ -116,18 +125,34 @@
     function mostrarVazio() {
         if (EL.carregando) EL.carregando.hidden = true;
         if (EL.grade) EL.grade.innerHTML = '';
+
+        // Um "nenhum resultado" honesto: diz o que a aba procura e por que
+        // ela pode estar vazia, em vez de um genérico "tente de novo".
+        const avisos = {
+            ouca: ['Nenhum artigo com áudio ainda',
+                   'Todo artigo pode ser lido em voz alta pelo coração do card. Quando alguém publicar uma gravação, ela aparece aqui.'],
+            pago: ['Nenhum artigo pago agora',
+                   'Quando a comunidade publicar algo pago, ele aparece nesta aba.'],
+            favorito: ['Sua lista de favoritos está vazia',
+                   'Toque no coração de um artigo para guardar a leitura aqui.'],
+            historia: ['Nenhuma história por enquanto',
+                   'Quando alguém publicar uma História, ela aparece nesta aba.']
+        };
+
+        const [titulo, texto, linkTexto, linkUrl] = avisos[ESTADO.filtros.aba] || [
+            'Nenhum artigo nesta seleção',
+            'Tente outra aba. Se ninguém escreveu ainda, o primeiro artigo pode ser o seu.',
+            'Escrever o primeiro artigo',
+            '/comunidade/escrever-artigo.html'
+        ];
+
         if (EL.estado) {
-            EL.estado.innerHTML = D.estadoVazio(
-                'Nenhum artigo com esses filtros',
-                'Tente outra seção ou outro tipo. Se ninguém escreveu ainda, o primeiro artigo pode ser o seu.',
-                'Escrever o primeiro artigo',
-                '/comunidade/escrever-artigo.html'
-            );
+            EL.estado.innerHTML = D.estadoVazio(titulo, texto, linkTexto, linkUrl);
         }
     }
 
     function desenhar() {
-        const lista = filtrar();
+        const lista = ordenar(filtrar());
 
         if (!lista.length) {
             mostrarVazio();
@@ -217,6 +242,10 @@
             botao.setAttribute('aria-pressed', agoraFavorito ? 'true' : 'false');
             const icone = botao.querySelector('i');
             if (icone) icone.className = `fa-${agoraFavorito ? 'solid' : 'regular'} fa-heart`;
+
+            // Na aba Favorito, desfavoritar tira o card da vista na hora —
+            // e favoritar de outra aba já deixa o card pronto para a próxima.
+            if (ESTADO.filtros.aba === 'favorito') desenhar();
             return;
         }
 
@@ -261,22 +290,20 @@
     }
 
     function ligarEventos() {
-        if (EL.filtroSecao) {
-            EL.filtroSecao.addEventListener('click', (evento) => {
-                const chip = evento.target.closest('.artigos-chip');
-                if (!chip) return;
-                ESTADO.filtros.secao = chip.dataset.secao || '';
-                marcarAtivo(EL.filtroSecao, 'secao', ESTADO.filtros.secao);
+        if (EL.abas) {
+            EL.abas.addEventListener('click', (evento) => {
+                const botao = evento.target.closest('[data-aba]');
+                if (!botao) return;
+                ESTADO.filtros.aba = botao.dataset.aba || 'todos';
+                marcarAtivo(EL.abas, 'aba', ESTADO.filtros.aba);
                 desenhar();
             });
         }
 
-        if (EL.filtroTipo) {
-            EL.filtroTipo.addEventListener('click', (evento) => {
-                const chip = evento.target.closest('.artigos-chip');
-                if (!chip) return;
-                ESTADO.filtros.tipo = chip.dataset.tipo || '';
-                marcarAtivo(EL.filtroTipo, 'tipo', ESTADO.filtros.tipo);
+        if (EL.ordenacao) {
+            EL.ordenacao.addEventListener('change', () => {
+                const valor = EL.ordenacao.value;
+                ESTADO.ordenacao = ORDENACOES.includes(valor) ? valor : 'prioridade';
                 desenhar();
             });
         }
@@ -337,8 +364,6 @@
        ===================================================================== */
 
     function iniciar() {
-        montarFiltroSecao();
-        montarFiltroTipo();
         ligarEventos();
         ajustarSessao();
         carregar();
