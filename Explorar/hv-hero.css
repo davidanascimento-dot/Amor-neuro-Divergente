@@ -1,13 +1,4 @@
-/* ==========================================================================
-   HERO v2 — PRIMEIRA DOBRA DO EXPLORAR (revisao: parede, sem bordas, fundo branco)
-   Arquivo: Explorar/hv-hero.css
-   Prefixo: .hv-
 
-   Modelo: texto + cards de opcao a esquerda; a imagem gruda no TOPO e na
-   BORDA DIREITA da dobra (na "parede"), com curva organica no lado
-   esquerdo. Sem molduras: nada de anel em volta da imagem e os cards
-   nao tem borda. Fundo branco; no tema escuro do site, fica escuro.
-   ========================================================================== */
 
 .hv-hero {
     position: relative;
@@ -110,20 +101,19 @@
     align-items: center;
     gap: 16px;
     padding: 15px 18px;
-    background: #101a33;
     border: none;
-    border-radius: 14px;
+    border-radius: 5px;
     text-decoration: none;
-    color: #ffffff;
-    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    color: #58405e;
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.4, 1),
                 background 0.22s ease,
                 box-shadow 0.22s ease;
 }
 
 .hv-opcao:hover {
-    background: #1a2b52;
-    transform: translateY(-2px);
-    box-shadow: 0 14px 30px -14px rgba(16, 26, 51, 0.45);
+    background: #f5def18a;
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px -11px rgba(244, 216, 245, 0.45);
 }
 
 .hv-opcao:focus-visible {
@@ -137,14 +127,14 @@
     height: 44px;
     display: grid;
     place-items: center;
-    border-radius: 12px;
+    border-radius: 4px;
     font-size: 18px;
     border: none;
-    transition: transform 0.22s ease;
+    transition: transform 0.88s ease;
 }
 
 .hv-opcao:hover .hv-opcao__icone {
-    transform: scale(1.08);
+    transform: scale(1.02);
 }
 
 .hv-ic-roxo {
@@ -199,27 +189,39 @@
     color: #ffffff;
 }
 
-/* -------------------- Imagem na parede (full-bleed direita) -------------
-   Nada de caixa flutuante: a imagem gruda no topo e na borda direita da
-   dobra e a curva organica fica NO lado esquerdo dela. Sem anel, sem
-   moldura, sem sombra de caixa. */
 
 .hv-img-wrap {
     position: absolute;
     top: 0;
-    right: 0;
+    right: calc(-55vw + 50% + 48px); /* ignora o padding do grid e vai até a borda da tela */
     bottom: 0;
-    width: min(38vw, 520px);
+    width: min(38vw, 620px);
     z-index: 1;
     overflow: hidden;
- border-radius: 12% 0cap 2cap 21%;
+ clip-path: polygon(
+        100% 41%,
+        100% 67%,
+        0  20%,
+        100% 0,
+        100% 100%,
+        0% 85%,
+        0 10%,
+        0%  10%,
+        0%  21%
+    );
+
+    border-radius: 2% 0 33% 21%;
+  
+
+}
+
 
 
 .hv-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: left;
     display: block;
 }
 
@@ -442,3 +444,5 @@ body.a11y-dark-mode .hv-estrela-bt {
         transform: none;
     }
 }
+
+
