@@ -67,8 +67,8 @@
 
 .hv-hero__titulo em {
     font-family: 'Gwendolyn', Georgia, serif;
-    font-style: italic;
-    font-weight: 700;
+    font-style:  inherit;
+    font-weight: 500;
     color: #D594F3;
     letter-spacing: -0.015em;
 }
