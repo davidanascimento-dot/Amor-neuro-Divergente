@@ -1,0 +1,444 @@
+/* ==========================================================================
+   HERO v2 — PRIMEIRA DOBRA DO EXPLORAR (revisao: parede, sem bordas, fundo branco)
+   Arquivo: Explorar/hv-hero.css
+   Prefixo: .hv-
+
+   Modelo: texto + cards de opcao a esquerda; a imagem gruda no TOPO e na
+   BORDA DIREITA da dobra (na "parede"), com curva organica no lado
+   esquerdo. Sem molduras: nada de anel em volta da imagem e os cards
+   nao tem borda. Fundo branco; no tema escuro do site, fica escuro.
+   ========================================================================== */
+
+.hv-hero {
+    position: relative;
+    background: #ffffff;
+    color: #141830;
+    overflow: hidden;
+}
+
+/* Luzes de fundo MUITO suaves, quase apagadas no branco */
+.hv-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(760px 420px at 88% -12%, rgba(124, 58, 237, 0.07), transparent 60%),
+        radial-gradient(640px 380px at -8% 116%, rgba(244, 114, 182, 0.06), transparent 60%);
+    pointer-events: none;
+}
+
+.hv-hero__grid {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 76px 48px 88px;
+}
+
+.hv-hero__texto {
+    max-width: 540px;
+    position: relative;
+    z-index: 2;
+}
+
+/* ----------------------------- Assinatura ------------------------------ */
+
+.hv-hero__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.hv-hero__linha {
+    width: 44px;
+    height: 1px;
+    background: #d9d5e6;
+}
+
+.hv-hero__estrela {
+    width: 13px;
+    height: 13px;
+    background: #f2b705;
+    clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+}
+
+/* ----------------------------- Tipografia ------------------------------ */
+
+.hv-hero__titulo {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: clamp(1.9rem, 4.4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: #12142b;
+    margin: 0 0 18px;
+}
+
+.hv-hero__titulo em {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    color: #7c3aed;
+    letter-spacing: -0.015em;
+}
+
+.hv-hero__apoio {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #4d5568;
+    margin: 0 0 38px;
+}
+
+.hv-hero__pergunta {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #12142b;
+    margin: 0 0 16px;
+}
+
+/* ------------------------- Cards de opcao (sem borda) ------------------ */
+
+.hv-opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 560px;
+}
+
+.hv-opcao {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 18px;
+    background: #101a33;
+    border: none;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.22s ease,
+                box-shadow 0.22s ease;
+}
+
+.hv-opcao:hover {
+    background: #1a2b52;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -14px rgba(16, 26, 51, 0.45);
+}
+
+.hv-opcao:focus-visible {
+    outline: 2px solid #7c3aed;
+    outline-offset: 3px;
+}
+
+.hv-opcao__icone {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font-size: 18px;
+    border: none;
+    transition: transform 0.22s ease;
+}
+
+.hv-opcao:hover .hv-opcao__icone {
+    transform: scale(1.08);
+}
+
+.hv-ic-roxo {
+    background: rgba(167, 139, 250, 0.22);
+    color: #ddd6fe;
+}
+
+.hv-ic-rosa {
+    background: rgba(249, 168, 212, 0.2);
+    color: #fbcfe8;
+}
+
+.hv-ic-amarelo {
+    background: rgba(242, 183, 5, 0.2);
+    color: #f6d670;
+}
+
+.hv-ic-ciano {
+    background: rgba(125, 211, 252, 0.2);
+    color: #bae6fd;
+}
+
+.hv-opcao__texto {
+    min-width: 0;
+}
+
+.hv-opcao__texto strong {
+    display: block;
+    font-size: 0.97rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.hv-opcao__texto small {
+    display: block;
+    font-size: 0.83rem;
+    line-height: 1.45;
+    color: #aab2c8;
+    margin-top: 3px;
+}
+
+.hv-opcao__seta {
+    margin-left: auto;
+    flex: 0 0 auto;
+    color: #aab2c8;
+    font-size: 15px;
+    transition: transform 0.22s ease, color 0.22s ease;
+}
+
+.hv-opcao:hover .hv-opcao__seta {
+    transform: translateX(5px);
+    color: #ffffff;
+}
+
+/* -------------------- Imagem na parede (full-bleed direita) -------------
+   Nada de caixa flutuante: a imagem gruda no topo e na borda direita da
+   dobra e a curva organica fica NO lado esquerdo dela. Sem anel, sem
+   moldura, sem sombra de caixa. */
+
+.hv-img-wrap {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(38vw, 520px);
+    z-index: 1;
+    overflow: hidden;
+ border-radius: 12% 0cap 2cap 21%;
+
+
+.hv-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* O selo de estrela mora no encontro da curva com a borda esquerda */
+.hv-estrela-bt {
+    position: absolute;
+    bottom: 34px;
+    left: -24px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #ffffff;
+    border: none;
+    box-shadow: 0 8px 20px -6px rgba(18, 20, 43, 0.28);
+    z-index: 2;
+}
+
+.hv-estrela-bt__ponto {
+    width: 26px;
+    height: 26px;
+    background: #7c3aed;
+    clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+}
+
+/* Peca rosa + linha tracejada, no vazio a esquerda da curva */
+.hv-deco {
+    position: absolute;
+    bottom: -38px;
+    left: -46px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.hv-deco__peca {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    background: #f472b6;
+    opacity: 0.9;
+    transform: rotate(45deg);
+}
+
+.hv-deco__linha {
+    width: 2px;
+    height: 58px;
+    background-image: linear-gradient(to bottom, #f472b6 50%, transparent 0%);
+    background-size: 2px 10px;
+    background-repeat: repeat-y;
+}
+
+/* A Lia animada, no canto inferior esquerdo do branco */
+.hv-lia {
+    position: absolute;
+    bottom: 18px;
+    left: 26px;
+    width: 92px;
+    height: auto;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ----------------------------- Modo escuro do site --------------------- */
+
+body.a11y-dark-mode .hv-hero {
+    background: #0b1120;
+    color: #f4f6fb;
+    box-shadow: inset 0 -1px 0 #23233a;
+}
+
+body.a11y-dark-mode .hv-hero::before {
+    background:
+        radial-gradient(900px 480px at 85% -10%, rgba(124, 58, 237, 0.2), transparent 62%),
+        radial-gradient(700px 420px at -8% 112%, rgba(244, 114, 182, 0.1), transparent 60%);
+}
+
+body.a11y-dark-mode .hv-hero__titulo,
+body.a11y-dark-mode .hv-hero__pergunta {
+    color: #ffffff;
+}
+
+body.a11y-dark-mode .hv-hero__titulo em {
+    color: #a78bfa;
+}
+
+body.a11y-dark-mode .hv-hero__apoio {
+    color: #c7c9d9;
+}
+
+body.a11y-dark-mode .hv-hero__linha {
+    background: #3a3f55;
+}
+
+body.a11y-dark-mode .hv-opcao {
+    background: #111a30;
+}
+
+body.a11y-dark-mode .hv-opcao:hover {
+    background: #16243f;
+    box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.6);
+}
+
+body.a11y-dark-mode .hv-opcao__texto small {
+    color: #9aa2b8;
+}
+
+body.a11y-dark-mode .hv-estrela-bt {
+    background: #ffffff;
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.55);
+}
+
+/* ----------------------------- Responsivo ------------------------------ */
+
+/* Entre 901 e 1080px a imagem ocupa mais da metade da largura:
+   encurtar o texto para os dois lados respirarem. */
+@media (min-width: 901px) and (max-width: 1080px) {
+    .hv-hero__texto {
+        max-width: 460px;
+    }
+}
+
+/* Ate 900px o texto fica sozinho; a imagem desce e vai para o fundo da
+   dobra, colada nas duas bordas laterais, com curva no topo-esquerdo. */
+
+@media (max-width: 900px) {
+    .hv-hero__grid {
+        padding: 60px 32px 64px;
+    }
+
+    .hv-hero__texto {
+        max-width: none;
+    }
+
+    .hv-hero__apoio {
+        margin-bottom: 30px;
+    }
+
+    .hv-img-wrap {
+        position: relative;
+        width: auto;
+        height: 240px;
+        margin: 38px -32px 0;
+        border-radius: 0;
+        border-top-left-radius: 130px 100%;
+        border-bottom-left-radius: 90px 55%;
+    }
+
+    .hv-deco {
+        display: none;
+    }
+
+    .hv-estrela-bt {
+        bottom: auto;
+        top: -24px;
+        left: 20px;
+    }
+
+    .hv-lia {
+        width: 78px;
+        left: 10px;
+        bottom: 10px;
+    }
+}
+
+@media (max-width: 560px) {
+    .hv-hero__grid {
+        padding: 46px 22px 56px;
+    }
+
+    .hv-hero__linha {
+        display: none;
+    }
+
+    .hv-hero__pergunta {
+        font-size: 1.05rem;
+    }
+
+    .hv-opcao {
+        padding: 13px 14px;
+        gap: 13px;
+        border-radius: 13px;
+    }
+
+    .hv-opcao__icone {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .hv-opcao__texto small {
+        font-size: 0.79rem;
+    }
+
+    .hv-img-wrap {
+        height: 200px;
+        margin: 30px -22px 0;
+        border-top-left-radius: 90px 100%;
+    }
+
+    .hv-lia {
+        display: none;
+    }
+}
+
+/* ----------------------------- Movimento reduzido ---------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .hv-opcao,
+    .hv-opcao__icone,
+    .hv-opcao__seta,
+    .hv-img {
+        transition: none;
+    }
+
+    .hv-opcao:hover {
+        transform: none;
+    }
+}
