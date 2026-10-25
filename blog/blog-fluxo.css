@@ -1718,147 +1718,239 @@ body.a11y-dark-mode .blog-comunidade__estado--erro {
 
 
 /* ==========================================================================
-   BLOG OPCOES - Cards de escolha de leitura
+   APRESENTACAO DO BLOG — dois caminhos de leitura (modelo editorial)
+
+   Composicao baseada na referencia:
+     - titulo e descricao centralizados, texto dos cards a esquerda;
+     - card 1 (Artigos e Guias): livro aberto a ESQUERDA (PNG com
+       transparencia real — sem caixa atras);
+     - card 2 (Blog da Comunidade): conversas a DIREITA (JPEG sem
+       transparencia: fundo quase branco integrado com mix-blend-mode:
+       multiply, sobre uma forma organica lavanda MUITO suave atras);
+     - borda de 1px em tom quase invisivel, sem sombra forte;
+     - link roxo, sem botao preenchido.
    ========================================================================== */
-.blog-opcoes-section {
-    padding: 2.5rem 2rem 1.5rem;
-    max-width: 1400px;
+
+.bo-apresentacao {
+    padding: 52px 24px 56px;
+}
+
+.bo-apresentacao__int {
+    max-width: 1080px;
     margin: 0 auto;
 }
 
-.blog-opcoes__header {
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.blog-opcoes__title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--blog-text, #1a1a2e);
-    margin: 0 0 .5rem;
-    line-height: 1.2;
-}
-
-.blog-opcoes__desc {
-    font-size: 1rem;
-    color: var(--blog-muted, #8a827c);
-    margin: 0;
-    max-width: 60ch;
-    margin-inline: auto;
-}
-
-.blog-opcoes__grid {
+.bo-cards {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    max-width: 900px;
-    margin: 0 auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
 }
 
-.blog-opcao {
-    display: flex;
-    gap: 1.25rem;
-    padding: 1.5rem;
-    border: 2px solid var(--blog-border, #e8e3dd);
+/* isolation: o multiply do JPEG deve enxergar so o que esta
+   DENTRO do card, nunca o fundo da pagina. */
+.bo-card {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: center;
+    gap: 6px;
+    min-height: 300px;
+    padding: 30px 28px;
+    background: #fbfaff;
+    border: none;
     border-radius: 12px;
-    background: var(--blog-card, #fff);
     text-decoration: none;
-    color: var(--blog-text, #1a1a2e);
-    transition: all .25s ease;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.blog-opcao:hover {
-    border-color: var(--blog-accent, #7c3aed);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+/* Card 1: ilustracao a esquerda, texto a direita */
+.bo-card {
+    grid-template-columns: minmax(0, 44fr) minmax(0, 56fr);
 }
 
-.blog-opcao__icone {
-    flex: 0 0 auto;
-    width: 56px;
-    height: 56px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    background: var(--blog-accent-light, #ede9fe);
-    color: var(--blog-accent, #7c3aed);
-    font-size: 1.4rem;
+/* Card 2 (inverso): texto a esquerda, ilustracao a direita */
+.bo-card--inverso {
+    grid-template-columns: minmax(0, 56fr) minmax(0, 44fr);
 }
 
-.blog-opcao--comunidade .blog-opcao__icone {
-    background: var(--blog-accent-light, #ede9fe);
-    color: var(--blog-accent, #7c3aed);
+.bo-card:hover {
+    transform: translateY(-2px);
 }
 
-.blog-opcao__texto {
-    flex: 1 1 auto;
+.bo-card:focus-visible {
+    outline: 2px solid #7c3aed;
+    outline-offset: 3px;
+}
+
+.bo-card__img {
+    margin: 0;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    padding: 6px 0;
+}
+
+/* Proporcao preservada: contain, nunca um corte fixo */
+.bo-card__img img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 265px;
+    object-fit: contain;
+}
+
+/* LEMBRETE: sem moldura nenhuma atras do JPEG no modo claro — o
+   multiply integra o fundo branco dele ao proprio card. */
+
+.bo-card__img--dir img {
+    position: relative;
+    z-index: 1;
+    mix-blend-mode: multiply;
+}
+
+.bo-card__conteudo {
+    display: flex;
+    align-items: flex-start;
     min-width: 0;
 }
 
-.blog-opcao__titulo {
-    font-size: 1.15rem;
-    font-weight: 800;
-    margin: 0 0 .4rem;
+.bo-card__texto {
+    min-width: 0;
+}
+
+.bo-card__texto h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1f1b3a;
     line-height: 1.3;
+    margin: 2px 0 10px;
 }
 
-.blog-opcao__desc {
-    font-size: .88rem;
-    color: var(--blog-muted, #8a827c);
-    margin: 0 0 .75rem;
-    line-height: 1.5;
+.bo-card__texto p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #6d6a7c;
+    margin: 0 0 16px;
 }
 
-.blog-opcao__cta {
+.bo-card__link {
     display: inline-flex;
     align-items: center;
-    gap: .4rem;
-    font-size: .85rem;
-    font-weight: 700;
-    color: var(--blog-accent, #7c3aed);
-    transition: gap .2s ease;
+    gap: 7px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #7c3aed;
 }
 
-.blog-opcao:hover .blog-opcao__cta {
-    gap: .6rem;
+.bo-card__link i {
+    font-size: 0.82em;
+    transition: transform 0.2s ease;
 }
 
-@media (max-width: 640px) {
-    .blog-opcoes__grid {
-        grid-template-columns: 1fr;
+.bo-card:hover .bo-card__link i {
+    transform: translateX(4px);
+}
+
+/* ----------------------------- Modo escuro do site --------------------- */
+
+body.a11y-dark-mode .bo-card {
+    background: #17162b;
+    border-color: #2e2e4a;
+}
+
+body.a11y-dark-mode .bo-card__texto h3 {
+    color: #f1f5f9;
+}
+
+body.a11y-dark-mode .bo-card__texto p {
+    color: #94a3b8;
+}
+
+body.a11y-dark-mode .bo-card__link {
+    color: #c4b5fd;
+}
+
+/* No escuro o multiply precisaria de base clara — sem ela o JPEG
+   desaparece. O balao lavanda existe SO no tema escuro, e o menor
+   possivel: soma da ilustracao, nao moldura. */
+body.a11y-dark-mode .bo-card__img--dir {
+    position: relative;
+}
+
+body.a11y-dark-mode .bo-card__img--dir::before {
+    content: "";
+    position: absolute;
+    inset: 6% 4%;
+    border-radius: 58% 42% 55% 45% / 55% 48% 52% 45%;
+    background: #ece7fd;
+    z-index: 0;
+}
+
+/* O "pocinho" lavanda era a unica base do multiply no modo claro;
+   no claro ele nao existe mais — o fundo do proprio card recebe. */
+
+/* ----------------------------- Responsivo ------------------------------ */
+
+@media (max-width: 900px) {
+    .bo-cards {
+        gap: 24px;
+    }
+
+    .bo-card {
+        min-height: 250px;
+        padding: 24px 22px;
+        gap: 4px;
+    }
+
+    .bo-card__img img {
+        max-height: 220px;
     }
 }
 
-/* Dark mode */
-body.a11y-dark-mode .blog-opcoes__title {
-    color: #e8e3dd;
+@media (max-width: 640px) {
+    .bo-apresentacao {
+        padding: 44px 18px 48px;
+    }
+
+    .bo-cards {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .bo-card,
+    .bo-card--inverso {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        padding: 20px 18px;
+    }
+
+    /* Ilustracao volta para cima do texto no celular */
+    .bo-card__img--dir {
+        order: -1;
+    }
+
+    .bo-card__img {
+        padding: 0;
+    }
+
+    .bo-card__img img {
+        max-height: 165px;
+        width: auto;
+        max-width: 100%;
+        margin: 0 auto;
+    }
 }
 
-body.a11y-dark-mode .blog-opcoes__desc {
-    color: #aaa;
-}
+@media (prefers-reduced-motion: reduce) {
+    .bo-card,
+    .bo-card__link i {
+        transition: none;
+    }
 
-body.a11y-dark-mode .blog-opcao {
-    background: #1a1a2e;
-    border-color: #2d2d44;
-    color: #e8e3dd;
-}
-
-body.a11y-dark-mode .blog-opcao:hover {
-    border-color: #a78bfa;
-}
-
-body.a11y-dark-mode .blog-opcao__icone {
-    background: #2d2d44;
-    color: #a78bfa;
-}
-
-body.a11y-dark-mode .blog-opcao__desc {
-    color: #aaa;
-}
-
-body.a11y-dark-mode .blog-opcao__cta {
-    color: #a78bfa;
+    .bo-card:hover {
+        transform: none;
+    }
 }
 
 /* ==========================================================================
