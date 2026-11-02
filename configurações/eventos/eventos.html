@@ -124,9 +124,11 @@
                     </div>
 
                     <div class="event-form-group">
-                        <label for="eventImage">URL da imagem de capa</label>
-                        <input type="url" id="eventImage" placeholder="https://exemplo.com/imagem.jpg">
-                        <span class="event-form-hint">Opcional — deixe em branco para usar o padrão</span>
+                        <label for="eventImageFile">Foto de capa do evento</label>
+                        <input type="file" id="eventImageFile" accept="image/*">
+                        <input type="hidden" id="eventImage" value="">
+                        <div id="eventImagePreview" style="margin-top:8px;"></div>
+                        <span class="event-form-hint">Opcional — selecione uma imagem do seu dispositivo</span>
                     </div>
 
                     <div class="event-toggle-row">

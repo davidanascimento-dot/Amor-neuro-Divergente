@@ -3582,8 +3582,10 @@ async function sendMessage() {
                 }
             }
 
+            const imagem = ev.image_url ? `<img src="${escapeHtml(ev.image_url)}" alt="${escapeHtml(ev.title || 'Evento')}">` : '';
             return `
             <article class="event-card" data-event-id="${escapeHtml(ev.id)}">
+                ${imagem}
                 <div class="event-date">
                     <span class="event-day">${dia}</span>
                     <span class="event-month">${mes}</span>

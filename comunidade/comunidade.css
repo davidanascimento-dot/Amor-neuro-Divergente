@@ -1925,9 +1925,19 @@ body.a11y-dark-mode .posts-feed .action-btn.liked {
     border-radius: 5px;
     padding: 16px 18px;
     display: flex;
+    flex-wrap: wrap;
     gap: 14px;
     align-items: flex-start;
     transition: border-color 0.15s;
+}
+
+.event-card > img {
+    flex: 1 0 100%;
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 0;
 }
 
 .event-card:hover {
@@ -3490,6 +3500,21 @@ body.a11y-dark-mode .posts-feed .action-btn.liked {
     .groups-grid,
     .events-grid {
         grid-template-columns: 1fr;
+    }
+
+    .event-card {
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .event-card > img {
+        max-height: 140px;
+    }
+
+    .event-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
     }
 
     .chat-channels {

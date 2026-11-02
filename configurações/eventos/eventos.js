@@ -38,8 +38,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const eventPlatformInput = document.getElementById('eventPlatform');
     const eventLinkInput = document.getElementById('eventLink');
     const eventImageInput = document.getElementById('eventImage');
+const eventImageFileInput = document.getElementById('eventImageFile');
+const eventImagePreview = document.getElementById('eventImagePreview');
     const eventActiveInput = document.getElementById('eventActive');
     const eventForm = document.getElementById('eventForm');
+
+    // Preview da imagem selecionada
+    eventImageFileInput?.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) { if (eventImagePreview) eventImagePreview.innerHTML = ''; return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (eventImagePreview) eventImagePreview.innerHTML = `<img src="${reader.result}" alt="Preview" style="max-width:100%;max-height:160px;border-radius:8px;">`;
+        };
+        reader.readAsDataURL(file);
+    });
 
     // ============================================
     // TOAST
@@ -115,6 +128,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Reset do formulário
         eventForm?.reset();
         if (eventIdInput) eventIdInput.value = '';
+        if (eventImageFileInput) eventImageFileInput.value = '';
+        if (eventImagePreview) eventImagePreview.innerHTML = '';
 
         if (mode === 'edit' && eventData) {
             // Modo edição
@@ -128,6 +143,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (eventPlatformInput) eventPlatformInput.value = eventData.platform || 'Google Meet';
             if (eventLinkInput) eventLinkInput.value = eventData.link || '';
             if (eventImageInput) eventImageInput.value = eventData.image_url || '';
+            if (eventImagePreview) {
+                eventImagePreview.innerHTML = eventData.image_url ? `<img src="${eventData.image_url}" alt="Preview" style="max-width:100%;max-height:160px;border-radius:8px;">` : '';
+            }
             if (eventActiveInput) eventActiveInput.checked = eventData.is_active !== false;
         } else {
             // Modo criação
@@ -213,8 +231,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         const description = eventDescriptionInput?.value.trim() || '';
         const platform = eventPlatformInput?.value || 'Google Meet';
         const link = eventLinkInput?.value.trim() || null;
-        const imageUrl = eventImageInput?.value.trim() || null;
+        let imageUrl = eventImageInput?.value.trim() || null;
         const isActive = eventActiveInput?.checked ?? true;
+
+        // Upload da imagem selecionada, se houver
+        const file = eventImageFileInput?.files?.[0];
+        if (file) {
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `events/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const { data: buckets } = await supabase.storage.listBuckets();
+                const bucketExists = buckets?.some(b => b.name === 'avatars');
+                if (!bucketExists) {
+                    await supabase.storage.createBucket('avatars', { public: true, file_size_limit: 5242880 });
+                }
+                const { error: uploadError } = await supabase.storage.from('avatars').upload(fileName, file, { cacheControl: '3600', upsert: false });
+                if (uploadError) throw uploadError;
+                const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(fileName);
+                imageUrl = publicUrl;
+            } catch (err) {
+                showToast('Erro no upload da imagem: ' + err.message, 'error');
+                if (eventModalSave) eventModalSave.disabled = false;
+                if (eventSaveLabel) eventSaveLabel.textContent = originalLabel;
+                return;
+            }
+        }
         const isoDate = new Date(dateValue).toISOString();
 
         // Desabilitar botão
