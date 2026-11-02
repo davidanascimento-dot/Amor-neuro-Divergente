@@ -4407,15 +4407,103 @@ body.a11y-dark-mode .qs-seguir {
     right: 20px;
     z-index: 10000;
     display: flex;
-    flex-direction: column;
-    width: 380px;
-    max-height: min(70vh, 560px);
+    flex-direction: row;
+    width: min(740px, calc(100vw - 40px));
+    max-height: min(78vh, 600px);
     overflow: hidden;
     background: var(--cm-surface);
     border: 1px solid var(--cm-border);
-    border-radius: 16px;
-    box-shadow: 0 12px 40px rgba(18, 22, 26, .18);
-    animation: fadeIn .2s ease;
+    border-radius: 20px;
+    box-shadow: 0 16px 50px rgba(76, 29, 149, .22);
+    animation: notifPanelIn .28s cubic-bezier(.22, 1, .36, 1);
+}
+
+/* --- Lia na lateral esquerda ------------------------------------------- */
+.notif-lia {
+    position: relative;
+    flex: 0 0 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 30% 18%, rgba(255, 255, 255, .85), transparent 42%),
+        linear-gradient(160deg, #f3e8ff 0%, #ede9fe 45%, #fce7f3 100%);
+    animation: notifLiaEntrada .45s cubic-bezier(.22, 1, .36, 1);
+}
+
+.notif-lia::before,
+.notif-lia::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.notif-lia::before {
+    width: 90px;
+    height: 90px;
+    top: 18px;
+    left: -28px;
+    background: rgba(168, 85, 247, .16);
+}
+
+.notif-lia::after {
+    width: 60px;
+    height: 60px;
+    right: -18px;
+    bottom: 120px;
+    background: rgba(236, 72, 153, .14);
+}
+
+.notif-lia__palco {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 8px 6px 0;
+}
+
+.notif-lia__img,
+.notif-lia__video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    filter: drop-shadow(0 8px 14px rgba(88, 28, 135, .18));
+    mix-blend-mode: multiply;
+}
+
+.notif-lia__balao {
+    position: relative;
+    z-index: 2;
+    margin: 0 12px 14px;
+    padding: 10px 12px;
+    border: 1px solid rgba(139, 92, 246, .18);
+    border-radius: 14px 14px 14px 4px;
+    background: rgba(255, 255, 255, .95);
+    box-shadow: 0 6px 18px rgba(76, 29, 149, .12);
+    color: #5b21b6;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    animation: notifBalaoIn .45s .15s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.notif-lia__balao.is-trocando {
+    animation: notifBalaoTroca .35s ease;
+}
+
+/* --- Conteúdo (topo, chips, lista, rodapé) ----------------------------- */
+.notif-sheet__conteudo {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- Topo: selo + título + fechar --------------------------------------- */
@@ -4548,6 +4636,35 @@ body.a11y-dark-mode .qs-seguir {
     font-size: .85rem;
 }
 
+.notif-item__avatar {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--cm-purple-soft);
+}
+
+.notif-item__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.notif-item__abrir {
+    flex: 0 0 auto;
+    align-self: center;
+    color: var(--cm-muted);
+    padding: 6px;
+    text-decoration: none;
+    transition: color .15s ease, transform .15s ease;
+}
+
+.notif-item__abrir:hover {
+    color: var(--cm-purple);
+    transform: translateX(2px);
+}
+
 .notif-item.is-nao-lida .notif-item__icone {
     background: var(--cm-purple);
     color: #fff;
@@ -4657,6 +4774,32 @@ body.a11y-dark-mode .qs-seguir {
     background: var(--cm-purple-soft);
 }
 
+/* --- Animações discretas ----------------------------------------------- */
+@keyframes notifPanelIn {
+    from { opacity: 0; transform: translateY(-10px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes notifLiaEntrada {
+    from { opacity: 0; transform: translateX(-14px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes notifLiaFlutua {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+}
+
+@keyframes notifBalaoIn {
+    from { opacity: 0; transform: translateY(8px) scale(.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes notifBalaoTroca {
+    0%   { opacity: .25; transform: translateY(4px) scale(.97); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* --- Celular: tela cheia, menos a barra inferior de seções -------------- */
 @media (max-width: 640px) {
     #notificationPanel.notif-sheet {
@@ -4670,9 +4813,52 @@ body.a11y-dark-mode .qs-seguir {
         border-radius: 0;
         box-shadow: none;
         padding-top: env(safe-area-inset-top, 0px);
+        flex-direction: column;
     }
 
     .notif-sheet__topo {
         padding-top: 14px;
+    }
+
+    /* Lia compacta no topo, sem empurrar a lista para fora. */
+    .notif-lia {
+        flex: 0 0 auto;
+        width: 100%;
+        height: 118px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .notif-lia__palco {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 112px;
+        padding: 6px 0 0;
+    }
+
+    .notif-lia__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 18%;
+        animation: none;
+    }
+
+    .notif-lia__balao {
+        margin: 0 14px 0 104px;
+        max-width: 240px;
+        font-size: 12px;
+        text-align: left;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #notificationPanel.notif-sheet,
+    .notif-lia,
+    .notif-lia__img,
+    .notif-lia__balao,
+    .notif-lia__balao.is-trocando {
+        animation: none;
     }
 }

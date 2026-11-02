@@ -4216,16 +4216,161 @@ function filterGroupCards() {
 // em comunidade.css (seção 22) — aqui não existe NENHUM estilo inline,
 // que era o que tornava o painel difícil de ajustar e pesado de ler.
 var inMemoryNotifications = [];
+var remoteNotifications = [];
 var notifFiltro = 'todas';
+var notifCanal = null;
+var notifTabelaIndisponivel = false;
+var notifCarregando = false;
+var notifRecomendacaoTentada = false;
 
-function addInAppNotification(title, body, extraHtml) {
+/* Categorias que o banco grava em public.notifications. Os filtros do
+   painel agrupam essas categorias sem esconder nenhuma delas. */
+var NOTIF_CATEGORIAS_SOCIAL = ['mensagens', 'social', 'publicacoes'];
+var NOTIF_CATEGORIAS_CONTEUDO = ['eventos', 'artigos', 'grupos', 'sistema'];
+
+var NOTIF_ICONES = {
+    mensagens: 'fa-regular fa-envelope',
+    eventos: 'fa-regular fa-calendar-days',
+    artigos: 'fa-regular fa-newspaper',
+    grupos: 'fa-solid fa-user-group',
+    publicacoes: 'fa-regular fa-message',
+    social: 'fa-regular fa-heart',
+    sistema: 'fa-solid fa-bullhorn'
+};
+
+function notifEscape(valor) {
+    return String(valor == null ? '' : valor).replace(/[&<>"']/g, function(c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+}
+
+/* Só http/https (ou caminho interno). Evita javascript: vindo do banco. */
+function notifLinkSeguro(url) {
+    if (!url) return '';
+    try {
+        var alvo = new URL(String(url).trim(), window.location.origin);
+        return (alvo.protocol === 'http:' || alvo.protocol === 'https:') ? alvo.href : '';
+    } catch (e) {
+        return '';
+    }
+}
+
+function normalizarNotificacaoRemota(n) {
+    var criada = n.created_at ? new Date(n.created_at) : new Date();
+    return {
+        id: n.id,
+        category: n.category || 'sistema',
+        title: n.title || n.message || 'Notificação',
+        body: n.body || '',
+        link: n.link || '',
+        icon: n.icon || '',
+        actor_id: n.actor_id || null,
+        actor_name: n.actor_name || '',
+        actor_avatar: n.actor_avatar || '',
+        entity_type: n.entity_type || '',
+        entity_id: n.entity_id || '',
+        metadata: n.metadata || {},
+        read: n.is_read === true,
+        time: criada,
+        remota: true
+    };
+}
+
+function todasNotificacoes() {
+    return remoteNotifications.concat(inMemoryNotifications).sort(function(a, b) {
+        return new Date(b.time || b.created_at || 0) - new Date(a.time || a.created_at || 0);
+    });
+}
+
+async function carregarNotificacoesRemotas() {
+    var sb = window.supabaseClient;
+    if (!sb || notifTabelaIndisponivel || notifCarregando) return;
+
+    notifCarregando = true;
+    try {
+        var sessao = await sb.auth.getSession();
+        var usuario = sessao && sessao.data && sessao.data.session && sessao.data.session.user;
+        if (!usuario) {
+            remoteNotifications = [];
+            atualizarBadgeNotificacoes();
+            return;
+        }
+
+        var resposta = await sb
+            .from('notifications')
+            .select('id, category, title, body, link, icon, actor_id, actor_name, actor_avatar, entity_type, entity_id, metadata, is_read, created_at')
+            .eq('user_id', usuario.id)
+            .order('created_at', { ascending: false })
+            .limit(100);
+
+        if (resposta.error) {
+            var mensagem = String(resposta.error.message || '');
+            if (resposta.error.code === '42P01' || resposta.error.code === 'PGRST205' ||
+                /relation .*notifications.* does not exist|Could not find the table/i.test(mensagem)) {
+                notifTabelaIndisponivel = true;
+                console.warn('Central de notificações: tabela public.notifications ainda não existe. Usando modo local.');
+            } else {
+                console.warn('Não foi possível carregar as notificações:', mensagem);
+            }
+            atualizarBadgeNotificacoes();
+            return;
+        }
+
+        remoteNotifications = (resposta.data || []).map(normalizarNotificacaoRemota);
+        atualizarBadgeNotificacoes();
+        if (document.getElementById('notificationPanel')) renderNotificationsInPanel();
+
+        if (!notifRecomendacaoTentada && !notifTabelaIndisponivel) {
+            notifRecomendacaoTentada = true;
+            try {
+                await sb.rpc('recomendar_grupos', { p_limit: 1 });
+                await carregarNotificacoesRemotas();
+            } catch (erro) {
+                // A função pode não existir ainda; ignora silenciosamente.
+            }
+        }
+    } catch (erro) {
+        console.warn('Erro ao carregar notificações:', erro);
+    } finally {
+        notifCarregando = false;
+    }
+}
+
+async function assinarNotificacoesRealtime() {
+    var sb = window.supabaseClient;
+    if (!sb || notifCanal || notifTabelaIndisponivel) return;
+
+    try {
+        var sessao = await sb.auth.getSession();
+        var usuario = sessao && sessao.data && sessao.data.session && sessao.data.session.user;
+        if (!usuario) return;
+
+        notifCanal = sb
+            .channel('community-notifications-sync')
+            .on('postgres_changes',
+                { event: '*', schema: 'public', table: 'notifications', filter: 'user_id=eq.' + usuario.id },
+                function() { carregarNotificacoesRemotas(); }
+            )
+            .subscribe(function(status) {
+                if (status === 'SUBSCRIBED') {
+                    console.log('✅ Realtime de notificações conectado!');
+                }
+            });
+    } catch (erro) {
+        console.warn('Realtime de notificações indisponível:', erro);
+    }
+}
+
+function addInAppNotification(title, body, extraHtml, categoria) {
     inMemoryNotifications.unshift({
-        id: Date.now(),
+        id: 'local-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+        category: categoria || 'sistema',
         title: title,
         body: body,
         extraHtml: extraHtml || '',
         read: false,
-        time: new Date()
+        time: new Date(),
+        remota: false
     });
 
     atualizarBadgeNotificacoes();
@@ -4237,21 +4382,110 @@ function addInAppNotification(title, body, extraHtml) {
     }
 }
 
-/* A contagem do sininho. Uma função só, em vez do mesmo cálculo
-   repetido em três lugares. */
+/* A contagem do sininho. Soma o que veio do banco com o que foi criado
+   localmente nesta sessão (ex.: código de convite de grupo). */
 function atualizarBadgeNotificacoes() {
     var badge = document.getElementById('notifBadge');
     if (!badge) return;
-    var naoLidas = inMemoryNotifications.filter(function(n) { return !n.read; }).length;
+    var naoLidas = todasNotificacoes().filter(function(n) { return !n.read; }).length;
     badge.textContent = naoLidas;
     badge.style.display = naoLidas > 0 ? 'block' : 'none';
 }
 
 function notificacoesVisiveis() {
+    var lista = todasNotificacoes();
+
     if (notifFiltro === 'nao-lidas') {
-        return inMemoryNotifications.filter(function(n) { return !n.read; });
+        return lista.filter(function(n) { return !n.read; });
     }
-    return inMemoryNotifications;
+
+    if (notifFiltro === 'social') {
+        return lista.filter(function(n) { return NOTIF_CATEGORIAS_SOCIAL.indexOf(n.category) !== -1; });
+    }
+
+    if (notifFiltro === 'conteudos') {
+        return lista.filter(function(n) { return NOTIF_CATEGORIAS_CONTEUDO.indexOf(n.category) !== -1; });
+    }
+
+    return lista;
+}
+
+/* A Lia acompanha o painel: a mensagem muda conforme a categoria da
+   novidade que a pessoa acabou de selecionar. Modelos fixos, sem IA. */
+function obterMensagemLia(notificacao) {
+    var categoria = notificacao.category || '';
+    var mensagens = {
+        mensagens: 'Você recebeu uma mensagem nova!',
+        eventos: 'Olha só! Temos um evento novo no site!',
+        artigos: 'Encontrei uma leitura interessante para você!',
+        grupos: 'Que tal conhecer um novo grupo?',
+        publicacoes: 'Seu amigo compartilhou uma novidade!',
+        social: 'Alguém interagiu com sua publicação!',
+        sistema: 'Tenho um aviso importante para você.'
+    };
+
+    if (mensagens[categoria]) return mensagens[categoria];
+
+    var texto = ((notificacao.title || '') + ' ' + (notificacao.body || '')).toLowerCase();
+    if (/evento|encontro|agenda|calendário|calendario/.test(texto)) return mensagens.eventos;
+    if (/artigo|leitura|post|blog|notícia|noticia/.test(texto)) return mensagens.artigos;
+    if (/comunidade|grupo|mensagem|convite|amig|publicação|publicacao/.test(texto)) return mensagens.publicacoes;
+    return mensagens.sistema;
+}
+
+function falarLia(mensagem) {
+    var balao = document.getElementById('notifLiaBalao');
+    if (!balao) return;
+    balao.textContent = mensagem;
+    balao.classList.remove('is-trocando');
+    void balao.offsetWidth;
+    balao.classList.add('is-trocando');
+}
+
+async function marcarNotificacaoLida(id) {
+    if (id == null) return;
+    var textoId = String(id);
+
+    // Local: atualiza o array em memória.
+    inMemoryNotifications.forEach(function(n) {
+        if (String(n.id) === textoId) n.read = true;
+    });
+
+    // Remota: tenta marcar no banco. Falha silenciosa se a tabela não existir.
+    if (/^local-/.test(textoId) || notifTabelaIndisponivel) return;
+
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    try {
+        await sb
+            .from('notifications')
+            .update({ is_read: true })
+            .eq('id', id);
+    } catch (erro) {
+        console.warn('Não foi possível marcar a notificação como lida:', erro);
+    }
+}
+
+async function marcarTodasNotificacoesLidasRemotas() {
+    if (notifTabelaIndisponivel) return;
+
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    try {
+        var sessao = await sb.auth.getSession();
+        var usuario = sessao && sessao.data && sessao.data.session && sessao.data.session.user;
+        if (!usuario) return;
+
+        await sb
+            .from('notifications')
+            .update({ is_read: true })
+            .eq('user_id', usuario.id)
+            .eq('is_read', false);
+    } catch (erro) {
+        console.warn('Não foi possível marcar todas as notificações como lidas:', erro);
+    }
 }
 
 function renderNotificationsInPanel() {
@@ -4266,7 +4500,7 @@ function renderNotificationsInPanel() {
         var titulo = notifFiltro === 'nao-lidas' ? 'Tudo lido por aqui' : 'Nenhuma notificação';
         var texto = notifFiltro === 'nao-lidas'
             ? 'Quando chegar algo novo, ele aparece com o ponto laranja.'
-            : 'Convites, respostas e recados da comunidade aparecem aqui.';
+            : 'Convites, respostas, eventos e novidades da comunidade aparecem aqui.';
         list.innerHTML =
             '<div class="notif-vazio">' +
             '<i class="fa-regular fa-bell-slash" aria-hidden="true"></i>' +
@@ -4276,22 +4510,44 @@ function renderNotificationsInPanel() {
         return;
     }
 
+    function horaNotificacao(data) {
+        var d = data instanceof Date ? data : new Date(data);
+        if (isNaN(d.getTime())) return '';
+        var hoje = new Date();
+        if (d.toDateString() === hoje.toDateString()) {
+            return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    }
+
     list.innerHTML = visiveis.map(function(n) {
-        var hora = n.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        var hora = horaNotificacao(n.time || n.created_at);
+        var categoria = n.category || 'sistema';
+        var icone = n.icon || NOTIF_ICONES[categoria] || NOTIF_ICONES.sistema;
+        var avatar = n.actor_avatar || (n.metadata && n.metadata.avatar) || '';
+
+        var visual = avatar
+            ? '<span class="notif-item__avatar"><img src="' + notifEscape(avatar) + '" alt="" loading="lazy"></span>'
+            : '<span class="notif-item__icone" aria-hidden="true"><i class="' + notifEscape(icone) + '"></i></span>';
+
+        var link = notifLinkSeguro(n.link);
+
         // A linha é uma div, não um <button>: o extraHtml pode trazer um
         // botão por dentro (copiar código), e botão dentro de botão o
         // navegador quebra ao montar o DOM.
-        return '<div class="notif-item' + (n.read ? '' : ' is-nao-lida') + '" data-notif-id="' + n.id + '">' +
-            '<span class="notif-item__icone" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
+        return '<div class="notif-item' + (n.read ? '' : ' is-nao-lida') +
+                '" data-notif-id="' + notifEscape(n.id) + '" data-notif-categoria="' + notifEscape(categoria) + '">' +
+            visual +
             '<div class="notif-item__corpo">' +
                 '<div class="notif-item__linha">' +
-                    '<span class="notif-item__titulo">' + n.title + '</span>' +
-                    '<span class="notif-item__hora">' + hora + '</span>' +
+                    '<span class="notif-item__titulo">' + notifEscape(n.title) + '</span>' +
+                    '<span class="notif-item__hora">' + notifEscape(hora) + '</span>' +
                 '</div>' +
-                '<div class="notif-item__texto">' + n.body + '</div>' +
+                (n.body ? '<div class="notif-item__texto">' + notifEscape(n.body) + '</div>' : '') +
                 (n.extraHtml ? '<div class="notif-item__extra">' + n.extraHtml + '</div>' : '') +
             '</div>' +
             (n.read ? '' : '<span class="notif-item__ponto" title="Não lida"></span>') +
+            (link ? '<a class="notif-item__abrir" href="' + notifEscape(link) + '" aria-label="Abrir conteúdo" title="Abrir"><i class="fa-solid fa-chevron-right"></i></a>' : '') +
         '</div>';
     }).join('');
 }
@@ -4324,6 +4580,11 @@ function addNotificationButton() {
     } else {
         header.appendChild(btn);
     }
+
+    // Carrega o que já existe no banco e conecta o tempo real. Se a
+    // migração ainda não tiver sido aplicada, cai no modo local sem erro.
+    carregarNotificacoesRemotas();
+    assinarNotificacoesRealtime();
 }
 
 function showNotificationPanel() {
@@ -4345,21 +4606,43 @@ function showNotificationPanel() {
     panel.setAttribute('aria-label', 'Notificações');
 
     panel.innerHTML =
-        '<div class="notif-sheet__topo">' +
-            '<span class="notif-sheet__selo" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
-            '<h4 class="notif-sheet__titulo">Notificações</h4>' +
-            '<button type="button" class="notif-sheet__fechar" aria-label="Fechar notificações">✕</button>' +
-        '</div>' +
-        '<div class="notif-chips" role="group" aria-label="Filtrar notificações">' +
-            '<button type="button" class="notif-chip is-ativo" data-notif-filtro="todas" aria-pressed="true">Todas</button>' +
-            '<button type="button" class="notif-chip" data-notif-filtro="nao-lidas" aria-pressed="false">Não lidas</button>' +
-        '</div>' +
-        '<div id="notificationsList" class="notif-lista"></div>' +
-        '<div class="notif-sheet__rodape">' +
-            '<button type="button" class="notif-marcar-todas" onclick="markAllRead()">Marcar todas como lidas</button>' +
+        '<aside class="notif-lia" aria-hidden="true">' +
+            '<div class="notif-lia__palco">' +
+                '<video class="notif-lia__img" id="notifLiaImg" src="/img/lia/lia_sorrindo.mp4" autoplay muted loop playsinline></video>' +
+            '</div>' +
+            '<div class="notif-lia__balao" id="notifLiaBalao" role="status" aria-live="polite">' +
+                'Olá! Aqui estão suas novidades. 💜' +
+            '</div>' +
+        '</aside>' +
+        '<div class="notif-sheet__conteudo">' +
+            '<div class="notif-sheet__topo">' +
+                '<span class="notif-sheet__selo" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
+                '<h4 class="notif-sheet__titulo">Notificações</h4>' +
+                '<button type="button" class="notif-sheet__fechar" aria-label="Fechar notificações">✕</button>' +
+            '</div>' +
+            '<div class="notif-chips" role="group" aria-label="Filtrar notificações">' +
+                '<button type="button" class="notif-chip is-ativo" data-notif-filtro="todas" aria-pressed="true">Todas</button>' +
+                '<button type="button" class="notif-chip" data-notif-filtro="nao-lidas" aria-pressed="false">Não lidas</button>' +
+                '<button type="button" class="notif-chip" data-notif-filtro="social" aria-pressed="false">Social</button>' +
+                '<button type="button" class="notif-chip" data-notif-filtro="conteudos" aria-pressed="false">Conteúdos</button>' +
+            '</div>' +
+            '<div id="notificationsList" class="notif-lista"></div>' +
+            '<div class="notif-sheet__rodape">' +
+                '<button type="button" class="notif-marcar-todas" onclick="markAllRead()">Marcar todas como lidas</button>' +
+            '</div>' +
         '</div>';
 
     document.body.appendChild(panel);
+
+    // A Lia é apresentada em vídeo em loop.
+    var liaVideo = panel.querySelector('#notifLiaImg');
+    if (liaVideo && typeof liaVideo.play === 'function') {
+        liaVideo.play().catch(function() {});
+    }
+
+    // O painel nasce depois do carregamento; reaplica os caminhos
+    // centralizados de /imagens.js para a arte da Lia.
+    if (typeof window.aplicarImagens === 'function') window.aplicarImagens();
 
     panel.querySelector('.notif-sheet__fechar').addEventListener('click', fecharPainelNotificacoes);
 
@@ -4379,16 +4662,29 @@ function showNotificationPanel() {
     // Clicar numa linha (fora de botão/link dela) marca aquela como
     // lida, sem redesenhar a lista inteira.
     panel.querySelector('#notificationsList').addEventListener('click', function(e) {
+        var link = e.target.closest('.notif-item__abrir');
+        if (link) {
+            var linhaLink = link.closest('.notif-item');
+            if (linhaLink) marcarNotificacaoLida(linhaLink.getAttribute('data-notif-id'));
+            return;
+        }
+
         if (e.target.closest('button, a')) return;
-        var linha = e.target.closest('.notif-item.is-nao-lida');
+        var linha = e.target.closest('.notif-item');
         if (!linha) return;
-        var id = Number(linha.getAttribute('data-notif-id'));
-        var notificacao = inMemoryNotifications.filter(function(n) { return n.id === id; })[0];
+        var id = linha.getAttribute('data-notif-id');
+        var notificacao = todasNotificacoes().filter(function(n) { return String(n.id) === String(id); })[0];
         if (!notificacao) return;
+
+        falarLia(obterMensagemLia(notificacao));
+
+        if (notificacao.read) return;
         notificacao.read = true;
         linha.classList.remove('is-nao-lida');
         var ponto = linha.querySelector('.notif-item__ponto');
         if (ponto) ponto.remove();
+        marcarNotificacaoLida(notificacao.id);
+        atualizarBadgeNotificacoes();
         if (notifFiltro === 'nao-lidas') renderNotificationsInPanel();
     });
 
@@ -4416,13 +4712,28 @@ function showNotificationPanel() {
    nascia morto). */
 function fecharPainelNotificacoes() {
     var panel = document.getElementById('notificationPanel');
+    if (panel && panel._liaFrameTimer) {
+        clearInterval(panel._liaFrameTimer);
+        panel._liaFrameTimer = null;
+    }
     if (panel) panel.remove();
     inMemoryNotifications.forEach(function(n) { n.read = true; });
+    remoteNotifications.forEach(function(n) { n.read = true; });
+    marcarTodasNotificacoesLidasRemotas();
     atualizarBadgeNotificacoes();
 }
 
+window.__notifDebug = {
+    get remote() { return remoteNotifications; },
+    get local() { return inMemoryNotifications; },
+    get indisponivel() { return notifTabelaIndisponivel; },
+    recarregar: carregarNotificacoesRemotas
+};
+
 window.markAllRead = function() {
     inMemoryNotifications.forEach(function(n) { n.read = true; });
+    remoteNotifications.forEach(function(n) { n.read = true; });
+    marcarTodasNotificacoesLidasRemotas();
     atualizarBadgeNotificacoes();
     renderNotificationsInPanel();
     showToast('✅ Todas as notificações marcadas como lidas', 'success', 2000);
@@ -4966,6 +5277,43 @@ window.openFriendChat = async function(conversationId, friendUsername, friendId)
                 await renderFriendsList();
                 await renderFriendRequests();
                 await renderChatChannels();
+
+                if (notifTabelaIndisponivel) {
+                    try {
+                        if (payload.eventType === 'INSERT' && payload.new &&
+                            payload.new.receiver_id === currentUser.id &&
+                            payload.new.status === 'pending') {
+                            var { data: solicitante } = await supabase
+                                .from('profiles')
+                                .select('username')
+                                .eq('id', payload.new.requester_id)
+                                .maybeSingle();
+                            addInAppNotification(
+                                (solicitante && solicitante.username ? solicitante.username : 'Alguém') + ' quer ser seu amigo.',
+                                'Abra o perfil para aceitar ou recusar.',
+                                '',
+                                'social'
+                            );
+                        } else if (payload.eventType === 'UPDATE' && payload.new &&
+                            payload.new.requester_id === currentUser.id &&
+                            payload.new.status === 'accepted') {
+                            var { data: aceitou } = await supabase
+                                .from('profiles')
+                                .select('username')
+                                .eq('id', payload.new.receiver_id)
+                                .maybeSingle();
+                            addInAppNotification(
+                                (aceitou && aceitou.username ? aceitou.username : 'Amigo') + ' aceitou sua amizade.',
+                                'Agora vocês estão conectados.',
+                                '',
+                                'social'
+                            );
+                        }
+                    } catch (erro) {
+                        console.warn('Aviso de amizade não pôde ser criado:', erro);
+                    }
+                }
+
                 const query = userSearchInput?.value.trim() || '';
                 if (query) handleUserSearch(query);
             })

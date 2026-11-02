@@ -66,6 +66,9 @@
         // CORPO INTEIRO da Lia, para a tela de abertura. Nao e recortada:
         // da do topo do coque ao chao dos tenes.
         'lia-corpo': '/img/lia/lia-corpo.png',
+        // Lia do painel de notificacoes (Comunidade): traco roxo sobre
+        // fundo transparente, no mesmo tom da arte de boas-vindas.
+        'lia-notificacoes': '/img/lia/lia-notificacoes.png',
 
         // ---- NeuroComunidade -------------------------------------------
         // Fundo de PAGINA de toda a area /comunidade: forum, grupos,
