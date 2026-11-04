@@ -4606,14 +4606,7 @@ function showNotificationPanel() {
     panel.setAttribute('aria-label', 'Notificações');
 
     panel.innerHTML =
-        '<aside class="notif-lia" aria-hidden="true">' +
-            '<div class="notif-lia__palco">' +
-                '<video class="notif-lia__img" id="notifLiaImg" src="/img/lia/lia_sorrindo.mp4" autoplay muted loop playsinline></video>' +
-            '</div>' +
-            '<div class="notif-lia__balao" id="notifLiaBalao" role="status" aria-live="polite">' +
-                'Olá! Aqui estão suas novidades. 💜' +
-            '</div>' +
-        '</aside>' +
+        '' +
         '<div class="notif-sheet__conteudo">' +
             '<div class="notif-sheet__topo">' +
                 '<span class="notif-sheet__selo" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +

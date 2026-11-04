@@ -16,8 +16,52 @@
 <link rel="stylesheet" href="/busca.css">
     <link rel="stylesheet" href="configurações.css">
   <link rel="stylesheet" href="/movimento-reduzido.css">
+  <link rel="stylesheet" href="/inicio.js">
+   <script src="/imagens.js"></script>
+
   <script src="/imagens.js"></script>
 </head>
+
+ <!-- =============================================
+         MODAL ACOLHERIA
+         ============================================= -->
+    <div class="acolheria-modal-overlay" id="acolheriaOverlay" hidden>
+        <div class="acolheria-modal">
+            <div class="acolheria-modal-header">
+                <div class="acolheria-modal-title">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>AcolherIA</span>
+                    <span class="acolheria-badge">Online</span>
+                </div>
+                <button class="acolheria-modal-close" id="acolheriaClose" aria-label="Fechar AcolherIA">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="acolheria-modal-body" id="acolheriaChatBody"></div>
+            <div class="acolheria-suggestions" id="acolheriaSuggestions">
+                <button class="acolheria-suggestion" data-prompt="O que é TDAH?">TDAH</button>
+                <button class="acolheria-suggestion" data-prompt="O que é autismo?">Autismo</button>
+                <button class="acolheria-suggestion" data-prompt="Dicas de organização">Organização</button>
+                <button class="acolheria-suggestion" data-prompt="Como lidar com crise sensorial?">Crise sensorial</button>
+                <button class="acolheria-suggestion" data-prompt="Quais são meus direitos?">Direitos</button>
+                <button class="acolheria-suggestion" data-prompt="Quero desabafar">Desabafar</button>
+            </div>
+            <div class="acolheria-modal-footer">
+                <div class="acolheria-input-wrapper">
+                    <textarea class="acolheria-input" id="acolheriaInput" placeholder="Digite sua mensagem..." rows="1" aria-label="Digite sua mensagem"></textarea>
+                    <button class="acolheria-send-btn" id="acolheriaSend" aria-label="Enviar mensagem">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="acolheria-footer-note">
+                    <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                    AcolherIA — assistente virtual. Não substitui atendimento humano.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="acolheria-overlay-bg" id="acolheriaOverlayBg" hidden></div>
+
 <body>
 
 
@@ -112,7 +156,7 @@
                             <div class="settings-field-grid">
                                 <div class="settings-field"><label>Nome completo</label><p id="displayNameInfo">Utilizador</p></div>
                                 <div class="settings-field"><label>E-mail</label><p id="userEmail">utilizador@email.com</p></div>
-                                <div class="settings-field"><label>Telefone</label><p>+55 (11) 99999-9999</p></div>
+
                             </div>
                         </div>
 
@@ -121,18 +165,6 @@
                                 <h3>Artigos Favoritos</h3>
                                 <div class="profile-articles-carousel" id="articles-container" aria-live="polite">
                                     <p class="reading-preview-status">Nenhum conteúdo salvo ainda.</p>
-                                </div>
-                            </section>
-                            <section class="profile-reading-section">
-                                <h3>Lendo Atualmente</h3>
-                                <div class="profile-reading-card" id="current-reading-card">
-                                    <div class="profile-reading-cover reading-preview-placeholder">📖</div>
-                                    <div class="profile-reading-details">
-                                        <h4 id="current-reading-title">Você ainda não começou uma leitura</h4>
-                                        <p id="current-reading-meta">Escolha um artigo, blog ou guia para acompanhar seu progresso.</p>
-                                        <div class="reading-progress-track"><span id="current-reading-progress"></span></div>
-                                        <div class="reading-progress-stats"><span id="current-reading-progress-text">Sem progresso salvo</span><strong id="current-reading-progress-percent">0%</strong></div>
-                                    </div>
                                 </div>
                             </section>
                         </div>
@@ -320,7 +352,8 @@
                             <div class="avatar-edit-container">
                                 <div class="avatar-wrapper-relative">
                                     <img src="/img/foto-padrão.jpg" alt="Avatar Perfil" id="profileAvatar">
-                                    <div class="camera-overlay-btn" id="cameraUploadBtn">📷</div>
+                                    <div class="camera-overlay-btn" id="cameraUploadBtn">  <!-- Ícone de câmera -->
+    <i class="fa-solid fa-camera"></i></div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -455,61 +488,22 @@
         </div>
     </div>
 
+<!-- HUB FLUTUANTE -->
     <div class="floating-hub" id="floatingHub">
-        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de acessibilidade e ajuda" title="Acessibilidade e Ajuda">
-            <i class="fa-solid fa-circle-plus"></i>
-            <span class="floating-hub-label">Acessibilidade</span>
+        <button class="floating-hub-toggle" id="floatingHubToggle" aria-label="Abrir menu de ajuda" title="Ajuda">
+            <i class="fa-regular fa-circle-question"></i>
+            <span class="floating-hub-label">Ajuda</span>
         </button>
-
         <div class="floating-hub-menu" id="floatingHubMenu" hidden>
             <div class="floating-hub-menu-inner">
                 <div class="floating-hub-group">
-                    <span class="floating-hub-group-label"><i class="fa-solid fa-universal-access"></i> Acessibilidade</span>
-                    <div class="floating-hub-actions">
-                        <button class="hub-action" data-a11y="darkMode" title="Alternar modo claro ou escuro">
-                            <i class="fa-regular fa-moon"></i>
-                            <span class="hub-action-label">Modo escuro/claro</span>
-                        </button>
-                        <button class="hub-action" data-a11y="increaseText" title="Aumentar texto">
-                            <i class="fa-solid fa-text-height"></i>
-                            <span class="hub-action-label">A+</span>
-                        </button>
-                        <button class="hub-action" data-a11y="decreaseText" title="Diminuir texto">
-                            <i class="fa-solid fa-text-slash"></i>
-                            <span class="hub-action-label">A-</span>
-                        </button>
-                        <button class="hub-action" data-a11y="dyslexiaFont" title="Fonte para dislexia">
-                            <i class="fa-regular fa-eye"></i>
-                            <span class="hub-action-label">Dislexia</span>
-                        </button>
-                        <button class="hub-action" data-a11y="reduceMotion" title="Reduzir animações">
-                            <i class="fa-solid fa-person-walking"></i>
-                            <span class="hub-action-label">Movimento</span>
-                        </button>
-                        <button class="hub-action hub-action-reset" data-a11y="reset" title="Voltar ao padrão">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span class="hub-action-label">Reset</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="floating-hub-divider"></div>
-
-                <div class="floating-hub-group">
                     <span class="floating-hub-group-label"><i class="fa-regular fa-circle-question"></i> Precisa de ajuda?</span>
                     <div class="floating-hub-actions">
-                        <a href="/inicio.html#acolheriaOverlay" class="hub-action" title="Falar com AcolherIA">
-                            <i class="fa-solid fa-robot"></i>
-                            <span class="hub-action-label">AcolherIA</span>
-                        </a>
-                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade">
-                            <i class="fa-regular fa-comments"></i>
-                            <span class="hub-action-label">Comunidade</span>
-                        </a>
-                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail">
-                            <i class="fa-regular fa-envelope"></i>
-                            <span class="hub-action-label">E-mail</span>
-                        </a>
+                        <a href="/chat-Ia/chat-Ia.html" class="hub-action hub-action-ia" title="Conversar com a Lia" data-ia-abrir><i class="fa-solid fa-robot"></i><span class="hub-action-label">AcolherIA</span></a>
+                        <a href="/comunidade/comunidade.html" class="hub-action" title="Comunidade"><i class="fa-regular fa-comments"></i><span class="hub-action-label">Comunidade</span></a>
+                        <a href="/Quem somos/CONTATE-NOS/contate.html" class="hub-action" title="Perguntas Frequentes"><i class="fa-regular fa-circle-question"></i><span class="hub-action-label">FAQ</span></a>
+                        <a href="mailto:contato@amorneurodivergente.com" class="hub-action" title="E-mail"><i class="fa-regular fa-envelope"></i><span class="hub-action-label">E-mail</span></a>
+                        <a href="https://wa.me/5511999999999" class="hub-action hub-action-whatsapp" target="_blank" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i><span class="hub-action-label">WhatsApp</span></a>
                     </div>
                 </div>
             </div>
@@ -517,7 +511,6 @@
     </div>
 
     <div class="floating-overlay" id="floatingOverlay" hidden></div>
-    </div>
 
     <!-- =============================================
     SCRIPTS

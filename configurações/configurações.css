@@ -6,17 +6,7 @@
    VARIÁVEIS LOCAIS
    ========================================= */
 :root {
-    --primary: #8b3dff;
-    --primary-hover: #7326df;
-    --primary-light: #f4efff;
-    --bg-light: #f8f7fa;
-    --bg-white: #ffffff;
-    --bg-gray: #f1f5f9;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --input-bg: #f5f4f8;
-    --transition: all 0.25s ease;
+
 }
 
 /* =========================================
