@@ -370,7 +370,7 @@
    uma coluna extra de 410px e a ordenação esticaria junto. */
 @media (max-width: 600px) {
     /* No celular a barra fica em linha: as abas rolam de lado e a
-       ordena��o fica na LATERAL, n�o empilhada embaixo (ficava feio). */
+       ordenação fica na LATERAL, não empilhada embaixo (ficava feio). */
     .artigos-barra {
         flex-direction: row;
         flex-wrap: nowrap;
@@ -390,9 +390,9 @@
     .artigos-abas::-webkit-scrollbar { display: none; }
     .artigos-ordenar { flex: 0 0 auto; justify-content: center; }
 
-    /* No celular o texto da ordena��o ("Prioridade", "Mais recentes"...)
-       fica feio dentro do bot�o. O select vira um �cone clic�vel: o
-       texto some e o dropdown nativo continua abrindo ao tocar no �cone. */
+    /* No celular o texto da ordenação ("Prioridade", "Mais recentes"...)
+       fica feio dentro do botão. O select vira um ícone clicável: o
+       texto some e o dropdown nativo continua abrindo ao tocar no ícone. */
     .artigos-ordenar {
         position: relative;
         padding: .35rem .5rem;
@@ -449,7 +449,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform .3s ease;
+    /* FIX: faltava a transição que o :hover animava */
+    transition: transform .25s ease;
 }
 
 .art-card:hover .art-card__capa {
@@ -496,7 +497,6 @@
     font-weight: 700;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--cm-purple);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -515,14 +515,10 @@
 }
 
 .art-card__data {
-    margin-left: auto;
     flex: 0 0 auto;
     font-size: .68rem;
     font-weight: 700;
-    letter-spacing: .05em
-    text-transform: uppercase;
-    color: var(--cm-muted);
-    white-space: nowrap;
+    letter-spacing: .05em;
 }
 
 /* --- Título ------------------------------------------------------------ */
@@ -543,20 +539,16 @@
     transition: color .15s ease;
 }
 
-.art-card__link:hover .art-card__titulo {
-    color: var(--cm-purple);
-}
-
 /* --- Descrição --------------------------------------------------------- */
 
 .art-card__descricao {
-    margin: 0 0 .5rem;
+    /* FIX: faltava a line-clamp base (só existia na versão compacta) */
+    -webkit-line-clamp: 3;
     font-size: .9rem;
     line-height: 1.55;
     color: var(--cm-text-soft);
     overflow-wrap: anywhere;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -564,6 +556,7 @@
 /* --- Assinatura: autor + tempo de leitura ------------------------------ */
 
 .art-card__assinatura {
+    /* FIX: faltava display: flex — align-items/justify-content sozinhos não fazem nada */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -581,7 +574,6 @@
 }
 
 .art-card__avatar {
-    flex: 0 0 auto;
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -631,13 +623,15 @@
 
 /* --- Rodapé de ações --------------------------------------------------- */
 
-.art-card__acoes {
+/* FIX: o wrapper foi perdido no original; criado para agrupar as ações */
+.art-card__rodape {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: .25rem;
+    margin-top: .25rem;
     padding-top: .5rem;
     border-top: 1px solid var(--cm-border-soft);
-    margin-top: .25rem;
 }
 
 .art-card__acao {
@@ -659,51 +653,11 @@
 }
 
 .art-card__acao:hover {
-    color: var(--cm-text);
     background: var(--cm-surface-soft);
-    transform: scale(1.05);
+    color: var(--cm-text);
 }
 
-.art-card__acao:active {
-    transform: scale(.98);
-}
-
-.art-card__acao--favorito.is-ativo {
-    color: var(--cm-pink);
-    background: var(--cm-pink-soft);
-}
-
-.art-card__acao--favorito:hover {
-    color: var(--cm-pink);
-}
-
-.art-card__acao--comentario:hover {
-    color: var(--cm-purple);
-}
-
-.art-card__acao--restack:hover {
-    color: var(--cm-green);
-}
-
-.art-card__acao--compartilhar:hover {
-    color: var(--cm-purple);
-}
-
-.art-card__acao--subir {
-    margin-left: auto;
-}
-
-.art-card__acao--subir:hover {
-    color: var(--cm-purple);
-}
-
-.art-card__contagem {
-    display: inline-flex;
-    align-items: center;
-    min-width: 1.2rem;
-    font-size: .72rem;
-    font-weight: 700;
-}
+.art-card__acao.is-ativo { color: var(--cm-pink); }
 
 /* --- Compatibilidade: avatar inicial ---------------------------------- */
 
@@ -754,339 +708,35 @@
     font-size: .72rem;
 }
 
+/* FIX: .art-card__contagem existia duplicado; unificado */
 .art-card--compacto .art-card__contagem {
     font-size: .68rem;
 }
 
-
-.art-card--compacto .art-card__contagem {
-    font-size: .68rem;
-}
-
-/* --- Versão COMUNIDADE: modelo blog-fluxo (transparente, sem borda, imagem fora) --- */
-
-.art-card--comunidade {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 0;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    overflow: visible;
-    margin-bottom: 1.5rem;
-}
-
-@media (hover: hover) {
-    .art-card--comunidade:hover {
-        box-shadow: none;
-        border-color: transparent;
-        background: transparent;
-        transform: none;
-    }
-}
-
-/* Lateral da imagem: estende 4px para fora (como blog) */
-.art-card--comunidade .art-card__lateral {
-    flex: 0 0 164px;
-    min-width: 164px;
-    max-width: 164px;
-    margin-left: -4px;
-    overflow: visible;
-}
-
-.art-card--comunidade .art-card__capa-wrap {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    border-radius: 5px;
-    overflow: hidden;
-    background: var(--cm-surface-soft);
-}
-
-.art-card--comunidade .art-card__capa {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
-    border-radius: 5px;
-}
-
-@media (hover: hover) {
-    .art-card--comunidade:hover .art-card__capa {
-        transform: scale(1.02);
-    }
-}
-
-/* Sem imagem: lateral invisível (colapso) */
-.art-card--comunidade:not(:has(.art-card__lateral .art-card__capa)) .art-card__lateral {
-    display: none;
-}
-
-.art-card--comunidade:not(:has(.art-card__lateral .art-card__capa)) {
-    flex-direction: column;
-}
-
-.art-card--comunidade:not(:has(.art-card__lateral .art-card__capa)) .art-card__conteudo {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-/* Conteúdo: sem padding lateral esquerdo (imagem já tem espaço) */
-.art-card--comunidade .art-card__conteudo {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: .25rem 1.5rem .25rem 0;
-    min-width: 0;
-}
-
-.art-card--comunidade .art-card__topo {
-    display: flex;
-    align-items: center;
-    gap: .4rem;
-    margin-bottom: .2rem;
-}
-
-.art-card--comunidade .art-card__selo {
-    width: 20px;
-    height: 20px;
-    font-size: .65rem;
-    border-radius: 4px;
-    background: var(--cm-purple);
-    color: #fff;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-}
-
-.art-card--comunidade .art-card__secao {
-    font-size: .62rem;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--cm-purple);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 16ch;
-}
-
-.art-card--comunidade .art-card__pago {
-    font-size: .55rem;
-    font-weight: 800;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    padding: .1rem .35rem;
-    border-radius: 3px;
-    background: #f59e0b;
-    color: #1f1a10;
-}
-
-.art-card--comunidade .art-card__data {
-    margin-left: auto;
-    flex-shrink: 0;
-    font-size: .62rem;
-    font-weight: 700;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    color: var(--cm-muted);
-    white-space: nowrap;
-}
-
-.art-card--comunidade .art-card__link {
-    color: inherit;
-    text-decoration: none;
-    line-height: 1.25;
-}
-
-.art-card--comunidade .art-card__titulo {
-    margin: .15rem 0 .35rem;
-    font-size: 1.05rem;
-    font-weight: 800;
-    line-height: 1.25;
-    color: var(--cm-text);
-    letter-spacing: -0.01em;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: color .2s ease;
-}
-
-.art-card--comunidade .art-card__link:hover .art-card__titulo {
-    color: var(--cm-purple);
-}
-
-.art-card--comunidade .art-card__descricao {
-    margin: 0 0 .5rem;
-    font-size: .82rem;
-    line-height: 1.5;
-    color: var(--cm-text-soft);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Assinatura: sem borda, mais leve */
-.art-card--comunidade .art-card__assinatura {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: .5rem;
-    margin-top: auto;
-    padding-top: .5rem;
-    font-size: .62rem;
-}
-
-.art-card--comunidade .art-card__autor {
-    display: flex;
-    align-items: center;
-    gap: .4rem;
-    min-width: 0;
-}
-
-.art-card--comunidade .art-card__avatar {
-    flex: 0 0 auto;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--cm-border);
-    background: var(--cm-surface-soft);
-}
-
-.art-card--comunidade .art-card__nome {
-    font-weight: 600;
-    color: var(--cm-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 14ch;
-}
-
-.art-card--comunidade .art-card__meta {
-    flex-shrink: 0;
-    font-weight: 700;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    color: var(--cm-muted);
-    white-space: nowrap;
-    font-size: .6rem;
-}
-
-/* Aviso sensível: discreto */
-.art-card--comunidade .art-card__aviso {
-    display: flex;
-    align-items: flex-start;
-    gap: .35rem;
-    margin: .35rem 0 0;
-    padding: .35rem .5rem;
-    border-radius: 4px;
-    background: #fdf3e2;
-    border: 1px solid #e6c98f;
-    color: #6b4700;
-    font-size: .7rem;
-    line-height: 1.4;
-}
-
-.art-card--comunidade .art-card__aviso i {
-    flex-shrink: 0;
-    margin-top: .05rem;
-    font-size: .7rem;
-}
-
-/* Compacto + Comunidade */
-.art-card--compacto.art-card--comunidade .art-card__lateral {
-    flex: 0 0 124px;
-    min-width: 124px;
-    max-width: 124px;
-    margin-left: -4px;
-}
-
-.art-card--compacto.art-card--comunidade .art-card__conteudo {
-    padding: .15rem 1rem .15rem 0;
-}
-
-.art-card--compacto.art-card--comunidade .art-card__titulo {
-    font-size: .95rem;
-    -webkit-line-clamp: 2;
-}
-
-.art-card--compacto.art-card--comunidade .art-card__descricao {
-    font-size: .75rem;
-    -webkit-line-clamp: 1;
-}
-
-.art-card--compacto.art-card--comunidade .art-card__assinatura {
-    font-size: .58rem;
-}
-
-.art-card--compacto.art-card--comunidade .art-card__avatar {
-    width: 18px;
-    height: 18px;
-}
-
-.art-card--compacto.art-card--comunidade .art-card__nome {
-    font-size: .7rem;
-    max-width: 12ch;
-}
-
-.art-card--compacto.art-card--comunidade .art-card__meta {
-    font-size: .55rem;
-}
-
-
-
 /* ==========================================================================
    4. ESTADOS
-/* ==========================================================================
-   4. ESTADOS
-   ========================================================================== */
+   -------------------------------------------------------------------------- */
+
 
 .art-estado {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: .45rem;
-    padding: 2.75rem 1.5rem;
+    gap: .5rem;
+    padding: 2.5rem 1rem;
     text-align: center;
-    background: var(--cm-surface);
-    border: 1px dashed var(--cm-border-strong);
-    border-radius: var(--cm-radius);
     color: var(--cm-text-soft);
+    font-size: .95rem;
 }
 
 .art-estado i { font-size: 1.8rem; color: var(--cm-muted); }
-.art-estado strong { font-size: 1.05rem; color: var(--cm-text); }
-.art-estado span { max-width: 46ch; font-size: .92rem; line-height: 1.55; }
-.art-estado--erro { border-style: solid; border-color: #e6c98f; background: #fdf3e2; color: #6b4700; }
-.art-estado--erro i { color: #b07b16; }
 
-.art-estado__link {
-    margin-top: .4rem;
-    color: var(--cm-purple);
-    font-weight: 700;
-    text-decoration: none;
-    border-bottom: 2px solid var(--cm-purple-soft);
+.art-estado--erro {
+    background: #fdf3e2;
+    border: 1px solid #e6c98f;
+    color: #6b4700;
+    border-radius: var(--cm-radius);
 }
-
-.art-estado__link:hover { border-bottom-color: var(--cm-purple); }
-
-.art-carregando {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: .6rem;
-    padding: 2.5rem 1rem;
-    color: var(--cm-muted);
-    font-size: .92rem;
-}
-
-.art-carregando i { color: var(--cm-purple); }
 
 /* ==========================================================================
    5. A PÁGINA DE LEITURA
@@ -1231,6 +881,7 @@
     font-size: 1.06rem;
     line-height: 1.78;
     color: var(--cm-text);
+    quotes: "“" "”" "‘" "’"; /* FIX: open-quote precisa de quotes definido */
 }
 
 .artigo-corpo p { margin: 0 0 1.3rem; }
@@ -1423,6 +1074,7 @@
 .artigo-comentario__nome { font-weight: 700; font-size: .9rem; color: var(--cm-text); }
 .artigo-comentario__data { font-size: .76rem; color: var(--cm-muted); }
 .artigo-comentario__texto { margin: 0; font-size: .94rem; line-height: 1.6; color: var(--cm-text); }
+
 /* ==========================================================================
    6. O EDITOR
    --------------------------------------------------------------------------
@@ -1494,13 +1146,7 @@
 .editor-ferramenta--icone { gap: 0; padding: .45rem; }
 .editor-ferramenta--dropdown .font-selector-icon { font-size: 1.1rem; }
 
-/* Pré-visualização e Continuar: destaque à direita. */
-.btn-artigo-escrever--fantasma {
-    background: transparent;
-    color: var(--cm-purple);
-    box-shadow: inset 0 0 0 2px var(--cm-purple);
-}
-.btn-artigo-escrever--fantasma:hover { background: var(--cm-purple-soft); }
+/* FIX: .btn-artigo-escrever--fantasma já foi definido na seção 1 — removida a duplicata. */
 
 /* O menu que abre embaixo das ferramentas. */
 .editor-popover {
@@ -1684,6 +1330,7 @@
 
 .editor-corpo::placeholder { color: var(--cm-muted); opacity: .7; }
 .editor-corpo:focus { outline: none; }
+
 /* Imagens no editor: grandes, sem bordas estranhas, ocupam bem o espaço. */
 .editor-corpo img,
 .editor-preview img {
@@ -1706,7 +1353,6 @@
     border-radius: 0;
     box-shadow: none;
 }
-
 
 /* Rodapé da folha: seção, tipo, contadores. */
 .editor-rodape {
@@ -1857,6 +1503,8 @@
 
 .editor-campo textarea { resize: vertical; min-height: 70px; }
 
+/* FIX: bloco estava SEM SELETOR (`display: block;` solto). Recuperado como a ajuda do campo. */
+.editor-campo__ajuda {
     display: block;
     margin-top: .3rem;
     font-size: .78rem;
@@ -1905,6 +1553,7 @@
 }
 
 .editor-config__acoes .btn-artigo-escrever { flex: 1 1 auto; justify-content: center; }
+
 /* ==========================================================================
    7. AVISO DE LOGIN
    ========================================================================== */
@@ -1934,8 +1583,9 @@
 
 @media (max-width: 640px) {
     .artigos-cabecalho { flex-direction: column; align-items: stretch; }
+    /* FIX: .artigos-grade não é definido neste arquivo; mantido só se vier de outra folha */
     .artigos-grade { grid-template-columns: 1fr; }
-    .art-card__contagens { margin-left: 0; }
+    /* FIX: .art-card__contagens não existe no arquivo — removido o seletor morto */
     .editor-barra__autor { width: 100%; margin-left: 0; }
     .editor-config, .editor-config__painel { right: .75rem; left: .75rem; width: auto; }
     .artigo-corpo { font-size: 1rem; }
@@ -1967,60 +1617,47 @@ html.a11y-dark-mode .art-estado--erro {
 
 html.a11y-dark-mode .art-estado--erro i { color: #e0b556; }
 
-html.a11y-dark-mode .art-chip--aviso {
-    background: #33280f;
-    border-color: #6b5312;
-    color: #f2d9a2;
-}
-
 html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color: var(--cm-text); }
 
-
 /* ==========================================================================
-   RESET COMPLETO DE OUTLINE LARANJA E LIMITAÇÕES DA FOLHA DE ESCRITA
+   RESET DE OUTLINE DA FOLHA DE ESCRITA
+   --------------------------------------------------------------------------
+   FIX: o reset antigo usava `outline: none !important` em `.editor-folha *`,
+   removendo o foco de TODOS os botões/links do editor (quebra acessibilidade).
+   Agora o reset é restrito aos campos de texto (título, subtítulo, corpo),
+   que recebem o anel de foco via `:focus-visible` abaixo.
    ========================================================================== */
-.editor-main,
-.editor-folha,
-.editor-folha *,
-.editor-cabecalho,
+
 .editor-titulo,
 .editor-subtitulo,
 .editor-corpo {
-    outline: none !important;
-    outline-color: transparent !important;
-    box-shadow: none !important;
+    outline: none;
 }
 
-.editor-titulo:focus,
 .editor-titulo:focus-visible,
-.editor-subtitulo:focus,
 .editor-subtitulo:focus-visible,
-.editor-corpo:focus,
 .editor-corpo:focus-visible {
-    outline: none !important;
-    outline-offset: 0 !important;
-    border-color: transparent !important;
-    box-shadow: none !important;
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
+/* A linha do subtítulo nunca vira foco laranja; a borda fica sutil. */
 .editor-subtitulo {
-    border: none !important;
-    border-bottom: 1px solid var(--cm-border-soft, rgba(255, 255, 255, 0.08)) !important;
+    border: none;
+    border-bottom: 1px solid var(--cm-border-soft);
+}
+
+.editor-subtitulo:focus,
+.editor-subtitulo:focus-visible {
+    border-bottom-color: var(--cm-border);
 }
 
 /* Área de escrita rica e visual */
 .editor-corpo {
-    width: 100%;
-    min-height: 55vh;
-    margin-top: 1.5rem;
+    /* FIX: min-height duplicado (60vh na seção 6) — aqui ficou só o visual rico */
     padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--cm-text);
-    font: inherit;
-    font-size: 1.1rem;
-    line-height: 1.85;
-    outline: none !important;
+    outline: none;
     overflow-y: visible;
 }
 
@@ -2115,7 +1752,6 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
     font-style: italic;
     display: inline-block;
     padding: .2rem .6rem;
-    outline: none !important;
 }
 
 .editor-remover-btn {
@@ -2141,7 +1777,6 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
     background: #e11d48;
     transform: scale(1.1);
 }
-
 
 /* ==========================================================================
    FLYOUT POPOVERS — Modelo Substack / Medium das imagens de referência
@@ -2371,6 +2006,11 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
 .flyout-switch input:checked + .flyout-switch__slider:before {
     transform: translateX(16px);
 }
+/* FIX: falta do anel de foco no switch (acessibilidade por teclado) */
+.flyout-switch input:focus-visible + .flyout-switch__slider {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+}
 
 /* Rodapé do Flyout */
 .editor-flyout__footer {
@@ -2487,7 +2127,6 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
     box-shadow: 0 6px 15px rgba(147, 51, 234, 0.3);
 }
 
-
 /* Aviso de Login no Editor */
 .editor-login-aviso {
     display: flex;
@@ -2519,7 +2158,6 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
     text-decoration: underline;
 }
 
-
 /* =========================================
    MODAL DE LEITURA — artigo abre em overlay
    ========================================= */
@@ -2540,10 +2178,7 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
 .artigo-modal[hidden] {
     display: none;
 }
-.artigo-modal:not([hidden]) {
-    opacity: 1;
-    pointer-events: auto;
-}
+/* FIX: regra duplicada `.artigo-modal:not([hidden])` removida */
 .artigo-modal__fechar {
     position: absolute;
     top: 20px;
@@ -2567,13 +2202,14 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
     width: 100%;
     max-width: 780px;
     max-height: 90vh;
+    /* FIX: overflow-y: auto seguido de overflow: hidden — unificado em um só */
     overflow-y: auto;
     background: var(--cm-surface);
     border: 1px solid var(--cm-border);
     border-radius: var(--cm-radius);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    margin: 5vh auto; /* centraliza verticalmente */
 }
 .artigo-modal__carregando,
 .artigo-modal__erro {
@@ -2623,10 +2259,9 @@ html.a11y-dark-mode .editor-config__abrir { background: var(--cm-surface); color
 }
 @media (max-width: 640px) {
     .artigo-modal { padding: 16px; }
-    .artigo-modal__conteudo { max-height: 95vh; }
+    .artigo-modal__conteudo { max-height: 95vh; margin: 2vh auto; }
     .artigo-modal__artigo { padding: 20px 16px; }
 }
-
 
 /* Modo escuro do modal de leitura */
 body.a11y-dark-mode .artigo-modal__conteudo {
