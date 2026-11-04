@@ -419,22 +419,19 @@
    - Footer com ações (like, comentário, restack, share)
    ========================================================================== */
 
-.art-card {
-    display: flex;
-    flex-direction: column;
-    background: var(--cm-surface);
-    border: 1px solid var(--cm-border);
-    border-radius: var(--cm-radius);
-    box-shadow: var(--cm-shadow);
-    overflow: hidden;
-    transition: box-shadow .18s ease, border-color .18s ease, transform .15s ease;
+.art-card { 
+  border-radius: var(--cm-radius); 
+  overflow: hidden; 
+  background-color: #f0f1efb2; 
+  border: 1px solid transparent; /* Adicionado para evitar que o layout "pule" quando a borda mudar no hover */
+  transition: all 0.3s ease; /* Transição declarada aqui para funcionar na ida e na volta */
+} 
+
+.art-card:hover { 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Corrigido: adicionado deslocamento horizontal, vertical e desfoque */
+  border-color: var(--cm-border-strong); 
 }
 
-.art-card:hover {
-    box-shadow: var(--cm-shadow-hover);
-    border-color: var(--cm-border-strong);
-    transform: translateY(-2px);
-}
 
 /* --- Capa full-width no topo ------------------------------------------ */
 
@@ -480,17 +477,7 @@
     min-width: 0;
 }
 
-.art-card__selo {
-    flex: 0 0 auto;
-    width: 24px;
-    height: 24px;
-    display: grid;
-    place-items: center;
-    border-radius: 6px;
-    background: var(--cm-purple);
-    color: #fff;
-    font-size: .75rem;
-}
+
 
 .art-card__secao {
     font-size: .68rem;
@@ -715,7 +702,7 @@
 
 /* ==========================================================================
    4. ESTADOS
-   -------------------------------------------------------------------------- */
+   ------------------------------------------------------------------------- */
 
 
 .art-estado {

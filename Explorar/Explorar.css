@@ -242,9 +242,9 @@
 .explore-highlights__head { margin-bottom: 28px; }
 .explore-highlights__head h2 {
     font-size: clamp(1.4rem, 2.6vw, 1.75rem);
-    font-weight: 800;
-    color: var(--explore-highlight);
-    letter-spacing: -0.02em;
+    font-weight: 500;
+  color: #5f5f5f;
+    letter-spacing: 0em;
     margin: 0;
 }
 .explore-highlights__carousel {
@@ -404,13 +404,11 @@
 }
 .explore-latest__head { margin-bottom: 32px; }
 .explore-latest__head .section-badge {
-    display: inline-flex;
+
     align-items: center;
     gap: 8px;
     padding: 6px 16px;
-    border-radius: 5px;
-    background: var(--explore-accent-light);
-    color: var(--explore-accent);
+ color: #5c5652;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.04em;
