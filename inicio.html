@@ -233,6 +233,49 @@
             </div>
         </div>
 
+  <!-- =============================================
+     BANNER DA ACOLHERIA — Lia
+     Formato único: arte de FUNDO + texto por cima.
+     Fundo vem do slot "acolheria-card-bg" em /imagens.js.
+     ============================================= -->
+<section class="acolheria-banner-section banner--inicio" id="acolheria">
+
+  <!-- LIA CHIBI — broche decorativo na borda do banner.
+       Fica na <section> (overflow:visible) porque o card tem overflow:hidden. -->
+  <img class="banner-lia-chibi banner-lia-chibi__img"
+       src="/img/ilustracoes/lia-gif-chibi-alpha.gif"
+       alt="" width="240" height="240"
+       aria-hidden="true" draggable="false">
+
+  <div class="acolheria-card" data-img-fundo="acolheria-card-bg">
+    <div class="acolheria-card-content">
+      <span class="acolheria-badge-nome">
+        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+        Assistente Virtual
+      </span>
+
+      <h3 class="acolheria-card-subtitle">
+        Conheça a <strong>Lia</strong>, assistente do Amor NeuroDivergente
+      </h3>
+
+      <p class="acolheria-card-description">
+        Converse, tire dúvidas e encontre caminhos no site.
+        No seu tempo, do seu jeito.
+      </p>
+
+      <a href="/chat-Ia/chat-Ia.html" class="acolheria-card-btn">
+        <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+        Conversar com a Lia
+      </a>
+
+      <p class="acolheria-card-nota">
+        AcolherIA é uma inteligência artificial. Ajuda com informação
+        e acolhimento, mas não faz diagnóstico e não substitui
+        profissional de saúde.
+      </p>
+    </div>
+  </div>
+</section>
         <section class="discovery-section" id="central-descoberta" aria-labelledby="discoveryTitle">
             <div class="container">
                 <p class="discovery-greeting" id="discoveryGreeting">Bem-vindo(a) à plataforma.</p>
@@ -708,70 +751,6 @@
             </div>
         </section>
 
-        <!-- =============================================
-             BANNER DA ACOLHERIA — Lia
-
-             Agora é o banner único da home, no formato que serve para
-             os próximos: a arte DE FUNDO e o texto por cima, sem foto
-             ao lado do texto. Antes a Lia ocupava uma coluna de imagem
-             ao lado, o que comia metade da largura e espremia o texto.
-             Como o formato vai se repetir em outros banners, o espaço
-             precisa sobrar para a leitura.
-
-             O fundo vem do slot "acolheria-card-bg" em /imagens.js.
-             É aplicado por JS porque CSS não lê arquivo de configuração.
-             ============================================= -->
-        <section class="acolheria-banner-section banner--inicio" id="acolheria">
-              <!-- LIA CHIBI — broche na borda do banner.
-                   Decorativa: nao e a Lia principal, que continua intacta
-                   com a arte e a animacao dela.
-              
-                   Fica na <section>, e nao dentro do card, por dois motivos
-                   medidos: o card tem a largura inteira da secao (nao ha espaco
-                   ao lado) e tem overflow:hidden (pendurado para fora, seria
-                   cortado). A secao tem overflow:visible, entao passa. -->
-              <img class="banner-lia-chibi banner-lia-chibi__img" src="/img/ilustracoes/lia-gif-chibi-alpha.gif"
-                   alt="" width="240" height="240" aria-hidden="true" draggable="false">
-
-            <div class="acolheria-card" data-img-fundo="acolheria-card-bg">
-                <div class="acolheria-card-content">
-                    <!-- Uma tag só. "AcolherIA" e "Lia" juntas eram
-                         redundantes: o nome do sistema e o da personagem
-                         competindo no mesmo lugar. O nome do assistant
-                         ficou no título e o da persona na tag. -->
-                    <span class="acolheria-badge-nome">
-                        <i class="fa-solid fa-robot" aria-hidden="true"></i>
-                        Assistente Virtual
-                    </span>
-
-                    <h3 class="acolheria-card-subtitle">
-                        Conheça a <strong>Lia</strong>, assistente do Amor NeuroDivergente
-                    </h3>
-
-                    <p class="acolheria-card-description">
-                        Converse, tire dúvidas e encontre caminhos no site.
-                        No seu tempo, do seu jeito.
-                    </p>
-
-                    <!-- Leva para a página de conversa, não para o modal.
-                         O modal continua acessível pela faixa injetada e
-                         pelo menu do cabeçalho, para quem só quer uma
-                         resposta rápida sem sair da página. -->
-                    <a href="/chat-Ia/chat-Ia.html" class="acolheria-card-btn">
-                        <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
-                        Conversar com a Lia
-                    </a>
-
-                    <!-- O aviso de que é IA é obrigatório, mas não é
-                         argumento de venda. Fica em nota miúda, no fim. -->
-                    <p class="acolheria-card-nota">
-                        AcolherIA é uma inteligência artificial. Ajuda com informação
-                        e acolhimento, mas não faz diagnóstico e não substitui
-                        profissional de saúde.
-                    </p>
-                </div>
-            </div>
-        </section>
         <!-- =============================================
              FOOTER
              ============================================= -->

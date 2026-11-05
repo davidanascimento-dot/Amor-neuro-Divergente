@@ -1,0 +1,376 @@
+/* ==========================================================================
+   LEITURA-NEURO.CSS — Leitura confortável para pessoas neurodivergentes
+   --------------------------------------------------------------------------
+   Acompanha leitura-neuro.js. Tudo aqui só vale dentro da leitura do artigo
+   (.article-container / .article-content) e é controlado por atributos no
+   <html>:
+
+     data-ln-fonte   = padrao | atkinson | dislexia
+     data-ln-tema    = site | claro | sepia | escuro | contraste
+     data-ln-linha   = 1 | 2 | 3        (espaço entre linhas)
+     data-ln-para    = 1 | 2 | 3        (espaço entre parágrafos)
+     data-ln-largura = estreita | normal
+     data-ln-foco    = on               (esconde o que não é texto)
+     style --ln-tam  = tamanho do texto em px
+
+   Sem JavaScript nada muda: a página continua exatamente como era.
+   ========================================================================== */
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('/fonts/OpenDyslexic-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('/fonts/OpenDyslexic-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* --------------------------------------------------------------------------
+   1. TEXTO DO ARTIGO: sempre alinhado à esquerda (nunca justificado).
+      O texto justificado cria "rios" de espaço em branco que atrapalham
+      quem tem dislexia.
+   -------------------------------------------------------------------------- */
+.article-content,
+.article-content p,
+.article-content li,
+.article-content blockquote {
+    text-align: left !important;
+    hyphens: manual;
+}
+
+/* Parágrafos longos ficam mais fáceis de acompanhar com largura limitada */
+.article-content p,
+.article-content li {
+    max-width: 68ch;
+}
+
+/* Títulos não ficam escondidos atrás do cabeçalho fixo ao usar o índice */
+.article-content h2,
+.article-content h3 { scroll-margin-top: 100px; }
+
+/* --------------------------------------------------------------------------
+   2. FONTE, TAMANHO, ESPAÇAMENTO E LARGURA
+   -------------------------------------------------------------------------- */
+html[data-ln-fonte='atkinson'] .article-content,
+html[data-ln-fonte='atkinson'] .ln-resumo {
+    font-family: 'Atkinson Hyperlegible', 'Inter', system-ui, sans-serif !important;
+}
+html[data-ln-fonte='dislexia'] .article-content,
+html[data-ln-fonte='dislexia'] .article-content h2,
+html[data-ln-fonte='dislexia'] .article-content h3,
+html[data-ln-fonte='dislexia'] .ln-resumo {
+    font-family: 'OpenDyslexic', 'Atkinson Hyperlegible', 'Comic Sans MS', sans-serif !important;
+    letter-spacing: .02em;
+    word-spacing: .12em;
+}
+/* OpenDyslexic é larga: um pouco menor para o mesmo conforto */
+html[data-ln-fonte='dislexia'] .article-content { font-size: calc(var(--ln-tam, 19px) * .9) !important; }
+
+html[style*='--ln-tam'] .article-content { font-size: var(--ln-tam) !important; }
+
+html[data-ln-linha='1'] .article-content { line-height: 1.75 !important; }
+html[data-ln-linha='2'] .article-content { line-height: 2.05 !important; }
+html[data-ln-linha='3'] .article-content { line-height: 2.4 !important; }
+
+html[data-ln-para='1'] .article-content p { margin-bottom: 1rem !important; }
+html[data-ln-para='2'] .article-content p,
+html[data-ln-para='2'] .article-content li { margin-bottom: 1.6rem !important; }
+html[data-ln-para='3'] .article-content p,
+html[data-ln-para='3'] .article-content li { margin-bottom: 2.2rem !important; }
+
+html[data-ln-largura='estreita'] .article-container { max-width: 600px !important; }
+
+/* --------------------------------------------------------------------------
+   3. TEMAS DE LEITURA
+      "site" = não mexe (usa claro/escuro que o site já tem).
+   -------------------------------------------------------------------------- */
+html[data-ln-tema='claro'] body,
+html[data-ln-tema='claro'] .article-container { background: #ffffff !important; }
+html[data-ln-tema='claro'] .article-content,
+html[data-ln-tema='claro'] .article-content p,
+html[data-ln-tema='claro'] .article-content li,
+html[data-ln-tema='claro'] .article-content strong,
+html[data-ln-tema='claro'] .article-content h2,
+html[data-ln-tema='claro'] .article-content h3 { color: #1f2430 !important; }
+
+html[data-ln-tema='sepia'] body,
+html[data-ln-tema='sepia'] .article-container { background: #f4ecd8 !important; }
+html[data-ln-tema='sepia'] .article-content,
+html[data-ln-tema='sepia'] .article-content p,
+html[data-ln-tema='sepia'] .article-content li,
+html[data-ln-tema='sepia'] .article-content strong,
+html[data-ln-tema='sepia'] .article-content h2,
+html[data-ln-tema='sepia'] .article-content h3 { color: #43372a !important; }
+html[data-ln-tema='sepia'] .article-content blockquote { background: #ebe0c6 !important; color: #43372a !important; }
+
+html[data-ln-tema='escuro'] body,
+html[data-ln-tema='escuro'] .article-container { background: #16141c !important; }
+html[data-ln-tema='escuro'] .article-content,
+html[data-ln-tema='escuro'] .article-content p,
+html[data-ln-tema='escuro'] .article-content li,
+html[data-ln-tema='escuro'] .article-content strong,
+html[data-ln-tema='escuro'] .article-content h2,
+html[data-ln-tema='escuro'] .article-content h3 { color: #e4e0ee !important; }
+html[data-ln-tema='escuro'] .article-content blockquote { background: #221f2d !important; color: #e4e0ee !important; }
+
+html[data-ln-tema='contraste'] body,
+html[data-ln-tema='contraste'] .article-container { background: #000000 !important; }
+html[data-ln-tema='contraste'] .article-content,
+html[data-ln-tema='contraste'] .article-content p,
+html[data-ln-tema='contraste'] .article-content li,
+html[data-ln-tema='contraste'] .article-content strong,
+html[data-ln-tema='contraste'] .article-content h2,
+html[data-ln-tema='contraste'] .article-content h3 { color: #ffffff !important; }
+html[data-ln-tema='contraste'] .article-content a { color: #ffe14d !important; text-decoration: underline; }
+html[data-ln-tema='contraste'] .article-content blockquote { background: #111 !important; color: #fff !important; border-left-color: #ffe14d !important; }
+
+/* --------------------------------------------------------------------------
+   4. BIONIC READING (negrito no começo das palavras)
+   -------------------------------------------------------------------------- */
+.ln-bio { font-weight: 700; color: inherit; }
+
+/* --------------------------------------------------------------------------
+   5. MODO FOCO — fica só o texto e o fundo
+   -------------------------------------------------------------------------- */
+html[data-ln-foco='on'] .header-glass,
+html[data-ln-foco='on'] .article-hero,
+html[data-ln-foco='on'] .article-meta-bar,
+html[data-ln-foco='on'] .artigo-acoes-barra,
+html[data-ln-foco='on'] .ln-resumo,
+html[data-ln-foco='on'] .ln-indice-fixo,
+html[data-ln-foco='on'] .reading-progress { display: none !important; }
+html[data-ln-foco='on'] .article-container { padding-top: 64px; }
+
+.ln-foco-sair {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 9100;
+    display: none;
+}
+html[data-ln-foco='on'] .ln-foco-sair { display: inline-flex; }
+
+/* --------------------------------------------------------------------------
+   6. BOTÃO E PAINEL DE LEITURA
+   -------------------------------------------------------------------------- */
+.ln-botao,
+.ln-foco-sair {
+    align-items: center;
+    gap: .5rem;
+    padding: .7rem 1.1rem;
+    border-radius: 999px;
+    border: 2px solid #5b21b6;
+    background: #ffffff;
+    color: #3b0f8c;
+    font: 700 .95rem/1 'Inter', system-ui, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(60, 20, 120, .25);
+}
+.ln-botao {
+    position: fixed;
+    left: 18px;
+    bottom: 18px;
+    z-index: 9000;
+    display: inline-flex;
+}
+.ln-botao:hover,
+.ln-foco-sair:hover { background: #f3ecff; }
+.ln-botao:focus-visible,
+.ln-foco-sair:focus-visible,
+.ln-painel button:focus-visible,
+.ln-resumo summary:focus-visible,
+.ln-indice-fixo a:focus-visible {
+    outline: 3px solid #f59e0b;
+    outline-offset: 2px;
+}
+
+.ln-painel {
+    position: fixed;
+    left: 18px;
+    bottom: 76px;
+    z-index: 9001;
+    width: min(360px, calc(100vw - 36px));
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    padding: 1.1rem 1.2rem 1.2rem;
+    border-radius: 18px;
+    background: #ffffff;
+    color: #1f2430;
+    border: 1px solid #d9d2e8;
+    box-shadow: 0 18px 50px rgba(30, 10, 70, .3);
+    font: 400 .92rem/1.4 'Inter', system-ui, sans-serif;
+}
+.ln-painel[hidden] { display: none; }
+.ln-painel h2 { margin: 0 0 .15rem; font-size: 1.05rem; color: #3b0f8c; }
+.ln-painel .ln-sub { margin: 0 0 .9rem; font-size: .82rem; opacity: .75; }
+.ln-grupo { margin: 0 0 .95rem; padding: 0; border: 0; }
+.ln-grupo legend { padding: 0; margin-bottom: .4rem; font-weight: 700; font-size: .85rem; }
+.ln-opcoes { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ln-painel button.ln-op {
+    padding: .5rem .75rem;
+    border-radius: 10px;
+    border: 1.5px solid #cfc4e6;
+    background: #faf8ff;
+    color: #1f2430;
+    font: 600 .85rem/1.1 inherit;
+    cursor: pointer;
+}
+.ln-painel button.ln-op[aria-pressed='true'] {
+    background: #5b21b6;
+    border-color: #5b21b6;
+    color: #ffffff;
+}
+.ln-painel .ln-reset {
+    width: 100%;
+    margin-top: .2rem;
+    padding: .55rem;
+    border-radius: 10px;
+    border: 1.5px dashed #b9abd8;
+    background: transparent;
+    color: #3b0f8c;
+    font: 600 .85rem/1 inherit;
+    cursor: pointer;
+}
+
+body.a11y-dark-mode .ln-painel,
+body.a11y-dark-mode .ln-botao { background: #221f2d; color: #ece8f6; border-color: #4b4166; }
+body.a11y-dark-mode .ln-painel h2 { color: #d4bfff; }
+body.a11y-dark-mode .ln-painel button.ln-op { background: #2c2840; color: #ece8f6; border-color: #4b4166; }
+body.a11y-dark-mode .ln-painel button.ln-op[aria-pressed='true'] { background: #8b5cf6; border-color: #8b5cf6; color: #fff; }
+body.a11y-dark-mode .ln-painel .ln-reset { color: #d4bfff; border-color: #6b5c90; }
+
+/* --------------------------------------------------------------------------
+   7. RESUMO (TL;DR) + ÍNDICE
+   -------------------------------------------------------------------------- */
+.ln-resumo {
+    margin: 0 0 2rem;
+    border: 1.5px solid #d9d2e8;
+    border-radius: 14px;
+    background: #faf8ff;
+    color: #1f2430;
+    font: 400 1rem/1.6 'Inter', system-ui, sans-serif;
+}
+.ln-resumo summary {
+    padding: .9rem 1.1rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: #3b0f8c;
+}
+.ln-resumo__corpo { padding: 0 1.1rem 1rem; }
+.ln-resumo h3 { margin: .8rem 0 .3rem; font-size: .9rem; color: #3b0f8c; }
+.ln-resumo ul, .ln-resumo ol { margin: 0 0 .4rem 1.2rem; padding: 0; }
+.ln-resumo li { margin-bottom: .35rem; }
+.ln-resumo a { color: #5b21b6; }
+.ln-resumo small { display: block; margin-top: .6rem; opacity: .7; }
+body.a11y-dark-mode .ln-resumo { background: #221f2d; color: #ece8f6; border-color: #4b4166; }
+body.a11y-dark-mode .ln-resumo summary,
+body.a11y-dark-mode .ln-resumo h3 { color: #d4bfff; }
+body.a11y-dark-mode .ln-resumo a { color: #c4a8ff; }
+
+/* Índice lateral fixo: só em telas largas, onde há espaço ao lado do texto */
+.ln-indice-fixo { display: none; }
+@media (min-width: 1280px) {
+    .ln-indice-fixo {
+        display: block;
+        position: fixed;
+        top: 120px;
+        right: 24px;
+        z-index: 50;
+        width: 220px;
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
+        padding: .9rem 1rem;
+        border-radius: 14px;
+        border: 1px solid #e2dcef;
+        background: rgba(255, 255, 255, .92);
+        font: 400 .85rem/1.35 'Inter', system-ui, sans-serif;
+    }
+    .ln-indice-fixo strong { display: block; margin-bottom: .5rem; color: #3b0f8c; }
+    .ln-indice-fixo ol { margin: 0; padding: 0; list-style: none; }
+    .ln-indice-fixo li { margin: 0 0 .15rem; }
+    .ln-indice-fixo li.ln-n3 { padding-left: .8rem; }
+    .ln-indice-fixo a {
+        display: block;
+        padding: .3rem .5rem;
+        border-left: 3px solid transparent;
+        border-radius: 0 6px 6px 0;
+        color: #4a4560;
+        text-decoration: none;
+    }
+    .ln-indice-fixo a:hover { background: #f3ecff; }
+    .ln-indice-fixo a[aria-current='true'] {
+        border-left-color: #5b21b6;
+        background: #f3ecff;
+        color: #3b0f8c;
+        font-weight: 700;
+    }
+    body.a11y-dark-mode .ln-indice-fixo { background: rgba(34, 31, 45, .95); border-color: #4b4166; }
+    body.a11y-dark-mode .ln-indice-fixo strong { color: #d4bfff; }
+    body.a11y-dark-mode .ln-indice-fixo a { color: #cfc8e6; }
+    body.a11y-dark-mode .ln-indice-fixo a:hover,
+    body.a11y-dark-mode .ln-indice-fixo a[aria-current='true'] { background: #2c2840; color: #fff; }
+}
+
+/* --------------------------------------------------------------------------
+   8. SELO DE ENERGIA MENTAL + RETOMAR LEITURA
+   -------------------------------------------------------------------------- */
+.ln-energia {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .15rem .6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: .8rem;
+    border: 1.5px solid currentColor;
+}
+.ln-energia[data-nivel='baixa'] { color: #166534; }
+.ln-energia[data-nivel='media'] { color: #92400e; }
+.ln-energia[data-nivel='alta']  { color: #9f1239; }
+body.a11y-dark-mode .ln-energia[data-nivel='baixa'] { color: #86efac; }
+body.a11y-dark-mode .ln-energia[data-nivel='media'] { color: #fcd34d; }
+body.a11y-dark-mode .ln-energia[data-nivel='alta']  { color: #fda4af; }
+
+.ln-retomar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin: 0 0 1.5rem;
+    padding: .75rem 1rem;
+    border-radius: 12px;
+    border: 1.5px solid #d9d2e8;
+    background: #faf8ff;
+    color: #1f2430;
+    font: 400 .95rem/1.4 'Inter', system-ui, sans-serif;
+}
+.ln-retomar button {
+    padding: .45rem .9rem;
+    border-radius: 999px;
+    border: 1.5px solid #5b21b6;
+    background: #5b21b6;
+    color: #fff;
+    font: 700 .85rem/1 inherit;
+    cursor: pointer;
+}
+.ln-retomar button.ln-retomar__nao { background: transparent; color: #3b0f8c; }
+body.a11y-dark-mode .ln-retomar { background: #221f2d; color: #ece8f6; border-color: #4b4166; }
+body.a11y-dark-mode .ln-retomar button.ln-retomar__nao { color: #d4bfff; border-color: #8b5cf6; }
+
+/* --------------------------------------------------------------------------
+   9. MOVIMENTO REDUZIDO — nada anima se a pessoa pediu isso no sistema
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .ln-botao, .ln-painel, .ln-resumo, .ln-indice-fixo a { transition: none !important; animation: none !important; }
+    html { scroll-behavior: auto !important; }
+}
+
+@media print {
+    .ln-botao, .ln-painel, .ln-foco-sair, .ln-indice-fixo, .ln-retomar { display: none !important; }
+}
